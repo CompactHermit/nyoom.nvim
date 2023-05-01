@@ -23,6 +23,7 @@
 (load_extension :ui-select)
 (packadd! telescope-file-browser.nvim)
 (load_extension :file_browser)
+(packadd! telescope-tmux.nvim)
 (packadd! telescope-project.nvim)
 (load_extension :project)
 (packadd! telescope-tabs)

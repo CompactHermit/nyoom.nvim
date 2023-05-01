@@ -162,6 +162,8 @@
 
 (map! [n] :<leader>cc :<cmd>make<CR> {:desc "Compile with quickfix list"})
 (map! [n] :<leader>cC :<cmd>lmake<CR {:desc "Compile with location list"})
+
+(map! [n] :<leader>cC :<cmd>lmake<CR {:desc "Compile with location list"})
 (nyoom-module-p! lsp
                  (do
                    (map! [n] :<leader>cd `(vim.lsp.buf.definition)
@@ -407,3 +409,6 @@
 ;;; -- m +filetype (hydra
 
 ;; non-doom
+
+;;; Tmux and harpoon junk
+

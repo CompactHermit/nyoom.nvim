@@ -32,8 +32,8 @@
         (hotpot +reflect)    ; lets get cooking. NOTE: essential module (for now), don't disable
         scratch              ; emacs-like scratch buffer functionality
         word-wrap            ; language-aware smart soft and hard wrapping
-        ;;windows              ; Fancy animations, for that extra bloated Config
-        ;;(cutlass            ;Sail the seven seas, you useless sack of meat
+        windows              ; Fancy animations, for that extra bloated Config
+        (cutlass)            ;Sail the seven seas, you useless sack of meat
          ;+plunder)
 
 
@@ -53,17 +53,16 @@
         ;;magma              ; tame Jupyter notebooks
         ; quarto             ; Better R and Jupyter Stuff
         mason                ; setting your tools in stone
-        ; browse               ; Im too lazy to open a browser
-        ; octo                 ; All hail the octopussy
-        ; tmux                 ;God, make this shit broken, I fucking swear
-        ; harpoon              ; With the power of the gods!
+        browse               ; Im too lazy to open a browser
+        octo                 ; All hail the octopussy
+        tmux                 ;God, make this shit broken, I fucking swear
+        harpoon              ; With the power of the gods!
         ; oil                ; Scary spooky file editing
         eval                 ; run code, run (also, repls)
         antifennel           ; for all the fennel haters out there. this ones for you
         pastebin             ; interacting with pastebin platforms
         lsp                  ; :vscode 
         (neogit              ; a git porclain for neovim
-          +forge             ; Wield git like a wizard
           +diffview)         ; a git diff view for neovim
         rgb                  ; creating color strings
         tree-sitter          ; syntax and parsing, sitting in a tree... 

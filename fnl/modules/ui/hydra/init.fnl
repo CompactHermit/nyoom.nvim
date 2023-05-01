@@ -5,7 +5,12 @@
                :module :hydra
                :keys [:<leader>g
                       :<leader>v
-                      :<leader>f
+                      :<leader>t
                       :<leader>d
                       :<leader>m
-                      :<leader>t]})
+                      :<leader>q
+                      :<leader>n
+                      :<leader>w
+                      :<leader>o
+                      :<leader>z
+                      :<leader>e]})

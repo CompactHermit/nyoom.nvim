@@ -8,6 +8,8 @@
                                 {:opt true})
                           (pack :nvim-telescope/telescope-file-browser.nvim
                                 {:opt true})
+                          (pack :camgraff/telescope-tmux.nvim
+                                {:opt true})
                           (pack :nvim-telescope/telescope-media-files.nvim
                                 {:opt true})
                           (pack :nvim-telescope/telescope-project.nvim
