@@ -4,19 +4,29 @@
 
 (local neorg-modules
        {:core.defaults {}
-        :core.norg.manoeuvre {}
-        :core.keybinds {:config {:default_keybinds false}}
-        :core.norg.dirman {:config {:workspaces {:main "~/neorg"}}}})
+        :core.manoeuvre {}
+        :core.keybinds {:config {:default_keybinds true}}
+        :core.looking-glass {}
+        :core.dirman {:config {:workspaces {:main "~/neorg"
+                                            :Math "~/neorg/Math"
+                                            :NixOS "~/neorg/nixDocs"
+                                            :Chess "~/neorg/Chess"
+                                            :Programming "~/neorg/CS"
+                                            :Academic_Math "~/neorg/Papers/Math"
+                                            :Academic_CS "~/neorg/Papers/CS"}
+                               :autodetect true
+                               :autochdir true}}})
+        ;;:external.templates {:config {:templates_dir (.. (vim.fn.stdpath :config) :/templates/norg)}}})
 
 ;; add conditional modules
 
-(nyoom-module-p! cmp (tset neorg-modules :core.norg.completion
+(nyoom-module-p! cmp (tset neorg-modules :core.completion
                            {:config {:engine :nvim-cmp}}))
 
 ;; add flaged modules
 
 (nyoom-module-p! neorg.+pretty
-                 (tset neorg-modules :core.norg.concealer
+                 (tset neorg-modules :core.concealer
                        {:config {:icon_preset :varied}}))
 
 (nyoom-module-p! neorg.+present

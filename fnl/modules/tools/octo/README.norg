@@ -1,0 +1,28 @@
+@document.meta
+title: Octo - hydra and design
+description: 
+authors: strange_cofunctor
+categories: Hydra
+created: 2023-03-17
+updated: 2023-03-17
+version: 1.0.0
+@end
+
+* Octo:: PR/Issue handler supreme
+** Commands:
+   For octo, there is only `Octo <objects> <action> [args]` as a command (for the public API). When commands is not specified, Octo defaults to a URL searcher for issue/repo
+******* E.g::
+        ~ `Octo issue close [#]` ::closes the #
+        ~ `Octo issue reopen` :: reopen issues from current Git Repo
+        ~ `Octo pr list`:: Lists PR for repo
+        ~ `Octo pr search`
+        ~ `Octo repo list`: Lists users repo
+        ~ `Octo repo fork`: Forks repo
+        ~ `Octo gist list`: List user gists
+        ~ `Octo search <query>`: Searches for everything matching the query
+** Some more common commands can be seen below::
+   - `Octo https://github.com/<username>/<reponame>`
+   - `Octo issue create`: creates issue for current git repo
+   - `Octo issue create <user>/<reponame>`: Creates issue for repo name
+   - `Octo issue edit 1`: Edit issue 1 from user
+   - `Octo issue list neovim/neovim labels=<LABEL>, states=OPEN`: lists issues with <LABEL> and is Open

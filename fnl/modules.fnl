@@ -16,9 +16,9 @@
         hydra                ; Discount modality for mythological beast hunters
         ;;indent-guides      ; highlighted indent columns
         modeline             ; snazzy, nano-emacs-inspired modeline
-        ;;nvimtree           ; a project drawer, like NERDTree for vim
+        nvimtree           ; a project drawer, like NERDTree for vim
         neotree              ; tree-like structures for neovim
-        ;;tabs               ; keep tabs on your buffers, literally
+        ;tabs               ; keep tabs on your buffers, literally
         vc-gutter            ; Get your diff out of the gutter
         window-select        ; Visually switch windows
         zen                  ; distraction-free coding or writing TODO +twilight
@@ -32,6 +32,10 @@
         (hotpot +reflect)    ; lets get cooking. NOTE: essential module (for now), don't disable
         scratch              ; emacs-like scratch buffer functionality
         word-wrap            ; language-aware smart soft and hard wrapping
+        ;;windows              ; Fancy animations, for that extra bloated Config
+        ;;(cutlass            ;Sail the seven seas, you useless sack of meat
+         ;+plunder)
+
 
         :term
         ;;fshell             ; WIP: the fennel shell that works everywhere
@@ -47,7 +51,13 @@
         docker               ; row row row your boat TODO +netman?
         ;;editorconfig       ; let someone else argue about tabs vs spaces
         ;;magma              ; tame Jupyter notebooks
+        ; quarto             ; Better R and Jupyter Stuff
         mason                ; setting your tools in stone
+        ; browse               ; Im too lazy to open a browser
+        ; octo                 ; All hail the octopussy
+        ; tmux                 ;God, make this shit broken, I fucking swear
+        ; harpoon              ; With the power of the gods!
+        ; oil                ; Scary spooky file editing
         eval                 ; run code, run (also, repls)
         antifennel           ; for all the fennel haters out there. this ones for you
         pastebin             ; interacting with pastebin platforms
@@ -62,13 +72,13 @@
         cc                   ; C > C++ == 1
         clojure              ; java with a lisp
         common-lisp          ; if you've seen one lisp, you've seen them all
-        csharp               ; java but with linq
-        java                 ; the poster child for carpal tunnel syndrome
+        ;csharp               ; java but with linq
+        ;java                 ; the poster child for carpal tunnel syndrome
         julia                ; a better, faster MATLAB
         ;;kotlin             ; FIXME: a better, slicker Java(Script)
         ;;json               ; { "dʒeɪsən":  "Javascript Object Notation" }
         latex                ; writing papers in Neovim has never been so fun
-        lua                  ; one-based indices? one-based indices
+        ;lua                  ; one-based indices? one-based indices
         markdown             ; writing docs for people to ignore
         nim                  ; python + lisp at the speed of c
         (neorg               ; organize your plain life in plain text, the neovim way
@@ -83,6 +93,8 @@
         (sh +fish)           ; she sells {ba,z,fi}sh shells on the C xor
         ;;xml                ; extend my language
         ;;yaml               ; yet another markup language to enable
+        ; go
+        ; haskell              ; Functially Braindead parsing
         zig                  ; C, but simpler
 
         :app
