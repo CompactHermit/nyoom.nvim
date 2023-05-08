@@ -1,7 +1,7 @@
 (setup :windows {:autowidth
                    {:enable true
-                    :winwidth 15}
+                    :winwidth 25}
                  :animation
                   {:enable true
-                   :duration 200
+                   :duration 100
                    :fps 60}})

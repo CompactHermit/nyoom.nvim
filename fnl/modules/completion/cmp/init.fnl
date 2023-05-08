@@ -19,4 +19,7 @@
                           (pack :L3MON4D3/LuaSnip
                                 {:event [:InsertEnter :CmdLineEnter]
                                  :wants :friendly-snippets
-                                 :requires [(pack :rafamadriz/friendly-snippets)]})]})
+                                 :requires [(pack :rafamadriz/friendly-snippets)]
+                                 :config (fn []
+                                           (local {: setup} (require :luasnip))
+                                           (setup {:enable_autosnippets true}))})]})

@@ -11,20 +11,39 @@
 ;; numbers in effect. If set to nonumber, line numbers are disabled. For 
 ;; relative line numbers, set 'relativenumber`
 
-(set! nonumber)
+(set! relativenumber)
+(set! conceallevel 2)
 
+;; The let option sets global, or `vim.g` options. 
+;; Heres an example with localleader, setting it to <space>m
+(let! maplocalleader " m")
+(let! tex_conceal :abdgm)
+(let! vimtex_view_mode :zathura)
+(let! vimtex_view_general_viewer :zathura)
+(let! vimtex_compiler_method :latexrun)
+(let! vimtex_compiler_progname :nvr)
+(let! tex_comment_nospell :1)
+(let! vimtex_quickfix_mode :0)
+
+;; map! is used for mappings
+;; Heres an example, preseing esc should also remove search highlights
+(map! [n] :<esc> :<esc><cmd>noh<cr> {:desc "No highlight escape"})
+(map! [n] :<C-n> :<cmd>NeoTreeShow<cr>)
+(map! [n] :<A-i> "<cmd>ToggleTerm direction=float<cr>")
+
+;;Yanky Killring stuff
+(map! [n] :<C-j> "<Plug>(YankyCycleForward)")
+(map! [n] :<C-k> "<Plug>(YankyCycleBackward)")
+(map! [n] :p "<Plug>(YankyPutAfter)")
+(map! [n] :P "<Plug>(YankyPutBefore)")
+(map! [n] :gp "<Plug>(YankyGPutAfter)")
+(map [n] :bL)
 ;; The let option sets global, or `vim.g` options. 
 ;; Heres an example with localleader, setting it to <space>m
 
 (let! maplocalleader " m")
 
-;; map! is used for mappings
-;; Heres an example, preseing esc should also remove search highlights
-
-(map! [n] :<esc> :<esc><cmd>noh<cr> {:desc "No highlight escape"})
-
 ;; sometimes you want to modify a plugin thats loaded from within a module. For 
 ;; this you can use the `after` function
 
-(after :neorg
-       {:load {:core.norg.dirman {:config {:workspaces {:main "~/neorg"}}}}})
+

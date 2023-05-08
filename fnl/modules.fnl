@@ -52,13 +52,14 @@
         ;;editorconfig       ; let someone else argue about tabs vs spaces
         ;;magma              ; tame Jupyter notebooks
         ; quarto             ; Better R and Jupyter Stuff
+        ;; quickfix          ; Learn regex you bozo
         mason                ; setting your tools in stone
         browse               ; Im too lazy to open a browser
         octo                 ; All hail the octopussy
-        tmux                 ;God, make this shit broken, I fucking swear
+        tmux                 ; God, make this shit broken, I fucking swear
         harpoon              ; With the power of the gods!
         ; oil                ; Scary spooky file editing
-        eval                 ; run code, run (also, repls)
+        eval                 ; run code, run (also, repls)modu
         antifennel           ; for all the fennel haters out there. this ones for you
         pastebin             ; interacting with pastebin platforms
         lsp                  ; :vscode 
@@ -89,11 +90,11 @@
         nix                  ; I hereby declare "nix geht mehr!"
         python               ; beautiful is better than ugly
         rust                 ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
-        (sh +fish)           ; she sells {ba,z,fi}sh shells on the C xor
+        ;(sh +fish)           ; she sells {ba,z,fi}sh shells on the C xor
         ;;xml                ; extend my language
         ;;yaml               ; yet another markup language to enable
         ; go
-        ; haskell              ; Functially Braindead parsing
+        haskell              ; Functially Braindead parsing
         zig                  ; C, but simpler
 
         :app

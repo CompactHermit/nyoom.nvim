@@ -94,9 +94,9 @@
 
 (nyoom-module-p! telescope
                  (do
-                   (map! [n] :<leader><tab>r "<cmd>Telescope xray23 listCR>"
+                   (map! [n] :<leader><tab>r "<cmd>Telescope xray23 list<CR>"
                          {:desc "View all sessions"})
-                   (map! [n] :<leader><tab>s "<cmd>Telescope xray23 saveCR>"
+                   (map! [n] :<leader><tab>s "<cmd>Telescope xray23 save<CR>"
                          {:desc "Save current session"})))
 
 (map! [n] :<leader><tab>x :<cmd>tabclose<CR> {:desc "Delete this tab"})

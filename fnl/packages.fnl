@@ -71,6 +71,73 @@
 ;; Put your plugins here
 ;; ---------------------
 
+(use-package! :nvim-neorg/neorg-telescope)
+; (use-package! :NFrid/due.nvim
+;               {:config (fn []
+;                          (local {: setup} (require :due_nvim))
+;                          (setup {:pattern_start "{"
+;                                  :pattern_end "}"
+;                                  :use_clock_time true
+;                                  :use_clock_today true}))
+;                :opt true
+;                :cmd [:DueDraw :DueClean :DueSync]})
+
+(use-package! :iurimateus/luasnip-latex-snippets.nvim
+              {:requires [:L3MON4D3/LuaSnip :lervag/vimtex]
+               :call-setup luasnip-latex-snippets
+               :ft [:tex :markdown :norg]})
+; (use-package! :danymay/neogen {:call-setup neogen
+;                                :opt true
+;                                :cmd [:Neogen]})
+;
+; (use-package! :nullchilly/fsread.nvim
+;               {:opt true
+;                :cmd [:FSRead]})
+
+;; markdown stuff
+(use-package! :toppair/peek.nvim
+              {:run "deno task --quiet build:fast"
+               :config (fn []
+                         (local {: setup} (require :peek))
+                         (setup {:throttle_at 200000}))
+               :ft [:markdown]})
+
+;; LSP-SAGA - The based lsp setup
+(use-package! :glepnir/lspsaga.nvim
+              {:config (fn []
+                         (local {: setup} (require :lspsaga))
+                         (setup {:request_timeout 2000
+                                 :lightbulb {:enable false}}))
+               :opt true
+               :cmd [:Lspsaga]})
+
+; Smart movements
+(use-package! :mrjones2014/smart-splits.nvim
+          {:call-setup smart-splits
+           :opt true
+           :events :BufReadPost})
+
+;;SilverSurfer Nvim
+(use-package! :kelly-lin/telescope-ag {:requires "nvim-telescope/telescope.nvim"
+                                       :opt true
+                                       :cmd :Ag})
+
+(use-package! :stevearc/oil.nvim
+               {:call-setup oil})
+
+
+;;Docs and browse
+(use-package! :loganswartz/updoc.nvim
+              {:call-setup updoc
+               :opt true
+               :events :BufRead})
+
+(use-package! :KabbAmine/zeavim.vim
+              {:opt true
+               :cmd :Zeavim})
+
+
+
 ;; Send plugins to packer
 
 (echo! "Installing Packages")

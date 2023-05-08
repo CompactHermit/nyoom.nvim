@@ -546,7 +546,7 @@
                                    [:M
                                      #(vim.ui.select [:main
                                                       :Math
-                                                      :NixOs
+                                                      :NixOS
                                                       :Chess
                                                       :Programming
                                                       :Academic_CS
