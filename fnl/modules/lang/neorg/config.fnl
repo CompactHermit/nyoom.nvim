@@ -5,8 +5,11 @@
 (local neorg-modules
        {:core.defaults {}
         :core.manoeuvre {}
+        :core.ui {}
+        :core.ui.calendar {}
+        :core.ui.calendar.views.monthly {}
+        :core.tempus {}
         :core.keybinds {:config {:default_keybinds true}}
-        :core.looking-glass {}
         :core.dirman {:config {:workspaces {:main "~/neorg"
                                             :Math "~/neorg/Math"
                                             :NixOS "~/neorg/nixDocs"
@@ -18,8 +21,8 @@
                                :autochdir true}}})
         ;;:external.templates {:config {:templates_dir (.. (vim.fn.stdpath :config) :/templates/norg)}}})
 
-;; add conditional modules
 
+;; add conditional modules
 (nyoom-module-p! cmp (tset neorg-modules :core.completion
                            {:config {:engine :nvim-cmp}}))
 

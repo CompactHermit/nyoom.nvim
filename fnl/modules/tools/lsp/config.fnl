@@ -92,17 +92,17 @@
 
 (nyoom-module-p! json 
                  (tset lsp-servers :jsonls 
-       {:format {:enabled false}
-        :schemas [{:description "ESLint config"
-                   :fileMatch [:.eslintrc.json :.eslintrc]
-                   :url "http://json.schemastore.org/eslintrc"}
-                  {:description "Package config"
-                   :fileMatch [:package.json]
-                   :url "https://json.schemastore.org/package"}
-                  {:description "Packer config"
-                   :fileMatch [:packer.json]
-                   :url "https://json.schemastore.org/packer"}
-                   ]}))
+                  {:format {:enabled false}
+                   :schemas [{:description "ESLint config"
+                              :fileMatch [:.eslintrc.json :.eslintrc]
+                              :url "http://json.schemastore.org/eslintrc"}
+                             {:description "Package config"
+                              :fileMatch [:package.json]
+                              :url "https://json.schemastore.org/package"}
+                             {:description "Packer config"
+                              :fileMatch [:packer.json]
+                              :url "https://json.schemastore.org/packer"}]}))
+                   
 
 (nyoom-module-p! kotlin (tset lsp-servers :kotlin_langage_server {}))
 
@@ -118,7 +118,7 @@
 
 (nyoom-module-p! nim (tset lsp-servers :nimls {}))
 
-(nyoom-module-p! nix (tset lsp-servers :rnix {}))
+(nyoom-module-p! nix (tset lsp-servers :nil_ls {})) 
 
 (nyoom-module-p! python
                  (tset lsp-servers :pyright
@@ -130,11 +130,11 @@
 (nyoom-module-p! yaml
                  (tset lsp-servers :yamlls
                        {:settings {:yaml {
-                        :schemaStore {:enable false 
-                                      :url "https://www.schemastore.org/api/json/catalog.json"}
-                        :schemas {:/path/to/your/custom/strict/schema.json "yet-another.{yml,yaml}"
-                                  "http://json.schemastore.org/prettierrc" ".prettierrc.{yml,yaml}"}
-                        :validate true}}}))
+                                          :schemaStore {:enable false 
+                                                        :url "https://www.schemastore.org/api/json/catalog.json"}
+                                          :schemas {:/path/to/your/custom/strict/schema.json "yet-another.{yml,yaml}"
+                                                    "http://json.schemastore.org/prettierrc" ".prettierrc.{yml,yaml}"}
+                                          :validate true}}}))
 
 (nyoom-module-p! zig (tset lsp-servers :zls {}))
 

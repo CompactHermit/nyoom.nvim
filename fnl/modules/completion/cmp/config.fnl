@@ -71,7 +71,7 @@
                                   1) :sub col
                                col) :match "%s") nil))))
 
-(setup :cmp {:experimental {:ghost_text true}
+(setup :cmp {:experimental {:ghost_text false}
              :window {:documentation {:border :solid}
                       :completion {:col_offset (- 3)
                                    :side_padding 0

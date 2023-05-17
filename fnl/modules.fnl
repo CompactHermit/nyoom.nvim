@@ -26,7 +26,7 @@
 
         :editor
         fold                 ; (nigh) universal code folding
-        (format +onsave)     ; automated prettiness
+        (format) ;;+onsave     ; automated prettiness
         ;;multiple-cursors   ; learn macros you dingus
         parinfer             ; turn lisp into python, sort of
         (hotpot +reflect)    ; lets get cooking. NOTE: essential module (for now), don't disable
@@ -90,12 +90,13 @@
         nix                  ; I hereby declare "nix geht mehr!"
         python               ; beautiful is better than ugly
         rust                 ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+        ; scala              ; Functional Java, done right
         ;(sh +fish)           ; she sells {ba,z,fi}sh shells on the C xor
         ;;xml                ; extend my language
         ;;yaml               ; yet another markup language to enable
-        ; go
-        haskell              ; Functially Braindead parsing
-        zig                  ; C, but simpler
+        ; go                 ; No Bitches??
+        haskell              ; Functionally Braindead parsers
+        zig                  ; C, but slower and fatter
 
         :app
         ;;calendar           ; Watch your missed deadlines in real time

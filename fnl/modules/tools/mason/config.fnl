@@ -44,7 +44,7 @@
       (table.insert mason-tools :nimlsp))
 
     (nyoom-module-p! nix
-      (table.insert mason-tools :rnix-lsp))
+      (table.insert mason-tools :nil))
 
     (nyoom-module-p! python
       (table.insert mason-tools :pyright))

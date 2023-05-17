@@ -82,14 +82,18 @@
 ;                :opt true
 ;                :cmd [:DueDraw :DueClean :DueSync]})
 
-(use-package! :iurimateus/luasnip-latex-snippets.nvim
-              {:requires [:L3MON4D3/LuaSnip :lervag/vimtex]
-               :call-setup luasnip-latex-snippets
-               :ft [:tex :markdown :norg]})
+;; Broken and Slow
+; (use-package! :iurimateus/luasnip-latex-snippets.nvim
+;               {:requires [:L3MON4D3/LuaSnip :lervag/vimtex]
+;                :call-setup luasnip-latex-snippets
+;                :ft [:tex :markdown :norg]})
+
+;; Bloated when not in use
 ; (use-package! :danymay/neogen {:call-setup neogen
 ;                                :opt true
 ;                                :cmd [:Neogen]})
 ;
+;; Not needed at all
 ; (use-package! :nullchilly/fsread.nvim
 ;               {:opt true
 ;                :cmd [:FSRead]})

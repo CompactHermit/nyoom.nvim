@@ -384,7 +384,7 @@ I hereby declare "nix geht mehr!"
 This module adds support for the Nix programming language.
 
 - `tools.tree-sitter` Support for the `nix` parser
-- `tools.lsp` and `completion.cmp` Support for lsp and completion through `rnix-lsp`
+- `tools.lsp` and `completion.cmp` Support for lsp and completion through `nil-lsp`
 - `editor.format` Support for formatting through `rnix-lsp`
 
 ### python
