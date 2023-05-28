@@ -5,4 +5,5 @@
                :call-setup haskell-tools
                :ft [:haskell]})
 
-
+(use-package! :MrcJkb/haskell-snippets.nvim
+              {:ft [:haskell]})

@@ -483,44 +483,16 @@
                                        (vim.cmd "lua require('smart-splits').resize_down"))]]})))
 
 
-;; Smartwords
-(nyoom-module-p! smartwords
-                (do
-                  (local smartword-hints "
-^ ^ _w_: w       ^ ^
-^ ^ _b_: b       ^ ^
-^ ^ _e_: e       ^ ^
-^ ^ _ge_: ge     ^ ^
-^ _<Esc>_: quit  ^ ^
-                          ")
-                  (Hydra {:name :Smartwords
-                          :hints smartword-hints
-                          :config {:color :teal
-                                   :hint {:border :solid :position :bottom-right}
-                                   :invoke_on_body true}
-                          :body :<leader>e
-                          :mode []
-                          :heads [[:w "<Plug>(smartword-w)"
-                                      {:exit false}]
-                                  [:b "<Plug>(smartword-b)"
-                                      {:exit false}]
-                                  [:e "<Plug>(smartword-e)"
-                                      {:exit false}]
-                                  [:ge "<Plug>(smartword-ge)"
-                                       {:exit false}]
-                                  [:<Esc> nil {:exit true :nowait true}]]})))
-
 ;; Neorg ::
+        ;; TODO:: Add neorg tangle + looking-glass bindings
 (nyoom-module-p! neorg
                  (do
                    (local Neorg-hints "
-                ^ ^            - Mode
-                ^
-                _t_: todays Journal       _M_:Workspace select
-                _m_: tommorows journal    
-                _y_: yesterdays journal   _e_:Inject Metadata
-                _T_: TOC toggle           _i_: Journal Index
-                _o_: Context toggle
+    ^ ^            - Mode
+    _t_: todays Journal       _M_:Workspace select
+    _m_: tommorows journal    _o_: Context toggle
+    _y_: yesterdays journal   _e_:Inject Metadata
+    _T_: TOC toggle           _i_: Journal Index
                 ^ ^
                 ^^^^          _<Esc>_:escape
                  ")
@@ -533,7 +505,7 @@
                                                 (print "  - Entered "))
                                     :on_exit (fn []
                                                (print "  - Exited "))}
-                           :body :<leader>n
+                           :body :<leader>ne
                            :heads [[:t
                                     (fn []
                                       (vim.cmd "Neorg journal today"))]

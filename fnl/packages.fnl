@@ -72,15 +72,6 @@
 ;; ---------------------
 
 (use-package! :nvim-neorg/neorg-telescope)
-; (use-package! :NFrid/due.nvim
-;               {:config (fn []
-;                          (local {: setup} (require :due_nvim))
-;                          (setup {:pattern_start "{"
-;                                  :pattern_end "}"
-;                                  :use_clock_time true
-;                                  :use_clock_today true}))
-;                :opt true
-;                :cmd [:DueDraw :DueClean :DueSync]})
 
 ;; Broken and Slow
 ; (use-package! :iurimateus/luasnip-latex-snippets.nvim
@@ -130,6 +121,7 @@
                {:call-setup oil})
 
 
+;; TODO :: Add to browser module
 ;;Docs and browse
 (use-package! :loganswartz/updoc.nvim
               {:call-setup updoc

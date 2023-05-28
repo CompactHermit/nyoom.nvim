@@ -28,6 +28,7 @@
 (load_extension :project)
 (packadd! telescope-tabs)
 (setup :telescope-tabs)
+;; (load_extension :manix)
 ;; only install native if the flag is there
 
 (nyoom-module-p! telescope.+native

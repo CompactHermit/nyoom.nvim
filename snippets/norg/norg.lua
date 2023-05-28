@@ -335,7 +335,7 @@ local norg = {
 
     ls.parser.parse_snippet(
         "hajime",
-        "* Pomodoro\n** $0\n\n*** Lectures\n\n*** work_sheets\n\n* Breaks\n** Manga\n** Neovim\n\n* How am i feeling today "
+        "* Pomodoro\n** $0\n\n*** Lectures\n\n*** Books\n\n*** Languages\n\n* Breaks\n** Manga\n** Neovim\n\n* How am i feeling today "
     ),
 }
 

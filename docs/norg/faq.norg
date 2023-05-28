@@ -1,13 +1,11 @@
 @document.meta
 title: FAQ
 description: Frequently asked questions about Nyoom
-author: shaunsingh
+author: CompactHermit
 categories: docs
-created: 2022-12-09
+created: 
 version: 0.1.0
 @end
-
-.TOC
 
 * General 
   This is the section for questions on how Nyoom works, is it for you, how does it compare to other configurations, and how can you get started.

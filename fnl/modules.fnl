@@ -18,7 +18,7 @@
         modeline             ; snazzy, nano-emacs-inspired modeline
         nvimtree           ; a project drawer, like NERDTree for vim
         neotree              ; tree-like structures for neovim
-        ;tabs               ; keep tabs on your buffers, literally
+        tabs               ; keep tabs on your buffers, literally
         vc-gutter            ; Get your diff out of the gutter
         window-select        ; Visually switch windows
         zen                  ; distraction-free coding or writing TODO +twilight
@@ -80,7 +80,7 @@
         latex                ; writing papers in Neovim has never been so fun
         ;lua                  ; one-based indices? one-based indices
         markdown             ; writing docs for people to ignore
-        nim                  ; python + lisp at the speed of c
+        ;;nim                  ; python + lisp at the speed of c
         (neorg               ; organize your plain life in plain text, the neovim way
           +pretty
           +present

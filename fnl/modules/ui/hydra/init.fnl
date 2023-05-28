@@ -12,5 +12,4 @@
                       :<leader>n
                       :<leader>w
                       :<leader>o
-                      :<leader>z
-                      :<leader>e]})
+                      :<leader>z]})

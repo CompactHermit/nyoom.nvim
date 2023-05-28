@@ -33,6 +33,9 @@
                    (setup :copilot_cmp)
                    (table.insert cmp-sources {:name :copilot :group_index 2})))
 
+; (nyoom-module-p! quarto (do
+;                        (table.insert cmp-sources
+;                                      {:name :otter :group_index 1})))
 ;; lsp icons
 
 (local icons {:Text "  "
@@ -152,3 +155,7 @@
 ;; snippets
 ((. (autoload :luasnip.loaders.from_vscode) :lazy_load))
 ((. (require :luasnip.loaders.from_lua) :load) {:paths ["~/.config/nvim/snippets/"]})
+(nyoom-module-p! haskell
+                 (local haskell_snippets (autoload :haskell_snippets))
+                 ((. (luasnip.add_snippets :haskell haskell_snippets [:key :haskell]))))
+ 

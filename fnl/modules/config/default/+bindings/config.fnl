@@ -36,11 +36,13 @@
 
 ;; X (n)Org capture
 
-(nyoom-module-p! neorg (map! [n] :<leader>X "<cmd>Neorg gtd capture<CR>"
-                             {:desc "Neorg capture"}))
+(nyoom-module-p! neorg
+                 (do
+                  (map! [n] :<leader>nli "<cmd>Neorg keybind all core.looking-glass.magnify-code-block<CR>" {:desc "Neorg Looking Glass"})
+                  (map! [n] :<leader>nle "<cmd>Neorg generate-workspace-summary<CR>" {:desc "Neorg Generate Summary"})
+                  (map! [n] :<leader>nlt "<cmd>Neorg tangle current-file<CR>" {:desc "Neorg Tangle"})))
 
 ;; ~ Open messages
-
 (nyoom-module-p! telescope
                  (do
                    (map! [n] :<leader><space> "<cmd>Telescope find_files<CR>"
@@ -337,25 +339,19 @@
 
 ;; - Dired
 
-(nyoom-module-p! neorg (do
-                         (map! [n] :<leader>oA "<cmd>Neorg gtd views<CR>"
-                               {:desc :Agenda})
-                         (map! [n] :<leader>oaa "<cmd>Neorg gtd views<CR>"
-                               {:desc :Agenda})))
 
 ;; (map! [n] :<leader>oa "<cmd><CR>" {:desc "Tags search"})
 ;; (map! [n] :<leader>oa "<cmd><CR>" {:desc "Todo list"})
 ;; (map! [n] :<leader>oa "<cmd><CR>" {:desc "View search"})))
 
-(map! [n] :<leader>ob "<cmd>!open '%'<CR>" {:desc "Open in browser"})
 
-(nyoom-module-p! debug
-                 (map! [n] :<leader>od "<cmd>lua require('dapui').toggle()CR>"
-                       {:desc "Toggle debugger ui"}))
+; (nyoom-module-p! debug
+;                  (map! [n] :<leader>od "<cmd>lua require('dapui').toggle()CR>"
+;                        {:desc "Toggle debugger ui"}))
 
-(nyoom-module-p! docker
-                 (map! [n] :<leader>od ":Devcontainer"
-                       {:desc "Docker commands"}))
+; (nyoom-module-p! docker
+;                  (map! [n] :<leader>od ":Devcontainer"
+;                        {:desc "Docker commands"}))
 
 (nyoom-module-p! fshell)
 
@@ -368,26 +364,24 @@
   (map! [n] :<leader>oo "<cmd>!open %:p:h<CR>" {:desc "Reveal file in finder"})
   (map! [n] :<leader>oO "<cmd>!open .<CR>" {:desc "Reveal project in finder"}))
 
-(nyoom-module-p! docker
-                 (map! [n] :<leader>od :<cmd>Devcontainer
-                       {:desc "Docker commands"}))
 
-(nyoom-module-p! neotree
-                 (do
-                   (map! [n] :<leader>op "<cmd>Neotree toggle<CR>"
-                         {:desc "Project sidebar"})
-                   (map! [n] :<leader>oP "<cmd>Neotree %:p:h:h %:p<CR>"
-                         {:desc "Find file in project sidebar"})))
 
-(nyoom-module-p! nvimtree
-                 (do
-                   (map! [n] :<leader>op :<cmd>NvimTreeToggle<CR>
-                         {:desc "Project sidebar"})
-                   (map! [n] :<leader>oP :<cmd>NvimTreeFindFile<CR>
-                         {:desc "Find file in project sidebar"})))
+; (nyoom-module-p! neotree
+;                  (do
+;                    (map! [n] :<leader>op "<cmd>Neotree toggle<CR>"
+;                          {:desc "Project sidebar"})
+;                    (map! [n] :<leader>oP "<cmd>Neotree %:p:h:h %:p<CR>"
+;                          {:desc "Find file in project sidebar"})))
 
-(nyoom-module-p! eval (map! [n] :<leader>or :<cmd>ConjureLogToggle<CR>
-                            {:desc "Conjure log split"}))
+; (nyoom-module-p! nvimtree
+;                  (do
+;                    (map! [n] :<leader>op :<cmd>NvimTreeToggle<CR>
+;                          {:desc "Project sidebar"})
+;                    (map! [n] :<leader>oP :<cmd>NvimTreeFindFile<CR>
+;                          {:desc "Find file in project sidebar"})))
+
+; (nyoom-module-p! eval (map! [n] :<leader>or :<cmd>ConjureLogToggle<CR>
+;                             {:desc "Conjure log split"}))
 
 (nyoom-module-p! toggleterm
                  (map! [n] :<leader>ot :<cmd>ToggleTerm<CR>

@@ -49,8 +49,8 @@
     (nyoom-module-p! python
       (table.insert mason-tools :pyright))
 
-    (nyoom-module-p! rust
-      (table.insert mason-tools :rust-analyzer))
+    ; (nyoom-module-p! rust
+    ;   (table.insert mason-tools :rust-analyzer))
 
     (nyoom-module-p! sh
       (table.insert mason-tools :bash-language-server))

@@ -6,10 +6,13 @@
        {:core.defaults {}
         :core.manoeuvre {}
         :core.ui {}
+        :external.codecap {}
         :core.ui.calendar {}
+        :core.summary {:config {:strategy :metadata}}
         :core.ui.calendar.views.monthly {}
         :core.tempus {}
-        :core.keybinds {:config {:default_keybinds true}}
+        :core.keybinds {:config {:default_keybinds true
+                                 :neorg_leader "<leader>n"}}
         :core.dirman {:config {:workspaces {:main "~/neorg"
                                             :Math "~/neorg/Math"
                                             :NixOS "~/neorg/nixDocs"
@@ -30,7 +33,9 @@
 
 (nyoom-module-p! neorg.+pretty
                  (tset neorg-modules :core.concealer
-                       {:config {:icon_preset :varied}}))
+                       {:config {:icon_preset :varied
+                                 :folds true
+                                 :dim_code_blocks {:width :content}}}))
 
 (nyoom-module-p! neorg.+present
                  (do
