@@ -1,4 +1,4 @@
-(import-macros {: packadd! : map! : nyoom-module-p!} :macros)
+(import-macros {: packadd! : map! : nyoom-module-p! : augroup! : clear! : autocmd!} :macros)
 (local {: load_extension} (autoload :telescope))
 (local {: executable?} (autoload :core.lib))
 
@@ -7,14 +7,14 @@
                               :entry_prefix "  "
                               :sorting_strategy :ascending
                               :layout_strategy :flex
+			      :set_env {:COLORTERM :truecolor}
+			      :dynamix_preview_title true
                               :layout_config {:horizontal {:prompt_position :top
                                                            :preview_width 0.55}
                                               :vertical {:mirror false}
                                               :width 0.87
                                               :height 0.8
-                                              :preview_cutoff 120}
-                              :set_env {:COLORTERM :truecolor}
-                              :dynamic_preview_title true}
+                                              :preview_cutoff 120}}
                     :pickers {:oldfiles {:prompt_title "Recent files"}}})
 
 ;; Load extensions
