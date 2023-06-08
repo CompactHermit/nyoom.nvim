@@ -26,6 +26,8 @@
 (packadd! telescope-tmux.nvim)
 (packadd! telescope-project.nvim)
 (load_extension :project)
+(packadd! telescope-session.nvim)
+(load_extension :xray23)
 (packadd! telescope-tabs)
 (setup :telescope-tabs)
 ;; (load_extension :manix)

@@ -107,10 +107,10 @@
                :cmd [:Lspsaga]})
 
 ; Smart movements
-(use-package! :mrjones2014/smart-splits.nvim
-          {:call-setup smart-splits
-           :opt true
-           :events :BufReadPost})
+; (use-package! :mrjones2014/smart-splits.nvim
+;           {:call-setup smart-splits
+;            :opt true
+;            :events :BufReadPost})
 
 ;;SilverSurfer Nvim
 (use-package! :kelly-lin/telescope-ag {:requires "nvim-telescope/telescope.nvim"

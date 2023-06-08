@@ -38,7 +38,7 @@
 
 (nyoom-module-p! neorg
                  (do
-                  (map! [n] :<leader>nli "<cmd>Neorg keybind all core.looking-glass.magnify-code-block<CR>" {:desc "Neorg Looking Glass"})
+                  (map! [n] :<leader>nlg "<cmd>Neorg keybind all core.looking-glass.magnify-code-block<CR>" {:desc "Neorg Looking Glass"})
                   (map! [n] :<leader>nle "<cmd>Neorg generate-workspace-summary<CR>" {:desc "Neorg Generate Summary"})
                   (map! [n] :<leader>nlt "<cmd>Neorg tangle current-file<CR>" {:desc "Neorg Tangle"})))
 

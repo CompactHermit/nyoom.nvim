@@ -4,3 +4,4 @@
               {:nyoom-module editor.fold
                :after :nvim-treesitter
                :requires [(pack :kevinhwang91/promise-async {:opt true})]})
+

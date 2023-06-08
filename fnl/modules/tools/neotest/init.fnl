@@ -16,4 +16,5 @@
                                            :TestStrat
                                            :TestStop
                                            :TestAttach]})
+                                     ;;:require [(pack )]})
 

@@ -1,8 +1,18 @@
-(import-macros {: use-package! : pack} :macros)
+(import-macros {: use-package!} :macros)
 
 ;; Window animation, For the obsidian feel::
-(use-package! :anuvyklack/windows.nvim
+(use-package! :folke/edgy.nvim
               {:nyoom-module editor.windows
-               :event :BufReadPost
-               :requires [(pack :anuvyklack/middleclass)
-                          (pack :anuvyklack/animation.nvim)]})
+               :opt true
+               :event [:BufReadPost]})
+
+;; NOTE:: This is just a glorified Folkes worship config. I need to rework these, by a lonnnng shot, fml
+(use-package! :folke/trouble.nvim
+             {:opt true
+              :cmd :Trouble
+              :call-setup trouble})
+
+(use-package! :folke/todo-comments.nvim
+              {:opt true
+               :cmd [:TodoTrouble :TodoTelescope :TodoLocList :TodoQuickFix]
+               :call-setup todo-comments})

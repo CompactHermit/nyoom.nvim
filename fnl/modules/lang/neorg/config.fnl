@@ -7,6 +7,7 @@
         :core.manoeuvre {}
         :core.ui {}
         :external.codecap {}
+        :external.exec {}
         :core.ui.calendar {}
         :core.summary {:config {:strategy :metadata}}
         :core.ui.calendar.views.monthly {}
@@ -33,9 +34,13 @@
 
 (nyoom-module-p! neorg.+pretty
                  (tset neorg-modules :core.concealer
-                       {:config {:icon_preset :varied
-                                 :folds true
-                                 :dim_code_blocks {:width :content}}}))
+                       {:config {:folds true
+                                 :icon_preset :varied
+                                 :icons {:code_block {:conceal true
+                                                      :padding {:left 1
+                                                                :right 3}}
+                                             :todo {:done {:icon ""}
+                                                    :pending {:icon ""}}}}}))
 
 (nyoom-module-p! neorg.+present
                  (do
@@ -48,5 +53,9 @@
                    (tset neorg-modules :core.export {})
                    (tset neorg-modules :core.export.markdown
                          {:config {:extensions :all}})))
+
+; (nyoom-module-p! neorg.+codecap
+;                  (do
+;                    (tset neorg-modules :external.codecap {})))
 
 (setup :neorg {:load neorg-modules})

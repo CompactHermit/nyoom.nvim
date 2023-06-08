@@ -26,22 +26,22 @@
 (let! vimtex_quickfix_mode :0)
 
 ;; map! is used for mappings
-;; Heres an example, preseing esc should also remove search highlights
+;; TODO:
 (map! [n] :<esc> :<esc><cmd>noh<cr> {:desc "No highlight escape"})
-(map! [n] :<C-n> :<cmd>NeoTreeFocusToggle<cr>)
+(map! [n] :<C-n> :<cmd>Neotree<cr>)
 (map! [n] :<A-i> "<cmd>ToggleTerm direction=float<cr>")
 
 ;;Yanky Killring stuff
-(map! [n] :<C-j> "<Plug>(YankyCycleForward)")
-(map! [n] :<C-k> "<Plug>(YankyCycleBackward)")
+(map! [n] :J "<Plug>(YankyCycleForward)")
+(map! [n] :K "<Plug>(YankyCycleBackward)")
 (map! [n] :p "<Plug>(YankyPutAfter)")
 (map! [n] :P "<Plug>(YankyPutBefore)")
 (map! [n] :gp "<Plug>(YankyGPutAfter)")
-(map! [n] :<leader>ct "<cmd>lua require('lsp_lines').toggle()<cr>")
+(map! [n] :<space>ct "<cmd>lua require('lsp_lines').toggle()<cr>")
 ;; The let option sets global, or `vim.g` options. 
 ;; Heres an example with localleader, setting it to <space>m
 
-(let! maplocalleader " m")
+; (let! maplocalleader " m")
 
 ;; sometimes you want to modify a plugin thats loaded from within a module. For 
 ;; this you can use the `after` function
