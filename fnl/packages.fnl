@@ -71,7 +71,6 @@
 ;; Put your plugins here
 ;; ---------------------
 
-(use-package! :nvim-neorg/neorg-telescope)
 
 ;; Broken and Slow
 ; (use-package! :iurimateus/luasnip-latex-snippets.nvim
