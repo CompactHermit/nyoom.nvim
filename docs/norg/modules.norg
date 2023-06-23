@@ -7,8 +7,6 @@ created: 2022-11-24
 version: 0.1.0
 @end
 
-= TOC
-
 * Official Modules
   These modules are maintained by the Nyoom team and are considered stable. A good portion of the modules are looked after by me (@shaunsingh), but others are looked over by various contributors. Please feel free to open issues for feature requests or misbehaving modules. If you are experienced with a certain language or tool, feel free to contribute and adopt-a-module today! :tm:
 

@@ -1,3 +1,4 @@
+;; NOTE: it would just be better to create a hydra-utils file, IMO
 (local default-terminal 1)
 (local input-prompt "enter the command: cmd >")
 (local terminal-prompt "Enter a terminal Number ")
@@ -130,6 +131,7 @@
 
 
 
+;; TODO: add this to core.utils, as this is pretty fking useful
 (fn lambda-when [comparison when-true when-false]
   (when (not= (type comparison) :boolean)
     (set-forcibly! comparison (not= comparison nil)))
@@ -187,8 +189,28 @@
                                    (vim.cmd command)))))))
 
 ;;===============================================================;;
+;; NOTE: Neotest Utils
+;; Most of these are boilerplates, wonder if theirs a filetype macro for this BS
+
+(fn test_class []
+  (when (= vim.bo.filetype :python)
+      (. (require :dap-python) :test_class)))
+
+(fn debug_selection []
+  (when (= vim.bo.filetype :python)
+      (. (require :dap-python) :debug_selection)))
+
+(fn test_method []
+  (when (= vim.bo.filetype :python)
+      (. (require :dap-python) :test_method)))
+  
+
+;;===============================================================;;
 
 {: plane
+ : test_class
+ : test_method
+ : debug_selection
  : tmux-goto
  : terminal-send
  : handle-tmux

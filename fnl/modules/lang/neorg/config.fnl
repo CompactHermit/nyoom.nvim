@@ -6,6 +6,7 @@
        {:core.defaults {}
         :core.manoeuvre {}
         :core.ui {}
+        :core.integrations.telescope {}
         :external.codecap {}
         :external.exec {}
         :core.ui.calendar {}
@@ -13,7 +14,13 @@
         :core.ui.calendar.views.monthly {}
         :core.tempus {}
         :core.keybinds {:config {:default_keybinds true
-                                 :neorg_leader "<leader>n"}}
+                                 :neorg_leader "<leader>n"
+                                 :hook (fn [keybinds]
+                                         (keybinds.map :norg :n "]s" "<cmd>Neorg keybind norg core.integrations.treesitter.next.heading<cr>")
+                                         (keybinds.map :norg :n "[s" "<cmd>Neorg keybind norg core.integrations.treesitter.previous.heading<cr>")
+                                         (keybinds.map :norg :n "gj" "<cmd> Neorg keybind norg core.manoeuvre.item_down<cr>")
+                                         (keybinds.map :norg :n "gk" "<cmd> Neorg keybind norg core.manoeuvre.item_up<cr>")
+                                         (keybinds.map :norg :n "<leader>njy" "<cmd> :lua neorg.modules.get_module('core.ui.calendar').select_date({})<cr>"))}}
         :core.dirman {:config {:workspaces {:main "~/neorg"
                                             :Math "~/neorg/Math"
                                             :NixOS "~/neorg/nixDocs"
@@ -54,8 +61,10 @@
                    (tset neorg-modules :core.export.markdown
                          {:config {:extensions :all}})))
 
-; (nyoom-module-p! neorg.+codecap
+;;TODO:: refactor this to be faster, rn just adding it into ./init.fnl is faster, but that should't make sense(?)
+; (nyoom-module-p! neorg.+Inbox
 ;                  (do
 ;                    (tset neorg-modules :external.codecap {})))
 
 (setup :neorg {:load neorg-modules})
+

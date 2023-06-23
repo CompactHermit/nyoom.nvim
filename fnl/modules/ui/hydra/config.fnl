@@ -481,7 +481,27 @@
                                    [:<C-j>
                                      (fn []
                                        (vim.cmd "lua require('smart-splits').resize_down"))]]})))
-
+; (nyoom-module-p! neotest
+;      (do
+;       (local neotest-hints "
+;     ")
+;       (Hydra {:name :+Neotest
+;               :hint octo-hints
+;               :config {:color :pink :invoke_on_body true :hint {:border :solid :position :middle-right}}
+;               :mode [:n :v :x :o]
+;               :body :<leader>u
+;               :heads [[:<leader> :TestNear]
+;                       []
+;                       []
+;                       []
+;                       []
+;                       []
+;                       []
+;                       []
+;                       []
+;                       []
+;                       []
+;                       [:<Esc> nil {:exit true :nowait true}]]})))
 
 ;; Neorg ::
         ;; TODO:: Add neorg tangle + looking-glass bindings

@@ -123,12 +123,11 @@
                        :lint_events ["BufWrite" "CursorHold"]}
         :rainbow {:enable true
                   ;;:extended_mode true
-		  :query {1 :rainbow-parens
-		  	  :html rainbow-tags
-			  :latex :rainbow-blocks
-			  :tsx :rainbow-tags
-			  :vue :rainbow-tags}}
-                  
+                  :query {1 :rainbow-parens
+                          :html :rainbow-tags
+                          :latex :rainbow-blocks
+                          :tsx :rainbow-tags
+                          :vue :rainbow-tags}}
         :incremental_selection {:enable true
                                 :keymaps {:init_selection :gnn
                                           :node_incremental :grn
@@ -141,12 +140,75 @@
                                 :ac "@class.outer"
                                 :ic "@class.inner"}
                       :move {:enable true
-                             :set_jumps true
-                             :goto_next_start {"]m" "@function.outer"
-                                               "]]" "@class.outer"}
-                             :goto_next_end {"]M" "@function.outer"
+                             :set_jumps true ;; Whether to add to jumplist, IDK y u'd disable this
+                             :goto_next_start {"]n" "@function.outer"
+                                               "]]" "@class.outer"
+                                               "]nif" "@function.inner"
+                                               "]np" "@parameter.inner"
+                                               "]nc" "@call.outer"
+                                               "]nic" "@call.inner"}
+                             :goto_next_end {"]N" "@function.outer"
                                              "][" "@class.outer"}
-                             :goto_previous_start {"[m" "@function.outer"
+                             :goto_previous_start {"[n" "@function.outer"
                                                    "[[" "@class.outer"}
-                             :goto_previous_end {"[M" "@function.outer"
+                             :goto_previous_end {"[N" "@function.outer"
                                                  "[]" "@class.outer"}}}})
+;
+; peek_definition_code = {
+;                         ["gl"] = "@function.outer",
+;                         ["gK"] = "@class.outer",}
+;                 ,
+;             ,
+;             move = {
+;                     enable = enable,
+;                     set_jumps = true, -- whether to set jumps in the jumplist
+;                     goto_next_start = {
+;                                        ["gnf"] = "@function.outer",
+;                                        ["gnif"] = "@function.inner",
+;                                        ["gnp"] = "@parameter.inner",
+;                                        ["gnc"] = "@call.outer",
+;                                        ["gnic"] = "@call.inner",}
+;                     ,
+;                     goto_next_end = {
+;                                      ["gnF"] = "@function.outer",
+;                                      ["gniF"] = "@function.inner",
+;                                      ["gnP"] = "@parameter.inner",
+;                                      ["gnC"] = "@call.outer",
+;                                      ["gniC"] = "@call.inner",}
+;                     ,
+;                     goto_previous_start = {
+;                                            ["gpf"] = "@function.outer",
+;                                            ["gpif"] = "@function.inner",
+;                                            ["gpp"] = "@parameter.inner",
+;                                            ["gpc"] = "@call.outer",
+;                                            ["gpic"] = "@call.inner",}
+;                     ,
+;                     goto_previous_end = {
+;                                          ["gpF"] = "@function.outer",
+;                                          ["gpiF"] = "@function.inner",
+;                                          ["gpP"] = "@parameter.inner",
+;                                          ["gpC"] = "@call.outer",
+;                                          ["gpiC"] = "@call.inner",}
+;                     ,}
+;             ,
+;             select = {
+;                       enable = true,
+;                       include_surrounding_whitespace = true,
+;                       keymaps = {
+;                                  ["af"] = { query = "@function.outer", desc = "ts: all function" },
+;                                  ["if"] = { query = "@function.inner", desc = "ts: inner function" },
+;                                  ["ac"] = { query = "@class.outer", desc = "ts: all class" },
+;                                  ["ic"] = { query = "@class.inner", desc = "ts: inner class" },
+;                                  ["aC"] = { query = "@conditional.outer", desc = "ts: all conditional" },
+;                                  ["iC"] = { query = "@conditional.inner", desc = "ts: inner conditional" },
+;                                  -- FIXME: this is unusable
+;                                  -- https://github.com/nvim-treesitter/nvim-treesitter-textobjects/issues/133 is resolved
+;                                  -- ['ax'] = '@comment.outer',}
+;                       ,}
+;             ,
+;             swap = {
+;                     enable = enable,
+;                     swap_next = { ["<leader>a"] = "@parameter.inner" },
+;                     swap_previous = { ["<leader>A"] = "@parameter.inner" },}
+;             ,
+;         ,

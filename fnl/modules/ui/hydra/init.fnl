@@ -8,6 +8,8 @@
                       :<leader>t
                       :<leader>d
                       :<leader>m
+                      :<leader>a
+                      :<leader>u
                       :<leader>q
                       :<leader>n
                       :<leader>w

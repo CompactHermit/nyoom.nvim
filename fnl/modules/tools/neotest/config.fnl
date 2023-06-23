@@ -52,7 +52,7 @@
      (setup :neotest {: testings})))
 
 
-;;_________________________________________________________________________________________
+;; =============================================================== ;;
 (fn Near []
   (vim.cmd "lua require('neotest').run.run(vim.fn.expand('%'))"))
 (fn Current []
@@ -66,6 +66,7 @@
 (fn attach []
   (vim.cmd "lua require('neotest').run.attach()"))
 
+;; TODO:: Refactor this. It's just ugly
 (nyoom-module-p! neotest
  (do
   (command! TestNear `(Near) {:desc "Neotest Run test"})

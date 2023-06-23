@@ -23,7 +23,7 @@
         window-select        ; Visually switch windows
         zen                  ; distraction-free coding or writing TODO +twilight
         noice                ; noice ui
-        ; mini                 ; Just use Emacs you bloated fu**
+        animate              ; Just use Emacs you bloated fu**
 
         :editor
         fold                 ; (nigh) universal code folding
@@ -39,7 +39,7 @@
 
 
         :term
-        fshell              ; WIP: the fennel shell that works everywhere
+        ; fshell              ; WIP: the fennel shell that works everywhere
         toggleterm           ; persistant/floating terminal wrapper for :term
 
         :checkers
@@ -86,10 +86,11 @@
         ;;nim                ; python + lisp at the speed of c
         (neorg               ; organize your plain life in plain text, the neovim way
           +pretty
+          ;;+headline
           +present
           +export
           +nabla)
-        ;;(org +pretty)      ; WIP: organize your plain life in plain text, the emacs way
+        ; (org +pretty)        ; WIP: organize your plain life in plain text, the emacs way
         nix                  ; I hereby declare "nix geht mehr!"
         python               ; beautiful is better than ugly
         rust                 ; Fe2O3.unwrap().unwrap().unwrap().unwrap()

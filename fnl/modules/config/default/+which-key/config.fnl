@@ -33,5 +33,6 @@
 (register {:<leader>w {:name :+window}})
 (register {:<leader>m {:name :+Conjure}})
 (register {:<leader>d {:name :+debug}})
+(register {:<leader>u {:name :+test}})
 (register {:<leader>v {:name :+visual}})
 (register {:<leader>z {:name :+Tmux}})

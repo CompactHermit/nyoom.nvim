@@ -1,8 +1,13 @@
 # neovim
 lua/
 profile.json
+inbox.norg
+flake.nix
+start.txt
+
 
 # cli
 result/
 target/
 packages.json
+

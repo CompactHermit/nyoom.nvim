@@ -29,7 +29,7 @@
                              :references goto-references!}
                             vim.lsp.buf)
                      (buf-map! [n] :K open-doc-float!)
-                     (buf-map! [n] :<leader>gD goto-declaration!)
+                     (buf-map! [n] :<leader>gD go)
                      (buf-map! [n] :gD goto-declaration!)
                      (buf-map! [n] :<leader>gd goto-definition!)
                      (buf-map! [n] :gd goto-definition!)
@@ -102,7 +102,7 @@
                              {:description "Packer config"
                               :fileMatch [:packer.json]
                               :url "https://json.schemastore.org/packer"}]}))
-                   
+
 
 (nyoom-module-p! kotlin (tset lsp-servers :kotlin_langage_server {}))
 
@@ -118,8 +118,16 @@
 
 (nyoom-module-p! nim (tset lsp-servers :nimls {}))
 
-(nyoom-module-p! nix (tset lsp-servers :nil_ls {})) 
+(nyoom-module-p! nix (tset lsp-servers :nil_ls {}))
 
+ ; autostart = true,
+ ;      capabilities = caps,
+ ;      cmd = { lsp_path },
+ ;      settings = {}
+ ;        ['nil'] = {}
+ ;          testSetting = 42,
+ ;          formatting = {}
+ ;            command = { "nixpkgs-fmt" },)
 (nyoom-module-p! python
                  (tset lsp-servers :pyright
                        {:root_dir (lsp.util.root_pattern [:.flake8])

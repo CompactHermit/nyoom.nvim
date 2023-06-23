@@ -14,6 +14,8 @@
                                 {:opt true})
                           (pack :nvim-telescope/telescope-project.nvim
                                 {:opt true})
+                          (pack :MrcJkb/telescope-manix
+                                {:opt true})
                           (pack :LukasPietzschmann/telescope-tabs {:opt true})
                           (pack :HUAHUAI23/telescope-session.nvim {:opt true})
                           (pack :jvgrootveld/telescope-zoxide {:opt true})]})

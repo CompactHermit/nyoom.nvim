@@ -40,7 +40,9 @@
                  (do
                   (map! [n] :<leader>nlg "<cmd>Neorg keybind all core.looking-glass.magnify-code-block<CR>" {:desc "Neorg Looking Glass"})
                   (map! [n] :<leader>nle "<cmd>Neorg generate-workspace-summary<CR>" {:desc "Neorg Generate Summary"})
-                  (map! [n] :<leader>nlt "<cmd>Neorg tangle current-file<CR>" {:desc "Neorg Tangle"})))
+                  (map! [n] :<leader>nlt "<cmd>Neorg tangle current-file<CR>" {:desc "Neorg Tangle"})
+                  (map! [n] :<leader>nuc "<cmd>Neorg exec cursor<CR>" {:desc "Neorg exec cursor"})
+                  (map! [n] :<leader>nud "<cmd>Neorg exec clear<CR>" {:desc "Neorg exec cursor"})))
 
 ;; ~ Open messages
 (nyoom-module-p! telescope
