@@ -30,6 +30,7 @@
                                                         :unique
                                                         :display_duration]}
                   :dap true
+                  ;; TODO:: Make Hydra
                   :task_list {:bindings {:<C-e> :Edit
                                          :<C-f> :OpenFloat
                                          :<C-s> :OpenSplit

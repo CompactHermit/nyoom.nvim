@@ -3,15 +3,18 @@
 (use-package! :anuvyklack/hydra.nvim
               {:nyoom-module ui.hydra
                :module :hydra
-               :keys [:<leader>g
-                      :<leader>v
-                      :<leader>t
+               :keys [:<leader>a
                       :<leader>d
+                      :<leader>e
+                      :<leader>f
+                      :<leader>g
                       :<leader>m
-                      :<leader>a
-                      :<leader>u
-                      :<leader>q
                       :<leader>n
-                      :<leader>w
                       :<leader>o
+                      :<leader>O
+                      :<leader>q
+                      :<leader>t
+                      :<leader>u
+                      :<leader>v
+                      :<leader>w
                       :<leader>z]})

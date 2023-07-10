@@ -1,0 +1,20 @@
+@document.meta
+title: README
+description: Basic Markup of Hydra's + Utilities Libraries
+authors: strange_cofunctor
+categories: [
+Hydra
+Nvim
+]
+created: 2023-07-09
+updated: 2023-07-09
+version: 1.1.1
+@end
+
+* Hydra:: Make Your Bindings make less sense
+** Hydra Modules::
+*** Git::
+*** Flash::
+*** Harpoon::
+*** Neotest::
+*** Overseer::

@@ -265,7 +265,7 @@
     ^^_n_:Move back
      ^^_N_:Move formward
      ^^_t_:TMUX Sessions
-     ^^_<Esc>_:Just fucking leaves, lol
+     ^^_<Esc>_:
     ")
                 (Hydra {:name :Tmux
                         :hint tmux-hints
@@ -408,7 +408,6 @@
 ;; Browser ::
 (nyoom-module-p! browse
                  (do
-                   (local browse (autoload :browse))
                    (local browse-hints "
              ^ ^     Browser   ^ ^
            _w_: Browse
@@ -454,57 +453,176 @@
                                    [:<Esc> nil {:exit true :nowait true}]]})))
 
 ;; Tabs + Window fixing;;
-(nyoom-module-p! window-select
+; (nyoom-module-p! window-select
+;                  (do
+;                    (Hydra {:name :Windows
+;                            :config {:color :red
+;                                     :hint {:border :solid :position :middle}
+;                                     :invoke_on_body true
+;                                     :on_enter (fn []
+;                                                 (print "Zoooom"))
+;                                     :on_exit (fn []
+;                                                (print "Scrrrrrrtch - You need a therapist"))}
+;                            :body :<leader>w
+;                            :heads [[:h :<C-w>h]
+;                                    [:j :<C-w>j]
+;                                    [:k :<C-w>k]
+;                                    [:l :<C-w>l]
+;                                    [:<C-h>
+;                                      (fn []
+;                                        (vim.cmd "lua require('smart-splits').resize_left()"))]
+;                                    [:<C-k>
+;                                      (fn []
+;                                        (vim.cmd "lua require('smart-splits').resize_up()"))]
+;                                    [:<C-l>
+;                                      (fn []
+;                                        (vim.cmd "lua require('smart-splits').resize_right()"))]
+;                                    [:<C-j>
+;                                      (fn []
+;                                        (vim.cmd "lua require('smart-splits').resize_down"))]]})))
+
+
+(nyoom-module-p! neotest
+     (do
+       (local {: test_class : test_method : debug_selection} (require :util))
+      (local neotest-hints "
+^    Neotest
+^▔▔▔▔▔▔▔▔▔▔▔^
+^▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔^
+^^ _<leader>_: Test Near
+^^ _c_: Test Current
+^^ _o_: Test Output
+^^ _s_: Test Summary
+^^ _S_: Test Strat
+^^ _D_: Test Stop
+^^ _a_: Test Attach
+^^ _C_: Test Class
+^^ _m_: Test Method 
+^^ _d_: Debug Selection 
+^^ _<Esc>_: 
+
+    ")
+      (Hydra {:name :+Neotest
+              :hint neotest-hints
+              :config {:color :pink
+                       :invoke_on_body true
+                       :hint {:border :solid :position :middle-right}}
+              :mode [:n :v :x :o]
+              :body :<leader>u
+              :heads [[:<leader> (fn []
+                                   (vim.cmd :TestNear))]
+                      [:c (fn []
+                            (vim.cmd :TestCurrent))]
+                      [:o (fn []
+                            (vim.cmd :TestOutput))]
+                      [:s (fn []
+                            (vim.cmd :TestSummary))]
+                      [:S (fn []
+                            (vim.cmd :TestStrat))]
+                      [:D (fn []
+                            (vim.cmd :TestStop))]
+                      [:a (fn []
+                            (vim.cmd :TestAttach))]
+                      [:C (fn []
+                            (test_class))]
+                      [:m (fn []
+                            (test_method))]
+                      [:d (fn []
+                            (debug_selection))]
+                      [:<Esc> nil {:exit true :nowait true}]]})))
+
+
+(nyoom-module-p! overseer
                  (do
-                   (Hydra {:name :Windows
-                           :config {:color :red
-                                    :hint {:border :solid :position :middle}
+                   (local overseer-hints "
+    ^    Overseer
+    ^▔▔▔▔▔▔▔▔▔▔▔^
+    ^▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔^
+    ^ _s_: OverseerRun
+    ^ _w_: OverseerToggle
+    ^ _d_: OverseerQuickAction
+    ^ _D_: OverseerTaskAction
+    ^ _b_: OverseerBuild
+    ^ _l_: OverseerLoadBundle
+    ^ _R_: OverseerRunCmd
+    ^ _t_: OverseerTemplate
+
+
+    ^ <Esc>: Quit
+
+                          ")
+                   (Hydra {:name :+Overseer
+                           :hint overseer-hints
+                           :config {:color :teal
                                     :invoke_on_body true
-                                    :on_enter (fn []
-                                                (print "Zoooom"))
-                                    :on_exit (fn []
-                                               (print "Scrrrrrrtch - You need a therapist"))}
-                           :body :<leader>w
-                           :heads [[:h :<C-w>h]
-                                   [:j :<C-w>j]
-                                   [:k :<C-w>k]
-                                   [:l :<C-w>l]
-                                   [:<C-h>
-                                     (fn []
-                                       (vim.cmd "lua require('smart-splits').resize_left()"))]
-                                   [:<C-k>
-                                     (fn []
-                                       (vim.cmd "lua require('smart-splits').resize_up()"))]
-                                   [:<C-l>
-                                     (fn []
-                                       (vim.cmd "lua require('smart-splits').resize_right()"))]
-                                   [:<C-j>
-                                     (fn []
-                                       (vim.cmd "lua require('smart-splits').resize_down"))]]})))
-; (nyoom-module-p! neotest
-;      (do
-;       (local neotest-hints "
-;     ")
-;       (Hydra {:name :+Neotest
-;               :hint octo-hints
-;               :config {:color :pink :invoke_on_body true :hint {:border :solid :position :middle-right}}
-;               :mode [:n :v :x :o]
-;               :body :<leader>u
-;               :heads [[:<leader> :TestNear]
-;                       []
-;                       []
-;                       []
-;                       []
-;                       []
-;                       []
-;                       []
-;                       []
-;                       []
-;                       []
-;                       [:<Esc> nil {:exit true :nowait true}]]})))
+                                    :hint {:border :solid :position :middle-right}}
+                           :mode [:n]
+                           :body :<leader>O
+                           :heads [[:w (fn []
+                                         (vim.cmd :OverseerToggle))]
+                                   [:s (fn []
+                                         (vim.cmd :OverseerRun))]
+                                   [:d (fn []
+                                         (vim.cmd :OverseerQuickAction))]
+                                   [:D (fn []
+                                         (vim.cmd :OverseerTaskAction))]
+                                   [:b (fn []
+                                         (vim.cmd :OverseerBuild))]
+                                   [:l (fn []
+                                         (vim.cmd :OverseerLoadBundle))]
+                                   [:R (fn []
+                                         (vim.cmd :OverseerRunCmd))]
+                                   [:t (fn []
+                                          (let [overseer (require :overseer)
+                                                command (.. "Run " (vim.bo.filetype:gsub "^%l" string.upper) " file ("
+                                                            (vim.fn.expand "%:t") ")")]
+                                            (vim.notify command)
+                                            (overseer.run_template {:name command}
+                                                                   (fn [task]
+                                                                     (if task (overseer.run_action task "open float")
+                                                                         (vim.notify "Task not found"))))))]
+                                   [:<Esc> nil {:exit true :nowait true}]]})))
+
+
+
+;; TODO:: Add custom functions, like in Git ReadME
+(nyoom-module-p! tree-sitter
+                 (do
+                   (local {: treejump} (require :util))
+                   (local flash-hints "
+            ^^  - Mode
+            ^^ _s_: Jump
+            ^^ _S_: Treesitter
+            ^^ _r_: Remote
+            ^^ _a_: Jump Line
+            ^^ _<Esc>_: Escape")
+                  (Hydra {:name :+flash
+                          :hint flash-hints
+                          :config {:color :pink
+                                   :hint {:border :solid :position :middle-right}
+                                   :invoke_on_body true}
+                          :mode [:n]
+                          :body :<leader>e
+                          :heads [[:s
+                                    (fn []
+                                      ((. (require :flash) :jump)))]
+                                  [:a
+                                    (fn []
+                                      ((. (require :flash) :jump) {:search {:mode :search}
+                                                                   :highlight {:label {:after [0 0]}}
+                                                                   :pattern "^"}))]
+                                  [:w
+                                    (fn [])]
+                                  [:S
+                                    (fn []
+                                      ((. (require :flash) :treesitter)))]
+
+                                  [:r
+                                    (fn []
+                                      ((. (require :flash) :remote)))]
+                                  [:<Esc> nil {:exit true :nowait true}]]})))
 
 ;; Neorg ::
-        ;; TODO:: Add neorg tangle + looking-glass bindings
 (nyoom-module-p! neorg
                  (do
                    (local Neorg-hints "
@@ -807,8 +925,11 @@
                                        {:exit true}]
                                      [:h
                                        (fn []
-                                         (vim.cmd :h vimtex-mefault-mappings))
+                                         (vim.cmd "h vimtex-mefault-mappings"))
                                        {:exit true}]
+                                     [:td
+                                       (fn []
+                                         vim.cmd "TSDisable highlights")]
                                      [:<Esc> nil {:exit true :nowait true}]]}))
                    (augroup! localleader-hydras
                              (autocmd! FileType tex `(latex-hydra)))))

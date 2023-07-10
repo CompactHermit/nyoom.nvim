@@ -1,10 +1,11 @@
 ;;TODO:: Somehow prettify LaSpaghet
+        ;; NVM:: Spaghett (tm) is unavoidable
 (setup :edgy {:left [{:title "NeoTree"
                       :ft "neo-tree"
                       :filter (fn [buf]
                                 (= (. (. vim.b buf) :neo_tree_source) "filesystem"))}
                      {:title "GIT Status"
-                      :ft [:neo-tree]
+                      :ft :neo-tree
                       :filter (fn [buf]
                                   (= (. (. vim.b buf) :neo_tree_source) "git_status"))
                       :pinned true
@@ -19,8 +20,10 @@
                       :ft :OverseerList
                       :pinned true
                       :open :OverseerToggle}
-                       ;; all other Neotree windows
-                     :neo-tree]
+                     :dapui_breakpoints
+                     :dapui_stacks
+                     :dapui_watches]
+                    ;; all other Neotree windows
               :bottom [{:filter (fn [buf win]
                                  (= (. (vim.api.nvim_win_get_config win) :relative)
                                     ""))
@@ -31,12 +34,28 @@
                         :ft :lazyterm
                         :size {:height 0.4}
                         :title :LazyTerm}
-                       :Trouble {:ft [:qf]
-                                 :title :QuickFix}]
-              :right [{:ft :lspsaga
-                          :title "LSP Outline"
-                          :open "Lspsaga outline"
-                          :size {:height 0.5}}]
+                       :dap-repl
+                       :dapui_console
+                       :help
+                       :Trouble
+                       :Noice
+                       {:ft :help
+                        :size {:height 20}
+                        :filter (fn [buf]
+                                  (= (. (. vim.b buf) :buftype) "help"))
+                        :Title "HELP, ME DUMDUM"}
+                       {:ft [:qf]
+                        :title :QuickFix}]
+              :right [{:ft :lspsagaoutline ;; from <cmd>lua print(vim.bo.filetype) <cr>
+                       :title "LSP Outline"
+                       :open "Lspsaga outline"
+                       :size {:height 1.0}}
+                      {:ft :tsplayground
+                       :size {:height 20}
+                       :title :TSPlayground}
+                      :dapui_scopes
+                      :neotest-output-panel
+                      :neotest-summary]
               :animate {:enabled true
                         :fps 120}})
 

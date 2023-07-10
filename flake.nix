@@ -25,10 +25,9 @@
           devShells.default = mkShell {
             buildInputs = [
               # Language servers / Debuggers / Adapters
-              # IDK where exectly Lazy-vim is downloaded, which is a bit annoying, fml
               act
               fennel
-              # fennel-language-server dont use, will use hotpot diagnostics instead
+              # fennel-language-server # Just use hotpot diagnostics + conjure
               fnlfmt
               marksman
               #nil
@@ -38,7 +37,6 @@
               stylua
               sumneko-lua-language-server
               neovim
-              # quarto
             ];
           };
         }

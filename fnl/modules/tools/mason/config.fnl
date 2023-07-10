@@ -81,13 +81,19 @@
     (nyoom-module-p! markdown
       (table.insert mason-tools :markdownlint))
 
-    (nyoom-module-p! python 
+    (nyoom-module-p! nix
+      (table.insert mason-tools :alejandra))
+
+    (nyoom-module-p! python
       (do
         (table.insert mason-tools :black)
         (table.insert mason-tools :isort)))
 
     (nyoom-module-p! rust
       (table.insert mason-tools :rustfmt))
+
+    (nyoom-module-p! haskell
+     (table.insert mason-tools :fourmolu))
 
     (nyoom-module-p! sh
       (table.insert mason-tools :shfmt))))
@@ -98,7 +104,9 @@
 (nyoom-module-p! diagnostics
   (do
     (nyoom-module-p! lua
-      (table.insert mason-tools :selene))))
+      (table.insert mason-tools :selene))
+    (nyoom-module-p! nix
+                     (table.insert mason-tools :statix))))
 
 ;; debugging
 

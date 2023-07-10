@@ -23,9 +23,3 @@
                                             "<leader>ncn" :noshow
                                             "<leader>ncc" :inbox
                                             "<leader>ncd" :diff}}))})
-
-;; Note:: This slows down performance, roughly ~600 ms, not worth it
-; (use-package! :lukas-reineke/headlines.nvim {:opt true
-;                                              :ft [:org :norg] 
-;                                              :requires (pack :akinsho/org-bullets.nvim {:opt true})
-;                                              :call-setup headlines})

@@ -105,11 +105,9 @@
 
 (map! [n] :<leader><tab>x :<cmd>tabclose<CR> {:desc "Delete this tab"})
 
-;;; a +actions
+;;; a +harpoooon
 
 ;;; b +buffer
-
-;; - Toggle narrowing
 
 (map! [n] "<leader>b[" :<cmd>bprevious<CR> {:desc "Previous buffer"})
 (map! [n] :<leader>bl "<cmd>e#<CR>" {:desc "Switch to last buffer"})
@@ -385,20 +383,6 @@
   (map! [n] :<leader>oO "<cmd>!open .<CR>" {:desc "Reveal project in finder"}))
 
 
-
-; (nyoom-module-p! neotree
-;                  (do
-;                    (map! [n] :<leader>op "<cmd>Neotree toggle<CR>"
-;                          {:desc "Project sidebar"})
-;                    (map! [n] :<leader>oP "<cmd>Neotree %:p:h:h %:p<CR>"
-;                          {:desc "Find file in project sidebar"})))
-
-; (nyoom-module-p! nvimtree
-;                  (do
-;                    (map! [n] :<leader>op :<cmd>NvimTreeToggle<CR>
-;                          {:desc "Project sidebar"})
-;                    (map! [n] :<leader>oP :<cmd>NvimTreeFindFile<CR>
-;                          {:desc "Find file in project sidebar"})))
 
 ; (nyoom-module-p! eval (map! [n] :<leader>or :<cmd>ConjureLogToggle<CR>
 ;                             {:desc "Conjure log split"}))

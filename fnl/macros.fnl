@@ -549,7 +549,6 @@
                                    :callback (,callback)
                                    :once true
                                    :group ,augroup}))
-  ;; TODO:: fix this with the corrected nvim_api_{function}
   (lambda defer-load [x callback augroup loadname]
     (let [time (if (bool? x) 0 (if (num? x) x))
           doft (if (= loadname :nvim-lspconfig)

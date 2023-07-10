@@ -29,7 +29,7 @@
          :program (fn []
                     (vim.fn.input "Path to executable: "
                                   (.. (vim.fn.getcwd) "/bin/Debug/" :file)))}])
-       
+
 
 (nyoom-module-p! cc
                  (do

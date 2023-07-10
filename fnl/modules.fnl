@@ -7,7 +7,7 @@
         cmp                  ; the ultimate code completion backend
         ;;copilot              ; the code completion of the future
         ;;fzf-lua            ; TODO a search engine for love and life
-        (telescope +native)  ; the search engine of the future
+        (telescope) ;;+native)  ; the search engine of the future
 
         :ui
         (nyoom +modes +icons); what makes Nyoom look the way it does
@@ -24,6 +24,7 @@
         zen                  ; distraction-free coding or writing TODO +twilight
         noice                ; noice ui
         animate              ; Just use Emacs you bloated fu**
+        ; images               ; Why aren't you just using emacs at this point?
 
         :editor
         fold                 ; (nigh) universal code folding
@@ -34,12 +35,11 @@
         scratch              ; emacs-like scratch buffer functionality
         word-wrap            ; language-aware smart soft and hard wrapping
         windows              ; Fancy animations, for that extra bloated Config
-        (cutlass)            ; Sail the seven seas, you useless sack of meat
-         ;+plunder)
+        (cutlass);+plunder   ; Make yourself better at stealing code from others
 
 
         :term
-        ; fshell              ; WIP: the fennel shell that works everywhere
+        ; fshell             ; WIP: the fennel shell that works everywhere
         toggleterm           ; persistant/floating terminal wrapper for :term
 
         :checkers
@@ -53,19 +53,19 @@
         ; editorconfig       ; let someone else argue about tabs vs spaces
         ; magma              ; tame Jupyter notebooks
         ; quarto             ; Better R and Jupyter Stuff
-        ; quickfix          ; Learn regex you bozo
+        ; quickfix           ; Learn regex you bozo
         overseer             ; Run jobs, for when your too lazy to do your job
         mason                ; setting your tools in stone
         browse               ; Im too lazy to open a browser
-        octo                 ; All hail the octopussy
+        octo                 ; All hail the octussy
         tmux                 ; God, make this shit broken, I fucking swear
         harpoon              ; With the power of the gods!
-        ; oil                ; Scary spooky file editing
+        ; oil                ; Vinegar Was never a good salid dressing
         eval                 ; run code, run (also, repls)modu
         antifennel           ; for all the fennel haters out there. this ones for you
         pastebin             ; interacting with pastebin platforms
         lsp                  ; :vscode 
-        neotest              ; This won't help you pass exams
+        neotest              ; This won't help you pass your Homotopy Exams
         (neogit              ; a git porclain for neovim
           +diffview)         ; a git diff view for neovim
         rgb                  ; creating color strings
@@ -110,4 +110,5 @@
         (default             ; Reasonable defaults for reasonable people
           +bindings 
           +which-key
-          +smartparens))
+          +smartparens
+          +flash))

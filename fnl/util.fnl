@@ -191,18 +191,28 @@
 ;;===============================================================;;
 ;; NOTE: Neotest Utils
 ;; Most of these are boilerplates, wonder if theirs a filetype macro for this BS
+;; FIX:: we need these to be ((. (require ...., it's a function over an empty arg, hence the second (
 
 (fn test_class []
   (when (= vim.bo.filetype :python)
-      (. (require :dap-python) :test_class)))
+      ((. (require :dap-python) :test_class))))
 
 (fn debug_selection []
   (when (= vim.bo.filetype :python)
-      (. (require :dap-python) :debug_selection)))
+      ((. (require :dap-python) :debug_selection))))
 
 (fn test_method []
   (when (= vim.bo.filetype :python)
-      (. (require :dap-python) :test_method)))
+      ((. (require :dap-python) :test_method))))
+
+;;===============================================================;;
+;; NOTE:: Flash Utils
+(fn treejump []
+  (local win (vim.api.nvim_get_current_win))
+  (local view (vim.fn.winsaveview))
+  ((. (require :flash) :jump) {:action (fn  [matched state]
+                                         (state:hide)
+                                         (vim.api.nivm_set_current_win matched.win))}))
   
 
 ;;===============================================================;;
@@ -213,6 +223,7 @@
  : debug_selection
  : tmux-goto
  : terminal-send
+ : treejump
  : handle-tmux
  : handle-non-tmux
  : handle-command-input

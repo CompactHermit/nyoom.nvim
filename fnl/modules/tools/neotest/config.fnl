@@ -66,7 +66,7 @@
 (fn attach []
   (vim.cmd "lua require('neotest').run.attach()"))
 
-;; TODO:: Refactor this. It's just ugly
+;; TODO:: Refactor this. There's Probably a better way to do This
 (nyoom-module-p! neotest
  (do
   (command! TestNear `(Near) {:desc "Neotest Run test"})

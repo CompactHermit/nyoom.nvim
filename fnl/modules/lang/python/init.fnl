@@ -1,6 +1,8 @@
 (import-macros {: use-package!} :macros)
 
 ;; Poetry plugin for neovim
-(use-package! :vsedov/pv.nvim
+(use-package! :AckslD/swenv.nvim
               {:nyoom-module lang.python
-               :ft [:python]})
+               :ft [:python]
+               :cmd ["VenvFind" "GetVenv"]})
+
