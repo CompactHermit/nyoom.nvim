@@ -39,7 +39,7 @@
 
 
         :term
-        ; fshell             ; WIP: the fennel shell that works everywhere
+        fshell             ; WIP: the fennel shell that works everywhere *Test Faith.fnl*
         toggleterm           ; persistant/floating terminal wrapper for :term
 
         :checkers
@@ -53,7 +53,7 @@
         ; editorconfig       ; let someone else argue about tabs vs spaces
         ; magma              ; tame Jupyter notebooks
         ; quarto             ; Better R and Jupyter Stuff
-        ; quickfix           ; Learn regex you bozo
+        quickfix             ; Monkey Simulator, circa 23 colorized
         overseer             ; Run jobs, for when your too lazy to do your job
         mason                ; setting your tools in stone
         browse               ; Im too lazy to open a browser
@@ -89,6 +89,7 @@
           ;;+headline
           +present
           +export
+          +quicknote
           +nabla)
         ; (org +pretty)        ; WIP: organize your plain life in plain text, the emacs way
         nix                  ; I hereby declare "nix geht mehr!"

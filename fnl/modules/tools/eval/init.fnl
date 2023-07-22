@@ -6,6 +6,7 @@
                                :ft [:fennel
                                     :clojure
                                     :lisp
+                                    :janet
                                     :rust
                                     :lua
                                     :julia

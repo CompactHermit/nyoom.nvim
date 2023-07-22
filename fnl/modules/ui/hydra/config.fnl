@@ -417,7 +417,7 @@
            _K_: DevDocCursor
            _s_: Search DDG
            _S_: Updoc Searcher
-           _z_: Updoc Searcher
+           _z_: Zeal Searcher
         ^^^_<Esc>_:escape
                  ^ ^
                          ")
@@ -584,21 +584,25 @@
                                    [:<Esc> nil {:exit true :nowait true}]]})))
 
 
-
 ;; TODO:: Add custom functions, like in Git ReadME
 (nyoom-module-p! tree-sitter
                  (do
-                   (local {: treejump} (require :util))
+                   (local {: treejump : jump_window : win_select : tree_bounce} (require :util))
                    (local flash-hints "
             ^^  - Mode
             ^^ _s_: Jump
             ^^ _S_: Treesitter
+            ^^ _<c-s>_: Word Selection
             ^^ _r_: Remote
-            ^^ _a_: Jump Line
+            ^^ _a_: Flash Line
+            ^^ _w_: Flash Windows
+            ^^ _W_: Flash Beginning words
+            ^^ _M_: Flash Bounce
+
             ^^ _<Esc>_: Escape")
                   (Hydra {:name :+flash
                           :hint flash-hints
-                          :config {:color :pink
+                          :config {:color :teal
                                    :hint {:border :solid :position :middle-right}
                                    :invoke_on_body true}
                           :mode [:n]
@@ -612,11 +616,25 @@
                                                                    :highlight {:label {:after [0 0]}}
                                                                    :pattern "^"}))]
                                   [:w
-                                    (fn [])]
+                                      (fn []
+                                        (jump_window))]
+                                  [:<c-s>
+                                    (fn []
+                                      (win_select))
+                                    {:desc "Select Any Word"}]
+                                  [:W
+                                      (fn []
+                                        ((->> :jump
+                                             (. (require :flash))) {:search {:mode (fn [str]
+                                                                                      (.. "\\<" str))}}))
+                                      {:desc "Match beginning of words only"}]
                                   [:S
                                     (fn []
                                       ((. (require :flash) :treesitter)))]
-
+                                  [:M 
+                                    (fn []
+                                      (tree_bounce))
+                                    {:desc "Flash TreeBounce"}]
                                   [:r
                                     (fn []
                                       ((. (require :flash) :remote)))]

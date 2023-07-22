@@ -19,8 +19,7 @@
                                          (keybinds.map :norg :n "]s" "<cmd>Neorg keybind norg core.integrations.treesitter.next.heading<cr>")
                                          (keybinds.map :norg :n "[s" "<cmd>Neorg keybind norg core.integrations.treesitter.previous.heading<cr>")
                                          (keybinds.map :norg :n "gj" "<cmd> Neorg keybind norg core.manoeuvre.item_down<cr>")
-                                         (keybinds.map :norg :n "gk" "<cmd> Neorg keybind norg core.manoeuvre.item_up<cr>")
-                                         (keybinds.map :norg :n "<leader>njy" "<cmd> :lua neorg.modules.get_module('core.ui.calendar').select_date({})<cr>"))}}
+                                         (keybinds.map :norg :n "gk" "<cmd> Neorg keybind norg core.manoeuvre.item_up<cr>"))}}
         :core.dirman {:config {:workspaces {:main "~/neorg"
                                             :Math "~/neorg/Math"
                                             :NixOS "~/neorg/nixDocs"

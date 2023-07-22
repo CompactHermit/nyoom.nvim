@@ -17,8 +17,8 @@
 
 (echo! "Loading Packer")
 (local headless (= 0 (length (vim.api.nvim_list_uis))))
-(init {;; :lockfile {:enable true
-       ;;            :path (.. (vim.fn.stdpath :config) :/lockfile.lua)}
+(init {:lockfile {:enable true
+                  :path (.. (vim.fn.stdpath :config) :/lockfile.lua)}
        :compile_path (.. (vim.fn.stdpath :config) :/lua/packer_compiled.lua)
        :auto_reload_compiled false
        :display {:non_interactive headless}})
@@ -97,11 +97,10 @@
                :ft [:markdown]})
 
 ;; LSP-SAGA - The based lsp setup
-(use-package! :glepnir/lspsaga.nvim
+(use-package! :nvimdev/lspsaga.nvim
               {:config (fn []
                          (local {: setup} (require :lspsaga))
-                         (setup {:request_timeout 2000
-                                 :lightbulb {:enable false}}))
+                         (setup {:lightbulb {:enable false}}))
                :opt true
                :cmd [:Lspsaga]})
 
@@ -122,10 +121,11 @@
 
 ;; TODO :: Add to browser module
 ;;Docs and browse
+
 (use-package! :loganswartz/updoc.nvim
               {:call-setup updoc
                :opt true
-               :events :BufRead})
+               :events :BufReadPost})
 
 (use-package! :KabbAmine/zeavim.vim
               {:opt true

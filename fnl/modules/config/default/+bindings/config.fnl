@@ -1,6 +1,7 @@
 (import-macros {: nyoom-module-p! : map! : let! : buf-map! : augroup! : autocmd!} :macros)
 (local {: nightly?} (autoload :core.lib))
 (local leap (autoload :leap))
+;;(local {: } util)
 
 ;; Set leader to space by default
 
@@ -42,7 +43,7 @@
                   (map! [n] :<leader>nle "<cmd>Neorg generate-workspace-summary<CR>" {:desc "Neorg Generate Summary"})
                   (map! [n] :<leader>nlt "<cmd>Neorg tangle current-file<CR>" {:desc "Neorg Tangle"})
                   (map! [n] :<leader>nuc "<cmd>Neorg exec cursor<CR>" {:desc "Neorg exec cursor"})
-                  (map! [n] :<leader>nud "<cmd>Neorg exec clear<CR>" {:desc "Neorg exec cursor"})))
+                  (map! [n] :<leader>nud "<cmd>Neorg exec clear<CR>" {:desc "Neorg exec clear"})))
 
 ;; ~ Open messages
 (nyoom-module-p! telescope
@@ -213,21 +214,21 @@
 
 
 ;; QuickFix Keybinds
-(nyoom-module-p! quickfix
-  (do
-    (map! [n] :<leader>cc :<cmd>make<CR> {:desc "Compile with quickfix list"})
-    (map! [n] :<leader>cC :<cmd>lmake<CR {:desc "Compile with location list"})
-    (map! [n] "<leader>cq" "<cmd>copen<cr>" {:desc "Open quickfix list"})
-    (map! [n] "<leader>cQ" "<cmd>cclose<cr>" {:desc "Close quickfix list"})
-    (augroup! quickfix-mappings
-      (clear!)
-      (autocmd! FileType qf #(buf-map! [n] "<leader>cq" "<cmd>cclose<cr>" {:desc "Close quickfix list"}))
-      (autocmd! FileType qf #(buf-map! [n] "dd" #(let [current-item (vim.fn.line ".")
-                                                       current-list (vim.fn.getqflist)
-                                                       new-list (doto current-list (table.remove current-item))]
-                                                   (vim.fn.setqflist new-list "r")))))))
-
-
+;;(nyoom-module-p! quickfix
+;;  (do
+;;    (map! [n] :<leader>cc :<cmd>make<CR> {:desc "Compile with quickfix list"})
+;;    (map! [n] :<leader>cC :<cmd>lmake<CR {:desc "Compile with location list"})
+;;    (map! [n] "<leader>cq" "<cmd>copen<cr>" {:desc "Open quickfix list"})
+;;    (map! [n] "<leader>cQ" "<cmd>cclose<cr>" {:desc "Close quickfix list"})
+;;    (augroup! quickfix-mappings
+;;      (clear!)
+;;      (autocmd! FileType qf #(buf-map! [n] "<leader>cq" "<cmd>cclose<cr>" {:desc "Close quickfix list"}))
+;;      (autocmd! FileType qf #(buf-map! [n] "dd" #(let [current-item (vim.fn.line ".")
+;;                                                       current-list (vim.fn.getqflist)
+;;                                                       new-list (doto current-list (table.remove current-item))]
+;;                                                   (vim.fn.setqflist new-list "r")))))))
+;;
+;;
 ;; x Local diagnostics (telescope)
 ;; x Project diagnostics (telescope)
 
@@ -409,4 +410,6 @@
 ;; non-doom
 
 ;;; Tmux and harpoon junk
+;;; z +tmux
+
 

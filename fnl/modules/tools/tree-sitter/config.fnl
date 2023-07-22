@@ -153,7 +153,6 @@
                                                    "[[" "@class.outer"}
                              :goto_previous_end {"[N" "@function.outer"
                                                  "[]" "@class.outer"}}}})
-;
 ; peek_definition_code = {
 ;                         ["gl"] = "@function.outer",
 ;                         ["gK"] = "@class.outer",}

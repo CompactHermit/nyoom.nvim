@@ -2,5 +2,3 @@
 ; (setup :tmux {:navigation {:cycle_navigation true
 ;                            :persist_zoom true
 ;                            :enable_default_keybindings false}})
-
-

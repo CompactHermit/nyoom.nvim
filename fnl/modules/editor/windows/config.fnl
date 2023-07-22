@@ -34,29 +34,25 @@
                         :ft :lazyterm
                         :size {:height 0.4}
                         :title :LazyTerm}
-                       :dap-repl
                        :dapui_console
-                       :help
+                       {:ft :help
+                        :size {:height 20}}
                        :Trouble
                        :Noice
-                       {:ft :help
-                        :size {:height 20}
-                        :filter (fn [buf]
-                                  (= (. (. vim.b buf) :buftype) "help"))
-                        :Title "HELP, ME DUMDUM"}
                        {:ft [:qf]
                         :title :QuickFix}]
-              :right [{:ft :lspsagaoutline ;; from <cmd>lua print(vim.bo.filetype) <cr>
+              :right [{:ft :lspsagaoutline ;; from <cmd>lua print(vim.bo.filetype) <cr>, the bast*** keeps changing the names, fml
                        :title "LSP Outline"
                        :open "Lspsaga outline"
                        :size {:height 1.0}}
                       {:ft :tsplayground
-                       :size {:height 20}
                        :title :TSPlayground}
                       :dapui_scopes
                       :neotest-output-panel
                       :neotest-summary]
               :animate {:enabled true
-                        :fps 120}})
+                        :fps 120}
+              :options {:left {:size 40}
+                        :right {:size 50}}})
 
 
