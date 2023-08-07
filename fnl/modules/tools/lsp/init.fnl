@@ -8,3 +8,8 @@
                :defer nvim-lspconfig})
                ;;:requires (pack :smjonas/inc-rename.nvim :after :nvim-lspconfig
                ;;                :call-setup inc_rename)})
+
+(use-package! :SmiteshP/nvim-navbuddy {:dependencies [:neovim/nvim-lspconfig
+                                                      :SmiteshP/nvim-navic
+                                                      :MunifTanjim/nui.nvim]
+                                       :opts {:lsp {:auto_attach true}}})

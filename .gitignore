@@ -1,13 +1,18 @@
-# neovim
+# neovim::
 lua/
 profile.json
 inbox.norg
 flake.nix
 start.txt
 
+# Notes::
+.quicknote/
 
-# cli
+# cli::
 result/
 target/
 packages.json
 
+# Tests::
+tests/
+.fennel-test

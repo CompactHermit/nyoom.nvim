@@ -7,8 +7,3 @@
                       :OverseerRun
                       :OverseerToggle]})
 
-(use-package! :Zeioth/compiler.nvim
-              {:opt true
-               :dependecies ["stevearc/overseer.nvim"]
-               :cmd [:CompilerOpen :CompilerToggleResults]
-               :call-setup compiler})

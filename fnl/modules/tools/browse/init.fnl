@@ -6,3 +6,8 @@
               {:nyoom-module tools.browse
                :after :telescope.nvim})
 
+
+(use-package! :luckasRanarison/nvim-devdocs
+              {:opt true
+               :cmd [:Devdocs]
+               :call-setup nvim-devdocs})

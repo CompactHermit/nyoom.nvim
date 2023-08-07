@@ -58,6 +58,42 @@
                                                      (_multiopen prompt-bufnr :split))})
 
 
+(local _mappings {:i {:<C-a> (+ send_to_qflist open_qflist)
+                      :<C-d> :preview_scrolling_down
+                      :<C-h> :which_key
+                      :<c-j> :move_selection_next
+                      :<C-k> :move_selection_previous
+                      :<C-l> actions-layout.toggle_preview
+                      :<C-n> (fn [prompt-bufnr]
+                               (local results-win
+                                      (. (state.get_status prompt-bufnr) :results_win))
+                               (local height (vim.api.nvim_win_get_height results-win))
+                               (action-set.shift_selection prompt-bufnr
+                                                           (math.floor (/ height 2))))
+                      :<C-o> :select_vertical
+                      :<C-p> (fn [prompt-bufnr]
+                               (local results-win
+                                      (. (state.get_status prompt-bufnr) :results_win))
+                               (local height (vim.api.nvim_win_get_height results-win))
+                               (action-set.shift_selection prompt-bufnr
+                                                           (- (math.floor (/ height 2)))))
+                      :<C-q> (+ send_selected_to_qflist open_qflist)
+                      :<C-u> :preview_scrolling_up
+                      :<c-p> actions-layout.toggle_prompt_position}
+                  :n {:<C-Q> (+ send_selected_to_qflist open_qflist)
+                      :<C-a> (+ send_to_qflist open_qflist)
+                      :<C-d> :preview_scrolling_down
+                      :<C-h> :which_key
+                      :<C-j> :move_selection_next
+                      :<C-k> :move_selection_previous
+                      ;;:<C-l> actions-layout.toggle_preview
+                      :<C-o> :select_vertical
+                      :<C-u> :preview_scrolling_up
+                      :<c-S> custom-actions.multi_selection_open_split
+                      :<c-t> custom-actions.multi_selection_open_tab
+                      :<c-v> custom-actions.multi_selection_open_vsplit
+                      :<cr> custom-actions.multi_selection_open
+                      :q close}})
 
 ;; TODO:: Sanitize this, making mappings it's own list, this is just stupid to configure
 (setup :telescope {:defaults {:prompt_prefix "   "
@@ -73,51 +109,14 @@
                                               :width 0.87
                                               :height 0.8
                                               :preview_cutoff 120}
-                              :mappings {:i {:<C-a> (+ send_to_qflist open_qflist)
-                                             :<C-d> :preview_scrolling_down
-                                             :<C-h> :which_key
-                                             :<c-j> :move_selection_next
-                                             :<C-k> :move_selection_previous
-                                             :<C-l> actions-layout.toggle_preview
-                                             :<C-n> (fn [prompt-bufnr]
-                                                      (local results-win
-                                                             (. (state.get_status prompt-bufnr) :results_win))
-                                                      (local height (vim.api.nvim_win_get_height results-win))
-                                                      (action-set.shift_selection prompt-bufnr
-                                                                                  (math.floor (/ height 2))))
-                                             :<C-o> :select_vertical
-                                             :<C-p> (fn [prompt-bufnr]
-                                                      (local results-win
-                                                             (. (state.get_status prompt-bufnr) :results_win))
-                                                      (local height (vim.api.nvim_win_get_height results-win))
-                                                      (action-set.shift_selection prompt-bufnr
-                                                                                  (- (math.floor (/ height 2)))))
-                                             :<C-q> (+ send_selected_to_qflist open_qflist)
-                                             :<C-u> :preview_scrolling_up
-                                             :<c-p> actions-layout.toggle_prompt_position}
-                                         :n {:<C-Q> (+ send_selected_to_qflist open_qflist)
-                                             :<C-a> (+ send_to_qflist open_qflist)
-                                             :<C-d> preview_scrolling_down
-                                             :<C-f> (. (require :telescope.) :cycle_history_prev)
-                                             :<C-h> :which_key
-                                             :<C-j> :move_selection_next
-                                             :<C-k> :move_selection_previous
-                                             :<C-l> actions-layout.toggle_preview
-                                             :<C-o> :select_vertical
-                                             :<C-u> :preview_scrolling_up
-                                             :<c-S> custom-actions.multi_selection_open_split
-                                             :<c-t> custom-actions.multi_selection_open_tab
-                                             :<c-v> custom-actions.multi_selection_open_vsplit
-                                             :<cr> custom-actions.multi_selection_open
-                                             :q close}}
-                            ;; TODO:: add custom pickers for Telescope Browser/ Buffers/ Tabs, e.g: deletion and such
+                              :mappings _mappings
+                               ;; TODO:: add custom pickers for Telescope Browser/ Buffers/ Tabs, e.g: deletion and such
                               :pickers {:oldfiles {:prompt_title "Recent files"}}}})
 
 
 
 
 ;; Load extensions
-
 (packadd! telescope-ui-select.nvim)
 (load_extension :ui-select)
 (packadd! telescope-file-browser.nvim)
@@ -131,7 +130,11 @@
 (setup :telescope-tabs)
 (packadd! telescope-manix)
 (load_extension :manix)
-;; (load_extension :manix)
+(packadd! telescope-egrepify.nvim)
+(load_extension :egrepify)
+(nyoom-module-p! debugger
+    (packadd! telescope-dap.nvim)
+    (load_extension :dap))
 ;; only install native if the flag is there
 
 ;; TODO:: Remove this for Nix, errors bcs they build fzf, which nix fails to find on rtp

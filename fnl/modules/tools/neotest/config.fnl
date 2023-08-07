@@ -1,55 +1,58 @@
 
-(import-macros {: nyoom-module-p! : command!} :macros)
+(import-macros {: nyoom-module-p! : command! : packadd!} :macros)
 
-(nyoom-module-p! neotest
-    (do
-     (local testings {:adapters [((require :neotest-python) {:dap {:justMyCode false}}
-                                  (require :neotest-rust)
-                                  (require :neotest-haskell))]
-                      :build {:enabled true}
-                      :diagnostic {:enabled true}
-                      :highlights {:adapter_name :NeotestAdapterName
-                                   :border :NeotestBorder
-                                   :dir :NeotestDir
-                                   :expand_marker :NeotestExpandMarker
-                                   :failed :NeotestFailed
-                                   :file :NeotestFile
-                                   :focused :NeotestFocused
-                                   :indent :NeotestIndent
-                                   :namespace :NeotestNamespace
-                                   :passed :NeotestPassed
-                                   :running :NeotestRunning
-                                   :skipped :NeotestSkipped
-                                   :test :NeotestTest}
-                      :icons {:child_indent "│"
-                              :child_prefix "├"
-                              :collapsed "─"
-                              :expanded "╮"
-                              :failed "✖"
-                              :final_child_indent " "
-                              :final_child_prefix "╰"
-                              :non_collapsible "─"
-                              :passed "✔"
-                              :running "🗘"
-                              :skipped "ﰸ"
-                              :unknown "?"}
-                      :output {:enabled true :open_on_build :short}
-                      :status {:enabled true}
-                      :strategies {:integrated {:height 40
-                                                :width 120}}
-                      :summary {:enabled true
-                                :expand_errors true
-                                :follow true
-                                :mappings {:attach :a
-                                           :build :r
-                                           :expand [:<CR>
-                                                    :<2-LeftMouse>]
-                                           :expand_all :e
-                                           :jumpto :i
-                                           :output :o
-                                           :short :O
-                                           :stop :u}}})
-     (setup :neotest {: testings})))
+(packadd! neotest-python)
+(packadd! neotest-haskell)
+(packadd! neotest-rust)
+
+(local testings {:adapters [((require :neotest-python) {:dap {:justMyCode false}})
+                            (require :neotest-rust)
+                            ((require :neotest-haskell) {:build_tools [:stack :cabal]
+                                                         :framework [:tasty :hspec]})]
+                 :build {:enabled true}
+                 :diagnostic {:enabled true}
+                 :highlights {:adapter_name :NeotestAdapterName
+                              :border :NeotestBorder
+                              :dir :NeotestDir
+                              :expand_marker :NeotestExpandMarker
+                              :failed :NeotestFailed
+                              :file :NeotestFile
+                              :focused :NeotestFocused
+                              :indent :NeotestIndent
+                              :namespace :NeotestNamespace
+                              :passed :NeotestPassed
+                              :running :NeotestRunning
+                              :skipped :NeotestSkipped
+                              :test :NeotestTest}
+                 :icons {:child_indent "│"
+                         :child_prefix "├"
+                         :collapsed "─"
+                         :expanded "╮"
+                         :failed "✖"
+                         :final_child_indent " "
+                         :final_child_prefix "╰"
+                         :non_collapsible "─"
+                         :passed "✔"
+                         :running "🗘"
+                         :skipped "ﰸ"
+                         :unknown "?"}
+                 :output {:enabled true :open_on_build :short}
+                 :status {:enabled true}
+                 :strategies {:integrated {:height 40
+                                           :width 120}}
+                 :summary {:enabled true
+                           :expand_errors true
+                           :follow true
+                           :mappings {:attach :a
+                                      :build :r
+                                      :expand [:<CR>
+                                               :<2-LeftMouse>]
+                                      :expand_all :e
+                                      :jumpto :i
+                                      :output :o
+                                      :short :O
+                                      :stop :u}}})
+(setup :neotest testings)
 
 
 ;; =============================================================== ;;
@@ -81,6 +84,3 @@
             {:desc "Neotest strategen"})
   (command! TestStop `(stop) {:desc "Neotest Test stop"})
   (command! TestAttach `(attach))))
-
-
-

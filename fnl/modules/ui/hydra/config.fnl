@@ -1,6 +1,5 @@
-(import-macros {: set! : colorscheme : nyoom-module-p! : augroup! : autocmd!}
-               :macros)
-
+(import-macros {: set! : colorscheme : nyoom-module-p! : augroup! : autocmd!} :macros)
+(local {: hydra-key!} (require :util.hydra))
 (local Hydra (autoload :hydra))
 
 ;; Git boi ;;
@@ -452,36 +451,6 @@
                                        (vim.cmd "Zeavim"))]
                                    [:<Esc> nil {:exit true :nowait true}]]})))
 
-;; Tabs + Window fixing;;
-; (nyoom-module-p! window-select
-;                  (do
-;                    (Hydra {:name :Windows
-;                            :config {:color :red
-;                                     :hint {:border :solid :position :middle}
-;                                     :invoke_on_body true
-;                                     :on_enter (fn []
-;                                                 (print "Zoooom"))
-;                                     :on_exit (fn []
-;                                                (print "Scrrrrrrtch - You need a therapist"))}
-;                            :body :<leader>w
-;                            :heads [[:h :<C-w>h]
-;                                    [:j :<C-w>j]
-;                                    [:k :<C-w>k]
-;                                    [:l :<C-w>l]
-;                                    [:<C-h>
-;                                      (fn []
-;                                        (vim.cmd "lua require('smart-splits').resize_left()"))]
-;                                    [:<C-k>
-;                                      (fn []
-;                                        (vim.cmd "lua require('smart-splits').resize_up()"))]
-;                                    [:<C-l>
-;                                      (fn []
-;                                        (vim.cmd "lua require('smart-splits').resize_right()"))]
-;                                    [:<C-j>
-;                                      (fn []
-;                                        (vim.cmd "lua require('smart-splits').resize_down"))]]})))
-
-
 (nyoom-module-p! neotest
      (do
        (local {: test_class : test_method : debug_selection} (require :util))
@@ -641,71 +610,100 @@
                                   [:<Esc> nil {:exit true :nowait true}]]})))
 
 ;; Neorg ::
+; (nyoom-module-p! neorg
+;                  (do
+;                    (local Neorg-hints "
+;     ^ ^            - Mode
+;     _t_: todays Journal       _M_:Workspace select
+;     _m_: tommorows journal    _o_: Context toggle
+;     _y_: yesterdays journal   _e_:Inject Metadata
+;     _T_: TOC toggle           _i_: Journal Index
+;                 ^ ^
+;                 ^^^^          _<Esc>_:escape
+;                  ")
+;                    (Hydra {:name :Neorg
+;                            :hint Neorg-hints
+;                            :config {:color :pink
+;                                     :hint {:border :solid :position :middle}
+;                                     :invoke_on_body true
+;                                     :on_enter (fn []
+;                                                 (print "  - Entered "))
+;                                     :on_exit (fn []
+;                                                (print "  - Exited "))}
+;                            :body :<leader>ne
+;                            :heads [[:t
+;                                     (fn []
+;                                       (vim.cmd "Neorg journal today"))]
+;                                    [:y
+;                                     (fn []
+;                                       (vim.cmd "Neorg journal yesterday"))]
+;                                    [:m
+;                                     (fn []
+;                                       (vim.cmd "Neorg journal tomorrow"))]
+;                                    [:M
+;                                      #(vim.ui.select [:main
+;                                                       :Math
+;                                                       :NixOS
+;                                                       :Chess
+;                                                       :Programming
+;                                                       :Academic_CS
+;                                                       :Academic_Math] {:prompt "Select a workspace, slow bitch"
+;                                                                        :format_item (fn [item]
+;                                                                                       (.. "Neorg workspace " item))}
+;                                                      (fn [choice]
+;                                                        (vim.cmd (.. "Neorg workspace " choice))))
+;                                      {:exit true}]
+;                                    [:T
+;                                     (fn []
+;                                       (vim.cmd "Neorg toc right"))]
+;                                    [:e
+;                                     (fn []
+;                                       (vim.cmd "Neorg inject-metadata"))
+;                                     {:exit true}]
+;                                    [:o
+;                                     (fn []
+;                                       (vim.cmd "Neorg context enable"))
+;                                     {:exit true}]
+;                                    [:i
+;                                     (fn []
+;                                       (vim.cmd "Neorg journal toc open"))
+;                                     {:exit true}]
+;                                    [:<Esc> nil {:exit true :nowait true}]]})))
+
 (nyoom-module-p! neorg
                  (do
-                   (local Neorg-hints "
-    ^ ^            - Mode
-    _t_: todays Journal       _M_:Workspace select
-    _m_: tommorows journal    _o_: Context toggle
-    _y_: yesterdays journal   _e_:Inject Metadata
-    _T_: TOC toggle           _i_: Journal Index
-                ^ ^
-                ^^^^          _<Esc>_:escape
-                 ")
-                   (Hydra {:name :Neorg
-                           :hint Neorg-hints
-                           :config {:color :pink
-                                    :hint {:border :solid :position :middle}
-                                    :invoke_on_body true
-                                    :on_enter (fn []
-                                                (print "  - Entered "))
-                                    :on_exit (fn []
-                                               (print "  - Exited "))}
-                           :body :<leader>ne
-                           :heads [[:t
-                                    (fn []
-                                      (vim.cmd "Neorg journal today"))]
-                                   [:y
-                                    (fn []
-                                      (vim.cmd "Neorg journal yesterday"))]
-                                   [:m
-                                    (fn []
-                                      (vim.cmd "Neorg journal tomorrow"))]
-                                   [:M
-                                     #(vim.ui.select [:main
-                                                      :Math
-                                                      :NixOS
-                                                      :Chess
-                                                      :Programming
-                                                      :Academic_CS
-                                                      :Academic_Math] {:prompt "Select a workspace, slow bitch"
-                                                                       :format_item (fn [item]
-                                                                                      (.. "Neorg workspace " item))}
-                                                     (fn [choice]
-                                                       (vim.cmd (.. "Neorg workspace " choice))))
-                                     {:exit true}]
-                                   [:T
-                                    (fn []
-                                      (vim.cmd "Neorg toc right"))]
-                                   [:e
-                                    (fn []
-                                      (vim.cmd "Neorg inject-metadata"))
-                                    {:exit true}]
-                                   [:o
-                                    (fn []
-                                      (vim.cmd "Neorg context enable"))
-                                    {:exit true}]
-                                   [:i
-                                    (fn []
-                                      (vim.cmd "Neorg journal toc open"))
-                                    {:exit true}]
-                                   [:<Esc> nil {:exit true :nowait true}]]})))
+                   (fn choose_workspace []
+                     (vim.ui.select [:main
+                                     :Math
+                                     :NixOS
+                                     :Chess
+                                     :Programming
+                                     :Academic_CS
+                                     :Academic_Math] {:prompt "Select a workspace, slow bitch"
+                                                      :format_item (fn [item]
+                                                                     (.. "Neorg workspace " item))}
+                                    (fn [choice]
+                                      (vim.cmd (.. "Neorg workspace " choice)))))
+                   (hydra-key! :n
+                               {:ne {:hydra true
+                                     :name :+Toggle
+                                     :config {:color :pink
+                                              :hint {:border :solid :position :middle}
+                                              :invoke_on_body true}
+                                     :t [#(vim.cmd "Neorg journal today") "Journal Today"]
+                                     :m [#(vim.cmd "Neorg journal tommorow") "Journal Tommorow"]
+                                     :y [#(vim.cmd "Neorg journal yesterday") "Journal Yesterday"]
+                                     :l [#(vim.cmd "Neorg toc right") "TOC Right"]
+                                     :M [#(choose_workspace) "Workspace Choice"]
+                                     :e [#(vim.cmd "Neorg inject-metadata") "inject-metadata"]
+                                     :i [#(vim.cmd "Neorg journal toc open") "Journal TOC Open"]}}
+                            {:prefix :<leader>})))
 
 ;; Gods given grace on earth ;;
 (nyoom-module-p! telescope
                  (do
                    (local telescope-hint "
-           _o_: old files   _g_: live grep
+           _o_: old files   _g_: egrepify
            _p_: projects    _/_: search in file
            _r_: resume      _f_: find files
    ▁
@@ -727,7 +725,7 @@
                                       (vim.cmd.Telescope :find_files))]
                                    [:g
                                     (fn []
-                                      (vim.cmd.Telescope :live_grep))]
+                                      (vim.cmd.Telescope :egrepify))]
                                    [:o
                                     (fn []
                                       (vim.cmd.Telescope :oldfiles))

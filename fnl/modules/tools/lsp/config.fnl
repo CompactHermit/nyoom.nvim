@@ -118,16 +118,10 @@
 
 (nyoom-module-p! nim (tset lsp-servers :nimls {}))
 
-(nyoom-module-p! nix (tset lsp-servers :nil_ls {}))
+;; I'm fucking in love
+(nyoom-module-p! nix (tset lsp-servers :nil_ls
+                           {:settings {:nix {:flake {:autoEvalInputs true :autoArchive true}}}}))
 
- ; autostart = true,
- ;      capabilities = caps,
- ;      cmd = { lsp_path },
- ;      settings = {}
- ;        ['nil'] = {}
- ;          testSetting = 42,
- ;          formatting = {}
- ;            command = { "nixpkgs-fmt" },)
 (nyoom-module-p! python
                  (tset lsp-servers :pyright
                        {:root_dir (lsp.util.root_pattern [:.flake8])

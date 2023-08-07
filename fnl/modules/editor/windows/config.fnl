@@ -35,6 +35,9 @@
                         :size {:height 0.4}
                         :title :LazyTerm}
                        :dapui_console
+                       {:title "Oil"
+                        :ft :oil
+                        :open :Oil}
                        {:ft :help
                         :size {:height 20}}
                        :Trouble

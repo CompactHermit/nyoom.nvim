@@ -4,40 +4,59 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+
+    neovim-nightly-overlay = {
+        url = "github:nix-community/neovim-nightly-overlay";
+        inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
     self,
     nixpkgs,
+    neovim-nightly-overlay,
     flake-utils,
     ...
-  }:
-    flake-utils.lib.eachDefaultSystem (
+  } @ inputs:
+  let 
+      inherit (self) outputs;
+      util = import ./nix/utils.nix {
+            inherit inputs outputs;
+      };
+      in
+          flake-utils.lib.eachDefaultSystem (
       # fennel language server overlay
       system: let
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [(self: super: {fennel-language-server = super.callPackage ./nix/fennel-language-server.nix {};})];
         };
       in
         with pkgs; {
-          ## Note:: Need to find what flake the "# object" is coming from
+
+          # Devshells ('nix develop')
           devShells.default = mkShell {
             buildInputs = [
-              # Language servers / Debuggers / Adapters
-              act
-              fennel
-              # fennel-language-server # Just use hotpot diagnostics + conjure
-              fnlfmt
-              marksman
-              #nil
-              nodePackages.cspell
-              nodePackages.prettier
-              nodejs
+              nil
               stylua
               sumneko-lua-language-server
-              neovim
             ];
+          };
+
+          formatter = alejandra;
+
+          ## nix build
+          packages = util.forEachPkgs (pkgs:
+                  import ./nix/pkgs { inherit pkgs; }
+                  );
+
+          # Apps (`nix run`)
+          apps = util.forEachPkgs (pkgs:
+                  import ./nix/apps { inherit pkgs; }
+                  );
+
+          # Home Manager modules
+          homeManagerModules = import ./nix/modules/home-manager {
+              inherit inputs outputs;
           };
         }
     );

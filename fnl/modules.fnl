@@ -81,7 +81,7 @@
         ; kotlin             ; a better, slicker Java(Script)
         ; json               ; { "dʒeɪsən":  "Javascript Object Notation" }
         latex                ; writing papers in Neovim has never been so fun
-        ;lua                 ; one-based indices? one-based indices
+        ; lua                 ; one-based indices? one-based indices
         markdown             ; writing docs for people to ignore
         ;;nim                ; python + lisp at the speed of c
         (neorg               ; organize your plain life in plain text, the neovim way
@@ -95,11 +95,14 @@
         nix                  ; I hereby declare "nix geht mehr!"
         python               ; beautiful is better than ugly
         rust                 ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+        typescript           ; Javas Ugly, bloated, linter-tool
         ; scala              ; Functional Java, done right
         ;(sh +fish)           ; she sells {ba,z,fi}sh shells on the C xor
         ;;xml                ; extend my language
         ;;yaml               ; yet another markup language to enable
         ; go                 ; No Bitches??
+        lean                 ; Make your category-theory coursework 1000x harder.
+        ;agda                ; TODO:: find stuff,idk
         haskell              ; Functionally Braindead parsers
         zig                  ; C, but slower and fatter
 

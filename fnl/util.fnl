@@ -1,3 +1,6 @@
+;; Test Macros Import
+
+
 ;; NOTE: it would just be better to create a hydra-utils file, IMO
 (local default-terminal 1)
 (local input-prompt "enter the command: cmd >")
@@ -5,6 +8,7 @@
 ;; Tmux/Harpoon Util functions
 (local cache {:command "ls -a" :tmux {:selected_plane ""}})
 (local use_tmux_or_normal {:harpoon {:goto_harpoon false :use_tmux_or_normal :tmux}})
+
 
 ;; defines container for tmux
 (fn plane []

@@ -4,7 +4,6 @@
                 :disable_hint true
                 :disable_context_highlighting false
                 :disable_builtin_notifications true
-                :status {:recent_commit_count 10}
                 :signs {:section ["" ""]
                         :item ["" ""]
                         :hunk ["" ""]}

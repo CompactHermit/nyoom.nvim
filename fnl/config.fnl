@@ -43,6 +43,12 @@
 
 ; (let! maplocalleader " m")
 
+(autocmd! :RecordingEnter "*" #(vim.notify (.. "Recording Macro: ("
+                                               (vim.fn.reg_recording)
+                                               ")")))
+
+(autocmd! :RecordingLeave "*"  #(vim.notify "Finished recording Macro"))
+
 ;; sometimes you want to modify a plugin thats loaded from within a module. For 
 ;; this you can use the `after` function
 

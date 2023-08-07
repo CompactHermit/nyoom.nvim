@@ -1,0 +1,27 @@
+@document.meta
+title: README
+description: 
+authors: strange_cofunctor
+categories: 
+created: 2023-08-04
+updated: 2023-08-04
+version: 1.1.1
+@end
+
+* Mason::
+| $Mason$
+Mason Exposes many API's , some of which can be used to help custom build env %e.g:: nix%. This is a documentation made for those env.
+| _
+
+** Mason-core::
+    Logging Insights on {https://github.com/williamboman/mason.nvim/issues/830}[#830]
+
+    @code lua
+    local nixpkgs = require 'nixpkgs' -- generated with nix
+    local mason_spawn = require 'mason-core.spawn'
+
+    mason_spawn._aliases.cargo = nixpkgs.cargo .. "/cargo"
+    mason_spawn._aliases.npm = nixpkgs.npm .. "/npm"
+    mason_spawn._aliases.node = nixpkgs.nodejs .. "/node"
+    
+    @end

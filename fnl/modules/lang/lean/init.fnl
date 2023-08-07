@@ -1,6 +1,6 @@
 (import-macros {: use-package!} :macros)
 
-(use-package! :calops/hmts.nvim
+(use-package! :Julian/lean.nvim
               {:opt true
-               :ft [:nix]})
-
+               :ft [:lean]})
+ 

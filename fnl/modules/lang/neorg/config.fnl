@@ -4,13 +4,15 @@
 
 (local neorg-modules
        {:core.defaults {}
-        :core.manoeuvre {}
+        :core.esupports.indent {:config {:dedent_excess true
+                                         :format_on_escape true
+                                         :format_on_enter true}}
         :core.ui {}
         :core.integrations.telescope {}
-        :external.codecap {}
+        ;;:external.codecap {}
         :external.exec {}
         :core.ui.calendar {}
-        :core.summary {:config {:strategy :metadata}}
+        :core.summary {:config {:strategy :default}}
         :core.ui.calendar.views.monthly {}
         :core.tempus {}
         :core.keybinds {:config {:default_keybinds true
@@ -26,7 +28,8 @@
                                             :Chess "~/neorg/Chess"
                                             :Programming "~/neorg/CS"
                                             :Academic_Math "~/neorg/Papers/Math"
-                                            :Academic_CS "~/neorg/Papers/CS"}
+                                            :Academic_CS "~/neorg/Papers/CS"
+                                            :Linuxopolis "~/neorg/linux"}
                                :autodetect true
                                :autochdir true}}})
         ;;:external.templates {:config {:templates_dir (.. (vim.fn.stdpath :config) :/templates/norg)}}})
@@ -36,8 +39,8 @@
 (nyoom-module-p! cmp (tset neorg-modules :core.completion
                            {:config {:engine :nvim-cmp}}))
 
-;; add flaged modules
 
+;; add flaged modules
 (nyoom-module-p! neorg.+pretty
                  (tset neorg-modules :core.concealer
                        {:config {:folds true

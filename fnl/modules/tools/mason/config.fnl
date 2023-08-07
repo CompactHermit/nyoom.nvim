@@ -1,5 +1,6 @@
 (import-macros {: nyoom-module-p!} :macros)
 
+;;(local {: core} (autoload :Mason-core))
 ;; Init mason
 
 (local mason-tools [])
@@ -33,6 +34,9 @@
 
     (nyoom-module-p! latex
       (table.insert mason-tools :texlab))
+
+    (nyoom-module-p! lean
+     (table.insert mason-tools :lean-language-server))
 
     (nyoom-module-p! lua
       (table.insert mason-tools :lua-language-server))
