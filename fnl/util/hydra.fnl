@@ -1,5 +1,6 @@
 ;; An Opiniated Hydra Keybind API::
 
+;; TODO:: allow custom modes
 ;; TODO:: Cananocalize "config/body/hint" options. 
     ;;E.g:: config is a table, and passes onto the hydra arg {:config {:color :_color_ :position :_position_}}
 (fn chunks [arr size]
@@ -48,7 +49,7 @@
   (let [hydra (require :hydra)
         which-key (require :which-key)
         opts (or ?opts {})
-        num (or ?num 3)
+        num (or 3 ?num)
         {:prefix ?prefix
          &       opts} opts
         prefix (or ?prefix "")

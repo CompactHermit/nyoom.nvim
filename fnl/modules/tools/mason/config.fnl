@@ -6,7 +6,9 @@
 (local mason-tools [])
 (setup :mason {:ui {:border :solid} :PATH :skip})
 
-;; language servers
+;;   ==================
+;;    language servers
+;;   ===================
 
 ;; fnlfmt: skip
 (nyoom-module-p! lsp
@@ -28,7 +30,7 @@
 
     (nyoom-module-p! json
       (table.insert mason-tools :json-lsp))
-    ;
+
     (nyoom-module-p! kotlin
       (table.insert mason-tools :kotlin-language-server))
 
@@ -59,6 +61,9 @@
     (nyoom-module-p! sh
       (table.insert mason-tools :bash-language-server))
 
+    ; (nyoom-module-p! typst
+      ; (table.insert mason-tools :typst-lsp))
+
     (nyoom-module-p! xml
       (table.insert mason-tools :lemminx))
 
@@ -68,7 +73,9 @@
     (nyoom-module-p! zig
       (table.insert mason-tools :zls))))
 
-;; formatters
+;;   ==============
+;;     formatters
+;;   ==============
 
 ;; fnlfmt: skip
 (nyoom-module-p! format
@@ -84,9 +91,6 @@
 
     (nyoom-module-p! markdown
       (table.insert mason-tools :markdownlint))
-
-    (nyoom-module-p! nix
-      (table.insert mason-tools :alejandra))
 
     (nyoom-module-p! python
       (do
@@ -109,8 +113,8 @@
   (do
     (nyoom-module-p! lua
       (table.insert mason-tools :selene))
-    (nyoom-module-p! nix
-                     (table.insert mason-tools :statix))))
+    (nyoom-module-p! typescript
+        (table.insert mason-tools :rome))))
 
 ;; debugging
 

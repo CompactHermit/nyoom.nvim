@@ -33,6 +33,7 @@
                                :autodetect true
                                :autochdir true}}})
         ;;:external.templates {:config {:templates_dir (.. (vim.fn.stdpath :config) :/templates/norg)}}})
+                                      ;;:keywords (. (require :util.norg) :keywords)}}})
 
 
 ;; add conditional modules

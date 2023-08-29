@@ -4,12 +4,13 @@
               {:nyoom-module ui.hydra
                :module :hydra
                :keys [:<leader>a
+                      :<leader>cl
                       :<leader>d
                       :<leader>e
                       :<leader>f
                       :<leader>g
                       :<leader>m
-                      :<leader>n
+                      :<leader>ne
                       :<leader>o
                       :<leader>O
                       :<leader>q

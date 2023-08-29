@@ -2,7 +2,7 @@
 lua/
 profile.json
 inbox.norg
-flake.nix
+flake.lock
 start.txt
 
 # Notes::

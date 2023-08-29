@@ -71,23 +71,10 @@
 ;; Put your plugins here
 ;; ---------------------
 
-
-;; Broken and Slow
-; (use-package! :iurimateus/luasnip-latex-snippets.nvim
-;               {:requires [:L3MON4D3/LuaSnip :lervag/vimtex]
-;                :call-setup luasnip-latex-snippets
-;                :ft [:tex :markdown :norg]})
-
 ;; Bloated when not in use
 ; (use-package! :danymay/neogen {:call-setup neogen
 ;                                :opt true
 ;                                :cmd [:Neogen]})
-;
-;; Not needed at all
-; (use-package! :nullchilly/fsread.nvim
-;               {:opt true
-;                :cmd [:FSRead]})
-
 ;; markdown stuff
 (use-package! :toppair/peek.nvim
               {:run "deno task --quiet build:fast"
@@ -104,12 +91,6 @@
                :opt true
                :cmd [:Lspsaga]})
 
-; Smart movements
-; (use-package! :mrjones2014/smart-splits.nvim
-;           {:call-setup smart-splits
-;            :opt true
-;            :events :BufReadPost})
-
 ;;SilverSurfer Nvim
 (use-package! :kelly-lin/telescope-ag {:requires "nvim-telescope/telescope.nvim"
                                        :opt true
@@ -117,7 +98,6 @@
 
 (use-package! :stevearc/oil.nvim
                {:call-setup oil})
-
 
 ;; TODO :: Add to browser module
 ;;Docs and browse
@@ -130,8 +110,6 @@
 (use-package! :KabbAmine/zeavim.vim
               {:opt true
                :cmd :Zeavim})
-
-
 
 ;; Send plugins to packer
 

@@ -1,10 +1,10 @@
 { inputs, outputs, ... }:
 
+## My Monkey Patched efforts to avoid Flake-Util Bloat
 let
   inherit (inputs) nixpkgs;
   inherit (nixpkgs) lib;
-  inherit (lib) mapAttrs;
-  inherit (lib.attrsets) filterAttrs;
+  # inherit (lib) mapAttrs; ## Note needed yet
 in
 rec {
   forEachSystem = lib.genAttrs [

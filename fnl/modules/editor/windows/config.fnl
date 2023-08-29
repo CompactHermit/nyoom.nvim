@@ -8,17 +8,14 @@
                       :ft :neo-tree
                       :filter (fn [buf]
                                   (= (. (. vim.b buf) :neo_tree_source) "git_status"))
-                      :pinned true
                       :open "Neotree position=right git_status"}
                      {:title "Buffer List"
                       :ft "neo-tree"
                       :filter (fn [buf]
                                 (= (. (. vim.b buf) :neo_tree_source) "buffers"))
-                      :pinned true
                       :open "Neotree position=top buffers"}
                      {:title "Overseer List"
                       :ft :OverseerList
-                      :pinned true
                       :open :OverseerToggle}
                      :dapui_breakpoints
                      :dapui_stacks

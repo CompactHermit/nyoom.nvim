@@ -1,25 +1,13 @@
 (import-macros {: use-package!} :macros)
-(import-macros {: use-package!} :macros)
 
 (use-package! :nvim-neorg/neorg {:nyoom-module lang.neorg 
                                  :ft :norg 
                                  :cmd :Neorg
                                  :requires [ :laher/neorg-codecap
-                                             (pack :laher/neorg-exec) ;; Broken
-                                             (pack :nvim-neorg/neorg-telescope)]})
+                                             (pack :laher/neorg-exec)
+                                             (pack :nvim-neorg/neorg-telescope)
+                                             :pysan3/neorg-templates]})
+;; TODO:; add +template module
+; (use-package! :pysan3/neorg-templates
+;               {:dependencies [:L3MON4D3/LuaSnip]})
 
-; (use-package! :pysan3/neorg-templates-draft
-;                {:ft :norg})
-
- ; (use-package! :laher/neorg-codecap
- ;               {:opt true
- ;                :ft [:norg :fennel :rust :python :lua :haskell] ;; Just change this
- ;                :requires [(pack :ruifm/gitlinker.nvim {:call-setup gitlinker})]
- ;                :config (fn []
- ;                          (local {: setup} (require :codecap))
- ;                          (setup {:mappings {"<leader>ncv" :vsplit}}
- ;                                 "<leader>ncs" :split
- ;                                 "<leader>nce" :edit
- ;                                 "<leader>ncn" :noshow
- ;                                 "<leader>ncc" :inbox
- ;                                 "<leader>ncd" :diff))}))

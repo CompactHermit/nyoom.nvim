@@ -15,7 +15,6 @@
 (register {:<leader>a {:name :+Harpoooon}})
 (register {:<leader>b {:name :+buffer}})
 (register {:<leader>c {:name :+code}})
-(register {:<leader>cl {:name :+LSP}})
 (register {:<leader>e {:name :+Flash}})
 (register {:<leader>f {:name :+file}})
 (register {:<leader>g {:name :+git}})

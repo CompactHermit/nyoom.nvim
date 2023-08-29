@@ -45,14 +45,14 @@
           formatter = alejandra;
 
           ## nix build
-          packages = util.forEachPkgs (pkgs:
-                  import ./nix/pkgs { inherit pkgs; }
-                  );
+          # packages = util.forEachPkgs (pkgs:
+          #         import ./nix/pkgs { inherit pkgs; }
+          #         );
 
           # Apps (`nix run`)
-          apps = util.forEachPkgs (pkgs:
-                  import ./nix/apps { inherit pkgs; }
-                  );
+          # apps = util.forEachPkgs (pkgs:
+          #         import ./nix/apps { inherit pkgs; }
+          #         );
 
           # Home Manager modules
           homeManagerModules = import ./nix/modules/home-manager {

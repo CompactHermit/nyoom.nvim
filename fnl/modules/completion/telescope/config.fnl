@@ -128,8 +128,6 @@
 (load_extension :xray23)
 (packadd! telescope-tabs)
 (setup :telescope-tabs)
-(packadd! telescope-manix)
-(load_extension :manix)
 (packadd! telescope-egrepify.nvim)
 (load_extension :egrepify)
 (nyoom-module-p! debugger

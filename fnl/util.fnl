@@ -1,5 +1,4 @@
-;; Test Macros Import
-
+;; TODO:: Move these over to utility folder
 
 ;; NOTE: it would just be better to create a hydra-utils file, IMO
 (local default-terminal 1)
@@ -47,8 +46,6 @@
                     ((. (require module) goto-func) term))
       (or (and (string.find module :tmux) 500) 1000))))
 
-
-
 (fn handle-tmux []
   (let [data (plane)]
     (var selected-plane cache.tmux.selected_plane)
@@ -77,14 +74,12 @@
                                 (tonumber cache.command)))
                        (terminal-send cache.tmux.selected_plane cache.command))))))
 
-
 (fn handle-non-tmux []
   (vim.ui.input {:default default-terminal :prompt terminal-prompt}
                 (fn [terminal-number]
                   (when (not (string.find terminal-number "%D"))
                     (local term (tonumber terminal-number))
                     (terminal-send term cache.command)))))
-
 
 (fn handle-command-input [command]
   (set cache.command (or (and (not= command "") command) cache.command))

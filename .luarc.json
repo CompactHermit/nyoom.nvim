@@ -1,0 +1,33 @@
+{
+    "workspace.library": [
+        "/home/strange_cofunctor/.cache/nvim/hotpot/compiled/nvim",
+        "/home/strange_cofunctor/.config/nvim",
+        "/etc/xdg/nvim",
+        "/home/strange_cofunctor/.local/share/nvim/site",
+        "/home/strange_cofunctor/.local/share/nvim/site/pack/packer/start/alpha-nvim",
+        "/home/strange_cofunctor/.local/share/nvim/site/pack/packer/start/animation.nvim",
+        "/home/strange_cofunctor/.local/share/nvim/site/pack/packer/start/friendly-snippets",
+        "/home/strange_cofunctor/.local/share/nvim/site/pack/packer/start/hotpot.nvim",
+        "/home/strange_cofunctor/.local/share/nvim/site/pack/packer/start/leap.nvim",
+        "/home/strange_cofunctor/.local/share/nvim/site/pack/packer/start/middleclass",
+        "/home/strange_cofunctor/.local/share/nvim/site/pack/packer/start/neorg-codecap",
+        "/home/strange_cofunctor/.local/share/nvim/site/pack/packer/start/neorg-exec",
+        "/home/strange_cofunctor/.local/share/nvim/site/pack/packer/start/neorg-telescope",
+        "/home/strange_cofunctor/.local/share/nvim/site/pack/packer/start/neorg-templates",
+        "/home/strange_cofunctor/.local/share/nvim/site/pack/packer/start/nvim-bqf",
+        "/home/strange_cofunctor/.local/share/nvim/site/pack/packer/start/nvim-navbuddy",
+        "/home/strange_cofunctor/.local/share/nvim/site/pack/packer/start/oil.nvim",
+        "/home/strange_cofunctor/.local/share/nvim/site/pack/packer/start/oxocarbon.nvim",
+        "/home/strange_cofunctor/.local/share/nvim/site/pack/packer/start/vim-repeat",
+        "/home/strange_cofunctor/.local/share/nvim/site/pack/packer/opt/nvim-lspconfig",
+        "/home/strange_cofunctor/.local/share/nvim/site/pack/packer/opt/matchparen.nvim",
+        "/home/strange_cofunctor/.local/share/nvim/site/pack/packer/opt/packer.nvim",
+        "/usr/share/nvim/runtime",
+        "/usr/lib/nvim",
+        "/home/strange_cofunctor/.local/share/nvim/site/pack/packer/start/nvim-bqf/after",
+        "/home/strange_cofunctor/.config/nvim/after",
+        "/usr/share/vim/vimfiles",
+        "/home/strange_cofunctor/.config/nyoom",
+        "${3rd}/luv/library"
+    ]
+}

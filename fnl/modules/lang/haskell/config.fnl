@@ -2,7 +2,6 @@
 ;; TODO:: Rewrite with -> Macro
 (local ht_attach (. (require :haskell-tools) :start_or_attach))
 ; (local ht (require :haskell-tools))
-; (local cmp-lsp (require :cmp_nvim_lsp))
 
 
 ;; Custom Formatter for haskell

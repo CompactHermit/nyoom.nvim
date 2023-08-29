@@ -102,7 +102,7 @@
                                     {:exit true :desc "show base file"}]
                                    [:<Enter>
                                     (fn []
-                                      (vim.cmd.Neogit))
+                                      (vim.cmd :Neogit))
                                     {:exit true :desc :Neogit}]
                                    [:<Esc> nil {:exit true :nowait true}]]})))
 ;; Options ;;
@@ -402,8 +402,6 @@
                           (caller options :reaction))]
                       [:<Esc> nil {:exit true :nowait true}]]})))
 
-
-
 ;; Browser ::
 (nyoom-module-p! browse
                  (do
@@ -552,7 +550,6 @@
                                                                          (vim.notify "Task not found"))))))]
                                    [:<Esc> nil {:exit true :nowait true}]]})))
 
-
 ;; TODO:: Add custom functions, like in Git ReadME
 (nyoom-module-p! tree-sitter
                  (do
@@ -609,66 +606,6 @@
                                       ((. (require :flash) :remote)))]
                                   [:<Esc> nil {:exit true :nowait true}]]})))
 
-;; Neorg ::
-; (nyoom-module-p! neorg
-;                  (do
-;                    (local Neorg-hints "
-;     ^ ^            - Mode
-;     _t_: todays Journal       _M_:Workspace select
-;     _m_: tommorows journal    _o_: Context toggle
-;     _y_: yesterdays journal   _e_:Inject Metadata
-;     _T_: TOC toggle           _i_: Journal Index
-;                 ^ ^
-;                 ^^^^          _<Esc>_:escape
-;                  ")
-;                    (Hydra {:name :Neorg
-;                            :hint Neorg-hints
-;                            :config {:color :pink
-;                                     :hint {:border :solid :position :middle}
-;                                     :invoke_on_body true
-;                                     :on_enter (fn []
-;                                                 (print "  - Entered "))
-;                                     :on_exit (fn []
-;                                                (print "  - Exited "))}
-;                            :body :<leader>ne
-;                            :heads [[:t
-;                                     (fn []
-;                                       (vim.cmd "Neorg journal today"))]
-;                                    [:y
-;                                     (fn []
-;                                       (vim.cmd "Neorg journal yesterday"))]
-;                                    [:m
-;                                     (fn []
-;                                       (vim.cmd "Neorg journal tomorrow"))]
-;                                    [:M
-;                                      #(vim.ui.select [:main
-;                                                       :Math
-;                                                       :NixOS
-;                                                       :Chess
-;                                                       :Programming
-;                                                       :Academic_CS
-;                                                       :Academic_Math] {:prompt "Select a workspace, slow bitch"
-;                                                                        :format_item (fn [item]
-;                                                                                       (.. "Neorg workspace " item))}
-;                                                      (fn [choice]
-;                                                        (vim.cmd (.. "Neorg workspace " choice))))
-;                                      {:exit true}]
-;                                    [:T
-;                                     (fn []
-;                                       (vim.cmd "Neorg toc right"))]
-;                                    [:e
-;                                     (fn []
-;                                       (vim.cmd "Neorg inject-metadata"))
-;                                     {:exit true}]
-;                                    [:o
-;                                     (fn []
-;                                       (vim.cmd "Neorg context enable"))
-;                                     {:exit true}]
-;                                    [:i
-;                                     (fn []
-;                                       (vim.cmd "Neorg journal toc open"))
-;                                     {:exit true}]
-;                                    [:<Esc> nil {:exit true :nowait true}]]})))
 
 (nyoom-module-p! neorg
                  (do
@@ -691,7 +628,7 @@
                                               :hint {:border :solid :position :middle}
                                               :invoke_on_body true}
                                      :t [#(vim.cmd "Neorg journal today") "Journal Today"]
-                                     :m [#(vim.cmd "Neorg journal tommorow") "Journal Tommorow"]
+                                     :m [#(vim.cmd "Neorg journal tomorrow") "Journal Tomorrow"]
                                      :y [#(vim.cmd "Neorg journal yesterday") "Journal Yesterday"]
                                      :l [#(vim.cmd "Neorg toc right") "TOC Right"]
                                      :M [#(choose_workspace) "Workspace Choice"]
@@ -816,6 +753,23 @@
                                     (fn []
                                       (ui.toggle))]]})))
 
+;; LSP Utilities ;;
+(nyoom-module-p! lsp
+                 (do
+                   (hydra-key! :n
+                               {:cl {:hydra true
+                                     :name :+LSP
+                                     :config {:color :pink
+                                              :hint {:border :solid :position :bottom-middle}
+                                              :invoke_on_body true}
+                                     :s [#(vim.cmd "Lspsaga hover_doc") "+ HoverDocs"]
+                                     :S [#(vim.cmd "Lspsaga peek_definition") "+ PeekDefinition"]
+                                     :m [#(vim.cmd "Lspsaga peek_type_definition") "+ PeekTypeDefinition"]
+                                     :M [#(vim.cmd "Navbuddy") "+ Navbuddy"]
+                                     :t [#(vim.cmd "Lspsaga outline") "+ Outline"]
+                                     :l [#(vim.cmd "LspLensOn") "+ LspLens"]}}
+                            {:prefix :<leader>})))
+
 ;; Rusty tools for rusty mans ;;
 (nyoom-module-p! rust
                  (do
@@ -884,6 +838,29 @@
                                      [:<Esc> nil {:exit true :nowait true}]]}))
                    (augroup! localleader-hydras
                              (autocmd! FileType rust `(rust-hydra)))))
+
+;; TODO:: Rewrite this
+;; Haskell ;;
+(nyoom-module-p! haskell
+               (do
+                 (local haskell-tools (autoload :haskell-tools))
+                 (local project (autoload :haskell-tools.project))
+                 (local hoogle (autoload :haskell-tools.hoogle))
+                (fn haskell-hydra []
+                  (hydra-key! :n
+                               {:H {:hydra true
+                                    :name :+Haskell-Tools
+                                    :config {:color :teal
+                                             :hint {:border :solid :position :bottom-middle}
+                                             :invoke_on_body true}
+                                    :s [#(vim.cmd "HSProjectFile") "Open Project-File"]
+                                    :S [#(vim.cmd "HsPackageYaml") "Open package.yaml"]
+                                    :m [#(vim.cmd "HsPackageCabal") "Open *.cabal"]
+                                    :M [#((. project :telescope_package_grep)) "Telescope Packages"]
+                                    :t [#((. hoogle :hoogle_signature) (vim.api.nvim_get_current_line)) "Hoogle search Line"]}}
+                            {:prefix :<leader>}))
+                (augroup! localleader-hydras
+                             (autocmd! FileType haskell `(haskell-hydra)))))
 
 ;Intercourse;;
 (nyoom-module-p! latex

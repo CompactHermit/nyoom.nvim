@@ -1,5 +1,7 @@
 (import-macros {: nyoom-module-p! : set! : vlua : autocmd! : packadd!} :macros)
 
+;; NOTE:: testing Hydra features
+; (local hydra (require :hydra.statusline))
 ;; modeline
 
 (local modes {:n :RW
@@ -86,6 +88,11 @@
                                   (or (. result :warnings) 0)
                                   (or (. result :errors) 0))))
 
+; (nyoom-module-p! hydra
+;                (fn get_hydra_head []
+;                  (string.format "(  • #%s) "
+;                                 (or (. hydra.statusline)))))
+;
 (fn get-searchcount []
   (when (= vim.v.hlsearch 0)
     (lua "return \"%#Normal# %l:%c \""))
@@ -99,6 +106,7 @@
   (.. "%#Normal#" (: " %s matches " :format total)))
 
 (global Statusline {})
+;; Setup for global statusline feats. Pass all you want here
 (set Statusline.statusline
      (fn []
        (table.concat [(color)

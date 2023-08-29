@@ -2,6 +2,7 @@
 (local lsp (autoload :lspconfig))
 (local lsp-servers {})
 
+
 ;;; Improve UI
 
 (set vim.lsp.handlers.textDocument/signatureHelp
@@ -44,7 +45,7 @@
         (clear! {:buffer bufnr})
         (autocmd! BufWritePre <buffer> #(format! bufnr) {:buffer bufnr})))))
 
-;; What should the lsp be demanded of?
+;; LSP Documents Types::
 
 (local capabilities (vim.lsp.protocol.make_client_capabilities))
 (set capabilities.textDocument.completion.completionItem
@@ -60,23 +61,13 @@
                                     :detail
                                     :additionalTextEdits]}})
 
-;;; Setup servers
+;;; Setup servers::
 
 (local defaults {:on_attach on-attach
                  : capabilities
                  :flags {:debounce_text_changes 150}})
 
-;; fennel-language-server
-;; (tset lsp-servers :fennel-language-server {})
-;; (tset (require :lspconfig.configs) :fennel-language-server
-;;       {:default_config {:cmd [:fennel-language-server]
-;;                         :filetypes [:fennel]
-;;                         :single_file_support true
-;;                         :root_dir (lsp.util.root_pattern :fnl)
-;;                         :settings {:fennel {:workspace {:library (vim.api.nvim_list_runtime_paths)}
-;;                                             :diagnostics {:globals [:vim]}}}}})
-
-;; conditional servers
+;; conditional servers::
 
 (nyoom-module-p! cc (tset lsp-servers :clangd {:cmd [:clangd]}))
 
@@ -103,6 +94,7 @@
                               :fileMatch [:packer.json]
                               :url "https://json.schemastore.org/packer"}]}))
 
+(nyoom-module-p! typescript (tset lsp-servers :rome {:settings {:filetypes [:javascript :typescript :javascriptreact :typescript.tsx :typescriptreact :json]}}))
 
 (nyoom-module-p! kotlin (tset lsp-servers :kotlin_langage_server {}))
 
@@ -115,6 +107,19 @@
                                                      :maxPreload 100000}}}}))
 
 (nyoom-module-p! markdown (tset lsp-servers :marksman {}))
+
+;; TODO:: add custom lsp defs, such as a cursom callback feature for on-save
+;; require'lspconfig'.svelte.setup {
+;;                                 on_attach = function(client)
+;;                                 vim.api.nvim_create_autocmd("BufWritePost", {
+;;                                                             pattern = { "*.js", "*.ts" },
+;;                                                             callback = function(ctx)
+;;                                                             client.notify("$/onDidChangeTsOrJsFile", { uri = ctx.file})
+;;                                                             end,})
+;;                                 end}
+
+(nyoom-module-p! svelte (tset lsp-servers :svelte {:config 
+                                                    {:filetypes [:svelte :typescript :javascript :css :html]}}))
 
 (nyoom-module-p! nim (tset lsp-servers :nimls {}))
 
@@ -129,6 +134,9 @@
                                                        :useLibraryCodeForTypes true
                                                        :disableOrganizeImports false}}}}))
 
+(nyoom-module-p! typst
+                 (tset lsp-servers :typst_lsp {}))
+;;(nyoom-module-p! typst (tset lsp-servers :typst-lsp {}))
 (nyoom-module-p! yaml
                  (tset lsp-servers :yamlls
                        {:settings {:yaml {
