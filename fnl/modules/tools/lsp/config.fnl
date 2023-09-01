@@ -2,6 +2,7 @@
 (local lsp (autoload :lspconfig))
 (local lsp-servers {})
 
+;; TODO:: add more doc specs
 
 ;;; Improve UI
 

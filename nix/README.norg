@@ -7,19 +7,52 @@ Nix
 Nvim
 ]
 created: 2023-08-04
-updated: 2023-08-05
+updated: 2023-09-04
 version: 1.1.1
 @end
 
 * Exposed Nix Modules::
-    Nyoom has been steamlining efforts for an alternative package manager, e.g:: {https://github.com/nyoom-engineering/alpacka}[alpacka], so in technicality nix is no longer needed. However, it would be stupid to rely so heavily on fetcher. As a result, adding a HM-module would be more than fitting. Additionally, there's also an `apps` %for 'nix build'% and `pkg` %for 'nix run'%.
+** Ideals::
+  Nyoom has been steamlining efforts for an alternative package manager, e.g:: {https://github.com/nyoom-engineering/alpacka}[alpacka], so in technicality nix is no longer needed. However, it would be stupid to rely so heavily on fetcher. As a result, adding a HM-module would be more than fitting. Additionally, there's also an `apps` %for 'nix build'% and `pkg` %for 'nix run'%.
 
-    Now whether I push this upstream is a different matter entirely, as curtailing this to open customization seems fitting. Two of the main features I want to integrate are as follows::
+  Now whether I push this upstream is a different matter entirely, as curtailing this to open customization seems fitting. Two of the main features I want to integrate are as follows::
 
   ~ Aware Mason Integration
   ~~ Have mason only import
   ~ Nix HM-integration::
   ~~ Have user define modules as normal in `~/.config/nyoom`, and grab that to tell nix which lsp's they require. As LSP integration is slightly annoying with Mason + Nix
-** App::
-** Package::
-** homeManagerModule::
+** Flake-Parts::
+   A dumb, stupid, overpowered library that makes defining flake outputs ridiculously easy.
+   E.g, we can define HM-modules via::
+   @code nix
+   persystem = {_args}:
+   {
+       flake.homeModule.default = import ./modules/nyoom/default.nix;
+   };
+   @end
+   We can even pass-on debug args to certain pkgs, like seen here::
+
+   @code nix
+   #outputs
+   packages = {
+   debug = pkgs.callPackage ./modules/nyoom/default.nix {inherit src; buildType = "debug";};}
+   @end
+   And freaking overlays can simply be passes into the `persystem.overlayAttrs.<mod>` via::
+   @code nix
+   #outputs
+   persystem  = {_args}: {
+       import = [flake-parts.flakeModules.easyOverlay];
+       overlayAttrs = config.packages.default;
+   };
+   @end
+   Where `config` is the options generated from the flake-module.
+
+*** App::
+*** Package::
+*** homeManagerModule::
+** Future::
+   - (=) Port configs to nickel via `fromNcl` {https://github.com/nickel-lang/nickel-nix}[Nickel-Nix API]
+   - (?) Find a way to expose a JSON for Modules::
+   -- Perhaps Adding a global RTP table %much like _G.nyoom% which can be converted to some modules.json file, and then use Nix  to enable the respective List of LSPs in HM.This can be achieved by adding a (nix!) macro, which then throws the `../fnl/modules.fnl` into a `.modules.json` via the "json_encode" lua function, and have that be parsed via nix's `builtins.fromJSON` function.
+   - (? Create Custom Module/Macro Snippets Using Luasnips
+

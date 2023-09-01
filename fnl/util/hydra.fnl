@@ -49,7 +49,7 @@
   (let [hydra (require :hydra)
         which-key (require :which-key)
         opts (or ?opts {})
-        num (or 3 ?num)
+        num (or ?num 3)
         {:prefix ?prefix
          &       opts} opts
         prefix (or ?prefix "")

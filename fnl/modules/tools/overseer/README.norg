@@ -1,0 +1,154 @@
+@document.meta
+title: README
+description:
+authors: strange_cofunctor
+categories: [
+    Nvim
+    Overseer
+]
+created: 2023-08-30
+updated: 2023-09-01
+version: 1.1.1
+@end
+
+* Overseer:: One of the task runners of all time
+** Usage::
+*** Custom Tasks::
+    Tasks can be broken down into 2 parts, a condition and some generator. The generator returns a callback (aka a table) which contains all custom task. The conditional is some option which checks for a specific truth value. E.g:: any function that returns a bool can be used to define conditionals.
+
+    We can Define these tasks manually, or we can import templates, the more sane option.
+**** Template Definitions::
+     A template is simply defined as a table with the following args::
+     @code fennel
+     {:name "Some Task"
+      :builder (fn []
+                 "This function can be whatever, but must have the following return type::"
+                 {:cmd ["cmd_to_use"]
+                  :args ["cmd args to pass" "will be in order"]
+                  :name "Builder_Name"
+                  :cwd "Directory to exec"
+                  :env {:Var "FOO" :Args "These are env vars, like $CFLAGS"}
+                  :component {"custom_comp" :default}
+                  :metadata {:foo "some arbitrary table of data"}})
+      :desc "Optional Desc"
+      :priorty 30
+      :condition {:filetype [:c :cpp]
+                  :dir "/Some/abs/path"
+                  :callback (fn [search])}}
+     @end
+**** Template Providers::
+     These are used to supply multiple templates directly to overseer.
+     We can register providers the same way we'd handle tempaltes, via the `register_template` API. E.g::
+     @code fennel
+     {:generator (fn [search cb]
+                   "passes a search + callback"
+                   (cb {:name :taskname
+                        :builder (fn [])
+                        :priority ""
+                        :condition "Conditional"}
+                      {:name :Task2
+                       :builder (fn [])
+                       :etcetc ""}))
+      :condition (fn [search]
+                   true)}
+
+     @end
+*** Actions::
+*** Components::
+    Components are passed onto builder to trigger specific builds. One can consider it the same as hooks in Nix, such as "on_complete" or some other components. Generally components are reusable, can get quite complicated.
+    The following is how a component skeleton would look::
+    @code fennel
+    {:desc "Component Description"
+     :params {} ;; {# Params::}
+     :editable true ;; type|bool
+     :serializable true ;; type|bool :: whether or not this component can be bundled
+     :constructor (fn [self task]
+                   "We can pass whatever we want here, but the return type is strict
+                    Hence, this can be some internal logic, like vim.api.bufs. It would be bad to do 
+                    such within overseer's API, so general all general logic is applied outside
+                   "
+                    {
+                    ;; These are just task hooks
+                     :on_init (fn [self task])
+                     :on_pre_start (fn [self task])
+                     :on_start (fn [self task])
+                     :on_reset (fn [self task])
+                     :on_pre_result (fn [self task]
+                                      {:table :returned})
+                     :on_result (fn [self task result])
+                     :on_complete (fn [])
+                     :on_status (fn [])
+                     :on_output (fn [])
+                     :on_output_lines (fn [])
+                     :on_exit (fn [])
+                     :on_dispose (fn [])
+                     :render (fn [self task lines highlights detail]
+                               "The render method is used for rendering text, we essentially edit the output here
+                               Lines is a tbl containing the output text
+                               "
+                               (table.insert lines "Lines is our output lines, we can manipulate this table to change output")
+                               (table.inser highlights))})}
+    @end
+**** Params::
+     Parameters are used both by {# Components::}[Components] and {# Templates::}[Templates] to expose custom options. Unlike components, which are hooks, parameters are values that a set would inherit. These are simply just names, and usually we assign parameters /types/. These types are then used to determine functions on those parameters. Below is the skeleton of parameters
+     @code fennel
+     ;; Params Skeleton
+     (local params {:my_var {:type :string ;; Can be of types [string|bool|int|list|enum|opaque]
+                             :name "Some Param Name"
+                             :desc "Describes the purpose of the parameter"
+                             :order 2 ;; Order of param in UI
+                             :validate (fn [value]
+                                         "
+                                         A function that, when passed the param, should return true
+                                         Else, it returns false and terminates the task {:?}
+                                         "
+                                         true)
+                             :optional true ;; Self-explanitory
+                             :default "some_type" ;;The default val, if not changes
+                             ;; When true, will default to task's parameters
+                             :default_from_task true}})
+     @end
+     As a more concrete example, below is a useful component that, when called, will send a channel the input param %Nil for now% for some channel id. This ID is exactly the ID of the /task strategy/ {# ChanID::}["chan_id"]
+     @code fennel
+     (local comp1 {:desc "Attach a toggleterm to the task"
+                   :editable false
+                   :serializable true
+                   :params {:send_on_open {:type :string
+                                           :desc "What to send to task once it has started"
+                                           :default nil
+                                           :optional true}}
+                   :constructor (fn [params]
+                                  "A constructor that will use the Params from above component"
+                                  {:on_start (fn [_ task]
+                                               (if params.send_on_open
+                                                   (vim.fn.chansend task.strategy.chan_id params.send_on_open)))})})
+     @end
+**** Aliases::
+**** Task Results::
+
+*** Strategies::
+    A strategy is what ultimately controls a tasks behavior: how it runs, how it acts with other components, and how it may work with other tasks.
+    There are 5 main strategies::
+**** jobstart::
+**** orchestrator::
+**** terminal::
+**** test::
+**** toggleterm
+*** Customizing Builtins::
+*** Sequential Tasks::
+    Sequential Builds can be passed in two ways::
+    ~ Dependencies::
+      We can pass a task as a dependency
+    ~  Orchestrator::
+       We can also pass a "orchestrator" strategy for builds. E.g::
+    @code fennel
+    (local overseer (require :overseer))
+    (local task (overseer.new_task {:name "Nix Build + Logs"
+                                    :strategy :orchestrator
+                                    ;; Place them in sequential order
+                                    :tasks ["nix build" {} "nix log #"]}))
+    (task:start)
+    @end
+    Will now run `nix log #default` after `nix build`
+*** VSCode Tasks::
+    We can also pass a `.vscode/tasks.json` to help run vscode tasks. These will be picked up via `:OverseerRun`. However, some VScode-extension specific tasks may be unrunnable. As such, we can always {# extend vscode::}[`extend`] these tasks and override them.

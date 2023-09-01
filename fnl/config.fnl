@@ -1,4 +1,5 @@
 (require-macros :macros)
+(import-macros {: >==} :util.macros)
 
 ;; You can use the `colorscheme` macro to load a custom theme, or load it manually
 ;; via require. This is the default:
@@ -49,6 +50,34 @@
 
 (autocmd! :RecordingLeave "*"  #(vim.notify "Finished recording Macro"))
 
+(fn set-shiftwidth [filetype shiftwidth]
+  (autocmd!
+    :FileType
+    filetype
+    #(vim.cmd (string.format " setlocal expandtab tabstop=%d shiftwidth=%d softtabstop=%d "
+                             shiftwidth
+                             shiftwidth
+                             shiftwidth))))
+;; Custom Autocmds::
+(>== [:haskell
+      :norg
+      :xml
+      :xslt
+      :xsd
+      :fennel
+      ;; :javascript
+      ;; :javascriptreact
+      ;; :javascript.jsx
+      ;; :typescript
+      ;; :typescriptreact
+      ;; :typescript.tsx
+      :json
+      :css
+      :html
+      :terraform
+      :scheme
+      :nix]
+     #(set-shiftwidth $1 2))
 ;; sometimes you want to modify a plugin thats loaded from within a module. For 
 ;; this you can use the `after` function
 

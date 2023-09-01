@@ -9,6 +9,7 @@
                       :<leader>e
                       :<leader>f
                       :<leader>g
+                      :<leader>G
                       :<leader>m
                       :<leader>ne
                       :<leader>o

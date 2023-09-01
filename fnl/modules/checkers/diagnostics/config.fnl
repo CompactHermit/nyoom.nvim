@@ -76,6 +76,10 @@
                    (nyoom-module-p! lua
                                     (table.insert null-ls-sources
                                                   null-ls.builtins.diagnostics.selene))))
+; local sources = { null_ls.builtins.code_actions.statix }
+(nyoom-module-p! nix
+                 (table.insert null-ls-sources
+                               null_ls.builtins.code_actions.statix))
 
 (nyoom-module-p! vc-gutter
                  (table.insert null-ls-sources

@@ -76,7 +76,7 @@
         :strategy :terminal
         :task_editor {:border Border :win_opts {:winblend 0}}
         :task_win {:border Border :win_opts {:winblend 0}}
-        :task_list {:separator "────────────────────────────────────────────────────────────────────────────────"
+        :task_list {:separator "───────────────────────────────────────────────────────────────────────────────"
                     :bindings {:<C-e> :Edit
                                :<C-f> :OpenFloat
                                :<C-s> :OpenSplit

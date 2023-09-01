@@ -10,6 +10,23 @@
 
 (local treesitter-filetypes [:vimdoc :fennel :vim :regex :query])
 
+
+;; SEE:: https://github.com/nickel-lang/tree-sitter-nickel/tree/main
+;; ISSUE:: TS Nickel (highlights) broken, fml
+(nyoom-module-p! nickel
+                  (do
+                    ;; Autoload for efficiency
+                   (local tsp (autoload :nvim-treesitter.parsers))
+                   (local parser-config (tsp.get_parser_configs))
+                   (set parser-config.nickel
+                    {:install_info {:url "https://github.com/nickel-lang/tree-sitter-nickel"
+                                    :files [:src/parser.c :src/scanner.cc]
+                                    :branch :main
+                                    :generate_requires_npm false
+                                    :requires_generate_from_grammar false}})
+                   (table.insert treesitter-filetypes :nickel)))
+
+
 ;; conditionally install parsers
 
 (nyoom-module-p! clojure (table.insert treesitter-filetypes :clojure))
@@ -19,6 +36,8 @@
 (nyoom-module-p! csharp (table.insert treesitter-filetypes :c_sharp))
 
 (nyoom-module-p! java (table.insert treesitter-filetypes :java))
+
+(nyoom-module-p! go (table.insert treesitter-filetypes :go))
 
 (nyoom-module-p! julia (table.insert treesitter-filetypes :julia))
 

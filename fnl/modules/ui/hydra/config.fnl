@@ -1,5 +1,6 @@
 (import-macros {: set! : colorscheme : nyoom-module-p! : augroup! : autocmd!} :macros)
 (local {: hydra-key!} (require :util.hydra))
+;; BUG:: hydra-key! ignores the ?num arg
 (local Hydra (autoload :hydra))
 
 ;; Git boi ;;
@@ -634,7 +635,8 @@
                                      :M [#(choose_workspace) "Workspace Choice"]
                                      :e [#(vim.cmd "Neorg inject-metadata") "inject-metadata"]
                                      :i [#(vim.cmd "Neorg journal toc open") "Journal TOC Open"]}}
-                            {:prefix :<leader>})))
+                            {:prefix :<leader>}
+                            4)))
 
 ;; Gods given grace on earth ;;
 (nyoom-module-p! telescope
@@ -768,7 +770,8 @@
                                      :M [#(vim.cmd "Navbuddy") "+ Navbuddy"]
                                      :t [#(vim.cmd "Lspsaga outline") "+ Outline"]
                                      :l [#(vim.cmd "LspLensOn") "+ LspLens"]}}
-                            {:prefix :<leader>})))
+                            {:prefix :<leader>}
+                            4)))
 
 ;; Rusty tools for rusty mans ;;
 (nyoom-module-p! rust
@@ -839,7 +842,7 @@
                    (augroup! localleader-hydras
                              (autocmd! FileType rust `(rust-hydra)))))
 
-;; TODO:: Rewrite this
+;;TODO:: add more utilities and tinker with HT
 ;; Haskell ;;
 (nyoom-module-p! haskell
                (do
@@ -858,9 +861,55 @@
                                     :m [#(vim.cmd "HsPackageCabal") "Open *.cabal"]
                                     :M [#((. project :telescope_package_grep)) "Telescope Packages"]
                                     :t [#((. hoogle :hoogle_signature) (vim.api.nvim_get_current_line)) "Hoogle search Line"]}}
-                            {:prefix :<leader>}))
+                            {:prefix :<leader>}
+                            4))
                 (augroup! localleader-hydras
                              (autocmd! FileType haskell `(haskell-hydra)))))
+
+(nyoom-module-p! go
+               (do
+                (fn go-hydra []
+                  (hydra-key! :n
+                               {:G {:hydra true
+                                    :name "Go:: Coding"
+                                    :config {:color :teal
+                                             :hint {:border :solid :position :middle-right}
+                                             :invoke_on_body true}
+                                    :a [#(vim.cmd "GoCodeAction") "Add tags"]
+                                    :e [#(vim.cmd "GoIfErr") "Add if err"]
+                                    :i [#(vim.cmd "GoToggleInlay") "Toggle inlay"]
+                                    :l [#(vim.cmd "GoLint") "Run linter"]
+                                    :o [#(vim.cmd "GoPkgOutline") "Outline"]
+                                    :r [#(vim.cmd "GoRun") "Run"]
+                                    :s [#(vim.cmd "GoFillStruct") "Autofill struct"]}}
+                               {:prefix :<leader>}
+                               1)
+                  (hydra-key! :n
+                              {:fh {:name "Go:: Helpers"
+                                    :a [#(vim.cmd "GoAddTag") "Add tags to struct"]
+                                    :r [#(vim.cmd "GoRMTag") "Remove tags to struct"]
+                                    :c [#(vim.cmd "GoCoverage") "Test coverage"]
+                                    :g [#(vim.cmd "lua require('go.comment').gen()") "Generate comment"]
+                                    :v [#(vim.cmd "GoVet") "Go vet"]
+                                    :t [#(vim.cmd "GoModTidy") "Go mod tidy"]
+                                    :i [#(vim.cmd "GoModInit") "Go mod init"]}}
+                              {:prefix :<leader>})
+                  (hydra-key! :n
+                              {:ft {:name "Go:: Tests"
+                                    :r [#(vim.cmd "GoTest") "Run tests"]
+                                    :a [#(vim.cmd "GoAlt!") "Open alt file"]
+                                    :s [#(vim.cmd "GoAltS!") "Open alt file in split"]
+                                    :v [#(vim.cmd "GoAltV!") "Open alt file in vertical split"]
+                                    :u [#(vim.cmd "GoTestFunc") "Run test for current func"]
+                                    :f [#(vim.cmd "GoTestFile") "Run test for current file"]}}
+                              {:prefix :<leader>})
+                  (hydra-key! :n
+                    {:fx {:name "Go:: Codelens"
+                          :l [#(vim.cmd "GoCodeLenAct") "Toggle Lens"]
+                          :a [#(vim.cmd "GoCodeAction") "Code Action"]}}
+                    {:prefix :<leader>}))
+                (augroup! localleader-hydras
+                             (autocmd! FileType go `(go-hydra)))))
 
 ;Intercourse;;
 (nyoom-module-p! latex

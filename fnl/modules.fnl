@@ -12,7 +12,7 @@
         :ui
         (nyoom +modes +icons); what makes Nyoom look the way it does
         dashboard            ; a nifty splash screen for neovim
-        ;;nyoom-quit         ; WIP: buggy, terrible implementation of doom-quit. 
+        ;nyoom-quit         ; WIP: buggy, terrible implementation of doom-quit. 
         hydra                ; Discount modality for mythological beast hunters
         ;;indent-guides      ; highlighted indent columns
         modeline             ; snazzy, nano-emacs-inspired modeline
@@ -93,6 +93,7 @@
           +nabla)
         ; (org +pretty)        ; WIP: organize your plain life in plain text, the emacs way
         nix                  ; I hereby declare "nix geht mehr!"
+        nickel               ; Dhall, but nixified
         python               ; beautiful is better than ugly
         rust                 ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
         typescript           ; Javas Ugly, bloated, linter-tool
@@ -102,7 +103,7 @@
         ;(sh +fish)           ; she sells {ba,z,fi}sh shells on the C xor
         ;;xml                ; extend my language
         ;;yaml               ; yet another markup language to enable
-        ; go                 ; No Bitches??
+        go                 ; No Bitches??
         lean                 ; Make your category-theory coursework 1000x harder.
         ;agda                ; TODO:: add cornelis nix bindings
         haskell              ; Functionally Braindead parsers

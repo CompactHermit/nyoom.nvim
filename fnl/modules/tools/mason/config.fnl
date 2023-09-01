@@ -49,8 +49,12 @@
     (nyoom-module-p! nim
       (table.insert mason-tools :nimlsp))
 
-    (nyoom-module-p! nix
-      (table.insert mason-tools :nil))
+    ;; Just Use profiles and per project support
+    ; (nyoom-module-p! nix
+      ; (table.insert mason-tools :nil))
+
+    (nyoom-module-p! nickel
+                     (table.insert mason-tools :nickel-lang-lsp))
 
     (nyoom-module-p! python
       (table.insert mason-tools :pyright))
