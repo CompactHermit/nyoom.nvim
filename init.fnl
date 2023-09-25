@@ -28,6 +28,9 @@
 
 (local default-providers [:node :perl :ruby])
 
+; package.path = package.path .. ";" .. "/Users/benlubas/.luarocks/share/lua/5.1/?/init.lua"
+; package.path = package.path .. ";" .. "/Users/benlubas/.luarocks/share/lua/5.1/?.lua"
+;; Workaround for Image.nvim
 (each [_ plugin (pairs default-plugins)] (tset vim.g (.. :loaded_ plugin) 1))
 (each [_ provider (ipairs default-providers)]
   (tset vim.g (.. :loaded_ provider :_provider) 0))

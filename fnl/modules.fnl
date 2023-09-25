@@ -24,7 +24,7 @@
         zen                  ; distraction-free coding or writing TODO +twilight
         noice                ; noice ui
         animate              ; Just use Emacs you bloated fu**
-        ; images               ; Why aren't you just using emacs at this point?
+        images               ; Why aren't you just using emacs at this point?
 
         :editor
         fold                 ; (nigh) universal code folding
@@ -81,7 +81,7 @@
         ; kotlin             ; a better, slicker Java(Script)
         ; json               ; { "dʒeɪsən":  "Javascript Object Notation" }
         latex                ; writing papers in Neovim has never been so fun
-        lua                 ; one-based indices? one-based indices
+        ; lua                 ; one-based indices? one-based indices
         markdown             ; writing docs for people to ignore
         ; nim                ; python + lisp at the speed of c
         (neorg               ; organize your plain life in plain text, the neovim way
@@ -94,23 +94,25 @@
         ; (org +pretty)        ; WIP: organize your plain life in plain text, the emacs way
         nix                  ; I hereby declare "nix geht mehr!"
         nickel               ; Dhall, but nixified
+        ocaml                ; Nested Let Blocks? Nested Let blocks!!
         python               ; beautiful is better than ugly
         rust                 ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
         typescript           ; Javas Ugly, bloated, linter-tool
         typst                ; If latex had one compiler, and less sty bloat
         svelte               ; Cybernetically enchanced JS, now eating your memory at 10x speed
         ; scala              ; Functional Java, done right
-        ;(sh +fish)           ; she sells {ba,z,fi}sh shells on the C xor
+        (sh +nu) ;+fish)           ; she sells {ba,z,fi}sh shells on the C xor
         ;;xml                ; extend my language
         ;;yaml               ; yet another markup language to enable
         go                 ; No Bitches??
         lean                 ; Make your category-theory coursework 1000x harder.
         ;agda                ; TODO:: add cornelis nix bindings
         haskell              ; Functionally Braindead parsers
-        zig                  ; C, but slower and fatter
+        ;zig                  ; C, but slower and fatter
 
         :app
         ;;calendar           ; Watch your missed deadlines in real time
+        ;; runner               ; Whether to enable the nyoom wrapper for nix
 
         :config
         ;;literate           ; FIXME: Disguise your config as poor documentation

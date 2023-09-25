@@ -7,11 +7,11 @@
                       :<leader>cl
                       :<leader>d
                       :<leader>e
-                      :<leader>f
                       :<leader>g
+                      :<leader>f
                       :<leader>G
-                      :<leader>m
                       :<leader>ne
+                      :<leader>m
                       :<leader>o
                       :<leader>O
                       :<leader>q

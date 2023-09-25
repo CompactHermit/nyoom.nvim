@@ -209,7 +209,7 @@
 ;;===============================================================;;
 ;; NOTE:: Flash Utils
 (fn treejump []
-  "Jump Using Treesitter noded"
+  "Jump Using Treesitter-nodes"
   (local win (vim.api.nvim_get_current_win))
   (local view (vim.fn.winsaveview))
   ((. (require :flash) :jump) {:action (fn  [matched state]
@@ -281,6 +281,20 @@
     ;; This just looks cooler:: we go (->> required plugin_cmd (req plugin) ) _args_
    ((->> :jump
         (. (require :flash))) config)))
+
+;;===============================================================;;
+;; Lazy-Requires::
+;; SOURCE:: https://github.com/tjdevries/lazy-require.nvim
+
+(fn lazy-reqidx [path]
+  "
+    Only requires a value within a metatable when the table has been index.
+    This allows for an (autoload!)-like feature for modules, insanely useful for utils.
+  "
+  (setmetatable {} {:__index (fn [_ key]
+                               (. (require :path)key))
+                    :__newindex (fn [_ key value]
+                                  (tset (require :path) key value))}))
 
 ;;===============================================================;;
 

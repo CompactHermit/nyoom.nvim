@@ -40,5 +40,3 @@ if pcall(require, "hotpot") then
 else
   return print("Unable to require hotpot")
 end 
-
-

@@ -1,0 +1,17 @@
+@document.meta
+title: index
+description: 
+authors: strange_cofunctor
+categories: 
+created: 2023-10-02T15:06:19-0500
+updated: 2023-10-03T17:00:51-0500
+version: 1.1.1
+@end
+
+* Nvim Dev::
+** Agenda/TODO's::
+   - ( ) Secondary Tasks
+   -- (-) Fix HLS issues with haskell-flake
+   ---
+
+

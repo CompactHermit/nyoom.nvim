@@ -3,19 +3,18 @@
 
 ;; You can use the `colorscheme` macro to load a custom theme, or load it manually
 ;; via require. This is the default:
-
 (set! background :dark)
 (colorscheme oxocarbon)
 
-;; The set! macro sets vim.opt options. By default it sets the option to true 
-;; Appending `no` in front sets it to false. This determines the style of line 
-;; numbers in effect. If set to nonumber, line numbers are disabled. For 
+;; The set! macro sets vim.opt options. By default it sets the option to true
+;; Appending `no` in front sets it to false. This determines the style of line
+;; numbers in effect. If set to nonumber, line numbers are disabled. For
 ;; relative line numbers, set 'relativenumber`
 
 (set! relativenumber)
 (set! conceallevel 2)
 
-;; The let option sets global, or `vim.g` options. 
+; The let option sets global, or `vim.g` options.
 ;; Heres an example with localleader, setting it to <space>m
 (let! maplocalleader " m")
 (let! tex_conceal :abdgm)
@@ -39,7 +38,7 @@
 (map! [n] :P "<Plug>(YankyPutBefore)")
 (map! [n] :gp "<Plug>(YankyGPutAfter)")
 (map! [n] :<space>ct "<cmd>lua require('lsp_lines').toggle()<cr>")
-;; The let option sets global, or `vim.g` options. 
+;; The let option sets global, or `vim.g` options.
 ;; Heres an example with localleader, setting it to <space>m
 
 ; (let! maplocalleader " m")
@@ -50,6 +49,8 @@
 
 (autocmd! :RecordingLeave "*"  #(vim.notify "Finished recording Macro"))
 
+
+;; Custom Autocmds::
 (fn set-shiftwidth [filetype shiftwidth]
   (autocmd!
     :FileType
@@ -58,7 +59,7 @@
                              shiftwidth
                              shiftwidth
                              shiftwidth))))
-;; Custom Autocmds::
+
 (>== [:haskell
       :norg
       :xml
@@ -78,7 +79,9 @@
       :scheme
       :nix]
      #(set-shiftwidth $1 2))
-;; sometimes you want to modify a plugin thats loaded from within a module. For 
-;; this you can use the `after` function
+
+
+;; Custom Highlight Groups
+; hi TreesitterContextBottom gui=underline guisp=Grey
 
 

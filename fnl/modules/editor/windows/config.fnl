@@ -12,8 +12,12 @@
                      {:title "Buffer List"
                       :ft "neo-tree"
                       :filter (fn [buf]
-                                (= (. (. vim.b buf) :neo_tree_source) "buffers"))
-                      :open "Neotree position=top buffers"}
+                                (= (. (. vim.b buf) :neo_tree_source) "buffers"))}
+                     {:ft :lspsagaoutline ;; from <cmd>lua print(vim.bo.filetype) <cr>, the bast*** keeps changing the names, fml
+                      :title "LSP Outline"
+                      :open "Lspsaga outline"
+                      :size {:height 1.0}}
+                     :open "Neotree position=top buffers"
                      {:title "Overseer List"
                       :ft :OverseerList
                       :open :OverseerToggle}
@@ -41,11 +45,7 @@
                        :Noice
                        {:ft [:qf]
                         :title :QuickFix}]
-              :right [{:ft :lspsagaoutline ;; from <cmd>lua print(vim.bo.filetype) <cr>, the bast*** keeps changing the names, fml
-                       :title "LSP Outline"
-                       :open "Lspsaga outline"
-                       :size {:height 1.0}}
-                      {:ft :tsplayground
+              :right [{:ft :tsplayground
                        :title :TSPlayground}
                       :dapui_scopes
                       :neotest-output-panel

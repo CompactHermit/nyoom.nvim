@@ -10,6 +10,7 @@
         :core.ui {}
         :core.integrations.telescope {}
         ;;:external.codecap {}
+        :core.integrations.image {}
         :external.exec {}
         :core.ui.calendar {}
         :core.summary {:config {:strategy :default}}

@@ -28,7 +28,7 @@ version: 0.1.0
 
    Nyoom takes heavy advantage of fennel's compile-time macro functionality, which builds the core of Nyoom's module system and package management system. Nyoom's module system allows for clever interactions between sets of plugins defined into modules, a concept familiar to users of doom emacs. However, emacs-lisp isn't fennel and thats where Nyoom's magic starts 
 
-   A list of modules is defined in `modules.fnl` using the `nyoom!` macro. The purpose of the `nyoom!` macro is to take the list of modules, formatted similar to doom's plist, and turn it into something neovim can read. It does at compile-time by
+   A list of modules is defined in `modules.fnl` using the `nyoom!` macro. The purpose of the `nyoom!` macro is to take the list of modules, formatted similar to doom's plist, and turn it into something neovim can read. It does at compile-time by:
    1. loading all of the enabled modules into a `registry`
    2. `including` (inline require) all of the enabled modules into `packages.fnl`. This allows Nyoom's package management system to module dependencies, and allows for more advanced macros that can pre-compute code determined across multiple modules.
    3. `compiling` all of the enabled modules. As we loaded the list of modules and several macros in our `include` pass, we can use this information to conditionally compile code using macros (`nyoom-module-p!`), compile warnings (`nyoom-ensure-module!`) and more.

@@ -55,6 +55,9 @@
 
 (nyoom-module-p! sh.+fish (table.insert treesitter-filetypes :fish))
 
+
+(nyoom-module-p! sh.+nu (table.insert treesitter-filetypes :nu))
+
 (nyoom-module-p! zig (table.insert treesitter-filetypes :zig))
 
 (nyoom-module-p! cc
@@ -70,7 +73,8 @@
 (nyoom-module-p! markdown
                  (do
                    (table.insert treesitter-filetypes :markdown)
-                   (table.insert treesitter-filetypes :markdown_inline)))
+                   (table.insert treesitter-filetypes :markdown_inline)
+                   (table.insert treesitter-filetypes :html)))
 
 (nyoom-module-p! vc-gutter
                  (do
@@ -90,16 +94,18 @@
                                         :files [:src/parser.c :src/scanner.cc]
                                         :branch :main}})
                    (table.insert treesitter-filetypes :org)))
+(nyoom-module-p! ocaml
+                 (table.insert treesitter-filetypes :ocaml))
 
 (nyoom-module-p! neorg
                  (do
                    (local tsp (autoload :nvim-treesitter.parsers))
                    (local parser-config (tsp.get_parser_configs))
-                   (set parser-config.norg
-                        {:install_info {:url "https://github.com/nvim-neorg/tree-sitter-norg"
-                                        :files [:src/parser.c :src/scanner.cc]
-                                        :branch :dev
-                                        :use_makefile true}})
+                   ; (set parser-config.norg
+                   ;      {:install_info {:url "https://github.com/nvim-neorg/tree-sitter-norg"
+                   ;                      :files [:src/parser.c :src/scanner.cc]
+                   ;                      :branch :dev
+                   ;                      :use_makefile true}})
                    (set parser-config.norg_meta
                         {:install_info {:url "https://github.com/nvim-neorg/tree-sitter-norg-meta"
                                         :files [:src/parser.c]
@@ -114,10 +120,11 @@
 
 ;; load dependencies
 
-(packadd! nvim-ts-rainbow2)
+;(packadd! nvim-ts-rainbow2)
 (packadd! nvim-ts-refactor)
 (packadd! nvim-treesitter-textobjects)
-(packadd! nvim-ts-context-commentstring) 
+(packadd! nvim-ts-context-commentstring)
+(packadd! ts-node-action)
 
 ;; setup hl groups for ts-rainbow
 
@@ -172,61 +179,4 @@
                                                    "[[" "@class.outer"}
                              :goto_previous_end {"[N" "@function.outer"
                                                  "[]" "@class.outer"}}}})
-; peek_definition_code = {
-;                         ["gl"] = "@function.outer",
-;                         ["gK"] = "@class.outer",}
-;                 ,
-;             ,
-;             move = {
-;                     enable = enable,
-;                     set_jumps = true, -- whether to set jumps in the jumplist
-;                     goto_next_start = {
-;                                        ["gnf"] = "@function.outer",
-;                                        ["gnif"] = "@function.inner",
-;                                        ["gnp"] = "@parameter.inner",
-;                                        ["gnc"] = "@call.outer",
-;                                        ["gnic"] = "@call.inner",}
-;                     ,
-;                     goto_next_end = {
-;                                      ["gnF"] = "@function.outer",
-;                                      ["gniF"] = "@function.inner",
-;                                      ["gnP"] = "@parameter.inner",
-;                                      ["gnC"] = "@call.outer",
-;                                      ["gniC"] = "@call.inner",}
-;                     ,
-;                     goto_previous_start = {
-;                                            ["gpf"] = "@function.outer",
-;                                            ["gpif"] = "@function.inner",
-;                                            ["gpp"] = "@parameter.inner",
-;                                            ["gpc"] = "@call.outer",
-;                                            ["gpic"] = "@call.inner",}
-;                     ,
-;                     goto_previous_end = {
-;                                          ["gpF"] = "@function.outer",
-;                                          ["gpiF"] = "@function.inner",
-;                                          ["gpP"] = "@parameter.inner",
-;                                          ["gpC"] = "@call.outer",
-;                                          ["gpiC"] = "@call.inner",}
-;                     ,}
-;             ,
-;             select = {
-;                       enable = true,
-;                       include_surrounding_whitespace = true,
-;                       keymaps = {
-;                                  ["af"] = { query = "@function.outer", desc = "ts: all function" },
-;                                  ["if"] = { query = "@function.inner", desc = "ts: inner function" },
-;                                  ["ac"] = { query = "@class.outer", desc = "ts: all class" },
-;                                  ["ic"] = { query = "@class.inner", desc = "ts: inner class" },
-;                                  ["aC"] = { query = "@conditional.outer", desc = "ts: all conditional" },
-;                                  ["iC"] = { query = "@conditional.inner", desc = "ts: inner conditional" },
-;                                  -- FIXME: this is unusable
-;                                  -- https://github.com/nvim-treesitter/nvim-treesitter-textobjects/issues/133 is resolved
-;                                  -- ['ax'] = '@comment.outer',}
-;                       ,}
-;             ,
-;             swap = {
-;                     enable = enable,
-;                     swap_next = { ["<leader>a"] = "@parameter.inner" },
-;                     swap_previous = { ["<leader>A"] = "@parameter.inner" },}
-;             ,
-;         ,
+

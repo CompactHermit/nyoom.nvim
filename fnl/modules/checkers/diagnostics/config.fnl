@@ -1,5 +1,6 @@
 (import-macros {: nyoom-module-p! : nyoom-module-ensure!} :macros)
 (local {: on-attach} (autoload :modules.tools.lsp.config))
+
 (local null-ls (autoload :null-ls))
 (local null-ls-sources [])
 
@@ -18,6 +19,8 @@
 (vim.fn.sign_define :DiagnosticSignInfo {:text shared.icons.info :texthl "DiagnosticSignInfo"})
 (vim.fn.sign_define :DiagnosticSignHint {:text shared.icons.hint :texthl "DiagnosticSignHint"})
 
+
+;; Note:: (CompactHermit) <09/26> This is actually not picked by vim, mostly because the table is wrong
 (nyoom-module-p! config.+bindings
                  (do
                    (local {:open_float open-line-diag-float!
@@ -33,7 +36,6 @@
 
 (nyoom-module-p! format
                  (do
-                   ;; (table.insert null-ls-sources null-ls.builtins.formatting.fnlfmt)
                    (nyoom-module-p! cc
                                     (table.insert null-ls-sources
                                                   null-ls.builtins.formatting.clang_format))
@@ -61,6 +63,9 @@
                                                     null-ls.builtins.formatting.black)
                                       (table.insert null-ls-sources
                                                     null-ls.builtins.formatting.isort)))
+                   (nyoom-module-p! nickel
+                                    (table.insert null-ls-sources
+                                                  null-ls.builtins.formatting.topiary))
                    (nyoom-module-p! rust
                                     (table.insert null-ls-sources
                                                   null-ls.builtins.formatting.rustfmt))
@@ -75,8 +80,11 @@
                  (do
                    (nyoom-module-p! lua
                                     (table.insert null-ls-sources
-                                                  null-ls.builtins.diagnostics.selene))))
-; local sources = { null_ls.builtins.code_actions.statix }
+                                                  null-ls.builtins.diagnostics.selene))
+                   (nyoom-module-p! python
+                                    (table.insert null-ls-sources
+                                                  null-ls.builtins.diagnostics.flake8))))
+
 (nyoom-module-p! nix
                  (table.insert null-ls-sources
                                null_ls.builtins.code_actions.statix))
@@ -92,3 +100,4 @@
                 :diagnostics_format "[#{c}] #{m} (#{s})"
                 :debug true
                 :on_attach on-attach})
+

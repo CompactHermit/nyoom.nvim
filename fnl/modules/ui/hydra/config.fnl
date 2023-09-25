@@ -19,9 +19,9 @@
                           (autoload :gitsigns))
                    (local git-hint "
                     Git
-  
+
     _J_: next hunk     _d_: show deleted
-    _K_: prev hunk     _u_: undo last stage  
+    _K_: prev hunk     _u_: undo last stage
     _s_: stage hunk    _/_: show base file
     _p_: preview hunk  _S_: stage buffer
     _b_: blame line    _B_: blame show full
@@ -113,7 +113,7 @@
     ^ ^        Options
     ^
     _v_ %{ve} virtual edit
-    _i_ %{list} invisible characters  
+    _i_ %{list} invisible characters
     _s_ %{spell} spell
     _w_ %{wrap} wrap
     _c_ %{cul} cursor line
@@ -181,7 +181,6 @@
                                           (set! cursorline)))
                                     {:desc "cursor line"}]
                                    [:<Esc> nil {:exit true :nowait true}]]})))
-
 ;; Harpoon ;;
 (nyoom-module-p! harpoon
      (do
@@ -245,7 +244,6 @@
                          (fn []
                            (vim.cmd "HarpoonMenu"))]
                        [:<Esc> nil {:exit true :nowait true}]]})))
-
  ;; Tmux ;;
 (nyoom-module-p! tmux
                (do
@@ -294,8 +292,7 @@
                                 [:p
                                   #(os.execute "tmux select-window -l")]
                                 [:<Esc> nil {:exit true :nowait true}]]})))
-
-
+;; Octussy ;;
 (nyoom-module-p! octo
      (do
       (local {: caller}
@@ -402,7 +399,6 @@
                           (vim.notify :Active)
                           (caller options :reaction))]
                       [:<Esc> nil {:exit true :nowait true}]]})))
-
 ;; Browser ::
 (nyoom-module-p! browse
                  (do
@@ -420,13 +416,13 @@
                  ^ ^
                          ")
                    (Hydra {:name :Browser
-                           :hint browse-hints 
+                           :hint browse-hints
                            :config {:color :teal :invoke_on_body true :timeout false :hint {:type :window  :border :solid :position :middle-right}}
                            :body :<leader>q
                            :heads [[:w
                                      (fn []
                                        (vim.cmd "lua require('browse').browse()"))]
-                                   [:W 
+                                   [:W
                                      (fn []
                                        (vim.cmd "lua require('browse').browse({ bookmarks = bookmarks['default'] })"))
                                      {:exit true}]
@@ -442,14 +438,14 @@
                                    [:K
                                      (fn []
                                        (vim.cmd "DD"))]
-                                   [:S 
+                                   [:S
                                      (fn []
                                        (vim.cmd "lua require('updoc').search()"))]
                                    [:z
                                      (fn []
                                        (vim.cmd "Zeavim"))]
                                    [:<Esc> nil {:exit true :nowait true}]]})))
-
+;; Neotest ;;
 (nyoom-module-p! neotest
      (do
        (local {: test_class : test_method : debug_selection} (require :util))
@@ -465,9 +461,9 @@
 ^^ _D_: Test Stop
 ^^ _a_: Test Attach
 ^^ _C_: Test Class
-^^ _m_: Test Method 
-^^ _d_: Debug Selection 
-^^ _<Esc>_: 
+^^ _m_: Test Method
+^^ _d_: Debug Selection
+^^ _<Esc>_:
 
     ")
       (Hydra {:name :+Neotest
@@ -498,8 +494,7 @@
                       [:d (fn []
                             (debug_selection))]
                       [:<Esc> nil {:exit true :nowait true}]]})))
-
-
+;;Overseer::My sweet beloved;;
 (nyoom-module-p! overseer
                  (do
                    (local overseer-hints "
@@ -550,8 +545,7 @@
                                                                      (if task (overseer.run_action task "open float")
                                                                          (vim.notify "Task not found"))))))]
                                    [:<Esc> nil {:exit true :nowait true}]]})))
-
-;; TODO:: Add custom functions, like in Git ReadME
+;; Flash ;;
 (nyoom-module-p! tree-sitter
                  (do
                    (local {: treejump : jump_window : win_select : tree_bounce} (require :util))
@@ -565,6 +559,10 @@
             ^^ _w_: Flash Windows
             ^^ _W_: Flash Beginning words
             ^^ _M_: Flash Bounce
+            ──────────────────────────
+            ^^ _i_: SwapNode
+            ^^ _h_: Swap Left
+            ^^ _l_: Swap Right
 
             ^^ _<Esc>_: Escape")
                   (Hydra {:name :+flash
@@ -598,16 +596,21 @@
                                   [:S
                                     (fn []
                                       ((. (require :flash) :treesitter)))]
-                                  [:M 
+                                  [:M
                                     (fn []
                                       (tree_bounce))
                                     {:desc "Flash TreeBounce"}]
+                                  [:i (fn []
+                                        #(vim.cmd :ISwapNodeWith))]
                                   [:r
                                     (fn []
                                       ((. (require :flash) :remote)))]
+                                  [:h
+                                   #(vim.cmd "ISwapNodeWithRight")]
+                                  [:l
+                                   #(vim.cmd "ISwapNodeWithLeft")]
                                   [:<Esc> nil {:exit true :nowait true}]]})))
-
-
+;; Neorg ;;
 (nyoom-module-p! neorg
                  (do
                    (fn choose_workspace []
@@ -637,7 +640,6 @@
                                      :i [#(vim.cmd "Neorg journal toc open") "Journal TOC Open"]}}
                             {:prefix :<leader>}
                             4)))
-
 ;; Gods given grace on earth ;;
 (nyoom-module-p! telescope
                  (do
@@ -647,7 +649,7 @@
            _r_: resume      _f_: find files
    ▁
            _h_: vim help    _c_: execute command
-           _k_: keymaps     _;_: commands history  
+           _k_: keymaps     _;_: commands history
            _O_: options     _?_: search history
   ^
   _<Esc>_         _<Enter>_: NvimTree
@@ -710,7 +712,6 @@
                                       (vim.cmd :NvimTreeToggle))
                                     {:exit true :desc :NvimTree}]
                                    [:<Esc> nil {:exit true :nowait true}]]})))
-
 ;; Debugger ;;
 (nyoom-module-p! debugger
                  (do
@@ -719,9 +720,9 @@
                    (local hint "
                  Debug
       ^ ^Step^ ^ ^     ^ ^     Action
-      ^ ^ ^ ^ ^ ^      ^ ^  
-      ^ ^back^ ^ ^     ^_t_ toggle breakpoint  
-      ^ ^ _K_^ ^        _T_ clear breakpoints  
+      ^ ^ ^ ^ ^ ^      ^ ^
+      ^ ^back^ ^ ^     ^_t_ toggle breakpoint
+      ^ ^ _K_^ ^        _T_ clear breakpoints
   out _H_ ^ ^ _L_ into  _c_ continue
       ^ ^ _J_ ^ ^       _x_ terminate
       ^ ^over ^ ^     ^^_r_ open repl
@@ -754,7 +755,6 @@
                                    [:<Enter>
                                     (fn []
                                       (ui.toggle))]]})))
-
 ;; LSP Utilities ;;
 (nyoom-module-p! lsp
                  (do
@@ -769,10 +769,9 @@
                                      :m [#(vim.cmd "Lspsaga peek_type_definition") "+ PeekTypeDefinition"]
                                      :M [#(vim.cmd "Navbuddy") "+ Navbuddy"]
                                      :t [#(vim.cmd "Lspsaga outline") "+ Outline"]
-                                     :l [#(vim.cmd "LspLensOn") "+ LspLens"]}}
+                                     :L [#(vim.cmd "LspLensOn") "+ LspLens"]}}
                             {:prefix :<leader>}
                             4)))
-
 ;; Rusty tools for rusty mans ;;
 (nyoom-module-p! rust
                  (do
@@ -783,7 +782,7 @@
   _d_: debugabbles    _c_: open cargo
   _s_: rustssr        _p_: parent module
   _h_: hover actions  _w_: reload workspace
-  _D_: open docs      _g_: view create graph  
+  _D_: open docs      _g_: view create graph
 ^
   _i_: Toggle Inlay Hints   _<Esc>_: Exit
     ")
@@ -841,8 +840,40 @@
                                      [:<Esc> nil {:exit true :nowait true}]]}))
                    (augroup! localleader-hydras
                              (autocmd! FileType rust `(rust-hydra)))))
-
 ;;TODO:: add more utilities and tinker with HT
+
+(nyoom-module-p! animate
+                 (do
+                   (local venv-hints
+                          "
+                    Venv:Mode
+                    Arrow^^^^^^  Select region with <C-v>^^^^^^
+                    ^ ^ _K_ ^ ^  _f_: Surround with box ^ ^ ^ ^
+                    _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
+                    ^ ^ _J_ ^ ^  _<C-k>_: ▲, _<C-l>_: ► _<C-c>_
+                          ")
+                   (Hydra
+                     {:name "Draw Diagrams"
+                      :hint venv-hints
+                      :config {:color :pink
+                               :invoke_on_body true
+                               :hint {:border :rounded}
+                               :on_enter (fn []
+                                           (set vim.wo.virtualedit :all))}
+                      :mode [:n]
+                      :body :<leader>w
+                      :heads [[:<C-h> :xi<C-v>u25c4<Esc>]
+                              [:<C-j> :xi<C-v>u25bc<Esc>]
+                              [:<C-k> :xi<C-v>u25b2<Esc>]
+                              [:<C-l> :xi<C-v>u25ba<Esc>]
+                              [:H "<C-v>h:VBox<CR>"]
+                              [:J "<C-v>j:VBox<CR>"]
+                              [:K "<C-v>k:VBox<CR>"]
+                              [:L "<C-v>l:VBox<CR>"]
+                              [:f ":VBox<CR>" {:mode :v}]
+                              [:<C-c> nil {:exit true}]]})))
+
+
 ;; Haskell ;;
 (nyoom-module-p! haskell
                (do
@@ -865,7 +896,7 @@
                             4))
                 (augroup! localleader-hydras
                              (autocmd! FileType haskell `(haskell-hydra)))))
-
+;; Go faster, wagie! ;;
 (nyoom-module-p! go
                (do
                 (fn go-hydra []
@@ -910,19 +941,18 @@
                     {:prefix :<leader>}))
                 (augroup! localleader-hydras
                              (autocmd! FileType go `(go-hydra)))))
-
 ;Intercourse;;
 (nyoom-module-p! latex
                  (do
                    (fn latex-hydra []
                      (local vimtex-hint "
-    ^                     VimTex                      
-    ^                                                 
+    ^                     VimTex
+    ^
     _ll_: Continuous Compile    _ss_: Snapshot Compile
     _lC_: Clean Up Files        _lt_: Table of Content
-    _cw_: Count Words           _cl_: Count Letters   
-    _le_: Errors                _lq_: Log             
-    ^                                                 
+    _cw_: Count Words           _cl_: Count Letters
+    _le_: Errors                _lq_: Log
+    ^
     ^_h_: Default Maps                      _<Esc>_^^^
        ")
                      (Hydra {:name :+latex
@@ -932,7 +962,7 @@
                                       :hint {:border :solid :position :middle}
                                       :buffer true}
                              :mode [:n :x]
-                             :body :<leader>f
+                             :body :<leader>F
                              :heads [[:ll
                                       (fn []
                                         (vim.cmd :VimtexCompile))

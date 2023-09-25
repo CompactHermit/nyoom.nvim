@@ -1,7 +1,13 @@
 (import-macros {: use-package!} :macros)
 
-(use-package! :jose-elias-alvarez/null-ls.nvim
+; (use-package! :jose-elias-alvarez/null-ls.nvim
+              ; {:nyoom-module checkers.diagnostics :after :nvim-lspconfig})
+
+(use-package! :nvimtools/none-ls.nvim
               {:nyoom-module checkers.diagnostics :after :nvim-lspconfig})
+
+; (use-package! :stevearc/conform.nvim
+              ; {:nyoom-module checkers.diagnostics :after :nvim-lspconfig})
 
 ;; floating diagnostics as lines instead
 (use-package! "https://git.sr.ht/~whynothugo/lsp_lines.nvim"

@@ -24,4 +24,3 @@
                                           (a:move xn yn))))))
                      (command! ImageMove `(mover) {:desc "Move Image with Image.nvim API"}))))
 
-  ; (command! HarpoonMarks "lua require('harpoon.mark').add_file()" {:desc "Harpoon Add files"}))

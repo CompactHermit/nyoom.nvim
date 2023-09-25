@@ -1,8 +1,7 @@
 # neovim::
-lua/
+lua/packer_compiled.lua
 profile.json
 inbox.norg
-flake.lock
 start.txt
 
 # Notes::

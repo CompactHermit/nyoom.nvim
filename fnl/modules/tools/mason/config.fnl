@@ -40,21 +40,14 @@
     (nyoom-module-p! lean
      (table.insert mason-tools :lean-language-server))
 
-    (nyoom-module-p! lua
-      (table.insert mason-tools :lua-language-server))
+    ; (nyoom-module-p! lua
+    ;   (table.insert mason-tools :lua-language-server))
 
     (nyoom-module-p! markdown
       (table.insert mason-tools :marksman))
 
     (nyoom-module-p! nim
       (table.insert mason-tools :nimlsp))
-
-    ;; Just Use profiles and per project support
-    ; (nyoom-module-p! nix
-      ; (table.insert mason-tools :nil))
-
-    (nyoom-module-p! nickel
-                     (table.insert mason-tools :nickel-lang-lsp))
 
     (nyoom-module-p! python
       (table.insert mason-tools :pyright))
@@ -101,11 +94,8 @@
         (table.insert mason-tools :black)
         (table.insert mason-tools :isort)))
 
-    (nyoom-module-p! rust
-      (table.insert mason-tools :rustfmt))
-
-    (nyoom-module-p! haskell
-     (table.insert mason-tools :fourmolu))
+    ; (nyoom-module-p! haskell
+    ;  (table.insert mason-tools :fourmolu))
 
     (nyoom-module-p! sh
       (table.insert mason-tools :shfmt))))
@@ -118,7 +108,7 @@
     (nyoom-module-p! lua
       (table.insert mason-tools :selene))
     (nyoom-module-p! typescript
-        (table.insert mason-tools :rome))))
+        (table.insert mason-tools :biome))))
 
 ;; debugging
 

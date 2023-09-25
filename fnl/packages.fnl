@@ -50,7 +50,7 @@
 
 ;; To install a package with Nyoom you must declare them here and run 'nyoom sync'
 ;; on the command line, then restart nvim for the changes to take effect
-;; The syntax is as follows: 
+;; The syntax is as follows:
 
 ;; (use-package! :username/repo {:opt true
 ;;                               :defer reponame-to-defer
@@ -83,13 +83,23 @@
                          (setup {:throttle_at 200000}))
                :ft [:markdown]})
 
-;; LSP-SAGA - The based lsp setup
+;; LSP-SAGA - The based lsp helper
 (use-package! :nvimdev/lspsaga.nvim
-              {:config (fn []
+              {:opt true
+               :cmd [:Lspsaga]
+               :config (fn []
                          (local {: setup} (require :lspsaga))
-                         (setup {:lightbulb {:enable false}}))
-               :opt true
-               :cmd [:Lspsaga]})
+                         (setup {:lightbulb {:enable false}}))})
+
+(use-package! :dstein64/vim-startuptime
+              {:opt true
+               :cmd [:StartupTime]})
+
+(use-package! :mizlan/iswap.nvim
+              {:opt true
+               :cmd [:ISwapWith :ISwap :ISwapNodeWith :IMoveWith :IMoveNodeWith :IMove]
+               :call-setup iswap})
+
 
 ;;SilverSurfer Nvim
 (use-package! :kelly-lin/telescope-ag {:requires "nvim-telescope/telescope.nvim"
@@ -116,7 +126,7 @@
 (echo! "Installing Packages")
 (unpack!)
 
-;; Compile modules 
+;; Compile modules
 
 (echo! "Compiling Nyoom Modules")
 (nyoom-compile-modules!)
