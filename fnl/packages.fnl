@@ -41,6 +41,7 @@
 (use-package! :nvim-lua/plenary.nvim {:module :plenary})
 (use-package! :MunifTanjim/nui.nvim {:module :nui})
 (use-package! :nyoom-engineering/oxocarbon.nvim)
+(use-package! :EdenEast/nightfox.nvim)
 
 ;; include modules
 

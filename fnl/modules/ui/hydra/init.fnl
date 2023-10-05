@@ -13,8 +13,8 @@
                       :<leader>ne
                       :<leader>m
                       :<leader>o
-                      :<leader>O
-                      :<leader>q
+                      :<leader>l
+                      :<leader>qq
                       :<leader>t
                       :<leader>u
                       :<leader>v

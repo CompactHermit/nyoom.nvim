@@ -1,33 +1,39 @@
 {
-  description = "A basic gomod2nix flake";
+  description = "Haskell Flake";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    flake-parts.url = "github:hercules-ci/flake-parts";
-    inputs.flake-schemas.url = "github:DeterminateSystems/flake-schemas";
+    parts.url = "github:hercules-ci/flake-parts";
+    pch = {
+      url = "github:cachix/pre-commit-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = {self, ...} @ inputs:
-    inputs.flake-parts.lib.mkFlake {inherit inputs;} {
+  outputs = {
+    self,
+    parts,
+    ...
+  } @ inputs:
+    parts.lib.mkFlake {inherit inputs;} {
       systems = ["x86_64-linux" "aarch64-linux"];
-      imports = [
-        inputs.treefmt-nix.flakeModule
-        inputs.haskellFlakeProjectModules.default
+      imports = with inputs; [
+        treefmt-nix.flakeModule
+        pch.flakeModule
+        haskellFlakeProjectModules.default
       ];
-      flake = {
-        schemas = inputs.flake-schemas.schemas;
-        flakeModule = ./nix/flake-module.nix;
-      };
+      flake = {};
       perSystem = {
-        self',
+        system,
         config,
         pkgs,
         ...
       }: let
-        inherit (pkgs) lib;
+        todos = "";
       in {
+        debug = true;
         treefmt = {
           projectRootFile = "flake.nix";
           programs = {
@@ -51,6 +57,7 @@
             };
           };
         };
+
         haskellProjects.default = {
           projectRoot = ./.;
           projectFlakeName = "Testing Haskell Support";
@@ -65,18 +72,37 @@
           settings = {};
           location-updates.check = false;
         };
-        devShells.default =
-          lib.addMetaAttrs {description = "A Generic Haskell Devshell, Batteries Included!";}
-          (pkgs.mkShell {
-            name = "Haskell Devshells";
-            nativeBuildInputs = [
-            ];
-            inputsFrom = [
-              config.treefmt.build.devShell
-              config.haskellProjects.default.outputs.devShell
-            ];
-          });
-        packages.appname = "";
+
+        pre-commit = {
+          check.enable = true;
+          settings.settings = {
+            excludes = ["flake.lock" "r'.+\.age$'"];
+            treefmt.package = config.treefmt.build.wrapper;
+          };
+          hooks = {
+            alejandra.enable = true;
+            cabal2nix.enable = true;
+            editorconfig-checker.enable = true;
+            treefmt.enable = true;
+            fourmolu.enable = true;
+            hpack.enable = true;
+            hlint.enable = true;
+          };
+        };
+
+        devShells.default = pkgs.mkShell {
+          name = "Haskell Devshells";
+          inputsFrom = [
+            config.treefmt.build.devShell
+            config.pre-commit.devSHell
+            config.haskellProjects.default.outputs.devShell
+          ];
+          packages = [];
+          shellHook = ''
+            ${self.checks.${system}.pre-commit-check.shellHook}
+            nu
+          '';
+        };
       };
     };
 }

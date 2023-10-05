@@ -403,22 +403,22 @@
 (nyoom-module-p! browse
                  (do
                    (local browse-hints "
-             ^ ^     Browser   ^ ^
-           _w_: Browse
-           _W_: Default browse
-           _d_: DevDocsSS
-           _D_: DevDocsFT
-           _K_: DevDocCursor
-           _s_: Search DDG
-           _S_: Updoc Searcher
-           _z_: Zeal Searcher
-        ^^^_<Esc>_:escape
-                 ^ ^
+    ^ ^     Browser   ^ ^
+    _w_: Browse
+    _W_: Default browse
+    _d_: DevDocsSS
+    _D_: DevDocsFT
+    _K_: DevDocCursor
+    _s_: Search DDG
+    _S_: Updoc Searcher
+    _z_: Zeal Searcher
+    ^^^_<Esc>_:escape
+             ^ ^
                          ")
                    (Hydra {:name :Browser
                            :hint browse-hints
                            :config {:color :teal :invoke_on_body true :timeout false :hint {:type :window  :border :solid :position :middle-right}}
-                           :body :<leader>q
+                           :body :<leader>qq
                            :heads [[:w
                                      (fn []
                                        (vim.cmd "lua require('browse').browse()"))]
@@ -451,7 +451,8 @@
        (local {: test_class : test_method : debug_selection} (require :util))
       (local neotest-hints "
 ^    Neotest
-^▔▔▔▔▔▔▔▔▔▔▔^
+^▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔^
+
 ^▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔^
 ^^ _<leader>_: Test Near
 ^^ _c_: Test Current
@@ -463,7 +464,7 @@
 ^^ _C_: Test Class
 ^^ _m_: Test Method
 ^^ _d_: Debug Selection
-^^ _<Esc>_:
+^^ _<Esc>_: Escape
 
     ")
       (Hydra {:name :+Neotest
@@ -520,7 +521,7 @@
                                     :invoke_on_body true
                                     :hint {:border :solid :position :middle-right}}
                            :mode [:n]
-                           :body :<leader>O
+                           :body :<leader>l
                            :heads [[:w (fn []
                                          (vim.cmd :OverseerToggle))]
                                    [:s (fn []
@@ -772,76 +773,46 @@
                                      :L [#(vim.cmd "LspLensOn") "+ LspLens"]}}
                             {:prefix :<leader>}
                             4)))
+
+
 ;; Rusty tools for rusty mans ;;
 (nyoom-module-p! rust
                  (do
                    (fn rust-hydra []
-                     (local rust-hint "
-                  Rust
-  _r_: runnables      _m_: expand macro
-  _d_: debugabbles    _c_: open cargo
-  _s_: rustssr        _p_: parent module
-  _h_: hover actions  _w_: reload workspace
-  _D_: open docs      _g_: view create graph
-^
-  _i_: Toggle Inlay Hints   _<Esc>_: Exit
-    ")
-                     (Hydra {:name :+rust
-                             :hint rust-hint
-                             :config {:color :red
-                                      :invoke_on_body true
-                                      :hint {:position :middle :border :solid}
-                                      :buffer true}
-                             :mode :n
-                             :body :<Leader>m
-                             :heads [[:r
-                                      (fn []
-                                        (vim.cmd.RustRunnables))
-                                      {:exit true}]
-                                     [:d
-                                      (fn []
-                                        (vim.cmd.RustDebuggables))
-                                      {:exit true}]
-                                     [:s
-                                      (fn []
-                                        (vim.cmd.RustSSR))
-                                      {:exit true}]
-                                     [:h
-                                      (fn []
-                                        (vim.cmd.RustHoverActions))
-                                      {:exit true}]
-                                     [:D
-                                      (fn []
-                                        (vim.cmd.RustOpenExternalDocs))
-                                      {:exit true}]
-                                     [:m
-                                      (fn []
-                                        (vim.cmd.RustExpandMacro))
-                                      {:exit true}]
-                                     [:c
-                                      (fn []
-                                        (vim.cmd.RustOpenCargo))
-                                      {:exit true}]
-                                     [:p
-                                      (fn []
-                                        (vim.cmd.RustParentModule))
-                                      {:exit true}]
-                                     [:w
-                                      (fn []
-                                        (vim.cmd.RustReloadWorkspace))
-                                      {:exit true}]
-                                     [:g
-                                      (fn []
-                                        (vim.cmd.RustViewCrateGraph))
-                                      {:exit true}]
-                                     [:i
-                                      (fn []
-                                        (vim.cmd.RustToggleInlayHints))]
-                                     [:<Esc> nil {:exit true :nowait true}]]}))
+                     (hydra-key! :n
+                                 {:fm {
+                                       :name :+Ferris
+                                       :config {:color :teal
+                                                :hint {:border :solid :position :bottom-middle}}
+                                       :s [#(vim.cmd "FerrisViewMemoryLayout") "Memory Layout"]
+                                       :S [#(vim.cmd "FerrisViewMIR") "MIR"]
+                                       :m [#(vim.cmd "FerrisViewHIR") "HiR"]
+                                       :t [#(vim.cmd "FerrisExpandMacro") "Expand Macro"]
+                                       :l [#(vim.cmd "FerrisRebuildMacros") "Rebuild Macros"]}}
+                                 {:prefix :<leader>})
+                     (hydra-key! :n 
+                                 {:m {:hydra true
+                                      :name "  Rust"
+                                      :config {:color :red :invoke_on_body true :hint {:position :middle :border :solid}}
+                                      :c [#(vim.cmd "RustLsp codeAction") "Rust codeAction"]
+                                      :C [#(vim.cmd "RustLsp crateGraph") "Rust crateGraph"]
+                                      :d [#(vim.cmd "RustLsp debuggables") "Rust debuggables"]
+                                      :e [#(vim.cmd "RustLsp expandMacro") "Rust expandMacro"]
+                                      :D [#(vim.cmd "RustLsp externalDocs") "Rust externalDocs"]
+                                      :h [#(vim.cmd "RustLsp hover") "Rust hover"]
+                                      :r [#(vim.cmd "RustLsp runnables") "Rust runnables"]
+                                      :l [#(vim.cmd "RustLsp joinLines") "Rust joinLines"]
+                                      :m [#(vim.cmd "RustLsp moveItem") "Rust moveItem"]
+                                      :o [#(vim.cmd "RustLsp openCargo") "Rust openCargo"]
+                                      :p [#(vim.cmd "RustLsp parentModule") "Rust parentModule"]
+                                      :s [#(vim.cmd "RustLsp ssr") "Rust ssr"]
+                                      :w [#(vim.cmd "RustLsp reloadWorkspace") "Rust reloadWorkspace"]
+                                      :S [#(vim.cmd "RustLsp syntaxTree") "Rust syntaxTree"]
+                                      :f [#(vim.cmd "RustLsp flyCheck") "Rust flyCheck"]}}
+                                 {:prefix :<leader>}))
                    (augroup! localleader-hydras
                              (autocmd! FileType rust `(rust-hydra)))))
 ;;TODO:: add more utilities and tinker with HT
-
 (nyoom-module-p! animate
                  (do
                    (local venv-hints
@@ -872,8 +843,6 @@
                               [:L "<C-v>l:VBox<CR>"]
                               [:f ":VBox<CR>" {:mode :v}]
                               [:<C-c> nil {:exit true}]]})))
-
-
 ;; Haskell ;;
 (nyoom-module-p! haskell
                (do

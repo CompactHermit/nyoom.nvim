@@ -97,6 +97,10 @@
 (nyoom-module-p! ocaml
                  (table.insert treesitter-filetypes :ocaml))
 
+(nyoom-module-p! zellij
+                 (table.insert treesitter-filetypes :kdl))
+
+
 (nyoom-module-p! neorg
                  (do
                    (local tsp (autoload :nvim-treesitter.parsers))
@@ -104,7 +108,7 @@
                    ; (set parser-config.norg
                    ;      {:install_info {:url "https://github.com/nvim-neorg/tree-sitter-norg"
                    ;                      :files [:src/parser.c :src/scanner.cc]
-                   ;                      :branch :dev
+                   ;                      :branch :main
                    ;                      :use_makefile true}})
                    (set parser-config.norg_meta
                         {:install_info {:url "https://github.com/nvim-neorg/tree-sitter-norg-meta"
@@ -155,10 +159,10 @@
                           :tsx :rainbow-tags
                           :vue :rainbow-tags}}
         :incremental_selection {:enable true
-                                :keymaps {:init_selection :gnn
-                                          :node_incremental :grn
-                                          :scope_incremental :grc
-                                          :node_decremental :grm}}
+                                :keymaps {:init_selection :gn
+                                          :node_incremental :gnn
+                                          :scope_incremental :gnc
+                                          :node_decremental :gnm}}
         :textobjects {:select {:enable true}
                       :lookahead true
                       :keymaps {:af "@function.outer"

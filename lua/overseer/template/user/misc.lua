@@ -44,7 +44,19 @@ return {
                 builder = function()
                     return {
                         name = "Pomodoro",
-                        cmd = "porsmo",
+                        cmd = "pomodoro start",
+                        components = { "default", "unique" },
+                    }
+                end,
+                priority = 3,
+                params = {},
+            },
+            {
+                name = "Watch Pomodoro",
+                builder = function()
+                    return {
+                        name = "Pomodoro Watch",
+                        cmd = "pomodoro status -w",
                         components = { "default", "unique" },
                     }
                 end,

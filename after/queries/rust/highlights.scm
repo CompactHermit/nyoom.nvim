@@ -13,6 +13,7 @@
 
 (("struct" @keyword) (#set! conceal "ﴯ"))
 (("enum"   @keyword) (#set! conceal ""))
+(("let"    @keyword) (#set! conceal "~"))
 (("impl"   @keyword) (#set! conceal "ﰠ"))
 (("type"   @keyword) (#set! conceal ""))
 (("use"    @keyword) (#set! conceal ""))

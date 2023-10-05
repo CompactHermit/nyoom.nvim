@@ -90,7 +90,7 @@
             name = "A Generic Typst Devshell, for the sane devs";
             inherit (nightly) buildInputs;
             shellHook = ''
-                zsh
+              zsh
             '';
           };
           nightly = pkgs.mkShell {

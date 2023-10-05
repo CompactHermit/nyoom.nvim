@@ -24,7 +24,21 @@ return {
             },
             priority = pr(),
         })
-
+        table.insert(ret, {
+            name = "Gen CTAGS",
+            builder = function()
+                local cmd = vim.fn.system("ttags $(git ls-files)")
+                return {
+                    name = "Generate CTAGS",
+                    cmd = cmd,
+                    components = { "default", "unique" },
+                }
+            end,
+            condition = {
+                filetype = "haskell",
+            },
+            priority = pr(),
+        })
         cb(ret)
     end,
 }

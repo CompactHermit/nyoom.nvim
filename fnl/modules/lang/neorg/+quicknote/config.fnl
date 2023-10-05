@@ -2,7 +2,7 @@
 (local qn (require :quicknote))
 
 (setup :quicknote {:mode :resident
-                   :sign "N"
+                   :sign ""
                    :filetype :norg})
 
 ;; TODO:: find a way to handle a vim.ui.input that returns back a value, rather then exec a function and consume the val.

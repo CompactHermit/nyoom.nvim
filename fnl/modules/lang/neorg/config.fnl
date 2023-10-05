@@ -9,8 +9,6 @@
                                          :format_on_enter true}}
         :core.ui {}
         :core.integrations.telescope {}
-        ;;:external.codecap {}
-        :core.integrations.image {}
         :external.exec {}
         :core.ui.calendar {}
         :core.summary {:config {:strategy :default}}
@@ -33,14 +31,11 @@
                                             :Linuxopolis "~/neorg/linux"}
                                :autodetect true
                                :autochdir true}}})
-        ;;:external.templates {:config {:templates_dir (.. (vim.fn.stdpath :config) :/templates/norg)}}})
-                                      ;;:keywords (. (require :util.norg) :keywords)}}})
 
 
 ;; add conditional modules
 (nyoom-module-p! cmp (tset neorg-modules :core.completion
                            {:config {:engine :nvim-cmp}}))
-
 
 ;; add flaged modules
 (nyoom-module-p! neorg.+pretty
@@ -52,6 +47,38 @@
                                                                 :right 3}}
                                              :todo {:done {:icon ""}
                                                     :pending {:icon ""}}}}}))
+
+(nyoom-module-p! neorg.+roam
+                 (tset neorg-modules :core.integrations.roam
+                       {:config
+                       ;; Note:: wait for PR to merge for adding keybind descriptors
+                        {:keymaps {:select_prompt "<c-space>"
+                                   :insert_link "<leader>ncl"
+                                   :find_note "<leader>ncf"
+                                   :capture_note "<leader>ncn"
+                                   :capture_index "<leader>nci"
+                                   :capture_cancel "<C-q>"
+                                   :capture_save "<C-w>"}
+                       ;; Telescope theme
+                         :theme :ivy
+                         :capture_templates [{:name "default"
+                                              :title "${title}"
+                                              :lines [""]}
+                                             {:name "Math notes:: Theorem/Lemma"
+                                              :title "${title}"
+                                              :file "Math/${title}"
+                                              :lines ["*.${heading1}::" "$.${Latex_Symbol}$"]}
+                                             {:name "Capture Def"
+                                              :title "$title"
+                                              :lines ["$$ ${def1}" "${def1}::" "$$"]}
+                                             {:name "Nix notes"
+                                              :file "nixDocs/${title}"
+                                              :title "${title}"
+                                              :lines ["* ${heading1}::" "* ${heading2}"]}]
+                         :substitution {:title (fn [metadata]
+                                                 metadata.title)
+                                        :date (fn [metadata]
+                                                (os.date "%Y-%m-%d"))}}}))
 
 (nyoom-module-p! neorg.+present
                  (do
@@ -65,10 +92,6 @@
                    (tset neorg-modules :core.export.markdown
                          {:config {:extensions :all}})))
 
-;;TODO:: refactor this to be faster, rn just adding it into ./init.fnl is faster, but that should't make sense(?)
-; (nyoom-module-p! neorg.+Inbox
-;                  (do
-;                    (tset neorg-modules :external.codecap {})))
 
 (setup :neorg {:load neorg-modules})
 

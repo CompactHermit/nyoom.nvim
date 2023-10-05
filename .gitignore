@@ -1,17 +1,22 @@
 # neovim::
 lua/packer_compiled.lua
 profile.json
+lua/overseer/template/
+lua/overseer/component/
+snippets/
 inbox.norg
 start.txt
 
 # Notes::
 .quicknote/
 
-# cli::
+# cli/NIX shizzle::
 result/
 target/
 packages.json
+tags
 
-# Tests::
+# Tests/Hooks/Checks::
 tests/
 .fennel-test
+/.pre-commit-config.yaml

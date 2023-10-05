@@ -1,5 +1,4 @@
-packages: _inputs: {
-  inputs,
+packages: inputs: {
   lib,
   pkgs,
   config,
@@ -41,19 +40,22 @@ in {
         Whether or not to make nvim the defaulty editor/visual/GitEditor
       '';
     };
+    isolated = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Whether to enable personal configs or normal configs.
+      '';
+    };
     #rollback = mkOption {type = types.bool; default = true; descriptions = ''Whether to enable rollbacks caching with nix''}
   };
 
   config = lib.mkIf cfg.enable {
-    nixpkgs = mkIf cfg.nightly {
-      overlays = [
-        inputs.neovim-nightly-overlay.overlay
-      ];
-    };
     programs.neovim = {
       enable = true;
       defaultEditor = true;
-      package = pkgs.neovim-nightly;
+      #NOTE:(Hermit)<10/13> Won't this force an eval of the entire flake?
+      package = packages.${system}.default;
       viAlias = true;
       vimAlias = true;
       vimdiffAlias = true;
@@ -65,14 +67,10 @@ in {
     };
 
     # Thanks to srid and Konradmalik for this::
-    xdg.configFile.${cfg.appName} = {
-      enable = !cfg.isIsolated;
-      # TODO:: safety test this, ya fking doof. U nearly broke ur config with this one!!
-      # onChange = ''
-      # rm -rf ${config.xdg.cacheHome}/${cfg.appName}
-      # '';
+    xdg.configFile.${cfg.appName} = lib.mkIf (!cfg.isolated) {
       ".config/nvim" = {
-        source = ./.;
+        #NOTE:(Hermit) <10/13> There has to be a better way to place this file.
+        source = ../../../.;
         recursive = true;
       };
     };

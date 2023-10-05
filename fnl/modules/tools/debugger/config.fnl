@@ -36,7 +36,7 @@
                    (set dap.configurations.c lldb-configs)
                    (set dap.configurations.c dap.configurations.cpp)))
 
-(nyoom-module-p! csharp 
+(nyoom-module-p! csharp
                  (do
                    (set dap.configurations.cs coreclr-configs)
                    (set dap.adapters.coreclr {:type :executable
@@ -57,6 +57,27 @@
                           (callback {:type :server
                                      :host (or config.host :127.0.0.1)
                                      :port (or config.port 8086)})))))
+
+(nyoom-module-p! haskell
+                 (do
+                   (set dap.adapters.haskell 
+                        {:args [:--hackage-version=0.0.33.0]
+                         :command :haskell-debug-adapter
+                         :type :executable})
+                   (set dap.configurations.haskell
+                        [{:ghciCmd "stack ghci --test --no-load --no-build --main-is TARGET --ghci-options -fprint-evld-with-show"
+                          :ghciEnv (vim.empty_dict)
+                          :ghciInitialPrompt "λ: "
+                          :ghciPrompt "λ: "
+                          :logFile (.. (vim.fn.stdpath :data) :/haskell-dap.log)
+                          :logLevel :WARNING
+                          :name :Debug
+                          :request :launch
+                          :startup "${file}"
+                          :stopOnEntry true
+                          :type :haskell
+                          :workspace "${workspaceFolder}"}])))
+
 
 (nyoom-module-p! python
                  (do

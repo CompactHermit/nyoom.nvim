@@ -1,17 +1,77 @@
-@document.meta
-title: index
-description: 
-authors: strange_cofunctor
-categories: 
-created: 2023-10-02T15:06:19-0500
-updated: 2023-10-03T17:00:51-0500
-version: 1.1.1
-@end
-
 * Nvim Dev::
 ** Agenda/TODO's::
+   #contexts someday, IDK WHEN
    - ( ) Secondary Tasks
    -- (-) Fix HLS issues with haskell-flake
-   ---
+   -- ( ) Rewrite `+format` to use {}[Conform]
 
+   #time.due {@ Sunday 8 October 2023}
+   - (=) Fix Nix Flake
+   -- (x) Make App 
+          -apps/default
+    new_neovim = pkgs.wrapNeovimUnstable prev_neovim_src NEWCONFIGBIND
+    @end
+**** Overlaying::
+     If someone other than me is reading this, pls completely ignore this deranged rant. We can just fetch the parsers from src, use `neovim-unwrapped`'s `treesitter-parser` attr. These are Attrs of form::
+     @code nix
+     {pkgs.fetchurl}:{
+       lang = fetchurl {
+         tarbl = "github_url/tree-sitter-lang/archive/v0.20.2.tar.gz";
+         hash = "something_idk fucking know";
+       }
+     }
+     @end
+     This is then read and piped. Simply overriding this like from {https://github.com/neovim/neovim/blob/master/contrib/flake.nix#L21}[here] would easily work. Nvim-treesitter should innately call this by default. Although, I have a feeling this won't work.
 
+     #comment I'm a fucking idiot
+     -One solution, as proposed by  is to add an alternative gcc.lib to our `runtimeInputs`-
+
+     #comment
+     Another Solution would simply be appending the wrapped {}[Norg parser.so] call to our init.lua. Since we transpile fennel into lua, we can't  natively interpolate a `${norg-parser.so}`, and hence would need an intermediery. An environment variable would be stupid. So we are left with appending onto our `init.lua`. E.g, just like with {https://github.com/nix-community/nixvim/discussions/540}[This Issue]. However, /NixVim's/ intended use is with home-manager, it referenced with all of it's interfaces. Hence, we simply need to change run nvim with a new init.lua.
+
+*** Parsers::
+    We run into an annoying issue with norg.
+    Lets take for example the bash parser within our app directory::
+    @code bash
+    $ ldd bash.so
+    linux-vdso.so.1 (0x00007ffe9168b000)
+    libstdc++.so.6 => /nix/store/xq05361kqwzcdamcsxr4gzg8ksxrb8sg-gcc-12.3.0-lib/lib/libstdc++.so.6 (0x00007f20c5000000)
+    libm.so.6 => /nix/store/ld03l52xq2ssn4x0g5asypsxqls40497-glibc-2.37-8/lib/libm.so.6 (0x00007f20c5260000)
+    libgcc_s.so.1 => /nix/store/xq05361kqwzcdamcsxr4gzg8ksxrb8sg-gcc-12.3.0-lib/lib/libgcc_s.so.1 (0x00007f20c523f000)
+    libc.so.6 => /nix/store/ld03l52xq2ssn4x0g5asypsxqls40497-glibc-2.37-8/lib/libc.so.6 (0x00007f20c4e1a000)
+    /usr/lib64/ld-linux-x86-64.so.2 (0x00007f20c53bc000)
+
+    @end
+    For neorg, it's parser takes this form::
+    @code bash
+    $ ldd norg.so
+    linux-vdso.so.1 (0x00007ffc4535c000)
+    libstdc++.so.6 => /usr/lib/libstdc++.so.6 (0x00007fe670400000)
+    libgcc_s.so.1 => /usr/lib/libgcc_s.so.1 (0x00007fe670b33000)
+    libc.so.6 => /usr/lib/libc.so.6 (0x00007fe670000000)
+    libm.so.6 => /usr/lib/libm.so.6 (0x00007fe670713000)
+    /usr/lib64/ld-linux-x86-64.so.2 (0x00007fe670b8a000)
+    @end
+    Obviously, the bash parser and norg parser require the same libs, but obviously different verisons. Normally, stdenv will be the one distributing libstdc++.so.6. However, /stdEnv/ distributes only gcc_12.4
+
+    #contexts update
+    ^ NOTE::
+    Yeh, we can just patch in an older version of the neorg-parser and add it onto RTP. Essentiall, what nixVIm does.
+    Checking `strings parser` shows the following GLIBCXX versions::
+    @code sh
+    #/nix/store/<<nix>>-tree-sitter-norg-grammar-0.20.8
+    readelf -a ./parser|rg GLIBCXX
+    000:   0 (*local*)       2 (GLIBCXX_3.4)   3 (CXXABI_1.3)    4 (GLIBC_2.2.5)
+    004:   2 (GLIBCXX_3.4)   4 (GLIBC_2.2.5)   4 (GLIBC_2.2.5)   5 (GLIBCXX_3.4.18)
+    008:   4 (GLIBC_2.2.5)   6 (GLIBCXX_3.4.29)    7 (GLIBC_2.14)    4 (GLIBC_2.2.5)
+    00c:   2 (GLIBCXX_3.4)   8 (CXXABI_1.3.9)   9 (GLIBC_2.4)     a (GLIBCXX_3.4.21)
+    010:   5 (GLIBCXX_3.4.18)    3 (CXXABI_1.3)    b (GLIBCXX_3.4.20)    2 (GLIBCXX_3.4)
+    01c:   4 (GLIBC_2.2.5)   2 (GLIBCXX_3.4)   1 (*global*)      1 (*global*)
+    0x0070:   Name: GLIBCXX_3.4.20  Flags: none  Version: 11
+    0x0080:   Name: GLIBCXX_3.4.21  Flags: none  Version: 10
+    0x00a0:   Name: GLIBCXX_3.4.29  Flags: none  Version: 6
+    0x00b0:   Name: GLIBCXX_3.4.18  Flags: none  Version: 5
+    0x00d0:   Name: GLIBCXX_3.4  Flags: none  Version: 2
+    @end
+    #contexts update of update
+    We just need to wait for a nixpkgs version bump, they have a branch with an updated glibc, and the `libstdc++.so.6` works for the norg parser. So just wait

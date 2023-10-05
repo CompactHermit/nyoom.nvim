@@ -3,6 +3,7 @@ local files = require("overseer.files")
 local isInProject = function(opts)
     return files.exists(files.join(opts.dir, "flake.nix")) or files.exists(files.join(opts.dir), "default.nix")
 end
+
 return {
     condition = {
         callback = function(opts)
@@ -118,8 +119,4 @@ return {
         cb(ret)
     end,
 }
--- name = "- Go compiler", strategy = { "orchestrator",
---           tasks = {
---             tasks,        -- Build all the programs in the solution in parallel
---             executables   -- Then run the solution executable(s)
---           }}})
+

@@ -2,8 +2,7 @@
 
 (use-package! :3rd/image.nvim
               {:nyoom-module ui.images
-               :event [:BufReadPost]
-               :ft [:norg :markdown]})
+               :opt false})
 
 
 

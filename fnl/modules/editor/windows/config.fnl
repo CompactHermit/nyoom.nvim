@@ -36,6 +36,7 @@
                         :size {:height 0.4}
                         :title :LazyTerm}
                        :dapui_console
+                       :dap-repl
                        {:title "Oil"
                         :ft :oil
                         :open :Oil}
@@ -46,7 +47,7 @@
                        {:ft [:qf]
                         :title :QuickFix}]
               :right [{:ft :tsplayground
-                       :title :TSPlayground}
+                       :title (.. :TSPlayground "::")}
                       :dapui_scopes
                       :neotest-output-panel
                       :neotest-summary]

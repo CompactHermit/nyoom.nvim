@@ -5,6 +5,13 @@
 (use-package! :saecki/crates.nvim
               {:call-setup crates :event ["BufRead Cargo.toml"]})
 
-; inlay-hints + lldb + niceties for rust-analyzer
+(use-package! :mrcjkb/rustaceanvim 
+              {:opt true :ft [:rust]})
 
-(use-package! :simrat39/rust-tools.nvim {:nyoom-module lang.rust :ft :rust})
+(use-package! :vxpm/ferris.nvim
+              {:nyoom-module lang.rust
+               :opt true
+               :ft [:rust]
+               :call-setup ferris})
+
+
