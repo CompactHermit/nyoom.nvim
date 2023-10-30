@@ -37,7 +37,7 @@
         inputs.parts.flakeModules.easyOverlay
         inputs.pch.flakeModule
         # ./nix/apps/default.nix
-        ./nix/overlay/default.nix
+        #./nix/overlay/default.nix
       ];
 
       debug = true;
@@ -87,7 +87,7 @@
           // prev;
         NeovimConfig = pkgs.neovimUtils.makeNeovimConfig {
           extraLuaPackages = p: [p.luarocks p.magick p.libluv];
-          plugins = with pkgs; [vimPlugins.nvim-treesitter.withAllGrammars];
+          plugins = with pkgs; [vimPlugins.nvim-treesitter.withAllGrammars parinfer-rust];
           withNodeJs = true;
           withRuby = true;
           withPython3 = true;
@@ -96,9 +96,6 @@
 
         wrapperArgs = let
           path = l.makeBinPath [
-            #
-            # Runtime dependencies
-            #
             pkgs.deadnix
             pkgs.statix
             pkgs.alejandra
@@ -116,37 +113,22 @@
             ":"
             path
           ];
-
         # TODO:: Move to overlays
-        nvim_overlay = self: super: {
-          neovim-custom =
-            pkgs.wrapNeovimUnstable
-            (final.neovim-unwrapped.overrideAttrs (oa: {
-              version = "Flying spaghetti Monster";
-              src = inputs.nvim-src;
-              preConfigure =
-                oa.preConfigure
-                or ""
-                +
-                /*
-                bash
-                */
-                ''
-                  ln -s ${pkgs.tree-sitter-grammars.tree-sitter-norg}/parser $out/lib/nvim/parser/norg.so
-                '';
-              nativeBuildInputs =
-                oa.nativeBuildInputs
-                ++ [
-                  super.libiconv
-                ];
-            }))
-            (NeovimConfig // {inherit wrapperArgs;});
-        };
       in {
         _module.args.pkgs = import self.inputs.nixpkgs {
           inherit system;
           overlays = [
-            nvim_overlay
+            (self: super: {
+              neovim-custom =
+                pkgs.wrapNeovimUnstable
+                (final.neovim-unwrapped.overrideAttrs (oa: {
+                  version = "Flying spaghetti Monster";
+                  src = inputs.nvim-src;
+                  nativeBuildInputs = (oa.nativeBuildInputs or []) ++ [super.libiconv];
+                }))
+                (NeovimConfig // {inherit wrapperArgs;});
+            })
+            # Upstream nightly broke...
           ];
         };
 
@@ -191,7 +173,7 @@
             '';
           };
         };
-        packages.default = pkgs.hello;
+        packages.default = pkgs.neovim-custom;
       };
     };
 }

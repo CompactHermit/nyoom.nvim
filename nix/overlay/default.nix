@@ -20,17 +20,20 @@
       customRC = "luafile ../../init.lua";
     };
     wrapperArgs = let
-      path = lib.makeBinPath (with pkgs;[
+      path = lib.makeBinPath (with pkgs; [
         ripgrep
         nil
         fd
         stylua
       ]);
     in
-    NeovimConfig.wrapperArgs ++ [ "--prefix"
-    "PATH"
-    ":"
-    path];
+      NeovimConfig.wrapperArgs
+      ++ [
+        "--prefix"
+        "PATH"
+        ":"
+        path
+      ];
   in {
     overlayAttrs = _: super: {
       ## Override src neovim to use nightly
@@ -41,6 +44,6 @@
           version = inputs.nvim-src.shortRev or "dirty";
         }))
         (NeovimConfig // {inherit wrapperArgs;});
-      };
     };
-  }
+  };
+}

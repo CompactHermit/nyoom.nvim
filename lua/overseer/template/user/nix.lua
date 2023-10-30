@@ -30,6 +30,15 @@ return {
                 unique = true,
             },
             {
+                name = "Nix:: Check nixosConfig",
+                tskname = "Nix Config build",
+                cmd = "nixci .#nixosConfiguration.Kepler",
+                condition = {
+                    callback = isInProject,
+                },
+                unique = true,
+            },
+            {
                 name = "Nix run app (" .. vim.fn.expand("%:s") .. ")",
                 tskName = "Nix:: Run App",
                 cmd = "nix run .#default",

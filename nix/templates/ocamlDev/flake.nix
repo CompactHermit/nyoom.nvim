@@ -21,7 +21,7 @@
     ...
   } @ inputs:
     parts.lib.mkFlake {inherit inputs;} {
-     systems = [
+      systems = [
         "x86_64-linux"
         "aarch64-linux"
         "aarch64-darwin"
@@ -37,18 +37,15 @@
         system,
         config,
         pkgs,
-      }: 
-      let
-        opam2nix = import inputs.opam2nix { inherit pkgs; };
+      }: let
+        opam2nix = import inputs.opam2nix {inherit pkgs;};
         ocaml5 = pkgs.ocaml-ng.ocamlPackages_5_0.ocaml;
-        opam_pkg =
-          opam2nix.build {
-            ocaml = ocaml5;
-            selection = ./opam-selection.nix;
-            src = ./.;
-          };
-      in
-      {
+        opam_pkg = opam2nix.build {
+          ocaml = ocaml5;
+          selection = ./opam-selection.nix;
+          src = ./.;
+        };
+      in {
         packages = opam_pkg;
       };
     };
