@@ -60,6 +60,12 @@
                              shiftwidth
                              shiftwidth))))
 
+
+(augroup! neogit-config (autocmd! FileType Neogit* `(local-set! nolist))
+          (autocmd! [FileType BufEnter] NeogitCommitView
+                    `(local-set! evenitignore+ :CursorMoved))
+          (autocmd! BufLeave NeogitCommitView
+                    `(local-set! evenitignore- :CursorMoved)))
 (>== [:haskell
       :norg
       :xml

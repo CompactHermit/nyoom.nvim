@@ -2,8 +2,8 @@
   description = "Nyoom Interfaces with Nix";
 
   inputs = {
-    #A really fucking bad idea
-    #nix_staged.url = "github:NixOS/nixpkgs/staging";
+    # Pull in only dependency patches
+    nix_staged.url = "github:nixos/nixpkgs/staging";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     parts.url = "github:hercules-ci/flake-parts";
     pch = {
@@ -18,6 +18,7 @@
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    neorg-overlay.url = "github:nvim-neorg/nixpkgs-neorg-overlay";
   };
   outputs = {
     self,
@@ -87,11 +88,16 @@
           // prev;
         NeovimConfig = pkgs.neovimUtils.makeNeovimConfig {
           extraLuaPackages = p: [p.luarocks p.magick p.libluv];
-          plugins = with pkgs; [vimPlugins.nvim-treesitter.withAllGrammars parinfer-rust];
+          plugins = with pkgs; [
+            vimPlugins.nvim-treesitter.withAllGrammars 
+            parinfer-rust
+            vimPlugins.nvim-treesitter.builtGrammars.tree-sitter-norg-meta
+            # vimPlugins.neogit ## Werid Breaks, will just use this verison lolz
+          ];
           withNodeJs = true;
           withRuby = true;
           withPython3 = true;
-          customRC = "luafile ~/.config/nvim/init.lua";
+          customRC = "luafile ~/.config/nvim/init.lua"; 
         };
 
         wrapperArgs = let
@@ -100,6 +106,7 @@
             pkgs.statix
             pkgs.alejandra
             pkgs.nil
+            pkgs.biome
             pkgs.ripgrep
             pkgs.fd
             pkgs.lua-language-server
@@ -118,17 +125,19 @@
         _module.args.pkgs = import self.inputs.nixpkgs {
           inherit system;
           overlays = [
+            inputs.neorg-overlay.overlays.default
             (self: super: {
               neovim-custom =
                 pkgs.wrapNeovimUnstable
-                (final.neovim-unwrapped.overrideAttrs (oa: {
+                (self.neovim-unwrapped.overrideAttrs (oa: {
                   version = "Flying spaghetti Monster";
                   src = inputs.nvim-src;
-                  nativeBuildInputs = (oa.nativeBuildInputs or []) ++ [super.libiconv];
                 }))
                 (NeovimConfig // {inherit wrapperArgs;});
+              })
+            (self: super: {
+              libvterm-neovim = inputs.nix_staged.legacyPackages.x86_64-linux.libvterm-neovim;
             })
-            # Upstream nightly broke...
           ];
         };
 
@@ -169,7 +178,8 @@
               fnlfmt
             ];
             shellHook = ''
-              nu
+            ${config.pre-commit.shellHook}
+            nu
             '';
           };
         };

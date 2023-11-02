@@ -10,9 +10,7 @@
         :core.ui {}
         :core.integrations.telescope {}
         :external.exec {}
-        :core.ui.calendar {}
         :core.summary {:config {:strategy :default}}
-        :core.ui.calendar.views.monthly {}
         :core.tempus {}
         :core.keybinds {:config {:default_keybinds true
                                  :neorg_leader "<leader>n"

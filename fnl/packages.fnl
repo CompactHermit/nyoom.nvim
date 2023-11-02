@@ -92,6 +92,7 @@
                          (local {: setup} (require :lspsaga))
                          (setup {:lightbulb {:enable false}}))})
 
+; TODO:: (CH) <10/06> Debug this.
 (use-package! :dstein64/vim-startuptime
               {:opt true
                :cmd [:StartupTime]})
@@ -122,6 +123,9 @@
               {:opt true
                :cmd :Zeavim})
 
+
+(echo! "Setting Up nixpgs, please ensure you've built the package first!")
+
 ;; Send plugins to packer
 
 (echo! "Installing Packages")
@@ -131,3 +135,4 @@
 
 (echo! "Compiling Nyoom Modules")
 (nyoom-compile-modules!)
+

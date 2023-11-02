@@ -142,7 +142,7 @@
 
 ;; the usual
 (setup :nvim-treesitter.configs
-       {:ensure_installed treesitter-filetypes
+       {;;:ensure_installed treesitter-filetypes
         :highlight {:enable true :use_languagetree true}
         :indent {:enable true}
         :context_commentstring {:enable true}
