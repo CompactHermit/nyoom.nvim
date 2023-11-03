@@ -18,7 +18,21 @@
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Plugins/Parsers::
     neorg-overlay.url = "github:nvim-neorg/nixpkgs-neorg-overlay";
+    tree-sitter-just = {
+      url = "github:IndianBoy42/tree-sitter-just";
+      flake = false;
+    };
+    tree-sitter-nim = {
+      url = "github:alaviss/tree-sitter-nim";
+      flake = false;
+    };
+    tree-sitter-nu = {
+      url = "github:nushell/tree-sitter-nu";
+      flake = false;
+    };
   };
   outputs = {
     self,
@@ -72,6 +86,7 @@
         #nixosModule = inputs.organist.flake.outputsFromNickel ./. inputs {};
       };
       perSystem = {
+        self',
         pkgs,
         config,
         system,
@@ -79,6 +94,7 @@
         ...
       }: let
         l = pkgs.lib // builtins;
+        grammar = pkgs.callPackage "${inputs.nixpkgs}/pkgs/development/tools/parsing/tree-sitter/grammar.nix" {};
         mkHook = n: prev:
           {
             description = "pre-commit hook for ${n}";
@@ -86,10 +102,17 @@
             excludes = ["flake.lock" "index.norg" "r.'+\.age$'"];
           }
           // prev;
+
         NeovimConfig = pkgs.neovimUtils.makeNeovimConfig {
           extraLuaPackages = p: [p.luarocks p.magick p.libluv];
           plugins = with pkgs; [
-            vimPlugins.nvim-treesitter.withAllGrammars 
+            (vimPlugins.nvim-treesitter.withPlugins (_:
+              pkgs.vimPlugins.nvim-treesitter.allGrammars
+              ++ [
+                self'.packages.tree-sitter-nu
+                self'.packages.tree-sitter-nim
+                self'.packages.tree-sitter-just
+              ]))
             parinfer-rust
             vimPlugins.nvim-treesitter.builtGrammars.tree-sitter-norg-meta
             # vimPlugins.neogit ## Werid Breaks, will just use this verison lolz
@@ -97,7 +120,7 @@
           withNodeJs = true;
           withRuby = true;
           withPython3 = true;
-          customRC = "luafile ~/.config/nvim/init.lua"; 
+          customRC = "luafile ~/.config/nvim/init.lua";
         };
 
         wrapperArgs = let
@@ -134,7 +157,7 @@
                   src = inputs.nvim-src;
                 }))
                 (NeovimConfig // {inherit wrapperArgs;});
-              })
+            })
             (self: super: {
               libvterm-neovim = inputs.nix_staged.legacyPackages.x86_64-linux.libvterm-neovim;
             })
@@ -155,12 +178,7 @@
               treefmt.package = config.treefmt.build.wrapper;
             };
             hooks = {
-              nvim_test = mkHook "NvimTest" {
-                enable = true;
-                entry = "${pkgs.hello}";
-              };
               treefmt = mkHook "treefmt" {enable = true;};
-              nixpkgs-fmt = mkHook "nixpkgs-fmt" {enable = true;};
             };
           };
         };
@@ -178,12 +196,28 @@
               fnlfmt
             ];
             shellHook = ''
-            ${config.pre-commit.shellHook}
-            nu
+              nu
             '';
           };
         };
-        packages.default = pkgs.neovim-custom;
+        packages = {
+          default = pkgs.neovim-custom;
+          tree-sitter-nu = grammar {
+            language = "nu";
+            src = inputs.tree-sitter-nu;
+            inherit (pkgs.tree-sitter) version;
+          };
+          tree-sitter-nim = grammar {
+            language = "nim";
+            src = inputs.tree-sitter-nim;
+            inherit (pkgs.tree-sitter) version;
+          };
+          tree-sitter-just = grammar {
+            language = "just";
+            src = inputs.tree-sitter-just;
+            inherit (pkgs.tree-sitter) version;
+          };
+        };
       };
     };
 }

@@ -411,6 +411,9 @@
         "nvim-src": "nvim-src",
         "parts": "parts",
         "pch": "pch",
+        "tree-sitter-just": "tree-sitter-just",
+        "tree-sitter-nim": "tree-sitter-nim",
+        "tree-sitter-nu": "tree-sitter-nu",
         "treefmt-nix": "treefmt-nix"
       }
     },
@@ -441,6 +444,54 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "tree-sitter-just": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1679148267,
+        "narHash": "sha256-Qs0Klt9uj6Vgs4vJrjKXYD8nNe8KYdWCnADvogm4/l0=",
+        "owner": "IndianBoy42",
+        "repo": "tree-sitter-just",
+        "rev": "4e5f5f3ff37b12a1bbf664eb3966b3019e924594",
+        "type": "github"
+      },
+      "original": {
+        "owner": "IndianBoy42",
+        "repo": "tree-sitter-just",
+        "type": "github"
+      }
+    },
+    "tree-sitter-nim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1698869178,
+        "narHash": "sha256-VgyZk6P2hMCySE8ZrYip7bVtP5OKdfRIgXESDmMgFBc=",
+        "owner": "alaviss",
+        "repo": "tree-sitter-nim",
+        "rev": "1f9308c9e440ddbc67c0aaeb9396c992d266b281",
+        "type": "github"
+      },
+      "original": {
+        "owner": "alaviss",
+        "repo": "tree-sitter-nim",
+        "type": "github"
+      }
+    },
+    "tree-sitter-nu": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1695210294,
+        "narHash": "sha256-RuvR2Yb2CTxpxyXgr+2uUQa9N75sIhYlS9moyedZo8A=",
+        "owner": "nushell",
+        "repo": "tree-sitter-nu",
+        "rev": "307559b6a3885ef0c55bcd5e23e9e164a7ce03bd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nushell",
+        "repo": "tree-sitter-nu",
         "type": "github"
       }
     },
