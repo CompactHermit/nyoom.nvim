@@ -11,12 +11,12 @@ start.txt
 .quicknote/
 
 # cli/NIX shizzle::
-result/
+result
 target/
 packages.json
 tags
 
 # Tests/Hooks/Checks::
+.direnv/
 tests/
-.fennel-test
 /.pre-commit-config.yaml

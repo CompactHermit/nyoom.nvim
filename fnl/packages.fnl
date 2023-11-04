@@ -93,36 +93,31 @@
                          (setup {:lightbulb {:enable false}}))})
 
 ; TODO:: (CH) <10/06> Debug this.
-(use-package! :dstein64/vim-startuptime
-              {:opt true
-               :cmd [:StartupTime]})
+(use-package! :dstein64/vim-startuptime {:opt true :cmd [:StartupTime]})
 
 (use-package! :mizlan/iswap.nvim
               {:opt true
-               :cmd [:ISwapWith :ISwap :ISwapNodeWith :IMoveWith :IMoveNodeWith :IMove]
+               :cmd [:ISwapWith
+                     :ISwap
+                     :ISwapNodeWith
+                     :IMoveWith
+                     :IMoveNodeWith
+                     :IMove]
                :call-setup iswap})
 
-
 ;;SilverSurfer Nvim
-(use-package! :kelly-lin/telescope-ag {:requires "nvim-telescope/telescope.nvim"
-                                       :opt true
-                                       :cmd :Ag})
+(use-package! :kelly-lin/telescope-ag
+              {:requires :nvim-telescope/telescope.nvim :opt true :cmd :Ag})
 
-(use-package! :stevearc/oil.nvim
-               {:call-setup oil})
+(use-package! :stevearc/oil.nvim {:call-setup oil})
 
 ;; TODO :: Add to browser module
 ;;Docs and browse
 
 (use-package! :loganswartz/updoc.nvim
-              {:call-setup updoc
-               :opt true
-               :events :BufReadPost})
+              {:call-setup updoc :opt true :events :BufReadPost})
 
-(use-package! :KabbAmine/zeavim.vim
-              {:opt true
-               :cmd :Zeavim})
-
+(use-package! :KabbAmine/zeavim.vim {:opt true :cmd :Zeavim})
 
 (echo! "Setting Up nixpgs, please ensure you've built the package first!")
 
@@ -135,4 +130,3 @@
 
 (echo! "Compiling Nyoom Modules")
 (nyoom-compile-modules!)
-

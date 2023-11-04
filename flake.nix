@@ -153,7 +153,7 @@
               neovim-custom =
                 pkgs.wrapNeovimUnstable
                 (self.neovim-unwrapped.overrideAttrs (oa: {
-                  version = "Flying spaghetti Monster";
+                  version = "v0.10.0-dev-4c32927";
                   src = inputs.nvim-src;
                 }))
                 (NeovimConfig // {inherit wrapperArgs;});
@@ -168,6 +168,7 @@
           projectRootFile = "flake.nix";
           programs = {
             alejandra.enable = true;
+            # Oddly enough, treefmt is ignoring fnlfmt, hmmmm
             fnlfmt.enable = true;
           };
         };
@@ -195,9 +196,6 @@
               selene
               fnlfmt
             ];
-            shellHook = ''
-              nu
-            '';
           };
         };
         packages = {

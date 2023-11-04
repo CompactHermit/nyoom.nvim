@@ -43,29 +43,23 @@
 
 ; (let! maplocalleader " m")
 
-(autocmd! :RecordingEnter "*" #(vim.notify (.. "Recording Macro: ("
-                                               (vim.fn.reg_recording)
-                                               ")")))
+(autocmd! :RecordingEnter "*"
+          #(vim.notify (.. "Recording Macro: (" (vim.fn.reg_recording) ")")))
 
-(autocmd! :RecordingLeave "*"  #(vim.notify "Finished recording Macro"))
-
+(autocmd! :RecordingLeave "*" #(vim.notify "Finished recording Macro"))
 
 ;; Custom Autocmds::
 (fn set-shiftwidth [filetype shiftwidth]
-  (autocmd!
-    :FileType
-    filetype
-    #(vim.cmd (string.format " setlocal expandtab tabstop=%d shiftwidth=%d softtabstop=%d "
-                             shiftwidth
-                             shiftwidth
-                             shiftwidth))))
-
+  (autocmd! :FileType filetype
+            #(vim.cmd (string.format " setlocal expandtab tabstop=%d shiftwidth=%d softtabstop=%d "
+                                     shiftwidth shiftwidth shiftwidth))))
 
 (augroup! neogit-config (autocmd! FileType Neogit* `(local-set! nolist))
           (autocmd! [FileType BufEnter] NeogitCommitView
                     `(local-set! evenitignore+ :CursorMoved))
           (autocmd! BufLeave NeogitCommitView
                     `(local-set! evenitignore- :CursorMoved)))
+
 (>== [:haskell
       :norg
       :xml
@@ -83,11 +77,7 @@
       :html
       :terraform
       :scheme
-      :nix]
-     #(set-shiftwidth $1 2))
-
+      :nix] #(set-shiftwidth $1 2))
 
 ;; Custom Highlight Groups
 ; hi TreesitterContextBottom gui=underline guisp=Grey
-
-

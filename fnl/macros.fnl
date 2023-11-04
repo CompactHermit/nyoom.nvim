@@ -1,23 +1,29 @@
 ;; fennel-ls: macro-file
 
-(local {: nil? : str? : bool? : num? : ->str : begins-with? : all : crypt : car} (require :core.lib))
+(local {: nil?
+        : str?
+        : bool?
+        : num?
+        : ->str
+        : begins-with?
+        : all
+        : crypt
+        : car} (require :core.lib))
 
 (lambda expr->str [expr]
-  `(-> (macrodebug ,expr nil
-        (string.gsub "{}" "[]")
-        (string.gsub "_%d+_auto" "#"))))
+  `(-> (macrodebug ,expr nil (string.gsub "{}" "[]")
+                   (string.gsub "_%d+_auto" "#"))))
 
 (lambda extend-fn [fn-name args & body]
   (assert-compile (sym? fn-name) "expected symbol for fn-name" fn-name)
   (assert-compile (sequence? args) "expected list for args" args)
   (assert-compile (> (length body) 0) "expected at least one statement" body)
-  (table.insert body '(values (unpack result#)))
+  (table.insert body `(values (unpack result#)))
   `(let [old# ,fn-name]
-     (set ,fn-name
-          (fn [...]
-            (local result# [(old# ...)])
-            (local [,(unpack args)] result#)
-            ,(unpack body)))
+     (set ,fn-name (fn [...]
+                     (local result# [(old# ...)])
+                     (local [,(unpack args)] result#)
+                     ,(unpack body)))
      ,fn-name))
 
 (tset _G :nyoom/pack [])
@@ -364,8 +370,9 @@
                        [...])
                   "expected autocmd exprs for body" ...)
   (expand-exprs (let [name (->str name)]
-                  (icollect [_ expr (ipairs [...]) &into [`(vim.api.nvim_create_augroup ,name
-                                                                                        {:clear false})]]
+                  (icollect [_ expr (ipairs [...])
+                             &into [`(vim.api.nvim_create_augroup ,name
+                                                                  {:clear false})]]
                     (if (= `autocmd! (car expr))
                         (let [[_ event pattern command ?options] expr
                               options (or ?options {})
@@ -435,7 +442,7 @@
                                                                                                       (if (= ,package
                                                                                                              :nvim-lspconfig)
                                                                                                           (vim.cmd "silent! do FileType")))
-                                                                                                    0)))}))))
+                                                                                        0)))}))))
                     _ (values k v)))]
     (doto options
       (tset 1 identifier))))
@@ -481,7 +488,8 @@
                 `(use_rocks ,v))
         use-sym (sym :use)]
     `((. (require :packer) :startup) (fn [,use-sym]
-                                       ,(unpack (icollect [_ v (ipairs packs) &into rocks]
+                                       ,(unpack (icollect [_ v (ipairs packs)
+                                                           &into rocks]
                                                   v))))))
 
 (lambda packadd! [package]
@@ -560,17 +568,17 @@
                                                      (vim.defer_fn (fn []
                                                                      (,callback)
                                                                      ,doft)
-                                                                   ,time)))})))
+                                                       ,time)))})))
   (let [callback-sym (sym :*callback*)
         loadname (string.sub (string.match package "/.+") 2)
         augroup (.. :nyoom-pact- loadname)
         host :github
-        autocmds `(do)
-                    
-        callback `(do)
-                    
-        result `(do)
-                  
+        autocmds `(do
+                    )
+        callback `(do
+                    )
+        result `(do
+                  )
         options (or ?options {})
         options (collect [k v (pairs options)]
                   (match k
@@ -733,20 +741,21 @@
     _ (error "expected let! to have at least two arguments: name value")))
 
 (lambda verify-dependencies! [dependencies]
-   "Uses the vim.notify API to print a warning for every dependecy that is no
+  "Uses the vim.notify API to print a warning for every dependecy that is no
    available and then executes an early return from the module."
-   `(let [dependencies# ,dependencies
-          info# (debug.getinfo 1 :S)
-          module-name# info#.source
-          module-name# (module-name#:match "@(.*)")
-          not-available# (icollect [_# dependency# (ipairs dependencies#)]
-                           (when (not (pcall require dependency#))
-                             dependency#))]
-      (when (> (length not-available#) 0)
-        (each [_# dependency# (ipairs not-available#)]
-          (vim.notify (string.format "Could not load '%s' as '%s' is not available." module-name# dependency#)
-                      vim.log.levels.WARN))
-        (lua "return nil"))))
+  `(let [dependencies# ,dependencies
+         info# (debug.getinfo 1 :S)
+         module-name# info#.source
+         module-name# (module-name#:match "@(.*)")
+         not-available# (icollect [_# dependency# (ipairs dependencies#)]
+                          (when (not (pcall require dependency#))
+                            dependency#))]
+     (when (> (length not-available#) 0)
+       (each [_# dependency# (ipairs not-available#)]
+         (vim.notify (string.format "Could not load '%s' as '%s' is not available."
+                                    module-name# dependency#)
+                     vim.log.levels.WARN))
+       (lua "return nil"))))
 
 (lambda sh [...]
   "simple macro to run shell commands inside fennel"

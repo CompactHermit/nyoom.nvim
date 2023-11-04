@@ -3,6 +3,7 @@
 ; Magit for neovim
 (use-package! :NeogitOrg/neogit
               {:nyoom-module tools.neogit 
-               :cmd [:Neogit]})
+               :cmd [:Neogit]
+               :call-setup neogit})
 
 
