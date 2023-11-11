@@ -1,12 +1,13 @@
 @document.meta
+version: 0.1.0
 title: Examples
 description: Examples of Nyoom configurations
 author: shaunsingh
 categories: docs
 created: 2022-12-09
-version: 0.1.0
+id: 9f705781-b664-4c6e-82e0-5de36678c3a1
+updated: 2023-11-06T19:09:01-0500
 @end
-
 = TOC
 
 * Introduction

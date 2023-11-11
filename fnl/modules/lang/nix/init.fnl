@@ -5,7 +5,4 @@
 ;               {:opt true
 ;                :ft [:nix]})
 
-(use-package! :LnL7/vim-nix
-              {:opt true
-               :ft [:nix]})
-
+(use-package! :LnL7/vim-nix {:opt false})

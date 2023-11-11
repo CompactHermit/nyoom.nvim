@@ -1,12 +1,13 @@
 @document.meta
+version: 0.1.0
 title: Getting Started Guide
 description: Getting Started with Nyoom Nvim
 author: shaunsingh
 categories: docs
 created: 2022-12-09
-version: 0.1.0
+id: 289e2c23-6cee-48aa-88ad-afb49fa2e9e3
+updated: 2023-11-06T19:09:01-0500
 @end
-
 = TOC
 
 This guide assumes a basic understanding of programming and fennel. If you haven't already, its recommended to look over [why-fennel](https://github.com/shaunsingh/nyoom.nvim/blob/main/docs/faq.md#why-fennel).

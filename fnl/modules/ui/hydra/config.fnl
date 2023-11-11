@@ -558,20 +558,20 @@
 (nyoom-module-p! overseer
                  (do
                    (local overseer-hints "
-    ^    Overseer
-    ^▔▔▔▔▔▔▔▔▔▔▔^
-    ^▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔^
-    ^ _s_: OverseerRun
-    ^ _w_: OverseerToggle
-    ^ _d_: OverseerQuickAction
-    ^ _D_: OverseerTaskAction
-    ^ _b_: OverseerBuild
-    ^ _l_: OverseerLoadBundle
-    ^ _R_: OverseerRunCmd
-    ^ _t_: OverseerTemplate
+           Overseer
+    ▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+    ▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+     _s_: OverseerRun
+     _w_: OverseerToggle
+     _d_: OverseerQuickAction
+     _D_: OverseerTaskAction
+     _b_: OverseerBuild
+     _l_: OverseerLoadBundle
+     _r_: OverseerRunCmd
+     _t_: OverseerTemplate
 
 
-    ^ <Esc>: Quit
+        <Esc>: Quit
 
                           ")
                    (Hydra {:name :+Overseer
@@ -600,7 +600,7 @@
                                    [:l
                                     (fn []
                                       (vim.cmd :OverseerLoadBundle))]
-                                   [:R
+                                   [:r
                                     (fn []
                                       (vim.cmd :OverseerRunCmd))]
                                    [:t
@@ -670,8 +670,8 @@
                                     (fn []
                                       ((->> :jump
                                             (. (require :flash))) {:search {:mode (fn [str]
-                                                                                                                                      (.. "\\<"
-                                                                                                                                          str))}}))
+                                                                                      (.. "\\<"
+                                                                                          str))}}))
                                     {:desc "Match beginning of words only"}]
                                    [:S
                                     (fn []

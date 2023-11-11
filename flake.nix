@@ -19,6 +19,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     # Plugins/Parsers::
     neorg-overlay.url = "github:nvim-neorg/nixpkgs-neorg-overlay";
     tree-sitter-just = {
@@ -87,13 +88,14 @@
       };
       perSystem = {
         self',
+        lib,
         pkgs,
         config,
         system,
         final,
         ...
       }: let
-        l = pkgs.lib // builtins;
+        l = lib // builtins;
         grammar = pkgs.callPackage "${inputs.nixpkgs}/pkgs/development/tools/parsing/tree-sitter/grammar.nix" {};
         mkHook = n: prev:
           {
@@ -104,18 +106,19 @@
           // prev;
 
         NeovimConfig = pkgs.neovimUtils.makeNeovimConfig {
-          extraLuaPackages = p: [p.luarocks p.magick p.libluv];
+          extraLuaPackages = p: [p.luarocks p.magick];
           plugins = with pkgs; [
             (vimPlugins.nvim-treesitter.withPlugins (_:
               pkgs.vimPlugins.nvim-treesitter.allGrammars
               ++ [
-                self'.packages.tree-sitter-nu
+                pkgs.tree-sitter-grammars.tree-sitter-nu
                 self'.packages.tree-sitter-nim
                 self'.packages.tree-sitter-just
               ]))
+            vimPlugins.sqlite-lua
             parinfer-rust
             vimPlugins.nvim-treesitter.builtGrammars.tree-sitter-norg-meta
-            # vimPlugins.neogit ## Werid Breaks, will just use this verison lolz
+            #vimPlugins.overseer-nvim
           ];
           withNodeJs = true;
           withRuby = true;
@@ -123,10 +126,12 @@
           customRC = "luafile ~/.config/nvim/init.lua";
         };
 
+        #(Hermit) Essentially shoves shit into RTP
         wrapperArgs = let
           path = l.makeBinPath [
             pkgs.deadnix
             pkgs.statix
+            pkgs.marksman
             pkgs.alejandra
             pkgs.nil
             pkgs.biome
@@ -152,14 +157,27 @@
             (self: super: {
               neovim-custom =
                 pkgs.wrapNeovimUnstable
-                (self.neovim-unwrapped.overrideAttrs (oa: {
-                  version = "v0.10.0-dev-4c32927";
-                  src = inputs.nvim-src;
+                (pkgs.neovim-unwrapped.overrideAttrs (oa: {
+                  # src = inputs.nvim-src;
+                  # version = inputs.nvim-src.shortRev or "dirty";
+                  patches = [];
+                  preConfigure = ''
+                    sed -i cmake.config/versiondef.h.in -e "s/@NVIM_VERSION_PRERELEASE@/-dev-$version/"
+                  '';
+                  buildInputs =
+                    ## Avoid a global overlay
+                    lib.remove pkgs.libvterm-neovim oa.buildInputs
+                    ++ lib.singleton (
+                      pkgs.libvterm-neovim.overrideAttrs {
+                        version = "0.3.3";
+                        src = pkgs.fetchurl {
+                          url = "https://github.com/neovim/libvterm/archive/v0.3.3.tar.gz";
+                          hash = "sha256-C6vjq0LDVJJdre3pDTUvBUqpxK5oQuqAOiDJdB4XLlY=";
+                        };
+                      }
+                    );
                 }))
                 (NeovimConfig // {inherit wrapperArgs;});
-            })
-            (self: super: {
-              libvterm-neovim = inputs.nix_staged.legacyPackages.x86_64-linux.libvterm-neovim;
             })
           ];
         };
@@ -168,7 +186,6 @@
           projectRootFile = "flake.nix";
           programs = {
             alejandra.enable = true;
-            # Oddly enough, treefmt is ignoring fnlfmt, hmmmm
             fnlfmt.enable = true;
           };
         };
@@ -200,11 +217,6 @@
         };
         packages = {
           default = pkgs.neovim-custom;
-          tree-sitter-nu = grammar {
-            language = "nu";
-            src = inputs.tree-sitter-nu;
-            inherit (pkgs.tree-sitter) version;
-          };
           tree-sitter-nim = grammar {
             language = "nim";
             src = inputs.tree-sitter-nim;

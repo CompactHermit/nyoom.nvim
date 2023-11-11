@@ -11,14 +11,19 @@
         :core.integrations.telescope {}
         :external.exec {}
         :core.summary {:config {:strategy :default}}
-        :core.tempus {}
+        :core.integrations.roam {}
+        ; :core.tempus {}
         :core.keybinds {:config {:default_keybinds true
-                                 :neorg_leader "<leader>n"
+                                 :neorg_leader :<leader>n
                                  :hook (fn [keybinds]
-                                         (keybinds.map :norg :n "]s" "<cmd>Neorg keybind norg core.integrations.treesitter.next.heading<cr>")
-                                         (keybinds.map :norg :n "[s" "<cmd>Neorg keybind norg core.integrations.treesitter.previous.heading<cr>")
-                                         (keybinds.map :norg :n "gj" "<cmd> Neorg keybind norg core.manoeuvre.item_down<cr>")
-                                         (keybinds.map :norg :n "gk" "<cmd> Neorg keybind norg core.manoeuvre.item_up<cr>"))}}
+                                         (keybinds.map :norg :n "]s"
+                                                       "<cmd>Neorg keybind norg core.integrations.treesitter.next.heading<cr>")
+                                         (keybinds.map :norg :n "[s"
+                                                       "<cmd>Neorg keybind norg core.integrations.treesitter.previous.heading<cr>")
+                                         (keybinds.map :norg :n :gj
+                                                       "<cmd> Neorg keybind norg core.manoeuvre.item_down<cr>")
+                                         (keybinds.map :norg :n :gk
+                                                       "<cmd> Neorg keybind norg core.manoeuvre.item_up<cr>"))}}
         :core.dirman {:config {:workspaces {:main "~/neorg"
                                             :Math "~/neorg/Math"
                                             :NixOS "~/neorg/nixDocs"
@@ -26,10 +31,7 @@
                                             :Programming "~/neorg/CS"
                                             :Academic_Math "~/neorg/Papers/Math"
                                             :Academic_CS "~/neorg/Papers/CS"
-                                            :Linuxopolis "~/neorg/linux"}
-                               :autodetect true
-                               :autochdir true}}})
-
+                                            :Linuxopolis "~/neorg/linux"}}}})
 
 ;; add conditional modules
 (nyoom-module-p! cmp (tset neorg-modules :core.completion
@@ -43,40 +45,47 @@
                                  :icons {:code_block {:conceal true
                                                       :padding {:left 1
                                                                 :right 3}}
-                                             :todo {:done {:icon ""}
-                                                    :pending {:icon ""}}}}}))
+                                         :todo {:done {:icon ""}
+                                                :pending {:icon ""}}}}}))
 
 (nyoom-module-p! neorg.+roam
-                 (tset neorg-modules :core.integrations.roam
-                       {:config
-                       ;; Note:: wait for PR to merge for adding keybind descriptors
-                        {:keymaps {:select_prompt "<c-space>"
-                                   :insert_link "<leader>ncl"
-                                   :find_note "<leader>ncf"
-                                   :capture_note "<leader>ncn"
-                                   :capture_index "<leader>nci"
-                                   :capture_cancel "<C-q>"
-                                   :capture_save "<C-w>"}
-                       ;; Telescope theme
-                         :theme :ivy
-                         :capture_templates [{:name "default"
-                                              :title "${title}"
-                                              :lines [""]}
-                                             {:name "Math notes:: Theorem/Lemma"
-                                              :title "${title}"
-                                              :file "Math/${title}"
-                                              :lines ["*.${heading1}::" "$.${Latex_Symbol}$"]}
-                                             {:name "Capture Def"
-                                              :title "$title"
-                                              :lines ["$$ ${def1}" "${def1}::" "$$"]}
-                                             {:name "Nix notes"
-                                              :file "nixDocs/${title}"
-                                              :title "${title}"
-                                              :lines ["* ${heading1}::" "* ${heading2}"]}]
-                         :substitution {:title (fn [metadata]
-                                                 metadata.title)
-                                        :date (fn [metadata]
-                                                (os.date "%Y-%m-%d"))}}}))
+                 (do
+                   (packadd! :neorg-roam.nvim)
+                   (tset neorg-modules :core.integrations.roam
+                         {:config {:keymaps {:select_prompt :<c-space>
+                                             :insert_link :<leader>ncl
+                                             :find_note :<leader>ncf
+                                             :capture_note :<leader>ncn
+                                             :capture_index :<leader>nci
+                                             :get_backlinks :<leader>ncb
+                                             :db_sync :<leader>ncd
+                                             :db_sync_wksp :<leader>ncw
+                                             :capture_cancel :<C-q>
+                                             :capture_save :<C-w>}
+                                   :theme :ivy
+                                   :workspaces [:main :NixOS :Programming]
+                                   :capture_templates [{:name :default
+                                                        :title "${title}"
+                                                        :lines [""]}
+                                                       {:name "Math notes:: Theorem/Lemma"
+                                                        :title "${title}"
+                                                        :file "Math/${title}"
+                                                        :lines ["*.${heading1}::"
+                                                                "$.${Latex_Symbol}$"]}
+                                                       {:name "Capture Def"
+                                                        :title :$title
+                                                        :lines ["$$ ${def1}"
+                                                                "${def1}::"
+                                                                "$$"]}
+                                                       {:name "Nix notes"
+                                                        :file "nixDocs/${title}"
+                                                        :title "${title}"
+                                                        :lines ["* ${heading1}::"
+                                                                "* ${heading2}"]}]
+                                   :substitution {:title (fn [metadata]
+                                                           metadata.title)
+                                                  :date (fn [metadata]
+                                                          (os.date "%Y-%m-%d"))}}})))
 
 (nyoom-module-p! neorg.+present
                  (do
@@ -90,6 +99,4 @@
                    (tset neorg-modules :core.export.markdown
                          {:config {:extensions :all}})))
 
-
 (setup :neorg {:load neorg-modules})
-

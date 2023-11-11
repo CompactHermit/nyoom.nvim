@@ -1,13 +1,11 @@
 @document.meta
-title: README
-description: 
-authors: strange_cofunctor
-categories: 
-created: 2023-08-04
 updated: 2023-08-04
 version: 1.1.1
+authors: strange_cofunctor
+title: README
+created: 2023-08-04
+id: b12c5b87-7f45-467f-830b-01ca27e4c59e
 @end
-
 * Mason::
 | $Mason$
 Mason Exposes many API's , some of which can be used to help custom build env %e.g:: nix%. This is a documentation made for those env.

@@ -1,13 +1,12 @@
 @document.meta
+updated: 2023-03-17
+version: 1.0.0
 title: Octo - hydra and design
-description: 
 authors: strange_cofunctor
 categories: Hydra
 created: 2023-03-17
-updated: 2023-03-17
-version: 1.0.0
+id: 4e751c02-789d-403e-a22f-3306f97b5590
 @end
-
 * Octo:: PR/Issue handler supreme
 ** Commands:
    For octo, there is only `Octo <objects> <action> [args]` as a command (for the public API). When commands is not specified, Octo defaults to a URL searcher for issue/repo

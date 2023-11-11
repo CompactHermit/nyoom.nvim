@@ -92,7 +92,7 @@
           +export
           +quicknote
           +nabla
-          +roam)
+           +roam)              ; Currently bugged
         ; (org +pretty)        ; WIP: organize your plain life in plain text, the emacs way
         nix                  ; I hereby declare "nix geht mehr!"
         nickel               ; Dhall, but nixified

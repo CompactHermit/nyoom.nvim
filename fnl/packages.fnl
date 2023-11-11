@@ -77,12 +77,6 @@
 ;                                :opt true
 ;                                :cmd [:Neogen]})
 ;; markdown stuff
-(use-package! :toppair/peek.nvim
-              {:run "deno task --quiet build:fast"
-               :config (fn []
-                         (local {: setup} (require :peek))
-                         (setup {:throttle_at 200000}))
-               :ft [:markdown]})
 
 ;; LSP-SAGA - The based lsp helper
 (use-package! :nvimdev/lspsaga.nvim

@@ -17,11 +17,12 @@
 (set package.path (.. package.path ";" (vim.fn.expand :$HOME)
                       "/.luarocks/share/lua/5.1/?/init.lua;"))
 (set package.path (.. package.path ";" (vim.fn.expand :$HOME)
-                      "/.luarocks/share/lua/5.1/?.lua;"))                                        	
+                      "/.luarocks/share/lua/5.1/?.lua;"))                                                	
 
 (let! python3_host_prog (if (executable? "python") (vim.fn.exepath "python")
                           (executable? "python3") (vim.fn.exepath "python3")
                           nil))
+
 
 ;; check for cli
 

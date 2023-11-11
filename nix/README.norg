@@ -1,16 +1,13 @@
 @document.meta
+updated: 2023-09-04
+version: 1.1.1
 title: README
 description: Nix Folder design for HM-module
 authors: strange_cofunctor
-categories: [
-Nix
-Nvim
-]
+categories: table: 0x7f62270d1508
 created: 2023-08-04
-updated: 2023-09-04
-version: 1.1.1
+id: 45fb1317-5d96-4795-963d-92095b59a1f6
 @end
-
 * Exposed Nix Modules::
 ** Ideals::
   Nyoom has been steamlining efforts for an alternative package manager, e.g:: {https://github.com/nyoom-engineering/alpacka}[alpacka], so in technicality nix is no longer needed. However, it would be stupid to rely so heavily on fetcher. As a result, adding a HM-module would be more than fitting. Additionally, there's also an `apps` %for 'nix build'% and `pkg` %for 'nix run'%.

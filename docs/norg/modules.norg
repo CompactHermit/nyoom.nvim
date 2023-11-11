@@ -1,12 +1,13 @@
 @document.meta
+version: 0.1.0
 title: Nyoom Modules
 description: Overview of Nyoom Module System
 author: shaunsingh
 categories: docs
 created: 2022-11-24
-version: 0.1.0
+id: 409c165a-6014-43fa-9d5a-bc1f87b06242
+updated: 2023-11-06T19:09:01-0500
 @end
-
 * Official Modules
   These modules are maintained by the Nyoom team and are considered stable. A good portion of the modules are looked after by me (@shaunsingh), but others are looked over by various contributors. Please feel free to open issues for feature requests or misbehaving modules. If you are experienced with a certain language or tool, feel free to contribute and adopt-a-module today! :tm:
 
