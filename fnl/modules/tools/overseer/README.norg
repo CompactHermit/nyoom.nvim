@@ -1,13 +1,10 @@
 @document.meta
-updated: 2023-09-01
-version: 1.1.1
 title: README
-authors: strange_cofunctor
-categories: table: 0x7f622832d438
-created: 2023-08-30
-id: debaa530-1900-4ca4-83ce-6ccdd9c966bf
+id: 8255ab05-0a84-4449-bbc7-8e70871815e0
+workspace: default
+created: 2023-11-20T12:43:03-0500
+updated: 2023-11-20T12:43:03-0500
 @end
-* Overseer:: One of the task runners of all time
 ** Usage::
 *** Custom Tasks::
     Tasks can be broken down into 2 parts, a condition and some generator. The generator returns a callback (aka a table) which contains all custom task. The conditional is some option which checks for a specific truth value. E.g:: any function that returns a bool can be used to define conditionals.

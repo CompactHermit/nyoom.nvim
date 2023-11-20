@@ -1,4 +1,5 @@
-(import-macros {: packadd! : nyoom-module-p! : map! : custom-set-face!} :macros)
+(import-macros {: packadd! : nyoom-module-p! : map! : custom-set-face! : let!}
+               :macros)
 
 ;; Conditionally enable leap-ast
 
@@ -10,22 +11,20 @@
 
 (local treesitter-filetypes [:vimdoc :fennel :vim :regex :query])
 
-
 ;; SEE:: https://github.com/nickel-lang/tree-sitter-nickel/tree/main
 ;; ISSUE:: TS Nickel (highlights) broken, fml
 (nyoom-module-p! nickel
-                  (do
-                    ;; Autoload for efficiency
+                 (do
+                   ;; Autoload for efficiency
                    (local tsp (autoload :nvim-treesitter.parsers))
                    (local parser-config (tsp.get_parser_configs))
                    (set parser-config.nickel
-                    {:install_info {:url "https://github.com/nickel-lang/tree-sitter-nickel"
-                                    :files [:src/parser.c :src/scanner.cc]
-                                    :branch :main
-                                    :generate_requires_npm false
-                                    :requires_generate_from_grammar false}})
+                        {:install_info {:url "https://github.com/nickel-lang/tree-sitter-nickel"
+                                        :files [:src/parser.c :src/scanner.cc]
+                                        :branch :main
+                                        :generate_requires_npm false
+                                        :requires_generate_from_grammar false}})
                    (table.insert treesitter-filetypes :nickel)))
-
 
 ;; conditionally install parsers
 
@@ -54,7 +53,6 @@
 (nyoom-module-p! sh (table.insert treesitter-filetypes :bash))
 
 (nyoom-module-p! sh.+fish (table.insert treesitter-filetypes :fish))
-
 
 (nyoom-module-p! sh.+nu (table.insert treesitter-filetypes :nu))
 
@@ -94,22 +92,17 @@
                                         :files [:src/parser.c :src/scanner.cc]
                                         :branch :main}})
                    (table.insert treesitter-filetypes :org)))
-(nyoom-module-p! ocaml
-                 (table.insert treesitter-filetypes :ocaml))
 
-(nyoom-module-p! zellij
-                 (table.insert treesitter-filetypes :kdl))
+(nyoom-module-p! ocaml (table.insert treesitter-filetypes :ocaml))
 
+(nyoom-module-p! zellij (table.insert treesitter-filetypes :kdl))
 
 (nyoom-module-p! neorg
                  (do
                    (local tsp (autoload :nvim-treesitter.parsers))
-                   (local parser-config (tsp.get_parser_configs))
-                   ; (set parser-config.norg
-                   ;      {:install_info {:url "https://github.com/nvim-neorg/tree-sitter-norg"
+                   (local parser-config (tsp.get_parser_configs)) ; (set parser-config.norg ;      {:install_info {:url "https://github.com/nvim-neorg/tree-sitter-norg"
                    ;                      :files [:src/parser.c :src/scanner.cc]
-                   ;                      :branch :main
-                   ;                      :use_makefile true}})
+                   ;                      :branch :main ;                      :use_makefile true}})
                    (set parser-config.norg_meta
                         {:install_info {:url "https://github.com/nvim-neorg/tree-sitter-norg-meta"
                                         :files [:src/parser.c]
@@ -127,12 +120,11 @@
 ;(packadd! nvim-ts-rainbow2)
 (packadd! nvim-ts-refactor)
 (packadd! nvim-treesitter-textobjects)
-(packadd! nvim-ts-context-commentstring)
 (packadd! ts-node-action)
 
 ;; setup hl groups for ts-rainbow
 
-(custom-set-face! :TSRainbowRed  [] {:fg "#878d96" :bg :NONE})
+(custom-set-face! :TSRainbowRed [] {:fg "#878d96" :bg :NONE})
 (custom-set-face! :TSRainbowYellow [] {:fg "#a8a8a8" :bg :NONE})
 (custom-set-face! :TSRainbowBlue [] {:fg "#8d8d8d" :bg :NONE})
 (custom-set-face! :TSRainbowOrange [] {:fg "#a2a9b0" :bg :NONE})
@@ -145,12 +137,11 @@
        {;;:ensure_installed treesitter-filetypes
         :highlight {:enable true :use_languagetree true}
         :indent {:enable true}
-        :context_commentstring {:enable true}
-        :refactor {:enable true
-                   :keymaps {:smart_rename "<localleader>rn"}}
+        ;;:context_commentstring {:enable true}
+        :refactor {:enable true :keymaps {:smart_rename :<localleader>rn}}
         :query_linter {:enable true
                        :use_virtual_text true
-                       :lint_events ["BufWrite" "CursorHold"]}
+                       :lint_events [:BufWrite :CursorHold]}
         :rainbow {:enable true
                   ;;:extended_mode true
                   :query {1 :rainbow-parens
@@ -170,7 +161,8 @@
                                 :ac "@class.outer"
                                 :ic "@class.inner"}
                       :move {:enable true
-                             :set_jumps true ;; Whether to add to jumplist, IDK y u'd disable this
+                             :set_jumps true
+                             ;; Whether to add to jumplist, IDK y u'd disable this
                              :goto_next_start {"]n" "@function.outer"
                                                "]]" "@class.outer"
                                                "]nif" "@function.inner"
@@ -184,3 +176,8 @@
                              :goto_previous_end {"[N" "@function.outer"
                                                  "[]" "@class.outer"}}}})
 
+(packadd! nvim-ts-context-commentstring)
+((->> :setup
+      (. (require :ts_context_commentstring))))
+
+(let! skip_ts_context_commentstring_module true)

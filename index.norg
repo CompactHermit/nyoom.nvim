@@ -1,19 +1,33 @@
 @document.meta
-updated: 2023-11-10T19:00:40-0500
-version: 1.1.1
-authors: strange_cofunctor
 title: index
-created: 2023-10-31T10:53:34-0500
-id: b665c5f5-34be-44da-ad23-34e914d95667
+id: 7e4c9dcf-c3e4-4410-8b1c-2b39d0ea7c45
+workspace: default
+created: 2023-11-20T12:42:56-0500
+updated: 2023-11-20T12:42:56-0500
 @end
-* Nvim Dev::
-** Agenda/TODO's::
-   #contexts someday, IDK WHEN
-   - (x) Secondary Tasks
-   -- (x) Fix HLS issues with haskell-flake
-   -- (_) Rewrite `+format` to use {}[Conform]
+  #contexts someday, IDK WHEN
+  - (x) Secondary Tasks
+  -- (x) Fix HLS issues with haskell-flake
+  -- (_) Rewrite `+format` to use [Conform]
 
-   #time.due {@ Sunday 8 October 2023}
-   - (x) Fix Nix Flake
-   -- (x) Make App 
+  #time.due {@ Sunday 8 October 2023}
+  - (x) Fix Nix Flake
+  -- (x) Make App 
 
+  #contexts Someday
+  - (-) Fixup AppName using nix instead of the script.
+  - ( ) Nyoom CMD::
+  -- ( ) JustFile:: Headless neovim hotpot compile command.
+  -- (_) Find way to force Hotpot to use A /tmp directory instead of XDG_DATA_DIR
+  --- Just have Neovim Run with {https://github.com/konradmalik/neovim-flake/blob/main/packages/neovim-pde/default.nix}[XDG_CACHE_DIR] set to /tmp
+
+  #contexts GTD
+  - ( ) Nfnl Port::
+  -- (=) The Actual Port:;
+  --- ( ) Macro's Rewrite
+  --- ( ) Packer --> Pckr
+  -- (=) Mlua Bindings for fennel
+  -- ( ) CI:: Fnl --> Lua action Via Pre-commit-hook
+* inspiration::
+  %Why doesn't neorg have tables??%
+  - {https://github.com/konradmalik/neovim-flake}[Konradmalik]

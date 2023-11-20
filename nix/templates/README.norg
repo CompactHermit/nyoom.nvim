@@ -1,14 +1,10 @@
 @document.meta
-updated: 2023-09-05
-version: 1.1.1
 title: README
-description: Dev Templates notes, by bloatware (tm) afficianado
-authors: strange_cofunctor
-categories: table: 0x7f622707a340
-created: 2023-09-03
-id: 1b3100e7-921c-484e-89d5-9ccc9874ed77
+id: a4899299-60a4-4135-a8e2-c1b929e284e5
+workspace: default
+created: 2023-11-20T12:42:57-0500
+updated: 2023-11-20T12:42:57-0500
 @end
-* Dev Tempates::
 ** goDev::
    Using Gomod2nix and devshells
 ** pythonDev::

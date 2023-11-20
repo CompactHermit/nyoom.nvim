@@ -1,8 +1,6 @@
 # neovim::
 lua/packer_compiled.lua
 profile.json
-lua/overseer/template/
-lua/overseer/component/
 snippets/
 inbox.norg
 start.txt

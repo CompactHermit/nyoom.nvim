@@ -1,12 +1,9 @@
 @document.meta
-updated: 2023-10-08T18:23:10-0500
-version: 1.1.1
 title: README
-authors: strange_cofunctor
-description: Future Ncl Support file, to port with ncl-to-nix
-created: 2023-09-03
-id: 213084d1-7b23-445f-8ac3-46cf6b67fde4
+id: 30cffbc5-9574-46f8-8a87-fd80404042a4
+workspace: default
+created: 2023-11-20T12:42:56-0500
+updated: 2023-11-20T12:42:56-0500
 @end
-** Usage::
    As of {@ Sunday 3 September 2023}[today], nickel support comes in the following forms::
    %From organist repo%

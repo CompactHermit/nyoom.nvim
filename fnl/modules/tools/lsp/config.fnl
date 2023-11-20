@@ -12,7 +12,6 @@
 (set vim.lsp.handlers.textDocument/hover
      (vim.lsp.with vim.lsp.handlers.hover {:border :solid}))
 
-
 (fn format! [bufnr ?async?]
   (vim.lsp.buf.format {: bufnr
                        :filter #(not (contains? [:jsonls :tsserver] $.name))
@@ -41,10 +40,10 @@
                      (buf-map! [n] :gr goto-references!)))
   ;; Enable lsp formatting if available
   (nyoom-module-p! format.+onsave
-    (when (client.supports_method "textDocument/formatting")
-      (augroup! format-before-saving
-        (clear! {:buffer bufnr})
-        (autocmd! BufWritePre <buffer> #(format! bufnr) {:buffer bufnr})))))
+                   (when (client.supports_method :textDocument/formatting)
+                     (augroup! format-before-saving (clear! {:buffer bufnr})
+                               (autocmd! BufWritePre <buffer> #(format! bufnr)
+                                         {:buffer bufnr})))))
 
 ;; LSP Documents Types::
 
@@ -84,18 +83,18 @@
 
 (nyoom-module-p! json
                  (tset lsp-servers :jsonls
-                  {:format {:enabled false}
-                   :schemas [{:description "ESLint config"
-                              :fileMatch [:.eslintrc.json :.eslintrc]
-                              :url "http://json.schemastore.org/eslintrc"}
-                             {:description "Package config"
-                              :fileMatch [:package.json]
-                              :url "https://json.schemastore.org/package"}
-                             {:description "Packer config"
-                              :fileMatch [:packer.json]
-                              :url "https://json.schemastore.org/packer"}]}))
+                       {:format {:enabled false}
+                        :schemas [{:description "ESLint config"
+                                   :fileMatch [:.eslintrc.json :.eslintrc]
+                                   :url "http://json.schemastore.org/eslintrc"}
+                                  {:description "Package config"
+                                   :fileMatch [:package.json]
+                                   :url "https://json.schemastore.org/package"}
+                                  {:description "Packer config"
+                                   :fileMatch [:packer.json]
+                                   :url "https://json.schemastore.org/packer"}]}))
 
-(nyoom-module-p! typescript (tset lsp-servers :biome {:settings {:filetypes [:javascript :typescript :javascriptreact :typescript.tsx :typescriptreact :json]}}))
+; (nyoom-module-p! typescript (tset lsp-servers :biome {:settings {:filetypes [:javascript :typescript :javascriptreact :typescript.tsx :typescriptreact :json]}}))
 
 (nyoom-module-p! kotlin (tset lsp-servers :kotlin_langage_server {}))
 
@@ -119,18 +118,25 @@
 ;;                                                             end,})
 ;;                                 end}
 
-(nyoom-module-p! svelte (tset lsp-servers :svelte {:config
-                                                    {:filetypes [:svelte :typescript :javascript :css :html]}}))
+(nyoom-module-p! svelte
+                 (tset lsp-servers :svelte
+                       {:config {:filetypes [:svelte
+                                             :typescript
+                                             :javascript
+                                             :css
+                                             :html]}}))
 
 (nyoom-module-p! nim (tset lsp-servers :nimls {}))
 
 ;; I'm fucking in love
-(nyoom-module-p! nix (tset lsp-servers :nil_ls
-                           {:settings {:nix {:flake
-                                             {:autoArchive true}}}}))
-(nyoom-module-p! nickel (tset lsp-servers :nickel_ls
-                              {:settings {:filetypes [:ncl :nickel]
-                                          :root_dir [:flake.nix :.git]}}))
+(nyoom-module-p! nix
+                 (tset lsp-servers :nil_ls
+                       {:settings {:nix {:flake {:autoArchive true}}}}))
+
+(nyoom-module-p! nickel
+                 (tset lsp-servers :nickel_ls
+                       {:settings {:filetypes [:ncl :nickel]
+                                   :root_dir [:flake.nix :.git]}}))
 
 (nyoom-module-p! python
                  (tset lsp-servers :pyright
@@ -139,12 +145,11 @@
                                                        :useLibraryCodeForTypes true
                                                        :disableOrganizeImports false}}}}))
 
-(nyoom-module-p! typst
-                 (tset lsp-servers :typst_lsp {}))
+(nyoom-module-p! typst (tset lsp-servers :typst_lsp {}))
+
 (nyoom-module-p! yaml
                  (tset lsp-servers :yamlls
-                       {:settings {:yaml {
-                                          :schemaStore {:enable false
+                       {:settings {:yaml {:schemaStore {:enable false
                                                         :url "https://www.schemastore.org/api/json/catalog.json"}
                                           :schemas {:/path/to/your/custom/strict/schema.json "yet-another.{yml,yaml}"
                                                     "http://json.schemastore.org/prettierrc" ".prettierrc.{yml,yaml}"}

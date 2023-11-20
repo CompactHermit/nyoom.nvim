@@ -18,10 +18,11 @@
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
+
     # Plugins/Parsers::
     neorg-overlay.url = "github:nvim-neorg/nixpkgs-neorg-overlay";
+    himalaya.url = "git+https://git.sr.ht/~soywod/himalaya-vim";
     tree-sitter-just = {
       url = "github:IndianBoy42/tree-sitter-just";
       flake = false;
@@ -52,7 +53,7 @@
         inputs.treefmt-nix.flakeModule
         inputs.parts.flakeModules.easyOverlay
         inputs.pch.flakeModule
-        # ./nix/apps/default.nix
+        ./nix/apps/default.nix
         #./nix/overlay/default.nix
       ];
 
@@ -107,26 +108,30 @@
 
         NeovimConfig = pkgs.neovimUtils.makeNeovimConfig {
           extraLuaPackages = p: [p.luarocks p.magick];
-          plugins = with pkgs; [
-            (vimPlugins.nvim-treesitter.withPlugins (_:
-              pkgs.vimPlugins.nvim-treesitter.allGrammars
-              ++ [
-                pkgs.tree-sitter-grammars.tree-sitter-nu
-                self'.packages.tree-sitter-nim
-                self'.packages.tree-sitter-just
-              ]))
-            vimPlugins.sqlite-lua
-            parinfer-rust
-            vimPlugins.nvim-treesitter.builtGrammars.tree-sitter-norg-meta
-            #vimPlugins.overseer-nvim
-          ];
+          plugins = with pkgs;
+            [
+              (vimPlugins.nvim-treesitter.withPlugins (_:
+                pkgs.vimPlugins.nvim-treesitter.allGrammars
+                ++ [
+                  pkgs.tree-sitter-grammars.tree-sitter-nu
+                  self'.packages.tree-sitter-nim
+                  self'.packages.tree-sitter-just
+                ]))
+              vimPlugins.sqlite-lua
+              parinfer-rust
+              vimPlugins.nvim-treesitter.builtGrammars.tree-sitter-norg-meta
+              #vimPlugins.overseer-nvim
+            ]
+            ++ [
+              inputs.himalaya.packages."${system}".default
+            ];
           withNodeJs = true;
           withRuby = true;
           withPython3 = true;
           customRC = "luafile ~/.config/nvim/init.lua";
         };
 
-        #(Hermit) Essentially shoves shit into RTP
+        #(Hermit) Dump all wrapper args here
         wrapperArgs = let
           path = l.makeBinPath [
             pkgs.deadnix
@@ -154,12 +159,14 @@
           inherit system;
           overlays = [
             inputs.neorg-overlay.overlays.default
-            (self: super: {
+            (_: super: {
               neovim-custom =
                 pkgs.wrapNeovimUnstable
+                # self.inputs.neovim-nightly-overlay.packages."${system}".default
                 (pkgs.neovim-unwrapped.overrideAttrs (oa: {
-                  # src = inputs.nvim-src;
-                  # version = inputs.nvim-src.shortRev or "dirty";
+                  #src = inputs.nvim-src;
+                  name = "neovim";
+                  version = "v10.0.0";
                   patches = [];
                   preConfigure = ''
                     sed -i cmake.config/versiondef.h.in -e "s/@NVIM_VERSION_PRERELEASE@/-dev-$version/"
@@ -216,7 +223,12 @@
           };
         };
         packages = {
-          default = pkgs.neovim-custom;
+          default = pkgs.writeShellApplication {
+            name = "nvim";
+            text = ''
+              XDG_CACHE_HOME=/tmp/nyoom ${lib.getExe pkgs.neovim-custom} "$@"
+            '';
+          };
           tree-sitter-nim = grammar {
             language = "nim";
             src = inputs.tree-sitter-nim;

@@ -670,8 +670,8 @@
                                     (fn []
                                       ((->> :jump
                                             (. (require :flash))) {:search {:mode (fn [str]
-                                                                                      (.. "\\<"
-                                                                                          str))}}))
+                                                                                                                                      (.. "\\<"
+                                                                                                                                          str))}}))
                                     {:desc "Match beginning of words only"}]
                                    [:S
                                     (fn []
@@ -888,7 +888,7 @@
                      (hydra-key! :n
                                  {:m {:hydra true
                                       :name "  Rust"
-                                      :config {:color :red
+                                      :config {:color :teal
                                                :invoke_on_body true
                                                :hint {:position :middle
                                                       :border :solid}}

@@ -11,8 +11,9 @@
         :core.integrations.telescope {}
         :external.exec {}
         :core.summary {:config {:strategy :default}}
-        :core.integrations.roam {}
         ; :core.tempus {}
+        ; :core.integrations.image {}
+        ; :core.latex.renderer {}
         :core.keybinds {:config {:default_keybinds true
                                  :neorg_leader :<leader>n
                                  :hook (fn [keybinds]
@@ -48,6 +49,7 @@
                                          :todo {:done {:icon ""}
                                                 :pending {:icon ""}}}}}))
 
+(packadd! :neorg-roam.nvim)
 (nyoom-module-p! neorg.+roam
                  (do
                    (packadd! :neorg-roam.nvim)
@@ -57,13 +59,13 @@
                                              :find_note :<leader>ncf
                                              :capture_note :<leader>ncn
                                              :capture_index :<leader>nci
-                                             :get_backlinks :<leader>ncb
-                                             :db_sync :<leader>ncd
-                                             :db_sync_wksp :<leader>ncw
+                                             ; :get_backlinks :<leader>ncb
+                                             ; :db_sync :<leader>ncd
+                                             ; :db_sync_wksp :<leader>ncw
                                              :capture_cancel :<C-q>
                                              :capture_save :<C-w>}
                                    :theme :ivy
-                                   :workspaces [:main :NixOS :Programming]
+                                   ;:workspaces [:main :NixOS :Programming]
                                    :capture_templates [{:name :default
                                                         :title "${title}"
                                                         :lines [""]}

@@ -19,6 +19,7 @@
   } @ inputs:
     parts.lib.mkFlake {inherit inputs;} {
       systems = ["x86_64-linux" "aarch64-linux"];
+      debug = true;
       imports = with inputs; [
         treefmt-nix.flakeModule
         pch.flakeModule
@@ -30,15 +31,10 @@
         config,
         pkgs,
         ...
-      }: let
-        todos = "";
-      in {
-        debug = true;
+      }: {
         treefmt = {
           projectRootFile = "flake.nix";
           programs = {
-            alejandra.enable = true;
-            deadnix.enable = true;
             ormolu = {
               enable = true;
               package = pkgs.haskellPackages.fourmolu;
@@ -59,15 +55,9 @@
         };
 
         haskellProjects.default = {
-          projectRoot = ./.;
-          projectFlakeName = "Testing Haskell Support";
-          import = [];
-          autowire = ["packages" "checks" "apps"];
-          packages = {
-            ## Add Overrides here
-          };
+          autoWire = ["packages" "checks"];
           devShell.tools = hp: {
-            inherit (pkgs) haskell-language-server;
+            inherit (pkgs) haskell-language-server ghci-dap;
           };
           settings = {};
           location-updates.check = false;
@@ -81,8 +71,7 @@
           };
           hooks = {
             alejandra.enable = true;
-            cabal2nix.enable = true;
-            editorconfig-checker.enable = true;
+            deadnix.enable = true;
             treefmt.enable = true;
             fourmolu.enable = true;
             hpack.enable = true;

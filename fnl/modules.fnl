@@ -113,6 +113,7 @@
         ;zig                  ; C, but slower and fatter
 
         :app
+        ;;himalaya             ; Enable Himalaya Integration
         ;;calendar           ; Watch your missed deadlines in real time
         ;;runner             ; Whether to enable the nyoom wrapper for nix
 
