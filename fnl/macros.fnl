@@ -573,12 +573,12 @@
         loadname (string.sub (string.match package "/.+") 2)
         augroup (.. :nyoom-pact- loadname)
         host :github
-        autocmds `(do
-                    )
-        callback `(do
-                    )
-        result `(do
-                  )
+        autocmds `(do)
+                    
+        callback `(do)
+                    
+        result `(do)
+                  
         options (or ?options {})
         options (collect [k v (pairs options)]
                   (match k

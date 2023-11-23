@@ -1,6 +1,7 @@
 (import-macros {: map! : nyoom-module-p! : let!} :macros)
 ;; TODO:: Rewrite with -> Macro
 (local ht (autoload :haskell-tools))
+(local lsp (require :util.lsp))
 
 (nyoom-module-p! haskell
                  (do
@@ -32,4 +33,8 @@
       {:tools {:codeLens {:autoRefresh false}
                :hoogle {:mode :telescope-local}
                :hover {:enable true}
-               :definition {:hoogle_signature_fallback true}}})
+               :definition {:hoogle_signature_fallback true}}
+        :hls {:capabilities lsp.capabilites
+              :default_settings {:haskell
+                                    {:formattingProvider "stylish-haskell"}}}})
+       

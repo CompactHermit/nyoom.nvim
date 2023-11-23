@@ -1,6 +1,7 @@
 (import-macros {: use-package!} :macros)
 
-(use-package! :anuvyklack/hydra.nvim
+;; Updating Owner
+(use-package! :nvim-island/hydra.nvim
               {:nyoom-module ui.hydra
                :module :hydra
                :keys [:<leader>a

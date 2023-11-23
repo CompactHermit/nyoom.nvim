@@ -3,7 +3,7 @@
 
   inputs = {
     # Pull in only dependency patches
-    nix_staged.url = "github:nixos/nixpkgs/staging";
+    #nix_staged.url = "github:nixos/nixpkgs/staging";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     parts.url = "github:hercules-ci/flake-parts";
     pch = {
@@ -51,7 +51,7 @@
 
       imports = [
         inputs.treefmt-nix.flakeModule
-        inputs.parts.flakeModules.easyOverlay
+        #inputs.parts.flakeModules.easyOverlay
         inputs.pch.flakeModule
         ./nix/apps/default.nix
         #./nix/overlay/default.nix
@@ -63,7 +63,6 @@
         homeManagerModules = {
           nyoom = {
             imports = [
-              ## (fn Nyoom [packages inputs])
               (import ./nix/modules/nyoom self.packages inputs)
             ];
           };
@@ -93,7 +92,6 @@
         pkgs,
         config,
         system,
-        final,
         ...
       }: let
         l = lib // builtins;
@@ -120,11 +118,10 @@
               vimPlugins.sqlite-lua
               parinfer-rust
               vimPlugins.nvim-treesitter.builtGrammars.tree-sitter-norg-meta
-              #vimPlugins.overseer-nvim
             ]
-            ++ [
-              inputs.himalaya.packages."${system}".default
-            ];
+            ++ (with inputs; [
+              himalaya.packages."${system}".default
+            ]);
           withNodeJs = true;
           withRuby = true;
           withPython3 = true;
@@ -162,28 +159,27 @@
             (_: super: {
               neovim-custom =
                 pkgs.wrapNeovimUnstable
-                # self.inputs.neovim-nightly-overlay.packages."${system}".default
-                (pkgs.neovim-unwrapped.overrideAttrs (oa: {
-                  #src = inputs.nvim-src;
-                  name = "neovim";
-                  version = "v10.0.0";
-                  patches = [];
-                  preConfigure = ''
-                    sed -i cmake.config/versiondef.h.in -e "s/@NVIM_VERSION_PRERELEASE@/-dev-$version/"
-                  '';
-                  buildInputs =
-                    ## Avoid a global overlay
-                    lib.remove pkgs.libvterm-neovim oa.buildInputs
-                    ++ lib.singleton (
-                      pkgs.libvterm-neovim.overrideAttrs {
-                        version = "0.3.3";
-                        src = pkgs.fetchurl {
-                          url = "https://github.com/neovim/libvterm/archive/v0.3.3.tar.gz";
-                          hash = "sha256-C6vjq0LDVJJdre3pDTUvBUqpxK5oQuqAOiDJdB4XLlY=";
-                        };
-                      }
-                    );
-                }))
+                self.inputs.neovim-nightly-overlay.packages."${system}".default
+                # (pkgs.neovim-unwrapped.overrideAttrs (oa: {
+                #   #src = inputs.nvim-src;
+                #   name = "neovim";
+                #   patches = [];
+                #   preConfigure = ''
+                #     sed -i cmake.config/versiondef.h.in -e "s/@NVIM_VERSION_PRERELEASE@/-dev-$version/"
+                #   '';
+                #   buildInputs =
+                #     ## Avoid a global overlay
+                #     lib.remove pkgs.libvterm-neovim oa.buildInputs
+                #     ++ lib.singleton (
+                #       pkgs.libvterm-neovim.overrideAttrs {
+                #         version = "0.3.3";
+                #         src = pkgs.fetchurl {
+                #           url = "https://github.com/neovim/libvterm/archive/v0.3.3.tar.gz";
+                #           hash = "sha256-C6vjq0LDVJJdre3pDTUvBUqpxK5oQuqAOiDJdB4XLlY=";
+                #         };
+                #       }
+                #     );
+                # }))
                 (NeovimConfig // {inherit wrapperArgs;});
             })
           ];
@@ -226,9 +222,10 @@
           default = pkgs.writeShellApplication {
             name = "nvim";
             text = ''
-              XDG_CACHE_HOME=/tmp/nyoom ${lib.getExe pkgs.neovim-custom} "$@"
+              XDG_CACHE_HOME=/tmp/nyoom ${l.getExe pkgs.neovim-custom} "$@"
             '';
           };
+          # neovim = pkgs.neovim-custom;
           tree-sitter-nim = grammar {
             language = "nim";
             src = inputs.tree-sitter-nim;

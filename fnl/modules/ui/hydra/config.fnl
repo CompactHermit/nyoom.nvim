@@ -5,6 +5,8 @@
 ;; BUG:: hydra-key! ignores the ?num arg
 (local Hydra (autoload :hydra))
 
+;; fnlfmt: skip
+;; NOTE!:: The formatter will butcher this file, donnot, under any circumstance, remove this!
 ;; Git boi ;;
 (nyoom-module-p! vc-gutter
                  (do
@@ -446,7 +448,7 @@
     ^ ^     Browser   ^ ^
     _w_: Browse
     _W_: Default browse
-    _d_: DevDocsSS
+    _d_: DevDocsOpen
     _D_: DevDocsFT
     _K_: DevDocCursor
     _s_: Search DDG
@@ -476,7 +478,7 @@
                                       (vim.cmd "lua require('browse').input_search()"))]
                                    [:d
                                     (fn []
-                                      (vim.cmd "lua require('browse').search()"))]
+                                      (vim.cmd "DevdocsOpen"))]
                                    [:D
                                     (fn []
                                       (vim.cmd "lua require('browse.devdocs').search_with_filetype()"))]
@@ -497,21 +499,21 @@
                    (local {: test_class : test_method : debug_selection}
                           (require :util))
                    (local neotest-hints "
-^    Neotest
-^▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔^
-
-^▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔^
-^^ _<leader>_: Test Near
-^^ _c_: Test Current
-^^ _o_: Test Output
-^^ _s_: Test Summary
-^^ _S_: Test Strat
-^^ _D_: Test Stop
-^^ _a_: Test Attach
-^^ _C_: Test Class
-^^ _m_: Test Method
-^^ _d_: Debug Selection
-^^ _<Esc>_: Escape
+ ^    Neotest
+ ^▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔^
+ 
+ ^▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔^
+ ^^_<leader>_: Test Near
+ ^^ _c_: Test Current
+ ^^ _o_: Test Output
+ ^^ _s_: Test Summary
+ ^^ _S_: Test Strat
+ ^^ _D_: Test Stop
+ ^^ _a_: Test Attach
+ ^^ _C_: Test Class
+ ^^ _m_: Test Method
+ ^^ _d_: Debug Selection
+ ^^ _<Esc>_: Escape
 
     ")
                    (Hydra {:name :+Neotest
@@ -555,24 +557,22 @@
                                    [:<Esc> nil {:exit true :nowait true}]]})))
 
 ;;Overseer::My sweet beloved;;
-(nyoom-module-p! overseer
+(nyoom-module-p! nix
                  (do
                    (local overseer-hints "
-           Overseer
-    ▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
-    ▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
-     _s_: OverseerRun
-     _w_: OverseerToggle
-     _d_: OverseerQuickAction
-     _D_: OverseerTaskAction
-     _b_: OverseerBuild
-     _l_: OverseerLoadBundle
-     _r_: OverseerRunCmd
-     _t_: OverseerTemplate
+       Overseer
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+ _s_: OverseerRun
+ _w_: OverseerToggle
+ _d_: OverseerQuickAction
+ _D_: OverseerTaskAction
+ _b_: OverseerBuild
+ _l_: OverseerLoadBundle
+ _r_: OverseerRunCmd
+ _t_: OverseerTemplate
 
-
-        <Esc>: Quit
-
+    <Esc>: Quit
                           ")
                    (Hydra {:name :+Overseer
                            :hint overseer-hints
@@ -627,21 +627,21 @@
                    (local {: treejump : jump_window : win_select : tree_bounce}
                           (require :util))
                    (local flash-hints "
-            ^^  - Mode
-            ^^ _s_: Jump
-            ^^ _S_: Treesitter
-            ^^ _<c-s>_: Word Selection
-            ^^ _r_: Remote
-            ^^ _a_: Flash Line
-            ^^ _w_: Flash Windows
-            ^^ _W_: Flash Beginning words
-            ^^ _M_: Flash Bounce
-            ──────────────────────────
-            ^^ _i_: SwapNode
-            ^^ _h_: Swap Left
-            ^^ _l_: Swap Right
+^^  - Mode
+^^ _s_: Jump
+^^ _S_: Treesitter
+^^ _<c-s>_: Word Selection
+^^ _r_: Remote
+^^ _a_: Flash Line
+^^ _w_: Flash Windows
+^^ _W_: Flash Beginning words
+^^ _M_: Flash Bounce
+──────────────────────────
+^^ _i_: SwapNode
+^^ _h_: Swap Left
+^^ _l_: Swap Right
 
-            ^^ _<Esc>_: Escape")
+^^ _<Esc>_: Escape")
                    (Hydra {:name :+flash
                            :hint flash-hints
                            :config {:color :teal
@@ -670,8 +670,8 @@
                                     (fn []
                                       ((->> :jump
                                             (. (require :flash))) {:search {:mode (fn [str]
-                                                                                                                                      (.. "\\<"
-                                                                                                                                          str))}}))
+                                                                                      (.. "\\<"
+                                                                                          str))}}))
                                     {:desc "Match beginning of words only"}]
                                    [:S
                                     (fn []
@@ -929,12 +929,12 @@
 (nyoom-module-p! animate
                  (do
                    (local venv-hints "
-                    Venv:Mode
-                    Arrow^^^^^^  Select region with <C-v>^^^^^^
-                    ^ ^ _K_ ^ ^  _f_: Surround with box ^ ^ ^ ^
-                    _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
-                    ^ ^ _J_ ^ ^  _<C-k>_: ▲, _<C-l>_: ► _<C-c>_
-                          ")
+Venv:Mode
+Arrow^^^^^^  Select region with <C-v>^^^^^^
+^ ^ _K_ ^ ^  _f_: Surround with box ^ ^ ^ ^
+_H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
+^ ^ _J_ ^ ^  _<C-k>_: ▲, _<C-l>_: ► _<C-c>_
+      ")
                    (Hydra {:name "Draw Diagrams"
                            :hint venv-hints
                            :config {:color :pink

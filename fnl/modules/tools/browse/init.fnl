@@ -9,5 +9,5 @@
 
 (use-package! :luckasRanarison/nvim-devdocs
               {:opt true
-               :cmd [:Devdocs]
+               :cmd [:DevdocsOpen]
                :call-setup nvim-devdocs})

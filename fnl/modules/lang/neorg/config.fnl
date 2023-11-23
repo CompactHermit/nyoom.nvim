@@ -12,8 +12,8 @@
         :external.exec {}
         :core.summary {:config {:strategy :default}}
         ; :core.tempus {}
-        ; :core.integrations.image {}
-        ; :core.latex.renderer {}
+        ;:core.integrations.image {}
+        ;:core.latex.renderer {}
         :core.keybinds {:config {:default_keybinds true
                                  :neorg_leader :<leader>n
                                  :hook (fn [keybinds]

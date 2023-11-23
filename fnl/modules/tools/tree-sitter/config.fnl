@@ -180,4 +180,5 @@
 ((->> :setup
       (. (require :ts_context_commentstring))))
 
+(set vim.wo.foldtext "v:lua.vim.treesitter.foldtext()")
 (let! skip_ts_context_commentstring_module true)

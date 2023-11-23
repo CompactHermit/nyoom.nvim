@@ -33,7 +33,6 @@
 (each [_ provider (ipairs default-providers)]
   (tset vim.g (.. :loaded_ provider :_provider) 0))
 
-;; NOTE:: Will need to rework core Libraries to use lazy, given Alpacka doesn't finish within the next few month.
 ;; check if hotpot exists
 (if (pcall require :hotpot)
   (do
