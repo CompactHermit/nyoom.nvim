@@ -2,45 +2,34 @@
 
 (fn assert-tbl [tbl]
   "A simple sanity check"
-  (assert-compile 
-    (or
-      (table? tbl)
-      (sym? tbl))
-    "tbl should be a table")
+  (assert-compile (or (table? tbl) (sym? tbl)) "tbl should be a table")
   tbl)
 
 ;; Method Threading::
 (fn -m> [val ...]
   "Thread a value through a list of method calls ':' "
-  (assert-compile 
-    val
-    "There should be a value to add to threads")
-  (accumulate [res val
-                   _ [f & args] (ipairs [...])]
+  (assert-compile val "There should be a value to add to threads")
+  (accumulate [res val _ [f & args] (ipairs [...])]
     `(: ,res ,f ,(unpack args))))
 
 ;; Thread a maybe value -> call
 (fn -m?> [val ...]
   "Thread (maybe) a value through a list of method calls"
-  (assert-compile
-    val
-    "There should be an input value to the pipeline")
+  (assert-compile val "There should be an input value to the pipeline")
   (var res# (gensym))
-  (var res `(do (var ,res# ,val)))
+  (var res `(do
+              (var ,res# ,val)))
   (each [_ [f & args] (ipairs [...])]
-    (table.insert
-      res
-      `(when (and (not= nil ,res#)
-                  (not= nil (. ,res# ,f)))
-         (set ,res# (: ,res# ,f ,(unpack args))))))
+    (table.insert res
+                  `(when (and (not= nil ,res#) (not= nil (. ,res# ,f)))
+                     (set ,res# (: ,res# ,f ,(unpack args))))))
   res)
 
 (fn -d> [mod ...]
   "Threads a module and calls a chain of requires, e.g:: 
     (-d> mod val1 val2) => ((. (. (require :mod) val1) val2 ...))
   "
-  (assert-compile mod
-     "There should be a module to require")
+  (assert-compile mod "There should be a module to require")
   (let [{method method? & args} [...]]
     `(do
        ((. (require ,mod) ,method?) ,args))))
@@ -59,24 +48,18 @@
   (if (table? tbl)
       (do
         (var res (or ?res {}))
-        (collect [k# v# (pairs tbl)
-                  &into res]
+        (collect [k# v# (pairs tbl) &into res]
           (if (predicate? v# k#)
-            (values k# v#)))
+              (values k# v#)))
         (res))
       (sym? tbl)
-      `(collect [k# v# (pairs ,tbl)
-                 &into (or ,?res {})]
+      `(collect [k# v# (pairs ,tbl) &into (or ,?res {})]
          (if (,predicate? v# k#)
-          (values k# v#)))))
+             (values k# v#)))))
+
 ;; Assert-seq
 (fn assert-seq [seq]
-  (assert-compile
-    (or
-      (table? seq)
-      (sym? seq))
-    "seq should be a sequence"
-    seq))
+  (assert-compile (or (table? seq) (sym? seq)) "seq should be a sequence" seq))
 
 (fn apply [func args]
   (assert-seq args)
@@ -92,20 +75,16 @@
   (if (sequence? seq)
       (do
         (var res (or ?res []))
-        (icollect [i# v# (ipairs seq)
-                   &into res]
+        (icollect [i# v# (ipairs seq) &into res]
           (if (predicate? v#) v#))
         (res))
       (sym? seq)
-      `(icollect [i# v# (ipairs ,seq)
-                  &into (or ,?res [])]
+      `(icollect [i# v# (ipairs ,seq) &into (or ,?res [])]
          (if (,predicate? v#) v#))))
 
 (fn |> [val ...]
   "Pipeline a value/values through a series of functions"
-  (assert-compile
-    val
-    "There should be an input value to the pipeline")
+  (assert-compile val "There should be an input value to the pipeline")
   (var res val)
   (each [_ v (ipairs [...])]
     (set res (list v res)))
@@ -130,12 +109,10 @@
         (var res (list (sym :do)))
         (each [k# v# (pairs tbl)]
           (table.insert res `(,fun ,v#)))
-       res)
+        res)
       (sym? tbl)
       `(each [i# v# (pairs ,tbl)]
          (,fun v#))))
-
-
 
 (fn i>== [seq fun]
   "Consume a sequence by passing every element to a function"
@@ -156,13 +133,11 @@
   (if (table? tbl)
       (do
         (var res {})
-        (collect [k# v# (pairs tbl)
-                  &into res]
+        (collect [k# v# (pairs tbl) &into res]
           (values k# `(fun ,v#)))
         res)
       ;; else
-      `(collect [k# v# (pairs ,tbl)
-                 &into {}]
+      `(collect [k# v# (pairs ,tbl) &into {}]
          (values k# (,fun v#)))))
 
 (fn imap [seq ...]
@@ -171,25 +146,32 @@
   (if (sequence? seq)
       (do
         (var res [])
-        (icollect [i# v# (ipairs seq)
-                   &into res]
+        (icollect [i# v# (ipairs seq) &into res]
           `(fun ,v#))
         res)
       ;; else
-      `(icollect [i# v# (ipairs ,seq)
-                  &into []]
+      `(icollect [i# v# (ipairs ,seq) &into []]
          (,fun v#))))
 
 {: assert-tbl
  : assert-seq
- : apply :call apply
+ : apply
+ :call apply
  : -d>
- : -m> : -m?>
- : >=> :filter >=>
- : i>=> :ifilter i>=>
- : |> :pipe |>
- : ||> :o ||> :compose ||>
- : >== :foreach >==
- : i>== :forieach i>==
+ : -m>
+ : -m?>
+ : >=>
+ :filter >=>
+ : i>=>
+ :ifilter i>=>
+ : |>
+ :pipe |>
+ : ||>
+ :o ||>
+ :compose ||>
+ : >==
+ :foreach >==
+ : i>==
+ :forieach i>==
  : map
  : imap}

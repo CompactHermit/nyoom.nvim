@@ -2,8 +2,6 @@
   description = "Nyoom Interfaces with Nix";
 
   inputs = {
-    # Pull in only dependency patches
-    #nix_staged.url = "github:nixos/nixpkgs/staging";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     parts.url = "github:hercules-ci/flake-parts";
     pch = {
@@ -60,13 +58,6 @@
       debug = true;
 
       flake = {
-        homeManagerModules = {
-          nyoom = {
-            imports = [
-              (import ./nix/modules/nyoom self.packages inputs)
-            ];
-          };
-        };
         templates = let
           inherit (inputs.nixpkgs) lib;
         in
@@ -103,21 +94,22 @@
             excludes = ["flake.lock" "index.norg" "r.'+\.age$'"];
           }
           // prev;
-
+        src = ./.;
         NeovimConfig = pkgs.neovimUtils.makeNeovimConfig {
           extraLuaPackages = p: [p.luarocks p.magick];
           plugins = with pkgs;
             [
-              (vimPlugins.nvim-treesitter.withPlugins (_:
-                pkgs.vimPlugins.nvim-treesitter.allGrammars
-                ++ [
-                  pkgs.tree-sitter-grammars.tree-sitter-nu
-                  self'.packages.tree-sitter-nim
-                  self'.packages.tree-sitter-just
-                ]))
+              (pkgs.symlinkJoin {
+                name = "nvim-treesitter";
+                paths =
+                  [pkgs.vimPlugins.nvim-treesitter.withAllGrammars]
+                  ++ map pkgs.neovimUtils.grammarToPlugin (pkgs.vimPlugins.nvim-treesitter.allGrammars
+                    ++ (with self'.packages; [tree-sitter-nim tree-sitter-just]))
+                  ++ [pkgs.tree-sitter-grammars.tree-sitter-nu];
+              })
               vimPlugins.sqlite-lua
               parinfer-rust
-              vimPlugins.nvim-treesitter.builtGrammars.tree-sitter-norg-meta
+              #vimPlugins.nvim-treesitter.builtGrammars.tree-sitter-norg-meta
             ]
             ++ (with inputs; [
               himalaya.packages."${system}".default
@@ -125,7 +117,7 @@
           withNodeJs = true;
           withRuby = true;
           withPython3 = true;
-          customRC = "luafile ~/.config/nvim/init.lua";
+          customRC = ''luafile ${src}/init.lua''; # If src isn't
         };
 
         #(Hermit) Dump all wrapper args here
@@ -141,6 +133,7 @@
             pkgs.fd
             pkgs.lua-language-server
             pkgs.stylua
+            pkgs.imagemagick
           ];
         in
           NeovimConfig.wrapperArgs
@@ -159,7 +152,8 @@
             (_: super: {
               neovim-custom =
                 pkgs.wrapNeovimUnstable
-                self.inputs.neovim-nightly-overlay.packages."${system}".default
+                self.inputs.neovim-nightly-overlay.packages."${system}".default ## Until I learn how to avoid the vim.re issue, this stays
+                
                 # (pkgs.neovim-unwrapped.overrideAttrs (oa: {
                 #   #src = inputs.nvim-src;
                 #   name = "neovim";
@@ -206,7 +200,7 @@
 
         devShells = {
           default = pkgs.mkShell {
-            name = "Neovim DevShell, batteries included";
+            name = "Awooga";
             inputsFrom = with config; [
               treefmt.build.devShell
               pre-commit.devShell
@@ -225,7 +219,6 @@
               XDG_CACHE_HOME=/tmp/nyoom ${l.getExe pkgs.neovim-custom} "$@"
             '';
           };
-          # neovim = pkgs.neovim-custom;
           tree-sitter-nim = grammar {
             language = "nim";
             src = inputs.tree-sitter-nim;

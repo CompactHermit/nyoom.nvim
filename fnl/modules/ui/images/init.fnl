@@ -2,6 +2,6 @@
 
 (use-package! :3rd/image.nvim
               {:nyoom-module ui.images
-               :opt true
-               :ft [:norg :md]
-               :event [:BufReadPost]})
+               :opt false})
+               ;:ft [:norg :md]
+               ;:event [:BufReadPost]})

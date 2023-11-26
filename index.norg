@@ -3,7 +3,7 @@ title: index
 id: 7e4c9dcf-c3e4-4410-8b1c-2b39d0ea7c45
 workspace: default
 created: 2023-11-20T12:42:56-0500
-updated: 2023-11-21T10:01:41-0500
+updated: 2023-11-26T11:14:34-0500
 @end
 #contexts someday, IDK WHEN
 - (x) Secondary Tasks
@@ -31,3 +31,5 @@ updated: 2023-11-21T10:01:41-0500
 * inspiration::
   %Why doesn't neorg have tables??%
   - {https://github.com/konradmalik/neovim-flake}[Konradmalik]
+
+
