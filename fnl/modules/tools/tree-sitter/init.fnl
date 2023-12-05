@@ -1,7 +1,8 @@
 (import-macros {: use-package! : pack} :macros)
 
-(use-package! :nvim-treesitter/nvim-treesitter
+(use-package! :Nagefire/nvim-treesitter
               {:nyoom-module tools.tree-sitter
+               :branch :feat/typst
                :cmd [:TSInstall
                      :TSUpdate
                      :TSInstallSync

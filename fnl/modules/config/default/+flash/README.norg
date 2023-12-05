@@ -3,5 +3,130 @@ title: README
 id: 0d47e814-21be-4673-95a7-4b0e2e13e0f3
 workspace: default
 created: 2023-11-20T12:43:05-0500
-updated: 2023-11-20T12:43:05-0500
+updated: 2023-12-10T14:32:29-0500
 @end
+
+* Flash::
+** TODO::
+   - (-) add these binds
+   @code lua
+   {
+       "<c-w>",
+       mode = { "o", "x" },
+       function()
+           Flash.remote()
+       end,
+       desc = "Remote Jump",
+   },
+   {
+       "M", -- [M, r, <cr>]
+       mode = { "n", "x", "o" },
+       function()
+           local win = vim.api.nvim_get_current_win()
+           local view = vim.fn.winsaveview()
+           Flash.jump({
+               action = function(match, state)
+                   state:hide()
+                   vim.api.nvim_set_current_win(match.win)
+                   vim.api.nvim_win_set_cursor(match.win, match.pos)
+                   Flash.treesitter()
+                   vim.schedule(function()
+                       vim.api.nvim_set_current_win(win)
+                       vim.fn.winrestview(view)
+                   end)
+               end,
+           })
+       end,
+       desc = [[
+            Jump to a position, make a Treesitter selection and jump back This should be bound to a keymap like M.
+            Then you could o yM to remotely yank a Treesitter selection.
+        ]],
+   },
+   {
+       "R",
+       function()
+           Flash.treesitter_search({
+               label = { before = true, after = true, style = "inline" },
+               remote_op = { restore = true },
+           })
+       end,
+       mode = { "n", "x", "o" },
+       desc = "Treesitter Search | show labeled treesitter nodes around the search matches",
+   },
+   {
+       O.select_remote_dynamic,
+       mode = { "o", "x" },
+       desc = "Remote Node",
+       function()
+           require("flash").jump({ mode = "remote_ts" })
+       end,
+   },
+   {
+       O.goto_next .. O.select_remote_dynamic,
+       mode = { "o", "x" },
+       function()
+           require("flash").jump({ mode = "remote_ts", treesitter = { starting_from_pos = true } })
+       end,
+       desc = "Select node",
+   },
+   {
+       O.goto_prev .. O.select_remote_dynamic,
+       mode = { "o", "x" },
+       function()
+           require("flash").jump({ mode = "remote_ts", treesitter = { ending_at_pos = true } })
+       end,
+       desc = "Select node",
+   },
+   {
+       O.goto_next .. O.select_remote_dynamic,
+       mode = "n",
+       function()
+           require("flash").jump({ mode = "remote_ts", treesitter = { end_of_node = true }, jump = { pos = "end" } })
+       end,
+       desc = "Jump to end of node",
+   },
+   {
+       O.goto_prev .. O.select_remote_dynamic,
+       mode = "n",
+       function()
+           require("flash").jump({
+               mode = "remote_ts",
+               treesitter = { start_of_node = true },
+               jump = { pos = "start" },
+           })
+       end,
+       desc = "Jump to start of node",
+   },
+   {
+       O.goto_prefix .. "w", -- TODO: stop verbs from being labels
+       -- TODO: allow searching continuations
+       function()
+           require("flash").jump({ mode = "textcase", pattern = vim.fn.expand("<cword>") })
+       end,
+       desc = "Flash <cword>",
+   },
+   {
+       O.goto_prefix .. "W",
+       function()
+           require("flash").jump({ mode = "textcase", pattern = vim.fn.expand("<cWORD>") })
+       end,
+       desc = "Flash <cWORD>",
+   },
+   {
+       O.goto_prefix .. "n",
+       function()
+           require("flash").jump({ continue = true })
+       end,
+       desc = "Continue Flash",
+   },
+   {
+       "rix", -- TODO: better keymap?
+       -- FIXME: its broken??
+       mode = { "x", "n" },
+       desc = "Exchange <motion1> with <node>",
+       function()
+           lib.swap_with({ mode = "remote_ts" })
+       end,
+   },
+   -- TODO
+   @end

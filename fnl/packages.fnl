@@ -99,6 +99,8 @@
                      :IMove]
                :call-setup iswap})
 
+(use-package! :pysan3/autosession.nvim {:opt true :cmd [:AutoSession] :call-setup autosession})
+
 ;;SilverSurfer Nvim
 (use-package! :kelly-lin/telescope-ag
               {:requires :nvim-telescope/telescope.nvim :opt true :cmd :Ag})

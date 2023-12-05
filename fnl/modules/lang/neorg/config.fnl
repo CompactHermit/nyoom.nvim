@@ -2,6 +2,9 @@
 
 ;; conditional modules
 
+
+(packadd! :neorg-exec)
+(packadd! :neorg-telescope)
 (local neorg-modules
        {:core.defaults {}
         :core.esupports.indent {:config {:dedent_excess true
@@ -12,6 +15,7 @@
         :external.exec {}
         :core.summary {:config {:strategy :default}}
         :core.tempus {}
+        :core.ui.calendar {}
         :core.integrations.image {}
         :core.latex.renderer {}
         :core.keybinds {:config {:default_keybinds true
@@ -32,7 +36,8 @@
                                             :Programming "~/neorg/CS"
                                             :Academic_Math "~/neorg/Papers/Math"
                                             :Academic_CS "~/neorg/Papers/CS"
-                                            :Linuxopolis "~/neorg/linux"}}}})
+                                            :Linuxopolis "~/neorg/linux"}
+                                :default_workspace :main}}})
 
 ;; add conditional modules
 (nyoom-module-p! cmp (tset neorg-modules :core.completion
@@ -101,4 +106,13 @@
                    (tset neorg-modules :core.export.markdown
                          {:config {:extensions :all}})))
 
+(packadd! image.nvim)
+((->> :setup
+     (. (require :image))) {:backend :kitty
+                            :integrations {:markdown {:enabled true}
+                                           :neorg {:enabled true
+                                                   :download_remote_images true
+                                                   :clear_in_insert_mode false
+                                                   :only_render_image_at_cursor false
+                                                   :filetypes [:norg]}}})
 (setup :neorg {:load neorg-modules})

@@ -53,6 +53,18 @@
                       :neotest-summary]
               :animate {:enabled true
                         :fps 120}
+              :keys {:<c-q> (fn [win] (win:hide))
+                     :<c-w>+ (fn [win] (win:resize :height 2))
+                     :<c-w>- (fn [win] (win:resize :height (- 2)))
+                     :<c-w><lt> (fn [win] (win:resize :width (- 2)))
+                     :<c-w>= (fn [win] (win.view.edgebar:equalize))
+                     :<c-w>> (fn [win] (win:resize :width 2))
+                     :Q (fn [win] (win.view.edgebar:close))
+                     "[W" (fn [win] (win:prev {:focus true :pinned false}))
+                     "[w" (fn [win] (win:prev {:focus true :visible true}))
+                     "]W" (fn [win] (win:next {:focus true :pinned false}))
+                     "]w" (fn [win] (win:next {:focus true :visible true}))
+                     :q (fn [win] (win:close))}
               :options {:left {:size 40}
                         :right {:size 50}}})
 

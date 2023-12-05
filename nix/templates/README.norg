@@ -5,6 +5,9 @@ workspace: default
 created: 2023-11-20T12:42:57-0500
 updated: 2023-11-20T12:42:57-0500
 @end
+* Templates::
+** CDev::
+   C dev-environment which supports clang. Runs bear at startup, and comes with clangStdenv.
 ** goDev::
    Using Gomod2nix and devshells
 ** pythonDev::
@@ -12,7 +15,7 @@ updated: 2023-11-20T12:42:57-0500
 ** haskellDev::
    Using flake-parts and haskell-flake.
 ** TypstDev::
-   Typst has a retardation problem. It tries to fetches the import from a `typst.packages` url. However, we are running this in a sandboxed env, which I don't plan on changing antime soon. We avoid this by literally creating a Link farm for usage. The Idea is to create a structure like so::
+   Typst has a retardation problem. It tries to fetches the import from a `typst.packages` url. However, we are running this in a sandboxed env, which I don't plan on changing anyime soon. We avoid this by literally creating a Link farm for usage. The Idea is to create a structure like so::
    $ Link-Farm Example::
    @code bash
    | ${typst-packs.drv}::

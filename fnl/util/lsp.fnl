@@ -18,6 +18,7 @@
   (local params (vim.lsp.util.make_position_params))
   (vim.lsp.buf_request 0 :textDocument/hover params handler))
 
+
 (local capabilities (vim.lsp.protocol.make_client_capabilities))
 (set capabilities.textDocument.completion.completionItem
      {:documentationFormat [:markdown :plaintext]
@@ -35,4 +36,3 @@
  : lsp_init
  : diag_line
  : hover}
-

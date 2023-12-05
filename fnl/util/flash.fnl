@@ -11,7 +11,8 @@
          (fn []
            (var action "`[v`]")
            (if (and (and jump jump.exchange) jump.exchange.not_there)
-               (set action (.. action :y)) (set action (.. action :p)))
+               (set action (.. action :y))
+               (set action (.. action :p)))
            (when (and (and jump jump.exchange) (not jump.exchange.not_here))
              (set action (.. action "`av`bp")))
            (vim.cmd (.. "normal! " action))
@@ -29,9 +30,10 @@
                                                                              {}))))))))
 
 (fn swap_with [opts]
-              (set _G.__remote_op_opfunc (fn [] (swap_with opts "[" "]")))
-              (set vim.go.operatorfunc "v:lua.__remote_op_opfunc")
-              (vim.api.nvim_feedkeys "g@" :n false))
+  (set _G.__remote_op_opfunc (fn [] (swap_with opts "[" "]")))
+  (set vim.go.operatorfunc "v:lua.__remote_op_opfunc")
+  (vim.api.nvim_feedkeys "g@" :n false))
+
 ;; NOTE:: (CompactHermit) <9/04> this is very stupid, fix it.
 (fn mode_textcase [pat modes]
   (set-forcibly! modes (or modes
@@ -63,43 +65,48 @@
                              (vim.schedule (fn [] (state:restore)))))))
 
 (fn get_nodes [win pos end_pos]
-  (local nodes ((->> :get_nodes
-                     (. (require :flash.plugins.treesitter))) win pos)))
+  (local nodes
+         ((->> :get_nodes
+               (. (require :flash.plugins.treesitter))) win
+                                                                                  pos)))
 
 (fn remote_ts [win state opts]
-              (when (= state.pattern.pattern " ")
-                (set state.opts.search.max_length 1)
-                (local matches
-                       ((->> :matcher
-                            (. (require :flash.plugins.treesitter))) win state))
-                (each [_ m (ipairs matches)] (set m.highlight false))
-                (lua "return matches"))
-              (local Search (require :flash.search))
-              (local matches {})
-              (local search (Search.new win state))
-              (local smatches (search:get opts))
-              (local find-nodes (> (length state.pattern.pattern) 1))
-              (each [_ m (ipairs smatches)]
-                ;; Oooga booga node traversal.
-                ;; NOTE:: (CompactHermit) <09/04> I hate this, oh so much. @REWRITE! Macro-style!!
-                (var n-nodes 0)
-                (when find-nodes
-                  (each [_ n (ipairs (get_nodes win m.pos m.end_pos))]
-                    (var ok true)
-                    (when state.opts.treesitter.starting_from_pos
-                      (set ok (and ok (= m.pos n.pos))))
-                    (when state.opts.treesitter.ending_at_pos
-                      (set ok (and ok (= m.end_pos n.end_pos))))
-                    (when state.opts.treesitter.containing_end_pos
-                      (set ok (and ok (<= m.end_pos n.end_pos))))
-                    (when ok (set n-nodes 1) (set n.highlight false)
-                      (table.insert matches n))))
-                (when (or (not find-nodes) (> n-nodes 0))
-                  (set m.label false)
-                  (table.insert matches m)))
-              matches)
+  (when (= state.pattern.pattern " ")
+    (set state.opts.search.max_length 1)
+    (local matches
+           ((->> :matcher
+                 (. (require :flash.plugins.treesitter))) win
+                                                                                    state))
+    (each [_ m (ipairs matches)] (set m.highlight false))
+    (lua "return matches"))
+  (local Search (require :flash.search))
+  (local matches {})
+  (local search (Search.new win state))
+  (local smatches (search:get opts))
+  (local find-nodes (> (length state.pattern.pattern) 1))
+  (each [_ m (ipairs smatches)]
+    ;; Oooga booga node traversal.
+    ;; NOTE:: (CompactHermit) <09/04> I hate this, oh so much. @REWRITE! Macro-style!!
+    (var n-nodes 0)
+    (when find-nodes
+      (each [_ n (ipairs (get_nodes win m.pos m.end_pos))]
+        (var ok true)
+        (when state.opts.treesitter.starting_from_pos
+          (set ok (and ok (= m.pos n.pos))))
+        (when state.opts.treesitter.ending_at_pos
+          (set ok (and ok (= m.end_pos n.end_pos))))
+        (when state.opts.treesitter.containing_end_pos
+          (set ok (and ok (<= m.end_pos n.end_pos))))
+        (when ok (set n-nodes 1) (set n.highlight false)
+          (table.insert matches n))))
+    (when (or (not find-nodes) (> n-nodes 0))
+      (set m.label false)
+      (table.insert matches m)))
+  matches)
 
-{: swap_with
- : there_and_back
- : mode_textcase
- : remote_ts}
+(fn set-highlight []
+  "Sets the highlight for flash, using nyoom colors"
+  (vim.api.nvim_set_hl 0 :FlashBackdrop {:link :Conceal})
+  (vim.api.nvim_set_hl 0 :FlashLabel {:bg "#ff007c" :bold true :fg "#bdc9ff"}))
+
+{: swap_with : there_and_back : mode_textcase : remote_ts}

@@ -1,12 +1,12 @@
 (import-macros {: nyoom-module-p! : map! : let! : buf-map! : augroup! : autocmd!} :macros)
 (local {: nightly?} (autoload :core.lib))
-(local leap (autoload :leap))
+;(local leap (autoload :leap))
 ;;(local {: } util)
 
 ;; Set leader to space by default
 
 (let! mapleader " ")
-(leap.add_default_mappings)
+;(leap.add_default_mappings)
 
 ;; easier command line mode + 
 
@@ -99,9 +99,9 @@
 
 (nyoom-module-p! telescope
                  (do
-                   (map! [n] :<leader><tab>r "<cmd>Telescope xray23 list<CR>"
-                         {:desc "View all sessions"})
-                   (map! [n] :<leader><tab>s "<cmd>Telescope xray23 save<CR>"
+                   (map! [n] :<leader><tab>r "<cmd>AutoSessionRestore<CR>"
+                         {:desc "Reload Current Session"})
+                   (map! [n] :<leader><tab>s "<cmd>AutoSessionSave<CR>"
                          {:desc "Save current session"})))
 
 (map! [n] :<leader><tab>x :<cmd>tabclose<CR> {:desc "Delete this tab"})

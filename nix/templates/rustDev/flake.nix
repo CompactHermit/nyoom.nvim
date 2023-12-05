@@ -2,19 +2,23 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    flake-parts = {
+    parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
+    pch = {
+      url = "github:cachix/pre-commit-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    treefmt = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-      };
+      inputs.nixpkgs.follows = "nixpkgs";
     };
-    ## Bloated POS
-    flake-utils.url = "github:numtide/flake-utils";
 
     crane = {
       url = "github:ipetkov/crane";
@@ -22,102 +26,91 @@
     };
   };
 
-  outputs = inputs @ {
-    flake-parts,
-    flake-utils,
-    crane,
-    ...
-  }: let
-    # Generate the typst package for the given nixpkgs instance.
-    packageFor = pkgs: let
-      inherit (pkgs) lib;
-      Cargo-toml = lib.importTOML ./Cargo.toml;
-
-      pname = "Choose a pkgs name";
-      version = Cargo-toml.workspace.package.version;
-
-      craneLib = crane.mkLib pkgs;
-
-      ## Probably should use flake-roots, else flake-filter might be cleaner to look at::
-      src = lib.sourceByRegex ./. [
-        "(assets|tests|crate)(/.*)"
-        ''Cargo\.(toml|lock)''
-        ''build\.rs''
-      ];
-
-      commonCraneArgs = {
-        inherit src pname version;
-
-        ## For mac, becuase fuck you apple::
-        buildInputs = lib.optionals pkgs.stdenv.isDarwin [
-          pkgs.darwin.apple_sdk.frameworks.CoreServices
-        ];
-
-        nativeBuildInputs = [pkgs.installShellFiles];
-      };
-
-      cargoArtifacts = craneLib.buildDepsOnly commonCraneArgs;
-
-      my-app = craneLib.buildPackage (commonCraneArgs
-        // {
-          inherit cargoArtifacts;
-
-          postInstall = ''
-          '';
-
-          GEN_ARTIFACTS = "artifacts";
-        });
-    in
-      my-app;
-  in
-    flake-parts.lib.mkFlake {inherit inputs;} {
+  outputs = inputs @ {parts, ...}:
+    parts.lib.mkFlake {inherit inputs;} {
+      debug = true;
       systems = [
-        "aarch64-darwin"
         "aarch64-linux"
-        "x86_64-darwin"
         "x86_64-linux"
       ];
 
-      flake = {
-        overlays.default = _: prev: {
-          my-app_overlay = packageFor prev;
-        };
-      };
-
-      perSystem = {pkgs, ...}: let
-        my-app = packageFor pkgs;
-        inherit (pkgs) lib;
-        rustToolchain = pkgs.rust-bin.selectLatestNightlyWith (toolchain:
+      imports = with inputs; [
+        pch.flakeModule
+        treefmt.flakeModule
+        parts.flakeModules.easyOverlay
+      ];
+      perSystem = {
+        pkgs,
+        lib,
+        config,
+        system,
+        ...
+      }: let
+        nightlyToolchain = pkgs.rust-bin.selectLatestNightlyWith (toolchain:
           toolchain.default.override {
-            extensions = ["rust-src" "rust-analyzer"];
+            extensions = ["rust-src" "rust-analyzer" "rustfmt" "clippy"];
             targets = ["x86_64-unknown-linux-gnu"];
           });
-        commonBuildInputs = with pkgs; [
-          nil
-        ];
       in {
-        packages.default = my-app;
-
-        apps.default = flake-utils.lib.mkApp {
-          drv = my-app;
+        _module.args.pkgs = import inputs.nixpkgs {
+          overlays = with inputs; [rust-overlay.overlays.default];
+          system = system; #needed , fking rust overlay
+        };
+        treefmt = {
+          projectRootFile = "flake.nix";
+          programs = {
+            alejandra.enable = true;
+            deadnix.enable = true;
+            rustfmt = {
+              enable = true;
+              package = nightlyToolchain.availableComponents.rustfmt;
+            };
+          };
         };
 
-        devShells.default = pkgs.mkShell {
-          packages = with pkgs; [
-            rustToolchain
-            rustc
-            cargo
-            (lib.optionals pkgs.stdenv.isLinux pkgs.mold) ## Faster Link times
+        pre-commit = {
+          settings = {
+            settings = {
+              treefmt.package = config.treefmt.build.wrapper;
+            };
+            hooks = {
+              treefmt.enable = true;
+              clippy.enable = true;
+            };
+          };
+        };
+
+        # Mold Linker
+        devShells.default = pkgs.mkShell.override {stdenv = pkgs.stdenvAdapters.useMoldLinker pkgs.clangStdenv;} rec {
+          name = "addname";
+          packages = [nightlyToolchain];
+          buildInputs = with pkgs; [fontconfig sccache evcxr];
+          inputsFrom = with config; [
+            treefmt.build.devShell
+            pre-commit.devShell
           ];
-          buildInputs =
-            [commonBuildInputs]
-            ++ lib.optionals pkgs.stdenv.isDarwin [
-              pkgs.darwin.apple_sdk.frameworks.CoreServices
-              pkgs.libiconv
-            ];
-          ## Env Vars::
-          RUST_SRC_PATH = "${rustToolchain}/lib/rustlib/src/rust/library";
-          LD_LIBRARY_PATH = lib.makeLibraryPath [pkgs.openssl pkgs.gmp];
+          shellHook = let
+            storedCargoConfig = pkgs.writeText "config.toml" ''
+              [build]
+              rustc-wrapper = "${pkgs.sccache}/bin/sccache"
+            '';
+            CARGO_CONFIG_PATH = CARGO_HOME + "/config.toml";
+          in
+            /*
+            bash
+            */
+            ''
+              echo "buildPhase PWD: $PWD"
+              echo "buildPhase out: $out"
+              echo "buildPhase ls: $(ls)"
+              mkdir -p ${CARGO_HOME}
+              cp --remove-destination  ${storedCargoConfig} ${CARGO_CONFIG_PATH}
+            '';
+          RUST_SRC_PATH = "${nightlyToolchain.availableComponents.rust-src}/lib/rustlib/src/rust/library";
+          # LD_LIBRARY_PATH = lib.makeLibraryPath [];
+          CARGO_HOME = "/home/CompactHermit/.cargo_${name}";
+          SCCACHE_DIR = "/home/CompactHermit/.sccache_${name}";
+          # HOME = "/home/CompactHermit";
         };
       };
     };

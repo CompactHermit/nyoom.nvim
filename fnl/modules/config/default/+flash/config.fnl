@@ -1,5 +1,5 @@
 ;; I'm In fucking love with this plugin, like holly shit, multicursors are for patzers, we smoking trees
-(import-macros {: nyoom-module-p! : map!} :macros)
+(import-macros {: nyoom-module-p! : map! : augroup! : autocmd!} :macros)
 
 ;; Custom labels go here
 (local {: jump : treesitter_search} (require :flash))
@@ -120,41 +120,49 @@
 ;; NOTE:: (CompactHermit) <09/04> Many of these are broken, because the `swap_with` api is broken, need to fix
 (nyoom-module-p! tree-sitter
                  (do
-                  (map! [n] :<leader>fea
+                  (map! [n] :<leader>sa
                         `(treesitter_search {:label {:before true :after true :style :inline}
                                              :remote_op {:restore true}})
                         {:desc "TS::<Show Nodes>"})
-                  (map! [n o x] :<leader>fet
+                  (map! [n o x] :<leader>st
                         `(jump {:mode ";remote_ts"})
                          {:desc "<BROKEN>"})
-                  (map! [x o] "<leader>fen"
+                  (map! [x o] "<leader>sn"
                         `(jump {:mode ";remote_ts" :treesitter {:starting_from_pos true}})
                         {:desc "Jump:: <Start Node(x)>"})
-                  (map! [x o] :<leader>fee
+                  (map! [x o] :<leader>se
                         `(jump {:mode ";remote_ts" :treesitter {:ending_at_pos true}})
                         {:desc "Select node(e)"})
-                  (map! [n] :<leader>feW
+                  (map! [n] :<leader>sw
                         `(jump {:mode :textcase :pattern (vim.fn.expand "<cWORD>")})
                         {:desc "Jump:: <textcase>"})
-                  (map! [n x] :<leader>feX
+                  (map! [n x] :<leader>sX
                         `(lib.swap_with {:mode ";remote_ts"})
                         {:desc "Swaps"})
-                  (map! [n x] :<leader>fex
+                  (map! [n x] :<leader>sx
                         `(lib.swap_with {})
                         {:desc "Exchange <motion1> with <node>"})
-                  (map! [n] :<leader>fer
-                        `(fn []
-                           (vim.api.nvim_feedkeys ";r" "m" false)
-                           (vim.schedule (fn []
-                                           (jump {:mode ";remote_ts"}))))
-                        {:desc "Remote Replace"})
-                  (map! [n x] :<leader>fey
+                  (map! [n x] :<leader>sy
                         `(lib.swap_with {:exchange {:not_there true}})
                         {:desc "Replace with <remote-motion>"})
-                  (map! [n x] :<leader>fed
+                  (map! [n x] :<leader>sd
                         `(lib.swap_with {:exchange {:not_there true}})
                         {:desc "Replace with d<remote-motion>"})
-                  (map! [n x] :<leader>fec
+                  (map! [n x] :<leader>sc
                         `(lib.swap_with {:exchange {:not_there true}})
                         {:desc "Replace with c<remote-motion>"})))
 
+
+; ┌──────────────────────────────────────────────────────────────────────┐
+; │                        AutoCmds/ Augroups                            │
+; └──────────────────────────────────────────────────────────────────────┘                                                          ▼
+;;(augroup! Flash_Colourchange (autocmd!))
+; ("Flash_Colourchange", {
+;                         {
+;                             event = { "ColorScheme" },
+;                             pattern = "*",
+;                             command = function()
+;                                 highlight()
+;                             end,}
+;                         ,})
+;     

@@ -2,6 +2,7 @@
                :macros)
 
 (local {: hydra-key!} (require :util.hydra))
+; (import-macros {: hydra-key!}  :util.hydra)
 ;; BUG:: hydra-key! ignores the ?num arg
 (local Hydra (autoload :hydra))
 
@@ -478,7 +479,7 @@
                                       (vim.cmd "lua require('browse').input_search()"))]
                                    [:d
                                     (fn []
-                                      (vim.cmd "DevdocsOpen"))]
+                                      (vim.cmd :DevdocsOpen))]
                                    [:D
                                     (fn []
                                       (vim.cmd "lua require('browse.devdocs').search_with_filetype()"))]
@@ -670,8 +671,8 @@
                                     (fn []
                                       ((->> :jump
                                             (. (require :flash))) {:search {:mode (fn [str]
-                                                                                      (.. "\\<"
-                                                                                          str))}}))
+                                                                                                                                      (.. "\\<"
+                                                                                                                                          str))}}))
                                     {:desc "Match beginning of words only"}]
                                    [:S
                                     (fn []

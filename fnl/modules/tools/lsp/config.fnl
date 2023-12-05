@@ -15,7 +15,7 @@
        (tset (. vim.bo bufnr) :filetype :markdown)
        (vim.treesitter.start bufnr)
        (vim.api.nvim_buf_set_lines bufnr 0 (- 1) false contents)
-       contents))                          	
+       contents))
 (set vim.lsp.handlers.textDocument/signatureHelp
      (vim.lsp.with vim.lsp.handlers.signature_help {:border :solid}))
 
@@ -114,7 +114,8 @@
                  (tset lsp-servers :lua_ls
                        {:settings {:Lua {:diagnostics {:globals [:vim]}
                                          :workspace {:library (vim.api.nvim_list_runtime_paths)
-                                                     :maxPreload 100000}}}}))
+                                                     :maxPreload 1000
+                                                     :ignoreDir [:.direnv]}}}})) ;; Stop Lua-ls from shitting itself
 
 (nyoom-module-p! markdown (tset lsp-servers :marksman {}))
 
@@ -155,7 +156,7 @@
                                                        :useLibraryCodeForTypes true
                                                        :disableOrganizeImports false}}}}))
 
-(nyoom-module-p! typst (tset lsp-servers :typst_lsp {}))
+(nyoom-module-p! typst (tset lsp-servers :typst_lsp {:settings {:exportPdf :never}}))
 
 (nyoom-module-p! yaml
                  (tset lsp-servers :yamlls

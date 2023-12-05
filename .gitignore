@@ -4,6 +4,7 @@ profile.json
 snippets/
 inbox.norg
 start.txt
+.session.vim
 
 # Notes::
 .quicknote/

@@ -79,5 +79,7 @@
       :scheme
       :nix] #(set-shiftwidth $1 2))
 
+(let! typst_conceal_math 2)
+
 ;; Custom Highlight Groups
 ; hi TreesitterContextBottom gui=underline guisp=Grey

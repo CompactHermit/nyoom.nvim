@@ -22,7 +22,7 @@
         zen                  ; distraction-free coding or writing TODO +twilight
         noice                ; noice ui
         animate              ; Just use Emacs you bloated fu**
-        images               ; Why aren't you just using emacs at this point?
+        ;images               ; REWRITE!
 
         :editor
         fold                 ; (nigh) universal code folding
@@ -31,6 +31,7 @@
         ;;parinfer             ; turn lisp into python, sort of
         (hotpot +reflect)    ; NOTE: essential module (for now), don't disable
         scratch              ; emacs-like scratch buffer functionality
+        mini                 ; Nice, micro features with 10K LOC you got there
         word-wrap            ; language-aware smart soft and hard wrapping
         windows              ; Fancy animations, for that extra bloated Config
         (cutlass);+plunder   ; Make yourself better at stealing code from others
@@ -49,10 +50,10 @@
         docker               ; row row row your boat TODO +netman?
         ; editorconfig       ; let someone else argue about tabs vs spaces
         ; magma              ; tame Jupyter notebooks
-        ; quarto             ; Better R and Jupyter Stuff
         quickfix             ; Monkey Simulator, circa 23 colorized
         overseer             ; Run jobs, for when your too lazy to do your job
         mason                ; setting your tools in stone
+        otter                ; Need some diagnostic, ask an otter.
         (browse              ; Im too lazy to open a browser
           +tmp_clone)
         octo                 ; All hail the octussy
@@ -80,7 +81,7 @@
         ; kotlin             ; a better, slicker Java(Script)
         ; json               ; { "dʒeɪsən":  "Javascript Object Notation" }
         latex                ; writing papers in Neovim has never been so fun
-        ; lua                 ; one-based indices? one-based indices
+        lua                 ; one-based indices? one-based indices
         markdown             ; writing docs for people to ignore
         ; nim                ; python + lisp at the speed of c
         (neorg               ; organize your plain life in plain text, the neovim way
