@@ -22,16 +22,16 @@
         zen                  ; distraction-free coding or writing TODO +twilight
         noice                ; noice ui
         animate              ; Just use Emacs you bloated fu**
-        ;images               ; REWRITE!
 
         :editor
         fold                 ; (nigh) universal code folding
-        (format) ;;+onsave     ; automated prettiness
-        ;;multiple-cursors   ; learn macros you dingus
-        ;;parinfer             ; turn lisp into python, sort of
+        (format) ;;+onsave   ; automated prettiness
+        ;;multiple-cursors   ;  learn macros you dingus
+        ;;parinfer           ; turn lisp into python, sort of
         (hotpot +reflect)    ; NOTE: essential module (for now), don't disable
         scratch              ; emacs-like scratch buffer functionality
         mini                 ; Nice, micro features with 10K LOC you got there
+        ;;firenvim
         word-wrap            ; language-aware smart soft and hard wrapping
         windows              ; Fancy animations, for that extra bloated Config
         (cutlass);+plunder   ; Make yourself better at stealing code from others
@@ -58,9 +58,10 @@
           +tmp_clone)
         octo                 ; All hail the octussy
         tmux                 ; God, make this shit broken, I fucking swear
-        zellij               ; What if everything was written in WASM, jk, useless <-_->
+        hex                  ; Hex Done Right
+        zellij               ; What if everything was written in WASM, jk, useless...
         harpoon              ; With the power of the gods!
-        ; oil                ; Vinegar Was never a good salid dressing
+        oil                  ; Vinegar Was never a good salid dressing
         eval                 ; run code, run (also, repls)modu
         antifennel           ; for all the fennel haters out there. this ones for you
         pastebin             ; interacting with pastebin platforms

@@ -17,5 +17,4 @@ tags
 
 # Tests/Hooks/Checks::
 .direnv/
-tests/
 /.pre-commit-config.yaml

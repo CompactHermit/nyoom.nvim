@@ -1,6 +1,86 @@
 (import-macros {: set! : nyoom-module-p! : packadd!} :macros)
 (local cmp (autoload :cmp))
 (local luasnip (autoload :luasnip))
+;; (local {: func} (require :utils.cmp))
+
+; REFACTOR:: (Hermit) Rewrite this shit
+(local fuzzy-path-option {:fd_cmd [:fd
+                                   :-p
+                                   :-H
+                                   :-L
+                                   :-td
+                                   :-tf
+                                   :-tl
+                                   :-d4
+                                   :--mount
+                                   :-c=never
+                                   :-E=*$*
+                                   "-E=*%*"
+                                   :-E=*.bkp
+                                   :-E=*.bz2
+                                   :-E=*.db
+                                   :-E=*.directory
+                                   :-E=*.dll
+                                   :-E=*.doc
+                                   :-E=*.docx
+                                   :-E=*.drawio
+                                   :-E=*.gif
+                                   :-E=*.git/
+                                   :-E=*.gz
+                                   :-E=*.ico
+                                   :-E=*.iso
+                                   :-E=*.jar
+                                   :-E=*.jpeg
+                                   :-E=*.jpg
+                                   :-E=*.mp3
+                                   :-E=*.mp4
+                                   :-E=*.o
+                                   :-E=*.otf
+                                   :-E=*.out
+                                   :-E=*.pdf
+                                   :-E=*.pickle
+                                   :-E=*.png
+                                   :-E=*.ppt
+                                   :-E=*.pptx
+                                   :-E=*.pyc
+                                   :-E=*.rar
+                                   :-E=*.so
+                                   :-E=*.svg
+                                   :-E=*.tar
+                                   :-E=*.ttf
+                                   :-E=*.venv/
+                                   :-E=*.xls
+                                   :-E=*.xlsx
+                                   :-E=*.zip
+                                   :-E=*Cache*/
+                                   "-E=*\\~"
+                                   :-E=*cache*/
+                                   :-E=.*Cache*/
+                                   :-E=.*cache*/
+                                   :-E=.*wine/
+                                   :-E=.cargo/
+                                   :-E=.conda/
+                                   :-E=.dot/
+                                   :-E=.fonts/
+                                   :-E=.ipython/
+                                   :-E=.java/
+                                   :-E=.jupyter/
+                                   :-E=.luarocks/
+                                   :-E=.mozilla/
+                                   :-E=.npm/
+                                   :-E=.nvm/
+                                   :-E=.steam*/
+                                   :-E=.thunderbird/
+                                   :-E=.tmp/
+                                   :-E=__pycache__/
+                                   :-E=dosdevices/
+                                   :-E=events.out.tfevents.*
+                                   :-E=node_modules/
+                                   :-E=vendor/
+                                   :-E=venv/]})
+(fn entry_filter [entry _]
+  (not (vim.tbl_contains ["No matches found" :Searching... "Workspace loading"]
+                         entry.completion_item.label)))
 
 ;; vim settings
 
@@ -13,12 +93,11 @@
 (table.insert cmp-sources {:name :luasnip :group_index 1})
 (table.insert cmp-sources {:name :buffer :group_index 2})
 (table.insert cmp-sources {:name :path :group_index 2})
-;;(table.insert cmp-sources {:name :path :group_index 2})
 
-(nyoom-module-p! rust (table.insert cmp-sources {:name :crates :group_index 1}))
-(nyoom-module-p! neorg (table.insert cmp-sources {:name :neorg :group_index 1}))
-(nyoom-module-p! eval
-                 (table.insert cmp-sources {:name :conjure :group_index 1}))
+(nyoom-module-p! rust   (table.insert cmp-sources {:name :crates :group_index 1}))
+(nyoom-module-p! neorg  (table.insert cmp-sources {:name :neorg :group_index 1}))
+(nyoom-module-p! quarto (table.insert cmp-sources {:name :otter :group_index 1}))
+(nyoom-module-p! eval   (table.insert cmp-sources {:name :conjure :group_index 1}))
 
 (nyoom-module-p! lsp (do
                        (table.insert cmp-sources
@@ -27,15 +106,6 @@
                                      {:name :nvim_lsp_signature_help
                                       :group_index 1})))
 
-(nyoom-module-p! copilot
-                 (do
-                   (packadd! copilot-cmp)
-                   (setup :copilot_cmp)
-                   (table.insert cmp-sources {:name :copilot :group_index 2})))
-
-; (nyoom-module-p! quarto (do
-;                        (table.insert cmp-sources
-;                                      {:name :otter :group_index 1})))
 
 
 ;; copilot uses lines above/below current text which confuses cmp, fix:
@@ -103,32 +173,45 @@
                                     (set vim-item.kind (. shared.codicons vim-item.kind))
                                     vim-item)}})
 
+
+
+;; LSP specific Autocompletions::
+
+(nyoom-module-p! c
+ (cmp.setup.filetype [:c :cpp] {:sorting {:comparators
+                                          (vim.list_extend [(require :clangd_extensions.cmp_scores)]
+                                                           ((->> :comparators
+                                                                 (. (require :cmp.config) :get :sorting))))}}))
+
+
 ;; Enable command-line completions
 
 (cmp.setup.cmdline "/"
-                   {:mapping (cmp.mapping.preset.cmdline)
-                    :sources [{:name :buffer :group_index 1}]})
+    {:mapping (cmp.mapping.preset.cmdline)
+     :sources [{:name :buffer :group_index 1}]})
 
 ;; Enable search completions
 
 (cmp.setup.cmdline ":"
-                   {:mapping (cmp.mapping.preset.cmdline)
-                    :sources [{:name :path} {:name :cmdline :group_index 1}]})
+    {:mapping (cmp.mapping.preset.cmdline)
+     :sources [{:name :path} {:name :cmdline :group_index 1}]})
 
-;; copilot menus
+;; Enable Completion for vim.ui.select()
+(cmp.setup.cmdline "@"
+    {:enabled true
+     :sources [{:entry_filter entry_filter
+                :group_index 1
+                :name :fuzzy_path
+                :option fuzzy-path-option}
+               {:group_index 1
+                :name :cmdline
+                :option {:ignore_cmds {}}}]})
 
-(nyoom-module-p! copilot (cmp.event:on :menu_opened
-                                       (fn []
-                                         (set vim.b.copilot_suggestion_hidden
-                                              true)))
-                 (cmp.event:on :menu_closed
-                               (fn []
-                                 (set vim.b.copilot_suggestion_hidden false))))
-
+;; DAP Completion::
 ;; snippets
 ((. (autoload :luasnip.loaders.from_vscode) :lazy_load))
 ((. (require :luasnip.loaders.from_lua) :load) {:paths ["~/.config/nvim/snippets/"]})
 (nyoom-module-p! haskell
                  (local haskell_snippets (autoload :haskell_snippets))
                  ((. (luasnip.add_snippets :haskell haskell_snippets [:key :haskell]))))
- 
+

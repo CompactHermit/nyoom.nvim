@@ -4,7 +4,8 @@
               {:nyoom-module lang.neorg.+quicknote
                :event :BufReadPost
                :init (fn []
-                       (local quicknote_path (.. (vim.fn.stdpath :state) "/quicknote"))
+                       (local quicknote_path
+                              (tostring (.. (vim.fn.stdpath :state) :/quicknote)))
                        (when (not (vim.loop.fs_stat quicknote-path))
-                         (vim.fn.system [:mkdir quicknote_path])))
+                         (vim.fn.system [:mkdir (tostring quicknote_path)])))
                :dependencies [:nvim-lua/plenary.nvim]})

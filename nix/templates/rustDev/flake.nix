@@ -51,11 +51,18 @@
             extensions = ["rust-src" "rust-analyzer" "rustfmt" "clippy"];
             targets = ["x86_64-unknown-linux-gnu"];
           });
+        craneLib = (inputs.crane.mkLib pkgs).overrideToolchain nightlyToolchain;
       in {
         _module.args.pkgs = import inputs.nixpkgs {
           overlays = with inputs; [rust-overlay.overlays.default];
           system = system; #needed , fking rust overlay
         };
+
+        packages.default = craneLib.buildPackage rec {
+          src = craneLib.cleanCargoSource ./.;
+          cargoArtifacts = craneLib.buildDepsOnly {inherit src;};
+        };
+
         treefmt = {
           projectRootFile = "flake.nix";
           programs = {
@@ -108,8 +115,8 @@
             '';
           RUST_SRC_PATH = "${nightlyToolchain.availableComponents.rust-src}/lib/rustlib/src/rust/library";
           # LD_LIBRARY_PATH = lib.makeLibraryPath [];
-          CARGO_HOME = "/home/CompactHermit/.cargo_${name}";
-          SCCACHE_DIR = "/home/CompactHermit/.sccache_${name}";
+          CARGO_HOME = "/tmp/.cargo_${name}";
+          SCCACHE_DIR = "/tmp/.sccache_${name}";
           # HOME = "/home/CompactHermit";
         };
       };

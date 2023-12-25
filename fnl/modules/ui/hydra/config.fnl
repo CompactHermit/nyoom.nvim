@@ -8,6 +8,7 @@
 
 ;; fnlfmt: skip
 ;; NOTE!:: The formatter will butcher this file, donnot, under any circumstance, remove this!
+
 ;; Git boi ;;
 (nyoom-module-p! vc-gutter
                  (do
@@ -189,131 +190,124 @@
                                    [:<Esc> nil {:exit true :nowait true}]]})))
 
 ;; Harpoon ;;
-(nyoom-module-p! harpoon
-                 (do
-                   (local cache {:command "ls -a" :tmux {:selected_plane ""}})
-                   (local {: plane
-                           : tmux-goto
-                           : terminal-send
-                           : handle-tmux
-                           : handle-non-tmux
-                           : handle-command-input}
-                          (require :util))
-                   (local harpoon-hints "
-        ^^Harpoooooooooooon
-        ▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔^
-        ^^_s_: Terminal Gotosend
-        ^^_S_: Terminal goto
-        ^^_N_:Previous file
-        ^^_w_: Toggle goto
-        ^^_W_: Jump file
-       ^^_a_: Add file
-        ^^_n_: Next file
-        ^^_T_: Harpoon Telescope
-        ^^_<leader>_: Quick ui Menu
-        ^^_t_: Toggle file
-        ^^_c_: Clear Marks
-    ")
-                   (Hydra {:name :Harpoon
-                           :hint harpoon-hints
-                           :config {:color :teal
-                                    :invoke_on_body true
-                                    :hint {:border :solid
-                                           :position :middle-right}}
-                           :body :<leader>a
-                           :heads [[:s
-                                    #(vim.ui.input {:prompt "enter the command: cmd >"}
-                                                   handle-command-input)]
-                                   [:S]
-                                   [:w]
-                                   [:c
-                                    #(fn []
-                                       (let [Harpmux (require :harpoon.tmux)]
-                                         (Harpmux :clear_all)))]
-                                   [:W
-                                    #(vim.ui.input {:default :1
-                                                    :prompt "Harpoon > "}
-                                                   (fn [index]
-                                                     (let [HarpUI (require :harpoon.ui)]
-                                                       (HarpUI.nav_file (tonumber index)))))]
-                                   [:t
-                                    #(fn []
-                                       (vim.cmd :HarpToggle))]
-                                   [:T
-                                    (fn []
-                                      (vim.cmd "Telescope harpoon marks"))]
-                                   [:a
-                                    (fn []
-                                      (vim.cmd :HarpoonMarks))]
-                                   [:n
-                                    (fn []
-                                      (vim.cmd :HarpNext))]
-                                   [:N
-                                    (fn []
-                                      (vim.cmd :HarpPrev))]
-                                   [:<leader>
-                                    (fn []
-                                      (vim.cmd :HarpoonMenu))]
-                                   [:<Esc> nil {:exit true :nowait true}]]})))
-
+; (nyoom-module-p! harpoon
+;                  (do
+;                    (local cache {:command "ls -a" :tmux {:selected_plane ""}})
+;                    (local {: plane
+;                            : tmux-goto
+;                            : terminal-send
+;                            : handle-tmux
+;                            : handle-non-tmux
+;                            : handle-command-input}
+;                           (require :util))
+;                    (local harpoon-hints "
+;         ^^Harpoooooooooooon
+;         ▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔^
+;         ^^_s_: Terminal Gotosend
+;         ^^_S_: Terminal goto
+;         ^^_N_:Previous file
+;         ^^_w_: Toggle goto
+;         ^^_W_: Jump file
+;        ^^_a_: Add file
+;         ^^_n_: Next file
+;         ^^_T_: Harpoon Telescope
+;         ^^_<leader>_: Quick ui Menu
+;         ^^_t_: Toggle file
+;         ^^_c_: Clear Marks
+;     ")
+;                    (Hydra {:name :Harpoon
+;                            :hint harpoon-hints
+;                            :config {:color :teal
+;                                     :invoke_on_body true
+;                                     :hint {:border :solid
+;                                            :position :middle-right}}
+;                            :body :<leader>a
+;                            :heads [[:s
+;                                     #()]
+;                                    [:S]
+;                                    [:w]
+;                                    [:c
+;                                     #()]
+;                                    [:W
+;                                     #()]
+;                                    [:t
+;                                     #(fn []
+;                                        ())]
+;                                    [:T
+;                                     (fn []
+;                                       ())]
+;                                    [:a
+;                                     (fn []
+;                                       ())]
+;                                    [:n
+;                                     (fn []
+;                                       ())]
+;                                    [:N
+;                                     (fn []
+;                                       ())]
+;                                    [:<leader>
+;                                     (fn []
+;                                       ())]
+;                                    [:<Esc> nil {:exit true :nowait true}]]})))
+;
 ;; Tmux ;;
-(nyoom-module-p! tmux
-                 (do
-                   (fn tmux-split [tmux percentage external-command]
-                     (when (not= external-command nil)
-                       (set-forcibly! external-command
-                                      (or external-command "nvim .")))
-                     (global command
-                             (.. "tmux split-window -" tmux " -p " percentage))
-                     (when (not= external-command nil)
-                       (global command (.. command " '" external-command "'")))
-                     (os.execute command))
-                   (local tmux-hints "
-     ^^ Tmux ^^
-    ▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔^
-     ^^_s_:Horizontal split
-     ^^_S_:Vert Split
-     ^^_p_:Previous window
-    ^^_n_:Move back
-     ^^_N_:Move formward
-     ^^_t_:TMUX Sessions
-     ^^_<Esc>_:
-    ")
-                   (Hydra {:name :Tmux
-                           :hint tmux-hints
-                           :config {:color :teal
-                                    :invoke_on_body true
-                                    :hint {:border :solid
-                                           :position :middle-right}}
-                           :body :<leader>z
-                           :heads [[:s
-                                    #(vim.ui.input {:default :40
-                                                    :prompt "Horz-split % : "}
-                                                   (fn [percent]
-                                                     (tmux-split :v
-                                                                 (tonumber percent))))
-                                    {:desc "Horizontal Tmux split"}]
-                                   [:S
-                                    #(vim.ui.input {:default :40
-                                                    :prompt "Vert-split % : "}
-                                                   (fn [percent]
-                                                     (tmux-split :h
-                                                                 (tonumber percent))))
-                                    {:desc "Vertical Tmux split"}]
-                                   [:n
-                                    #(os.execute "tmux select-window -p")
-                                    {:desc "Move backwards"}]
-                                   [:N
-                                    #(os.execute "tmux select-window -n")
-                                    {:desc "Move forward"}]
-                                   [:t
-                                    (fn []
-                                      (vim.cmd "Telescope tmux windows"))
-                                    {:nowait true
-                                     :exit true
-                                     :desc "Switch Session"}]
-                                   [:p #(os.execute "tmux select-window -l")]
-                                   [:<Esc> nil {:exit true :nowait true}]]})))
+; (nyoom-module-p! tmux
+;                  (do
+;                    (fn tmux-split [tmux percentage external-command]
+;                      (when (not= external-command nil)
+;                        (set-forcibly! external-command
+;                                       (or external-command "nvim .")))
+;                      (global command
+;                              (.. "tmux split-window -" tmux " -p " percentage))
+;                      (when (not= external-command nil)
+;                        (global command (.. command " '" external-command "'")))
+;                      (os.execute command))
+;                    (local tmux-hints "
+;      ^^ Tmux ^^
+;     ▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔^
+;      ^^_s_:Horizontal split
+;      ^^_S_:Vert Split
+;      ^^_p_:Previous window
+;     ^^_n_:Move back
+;      ^^_N_:Move formward
+;      ^^_t_:TMUX Sessions
+;      ^^_<Esc>_:
+;     ")
+;                    (Hydra {:name :Tmux
+;                            :hint tmux-hints
+;                            :config {:color :teal
+;                                     :invoke_on_body true
+;                                     :hint {:border :solid
+;                                            :position :middle-right}}
+;                            :body :<leader>z
+;                            :heads [[:s
+;                                     #(vim.ui.input {:default :40
+;                                                     :prompt "Horz-split % : "}
+;                                                    (fn [percent]
+;                                                      (tmux-split :v
+;                                                                  (tonumber percent))))
+;                                     {:desc "Horizontal Tmux split"}]
+;                                    [:S
+;                                     #(vim.ui.input {:default :40
+;                                                     :prompt "Vert-split % : "}
+;                                                    (fn [percent]
+;                                                      (tmux-split :h
+;                                                                  (tonumber percent))))
+;                                     {:desc "Vertical Tmux split"}]
+;                                    [:n
+;                                     #(os.execute "tmux select-window -p")
+;                                     {:desc "Move backwards"}]
+;                                    [:N
+;                                     #(os.execute "tmux select-window -n")
+;                                     {:desc "Move forward"}]
+;                                    [:t
+;                                     (fn []
+;                                       (vim.cmd "Telescope tmux windows"))
+;                                     {:nowait true
+;                                      :exit true
+;                                      :desc "Switch Session"}]
+;                                    [:p #(os.execute "tmux select-window -l")]
+;                                    [:<Esc> nil {:exit true :nowait true}]]})))
 
 ;; Octussy ;;
 (nyoom-module-p! octo
@@ -466,7 +460,7 @@
                                     :hint {:type :window
                                            :border :solid
                                            :position :middle-right}}
-                           :body :<leader>qq
+                           :body :<leader>q
                            :heads [[:w
                                     (fn []
                                       (vim.cmd "lua require('browse').browse()"))]
@@ -502,7 +496,7 @@
                    (local neotest-hints "
  ^    Neotest
  ^▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔^
- 
+
  ^▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔^
  ^^_<leader>_: Test Near
  ^^ _c_: Test Current
@@ -558,7 +552,7 @@
                                    [:<Esc> nil {:exit true :nowait true}]]})))
 
 ;;Overseer::My sweet beloved;;
-(nyoom-module-p! nix
+(nyoom-module-p! overseer
                  (do
                    (local overseer-hints "
        Overseer
@@ -671,8 +665,8 @@
                                     (fn []
                                       ((->> :jump
                                             (. (require :flash))) {:search {:mode (fn [str]
-                                                                                                                                      (.. "\\<"
-                                                                                                                                          str))}}))
+                                                                                      (.. "\\<"
+                                                                                          str))}}))
                                     {:desc "Match beginning of words only"}]
                                    [:S
                                     (fn []
@@ -687,6 +681,10 @@
                                    [:r
                                     (fn []
                                       ((. (require :flash) :remote)))]
+                                   [:R
+                                    (fn []
+                                      ((->> :treesitter_search
+                                            (. (require :flash)))))]
                                    [:h #(vim.cmd :ISwapNodeWithRight)]
                                    [:l #(vim.cmd :ISwapNodeWithLeft)]
                                    [:<Esc> nil {:exit true :nowait true}]]})))
@@ -873,20 +871,6 @@
                  (do
                    (fn rust-hydra []
                      (hydra-key! :n
-                                 {:fm {:name :+Ferris
-                                       :config {:color :teal
-                                                :hint {:border :solid
-                                                       :position :bottom-middle}}
-                                       :s [#(vim.cmd :FerrisViewMemoryLayout)
-                                           "Memory Layout"]
-                                       :S [#(vim.cmd :FerrisViewMIR) :MIR]
-                                       :m [#(vim.cmd :FerrisViewHIR) :HiR]
-                                       :t [#(vim.cmd :FerrisExpandMacro)
-                                           "Expand Macro"]
-                                       :l [#(vim.cmd :FerrisRebuildMacros)
-                                           "Rebuild Macros"]}}
-                                 {:prefix :<leader>})
-                     (hydra-key! :n
                                  {:m {:hydra true
                                       :name "  Rust"
                                       :config {:color :teal
@@ -903,7 +887,7 @@
                                           "Rust expandMacro"]
                                       :D [#(vim.cmd "RustLsp externalDocs")
                                           "Rust externalDocs"]
-                                      :h [#(vim.cmd "RustLsp hover")
+                                      :h [#(vim.cmd "RustLsp hover range")
                                           "Rust hover"]
                                       :r [#(vim.cmd "RustLsp runnables")
                                           "Rust runnables"]
@@ -962,7 +946,6 @@ _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
                    (local haskell-tools (autoload :haskell-tools))
                    (local project (autoload :haskell-tools.project))
                    (local hoogle (autoload :haskell-tools.hoogle))
-
                    (fn haskell-hydra []
                      (hydra-key! :n
                                  {:H {:hydra true
@@ -987,63 +970,63 @@ _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
                              (autocmd! FileType haskell `(haskell-hydra)))))
 
 ;; Go faster, wagie! ;;
-(nyoom-module-p! go
-                 (do
-                   (fn go-hydra []
-                     (hydra-key! :n
-                                 {:G {:hydra true
-                                      :name "Go:: Coding"
-                                      :config {:color :teal
-                                               :hint {:border :solid
-                                                      :position :middle-right}
-                                               :invoke_on_body true}
-                                      :a [#(vim.cmd :GoCodeAction) "Add tags"]
-                                      :e [#(vim.cmd :GoIfErr) "Add if err"]
-                                      :i [#(vim.cmd :GoToggleInlay)
-                                          "Toggle inlay"]
-                                      :l [#(vim.cmd :GoLint) "Run linter"]
-                                      :o [#(vim.cmd :GoPkgOutline) :Outline]
-                                      :r [#(vim.cmd :GoRun) :Run]
-                                      :s [#(vim.cmd :GoFillStruct)
-                                          "Autofill struct"]}}
-                                 {:prefix :<leader>} 1)
-                     (hydra-key! :n
-                                 {:fh {:name "Go:: Helpers"
-                                       :a [#(vim.cmd :GoAddTag)
-                                           "Add tags to struct"]
-                                       :r [#(vim.cmd :GoRMTag)
-                                           "Remove tags to struct"]
-                                       :c [#(vim.cmd :GoCoverage)
-                                           "Test coverage"]
-                                       :g [#(vim.cmd "lua require('go.comment').gen()")
-                                           "Generate comment"]
-                                       :v [#(vim.cmd :GoVet) "Go vet"]
-                                       :t [#(vim.cmd :GoModTidy) "Go mod tidy"]
-                                       :i [#(vim.cmd :GoModInit) "Go mod init"]}}
-                                 {:prefix :<leader>})
-                     (hydra-key! :n
-                                 {:ft {:name "Go:: Tests"
-                                       :r [#(vim.cmd :GoTest) "Run tests"]
-                                       :a [#(vim.cmd :GoAlt!) "Open alt file"]
-                                       :s [#(vim.cmd :GoAltS!)
-                                           "Open alt file in split"]
-                                       :v [#(vim.cmd :GoAltV!)
-                                           "Open alt file in vertical split"]
-                                       :u [#(vim.cmd :GoTestFunc)
-                                           "Run test for current func"]
-                                       :f [#(vim.cmd :GoTestFile)
-                                           "Run test for current file"]}}
-                                 {:prefix :<leader>})
-                     (hydra-key! :n
-                                 {:fx {:name "Go:: Codelens"
-                                       :l [#(vim.cmd :GoCodeLenAct)
-                                           "Toggle Lens"]
-                                       :a [#(vim.cmd :GoCodeAction)
-                                           "Code Action"]}}
-                                 {:prefix :<leader>}))
-                   (augroup! localleader-hydras
-                             (autocmd! FileType go `(go-hydra)))))
-
+; (nyoom-module-p! go
+;                  (do
+;                    (fn go-hydra []
+;                      (hydra-key! :n
+;                         {:G {:hydra true
+;                              :name "Go:: Coding"
+;                              :config {:color :teal
+;                                       :hint {:border :solid
+;                                              :position :middle-right}
+;                                       :invoke_on_body true}
+;                              :a [#(vim.cmd :GoCodeAction) "Add tags"]
+;                              :e [#(vim.cmd :GoIfErr) "Add if err"]
+;                              :i [#(vim.cmd :GoToggleInlay)
+;                                  "Toggle inlay"]
+;                              :l [#(vim.cmd :GoLint) "Run linter"]
+;                              :o [#(vim.cmd :GoPkgOutline) :Outline]
+;                              :r [#(vim.cmd :GoRun) :Run]
+;                              :s [#(vim.cmd :GoFillStruct)
+;                                  "Autofill struct"
+;                                  {:prefix :<leader>} 1]}})
+;                      (hydra-key! :n
+;                             {:fh {:name "Go:: Helpers"
+;                                   :a [#(vim.cmd :GoAddTag)
+;                                       "Add tags to struct"]
+;                                   :r [#(vim.cmd :GoRMTag)
+;                                       "Remove tags to struct"]
+;                                   :c [#(vim.cmd :GoCoverage)
+;                                       "Test coverage"]
+;                                   :g [#(vim.cmd "lua require('go.comment').gen()")
+;                                       "Generate comment"]
+;                                   :v [#(vim.cmd :GoVet) "Go vet"]
+;                                   :t [#(vim.cmd :GoModTidy) "Go mod tidy"]
+;                                   :i [#(vim.cmd :GoModInit) "Go mod init"]}}
+;                             {:prefix :<leader>})
+;                      (hydra-key! :n
+;                                  {:ft {:name "Go:: Tests"
+;                                        :r [#(vim.cmd :GoTest) "Run tests"]
+;                                        :a [#(vim.cmd :GoAlt!) "Open alt file"]
+;                                        :s [#(vim.cmd :GoAltS!)
+;                                            "Open alt file in split"]
+;                                        :v [#(vim.cmd :GoAltV!)
+;                                            "Open alt file in vertical split"]
+;                                        :u [#(vim.cmd :GoTestFunc)
+;                                            "Run test for current func"]
+;                                        :f [#(vim.cmd :GoTestFile)
+;                                            "Run test for current file"]}}
+;                                  {:prefix :<leader>})
+;                      (hydra-key! :n
+;                                  {:fx {:name "Go:: Codelens"
+;                                        :l [#(vim.cmd :GoCodeLenAct)
+;                                            "Toggle Lens"]
+;                                        :a [#(vim.cmd :GoCodeAction)
+;                                            "Code Action"]}}
+;                                  {:prefix :<leader>}))
+;                    (augroup! localleader-hydras
+;                              (autocmd! FileType go `(go-hydra)))))
+;
 ;Intercourse;;
 (nyoom-module-p! latex
                  (do

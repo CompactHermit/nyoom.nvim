@@ -7,49 +7,30 @@
   };
 
   outputs = inputs:
-    inputs.flake-parts.lib.mkFlake {inherit inputs;}
-    {
+    inputs.flake-parts.lib.mkFlake {inherit inputs;} {
       systems = ["x86_64-linux"];
       perSystem = {
         config,
         self',
         pkgs,
         ...
-      }: let
-        imports = with inputs;
-          [
-          ]
-          ++ (import ./dependencies_dir {inherit pkgs inputs;});
-      in {
+      }: {
         packages.default = pkgs.stdenv.mkDerivation rec {
-          name = "C project";
+          name = "CLOX Interpreter";
           version = "0.1.0";
 
           src = ./.;
           buildInputs = with pkgs;
-            [
-            ]
+            [cmake]
             ++ (with self'.packages; []);
 
-          /*
-          * Run the configuration
-          */
-          configurePhase =
-            /*
-            sh
-            */
-            ''
-            '';
+          configurePhase = ''
 
-          /*
-          * Run the meson build
-          */
-          buildPhase =
-            /*
-            sh
-            */
-            ''
-            '';
+          '';
+
+          buildPhase = ''
+
+          '';
 
           installPhase = ''
             mkdir -p $out/bin
@@ -60,21 +41,33 @@
         devShells.default = pkgs.mkShell.override {stdenv = pkgs.clangStdenv;} {
           hardeningDisable = ["all"];
           inputsFrom = [];
-
-          buildInputs = with pkgs; [
-            lld
+          packages = with pkgs; [
+            libclang.lib
+          ];
+          nativeBuildInputs = with pkgs; [
+            # Tools
+            ninja
+            pkg-config
             cmake
             just
             meson
-            gdb
             bear
-          ];
+            mold
 
-          env = {
-            CLANGD_PATH = "${pkgs.clang-tools}/bin/clangd";
-            ASAN_SYMBOLIZER_PATH = "${pkgs.llvmPackages_15.bintools-unwrapped}/bin/llvm-symbolizer";
-            CXX_LD = "lld";
-          };
+            # Debugging
+            gdb
+            gf
+            vim
+
+            #Libs
+            glibc.dev
+          ];
+          CLANGD_PATH = "${pkgs.clang-tools}/bin/clangd";
+          CPATH = "${pkgs.libclang.lib}/lib/clang/16/include/";
+          LIBCLANG_PATH = "${pkgs.libclang.lib}/lib/clang/16/include";
+          ASAN_SYMBOLIZER_PATH = "${pkgs.llvmPackages_latest.bintools-unwrapped}/bin/llvm-symbolizer"; #ASAN
+          CXX_LD = "mold"; # FOR DYN LINKER
+          C_INCLUDE_PATH = "${pkgs.glibc.dev}/include"; # FOR GCC HEADERS
         };
       };
     };

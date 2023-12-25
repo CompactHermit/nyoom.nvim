@@ -48,6 +48,7 @@
                      (buf-map! [n] :gt goto-type-definition!)
                      (buf-map! [n] :<leader>gr goto-references!)
                      (buf-map! [n] :gr goto-references!)))
+
   ;; Enable lsp formatting if available
   (nyoom-module-p! format.+onsave
                    (when (client.supports_method :textDocument/formatting)

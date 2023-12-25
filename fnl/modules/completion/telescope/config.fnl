@@ -41,6 +41,7 @@
                   (each [_ entry (ipairs (picker:get_multi_selection))]
                     (vim.cmd (string.format "%s %s" open-cmd entry.value)))
                   (vim.cmd :stopinsert))
+                ;;REFACTOR:: (Hermit) refactor using match
                 (if (= open-cmd :vsplit) (file_vsplit prompt-bufnr)
                     (= open-cmd :split) (file_split prompt-bufnr)
                     (= open-cmd :tabe) (file_tab prompt-bufnr)

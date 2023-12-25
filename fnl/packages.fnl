@@ -9,7 +9,7 @@
                 : autocmd!} :macros)
 
 (packadd! packer.nvim)
-(local {: build} (autoload :hotpot.api.make))
+;(local {: build} (autoload :hotpot.api.make))
 (local {: init} (autoload :packer))
 (local {: echo!} (autoload :core.lib.io))
 
@@ -26,11 +26,11 @@
 ;; compile healthchecks
 
 (echo! "Compiling Nyoom Doctor")
-(build (vim.fn.stdpath :config) {:verbosity 0}
-       (.. (vim.fn.stdpath :config) :/fnl/core/doctor.fnl)
-       (fn []
-         (.. (vim.fn.stdpath :config) :/lua/health.lua)))
-
+; (build (vim.fn.stdpath :config) {:verbosity 0}
+;        (.. (vim.fn.stdpath :config) :/fnl/core/doctor.fnl)
+;        (fn []
+;          (.. (vim.fn.stdpath :config) :/lua/health.lua)))
+;
 ;; packer can manage itself
 
 ;; (use-package! :EdenEast/packer.nvim {:opt true :branch :feat/lockfile})
@@ -99,13 +99,12 @@
                      :IMove]
                :call-setup iswap})
 
-(use-package! :pysan3/autosession.nvim {:opt true :cmd [:AutoSession] :call-setup autosession})
+(use-package! :pysan3/autosession.nvim
+              {:opt true :cmd [:AutoSession] :call-setup autosession})
 
 ;;SilverSurfer Nvim
 (use-package! :kelly-lin/telescope-ag
               {:requires :nvim-telescope/telescope.nvim :opt true :cmd :Ag})
-
-(use-package! :stevearc/oil.nvim {:call-setup oil})
 
 ;; TODO :: Add to browser module
 ;;Docs and browse

@@ -5,6 +5,7 @@
 (use-package! :saecki/crates.nvim
               {:call-setup crates :event ["BufRead Cargo.toml"]})
 
-(use-package! :mrcjkb/rustaceanvim {:opt true :ft [:rust]})
+(use-package! :mrcjkb/rustaceanvim
+              {:opt true :nyoom-module lang.rust :ft [:rust]})
 
-(use-package! :vxpm/ferris.nvim {:nyoom-module lang.rust :opt true :ft [:rust]})
+;(use-package! :vxpm/ferris.nvim {:opt true :ft [:rust]})

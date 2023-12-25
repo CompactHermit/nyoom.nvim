@@ -1,5 +1,5 @@
 (fn deep-copy [x]
-  "Creates a deep copy of the given value.
+  " Copy method on tables
   
   Arguments:
   * `x`: the value to copy
@@ -21,6 +21,9 @@
 
 (fn deep-merge [x1 x2]
   "Merges two tables recursively.
+  If either table is null, then return a clone of the other.
+  When both are non-null, act's like vim.tbl_deepmerge(\"force\"...)
+  Essentially, it just tbl_deepmerge's copies x2->x1.
   
   Arguments:
   * `x1`: the first table to merge
@@ -31,7 +34,7 @@
   
   Example:
   ```fennel
-  (assert (= (deep-merge {a: 1, b: {c: 2, d: 3}} {b: {d: 4, e: 5}}) {a: 1, b: {c: 2, d: 4, e: 5}}))
+  (assert (= (deep-merge {a: 1 b: {c: 2, d: 3}} {b: {d: 4 e: 5}}) --> {a: 1 b: {c: 2 d: 4 e: 5}}))
   ```"
   (match [x1 x2]
     [nil nil] nil

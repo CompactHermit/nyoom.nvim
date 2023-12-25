@@ -109,7 +109,9 @@
 (packadd! image.nvim)
 ((->> :setup
      (. (require :image))) {:backend :kitty
-                            :integrations {:markdown {:enabled true}
+                            :integrations {:markdown {:enabled true
+                                                      :download_remote_images true
+                                                      :filetypes [:markdown :quarto :vimwiki]}
                                            :neorg {:enabled true
                                                    :download_remote_images true
                                                    :clear_in_insert_mode false

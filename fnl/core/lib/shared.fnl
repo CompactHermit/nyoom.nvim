@@ -3,16 +3,16 @@
 ;;NOTE: explore what this even is
 (local databases-folder (.. (vim.fn.stdpath "data") "/databases"))
 
-(local icons {:error " "
+(local icons {:error "󰅚 "
               :warn  " "
-              :info  " "
-              :hint  " "
-              :ok    " "})
+              :info  "󰋽 "
+              :hint  "󰌶 "
+              :ok    "󰄬 "})
 
 (local codicons {:Text "  "
                  :Method "  "
-                 :Function "  "
-                 :Constructor "  "
+                 :Function " 󰊕 "
+                 :Constructor "  "
                  :Field "  "
                  :Variable "  "
                  :Class "  "
@@ -23,7 +23,7 @@
                  :Value "  "
                  :Enum "  "
                  :Keyword "  "
-                 :Snippet "  "
+                 :Snippet " 󰩫 "
                  :Color "  "
                  :File "  "
                  :Reference "  "
@@ -34,7 +34,11 @@
                  :Event "  "
                  :Operator "  "
                  :Copilot "  "
-                 :TypeParameter "  "})
+                 :Specifier  "󰦪 "
+                 :TypeParameter "  "
+                 :Ellipsis  "… "
+                 :Namespace "󰅩 "
+                 :Type " "})
 
 (tset _G :shared {: userconfigs
                   : databases-folder

@@ -16,9 +16,13 @@
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    fnl-linter = {
+      url = "github:dokutan/check.fnl";
+      flake = false;
+    };
+    neorocks.url = "github:nvim-neorocks/neorocks";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     # Plugins/Parsers::
-    neorg-overlay.url = "github:nvim-neorg/nixpkgs-neorg-overlay";
     himalaya.url = "git+https://git.sr.ht/~soywod/himalaya-vim";
     tree-sitter-just = {
       url = "github:IndianBoy42/tree-sitter-just";
@@ -36,6 +40,10 @@
       url = "github:nvim-neorg/tree-sitter-norg3/new-attached-modifiers";
       flake = false;
     };
+    tree-sitter-norg-meta = {
+      url = "github:nvim-neorg/tree-sitter-norg-meta";
+      flake = false;
+    };
   };
   outputs = {
     self,
@@ -49,12 +57,9 @@
         "aarch64-darwin"
         "x86_64-darwin"
       ];
-
       imports = [
-        inputs.treefmt-nix.flakeModule
-        inputs.pch.flakeModule
+        ./nix/tests
       ];
-
       debug = true;
 
       flake = {
@@ -84,33 +89,18 @@
         ...
       }: let
         l = lib // builtins;
-        mkHook = n: prev:
-        /*
-        * SANITIZE:: (Hermit) Move to ./nix/checks folder
-        */
-          {
-            description = "pre-commit hook for ${n}";
-            fail_fast = true;
-            excludes = ["flake.lock" "index.norg" "r.'+\.yml$'"];
-          }
-          // prev;
-        src = ./.;
-        #let
-        #__functor = {};
-        #in
-        #l.filterSource (path: type: l.lists.foldr (x: y: __functor // x // y)) ./.; # There might  be a way to work around this with absolute store paths, like having a default.nix file here using a vimscript
-
         grammar = pkgs.callPackage "${inputs.nixpkgs}/pkgs/development/tools/parsing/tree-sitter/grammar.nix" {};
         NeovimConfig = pkgs.neovimUtils.makeNeovimConfig {
           extraLuaPackages = p: [p.luarocks p.magick];
+          # TODO:: (Hermit) add https://github.com/nvim-neorocks/rocks-config.nvim/, and replace packer
           plugins = with pkgs;
             [
               (pkgs.symlinkJoin {
                 name = "nvim-treesitter";
                 paths =
-                  [pkgs.vimPlugins.nvim-treesitter.withAllGrammars]
+                  [pkgs.vimPlugins.nvim-treesitter.withAllGrammars] #NOTE:: (Hermit) Use NageFire's branch and rewrite
                   ++ map pkgs.neovimUtils.grammarToPlugin (pkgs.vimPlugins.nvim-treesitter.allGrammars
-                    ++ (with self'.packages; [tree-sitter-nim tree-sitter-just tree-sitter-typst tree-sitter-norg])
+                    ++ (with self'.packages; [tree-sitter-nim tree-sitter-just tree-sitter-typst tree-sitter-norg tree-sitter-norg-meta])
                     ++ (with pkgs.tree-sitter-grammars; [tree-sitter-nu]));
               })
               parinfer-rust
@@ -126,23 +116,25 @@
           withNodeJs = true;
           withRuby = true;
           withPython3 = true;
-          customRC = ''luafile ${src}/init.lua''; # Weird issue where it doesn't respect store init.lua
+          customRC = import ./nix;
         };
         #(Hermit) Dump all wrapper args here
         wrapperArgs = let
-          path = l.makeBinPath [
-            pkgs.sqlite
-            pkgs.deadnix
-            pkgs.statix
-            pkgs.marksman
-            pkgs.alejandra
-            pkgs.nil
-            pkgs.biome
-            pkgs.ripgrep
-            pkgs.fd
-            pkgs.lua-language-server
-            pkgs.stylua
-          ];
+          path = l.makeBinPath (with pkgs; [
+            sqlite
+            deadnix
+            statix
+            marksman
+            alejandra
+            nil
+            biome
+            ripgrep
+            fd
+            xxd
+            lua-language-server
+            python311Packages.jupytext
+            stylua
+          ]);
         in
           NeovimConfig.wrapperArgs
           ++ [
@@ -151,61 +143,20 @@
             ":"
             path
           ];
-        # TODO:: Move to overlays
       in {
         _module.args.pkgs = import self.inputs.nixpkgs {
           inherit system;
           overlays = [
-            inputs.neorg-overlay.overlays.default
+            inputs.neorocks.overlays.default #NOTE:: (Hermitl) This overlay is bloated, need to reduce the amount of packages, we only realy need neorocks
             (_: _: {
               neovim-custom =
                 pkgs.wrapNeovimUnstable
                 self.inputs.neovim-nightly-overlay.packages."${system}".default ## Until I learn how to avoid the vim.re issue, this stays
                 
-                # (pkgs.neovim-unwrapped.overrideAttrs (oa: {
-                #   #src = inputs.nvim-src;
-                #   name = "neovim";
-                #   patches = [];
-                #   preConfigure = os.preConfigure + ''
-                #     sed -i cmake.config/versiondef.h.in -e "s/@NVIM_VERSION_PRERELEASE@/-dev-$version/"
-                #   '';
-                #   buildInputs =
-                #     ## Avoid a global overlay
-                #     lib.remove pkgs.libvterm-neovim oa.buildInputs
-                #     ++ lib.singleton (
-                #       pkgs.libvterm-neovim.overrideAttrs {
-                #         version = "0.3.3";
-                #         src = pkgs.fetchurl {
-                #           url = "https://github.com/neovim/libvterm/archive/v0.3.3.tar.gz";
-                #           hash = "sha256-C6vjq0LDVJJdre3pDTUvBUqpxK5oQuqAOiDJdB4XLlY=";
-                #         };
-                #       }
-                #     );
-                # }))
                 (NeovimConfig // {inherit wrapperArgs;});
             })
           ];
         };
-
-        treefmt = {
-          projectRootFile = "flake.nix";
-          programs = {
-            alejandra.enable = true;
-            fnlfmt.enable = true;
-          };
-        };
-
-        pre-commit = {
-          settings = {
-            settings = {
-              treefmt.package = config.treefmt.build.wrapper;
-            };
-            hooks = {
-              treefmt = mkHook "treefmt" {enable = true;};
-            };
-          };
-        };
-
         devShells = {
           default = pkgs.mkShell {
             name = "Awooga";
@@ -218,10 +169,29 @@
               selene
               fnlfmt
             ];
-            DIRENV_LOG_FORMAT = "";
+            DIRENV_LOG_FORMAT = ""; #NOTE:: Makes direnv shutup
           };
         };
         packages = {
+          # NOTE:: (Hemrit) If we can get hotpot to just compile within a sandbox, we should be fine
+          #cached_bytecode  = pkgs.stdenv.mkDerivation {};
+          fnl-linter = pkgs.stdenv.mkDerivation {
+            name = "Fnl-linter";
+            src = inputs.fnl-linter;
+            nativeBuildInputs = with pkgs; [lua5_4_compat fennel];
+            configurePhase = ''
+              substituteInPlace Makefile \
+              --replace "/usr/lib64/liblua.so"  ${pkgs.lua5_4_compat}/lib/liblua.so \
+              --replace "/usr/include/lua" ${pkgs.lua5_4_compat}/bin/lua
+            '';
+            buildPhase = ''
+              make binary
+            '';
+            installPhase = ''
+              mkdir -p $out/bin
+              cp ./check.fnl $out/bin
+            '';
+          };
           default = pkgs.writeShellApplication {
             name = "nvim";
             text = ''
@@ -248,6 +218,11 @@
             src = inputs.tree-sitter-norg;
             inherit (pkgs.tree-sitter) version;
           };
+          tree-sitter-norg-meta = grammar {
+            language = "norg-meta";
+            src = inputs.tree-sitter-norg-meta;
+            inherit (pkgs.tree-sitter) version;
+          };
         };
         apps = {
           sync = {
@@ -262,7 +237,7 @@
                   cd ~/.config/nvim
                   echo "Deleting Temp Cache"
                   rm -rf /tmp/nyoom
-                  XDG_CACHE_HOME=/tmp/nyoom NYOOM_CLI=true ${lib.getExe pkgs.neovim-custom} --headless -c 'autocmd User PackerComplete quitall' -c 'lua require("packer").sync()'
+                  XDG_CACHE_HOME=/tmp/nyoom NYOOM_CLI=true ${l.getExe pkgs.neovim-custom} --headless -c 'autocmd User PackerComplete quitall' -c 'lua require("packer").sync()'
                 '';
             };
           };

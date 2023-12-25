@@ -1,6 +1,5 @@
 (import-macros {: use-package! : pack} :macros)
 ;; standard completion for neovim
-
 (use-package! :hrsh7th/nvim-cmp
               {:nyoom-module completion.cmp
                :module :cmp

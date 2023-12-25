@@ -20,10 +20,10 @@
                      :open "Neotree position=top buffers"
                      {:title "Overseer List"
                       :ft :OverseerList
-                      :open :OverseerToggle}
-                     :dapui_breakpoints
-                     :dapui_stacks
-                     :dapui_watches]
+                      :open :OverseerToggle}]
+                     ; :dapui_breakpoints
+                     ; :dapui_stacks
+                     ; :dapui_watches]
                     ;; all other Neotree windows
               :bottom [{:filter (fn [buf win]
                                  (= (. (vim.api.nvim_win_get_config win) :relative)
@@ -32,14 +32,11 @@
                         :size {:height 0.4}}
                        {:filter (fn [buf]
                                   (not (. (. vim.b buf) :lazyterm_cmd)))
-                        :ft :lazyterm
-                        :size {:height 0.4}
-                        :title :LazyTerm}
+                            :ft :lazyterm
+                            :size {:height 0.4}
+                            :title :LazyTerm}
                        :dapui_console
                        :dap-repl
-                       {:title "Oil"
-                        :ft :oil
-                        :open :Oil}
                        {:ft :help
                         :size {:height 20}}
                        :Trouble
@@ -48,7 +45,7 @@
                         :title :QuickFix}]
               :right [{:ft :tsplayground
                        :title (.. :TSPlayground "::")}
-                      :dapui_scopes
+                      ; :dapui_scopes
                       :neotest-output-panel
                       :neotest-summary]
               :animate {:enabled true

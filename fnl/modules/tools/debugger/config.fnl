@@ -1,6 +1,7 @@
 (import-macros {: packadd! : nyoom-module-p!} :macros)
 (local dap (autoload :dap))
 
+;;NOTE:: All Dap Binaries will be loaded in the devshell
 (set dap.adapters.codelldb
      {:type :server
       :port "${port}"
@@ -23,13 +24,12 @@
                                   (.. (vim.fn.getcwd) "/") :file))}])
 
 (local coreclr-configs
-       [{:name "netcoredbg"
+       [{:name :netcoredbg
          :type :coreclr
          :request :launch
          :program (fn []
                     (vim.fn.input "Path to executable: "
-                                  (.. (vim.fn.getcwd) "/bin/Debug/" :file)))}])
-
+                                  (.. (vim.fn.getcwd) :/bin/Debug/ :file)))}])
 
 (nyoom-module-p! cc
                  (do
@@ -39,11 +39,10 @@
 (nyoom-module-p! csharp
                  (do
                    (set dap.configurations.cs coreclr-configs)
-                   (set dap.adapters.coreclr {:type :executable
-                                              :command "/usr/local/bin/netcoredbg/netcoredbg"
-                                              :args ["--interpreter=vscode"]})))
-
-(nyoom-module-p! rust (set dap.configurations.rust lldb-configs))
+                   (set dap.adapters.coreclr
+                        {:type :executable
+                         :command :netcoredbg
+                         :args [:--interpreter=vscode]})))
 
 (nyoom-module-p! lua
                  (do
@@ -60,7 +59,7 @@
 
 (nyoom-module-p! haskell
                  (do
-                   (set dap.adapters.haskell 
+                   (set dap.adapters.haskell
                         {:args [:--hackage-version=0.0.33.0]
                          :command :haskell-debug-adapter
                          :type :executable})
@@ -78,7 +77,6 @@
                           :type :haskell
                           :workspace "${workspaceFolder}"}])))
 
-
 (nyoom-module-p! python
                  (do
                    (packadd! nvim-dap-python)
@@ -89,13 +87,14 @@
                    (setup :dap-python python-debug-path)))
 
 (packadd! nvim-dap-ui)
-(setup :dapui {:icons {:expanded "" :collapsed "" :current_frame ""}
-               :controls {:icons {:pause ""
-                                  :play "契"
-                                  :step_into ""
-                                  :step_over ""
-                                  :step_out ""
-                                  :step_back ""
-                                  :run_last ""
-                                  :terminate ""}}
+(setup :dapui {:icons {:expanded "" :collapsed " " :current_frame ""}
+               :controls {:icons {:pause ""
+                                  :play ""
+                                  :step_into ""
+                                  :step_over ""
+                                  :step_out ""
+                                  :step_back ""
+                                  :run_last ""
+                                  :terminate ""
+                                  :disconnect ""}}
                :floating {:border :single}})

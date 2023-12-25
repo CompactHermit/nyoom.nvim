@@ -1,5 +1,6 @@
-(import-macros {: packadd! : nyoom-module-p! : map! : custom-set-face! : let!}
+(import-macros {: packadd! : nyoom-module-p! : map! : custom-set-face! : let! : autocmd! : augroup!}
                :macros)
+;; (local utils (require :util.treesitter))
 
 ;; Conditionally enable leap-ast
 
@@ -12,7 +13,6 @@
 (local treesitter-filetypes [:vimdoc :fennel :vim :regex :query])
 
 ;; SEE:: https://github.com/nickel-lang/tree-sitter-nickel/tree/main
-;; ISSUE:: TS Nickel (highlights) broken, fml
 (nyoom-module-p! nickel
                  (do
                    ;; Autoload for efficiency
@@ -132,18 +132,31 @@
 (custom-set-face! :TSRainbowViolet [] {:fg "#ada8a8" :bg :NONE})
 (custom-set-face! :TSRainbowCyan [] {:fg "#878d96" :bg :NONE})
 
-;; the usual
+
+;; ┌─────────────────────────┬
+;; │  Treesitter Autocmds::  │
+;; └─────────────────────────┘
+
+; (autocmd! :FileType "*" #(fn [ci]
+;                            (vim.fn.schedule (fn []
+;                                               (if (and (utils.active? (ci.buf)) (not= (: vim.opt_local.foldmethod :get) :diff))
+;                                                   (print :hello)))))
+;
+;           {:group (vim.api.nvim_create_augroup :TSFolds {})})
+
+;; ┌─────────────────────────┬
+;; │  Treesitter Setup:   :  │
+;; └─────────────────────────┘
+
 (setup :nvim-treesitter.configs
        {;;:ensure_installed treesitter-filetypes
         :highlight {:enable true :use_languagetree true}
         :indent {:enable true}
-        ;;:context_commentstring {:enable true}
         :refactor {:enable true :keymaps {:smart_rename :<localleader>rn}}
         :query_linter {:enable true
                        :use_virtual_text true
                        :lint_events [:BufWrite :CursorHold]}
         :rainbow {:enable true
-                  ;;:extended_mode true
                   :query {1 :rainbow-parens
                           :html :rainbow-tags
                           :latex :rainbow-blocks
@@ -180,5 +193,4 @@
 ((->> :setup
       (. (require :ts_context_commentstring))))
 
-(set vim.wo.foldtext "v:lua.vim.treesitter.foldtext()")
 (let! skip_ts_context_commentstring_module true)
