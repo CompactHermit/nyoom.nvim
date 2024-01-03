@@ -1,4 +1,9 @@
-(import-macros {: packadd! : map! : nyoom-module-p! : augroup! : clear! : autocmd!} :macros)
+(import-macros {: packadd!
+                : map!
+                : nyoom-module-p!
+                : augroup!
+                : clear!
+                : autocmd!} :macros)
 (local {: load_extension} (autoload :telescope))
 (local {: executable?} (autoload :core.lib))
 
@@ -19,45 +24,44 @@
         : file_edit
         : preview_scrolling_up
         : preview_scrolling_down
-        : close}
-       (autoload :telescope.actions))
+        : close} (autoload :telescope.actions))
+
 (local actions-layout (require :telescope.actions.layout))
 (local state (require :telescope.state))
 (local action-set (require :telescope.actions.set))
 (local action-state (require :telescope.actions.state))
 
-(local _multiopen
-        (fn [prompt-bufnr open-cmd]
-          (let [picker (action-state.get_current_picker prompt-bufnr)
-                num-selections (table.getn (picker:get_multi_selection))
-                border-contents (. picker.prompt_border.contents 1)]
-            (when (not (or (string.find border-contents "Find Files")
-                           (string.find border-contents "Git Files")))
-              (select_default prompt-bufnr)
-              (lua "return "))
-            (if (> num-selections 1)
-                (do
-                  (vim.cmd :bw!)
-                  (each [_ entry (ipairs (picker:get_multi_selection))]
-                    (vim.cmd (string.format "%s %s" open-cmd entry.value)))
-                  (vim.cmd :stopinsert))
-                ;;REFACTOR:: (Hermit) refactor using match
-                (if (= open-cmd :vsplit) (file_vsplit prompt-bufnr)
-                    (= open-cmd :split) (file_split prompt-bufnr)
-                    (= open-cmd :tabe) (file_tab prompt-bufnr)
-                    (file_edit prompt-bufnr))))))
-
+(local _multiopen (fn [prompt-bufnr open-cmd]
+                    (let [picker (action-state.get_current_picker prompt-bufnr)
+                          num-selections (table.getn (picker:get_multi_selection))
+                          border-contents (. picker.prompt_border.contents 1)]
+                      (when (not (or (string.find border-contents "Find Files")
+                                     (string.find border-contents "Git Files")))
+                        (select_default prompt-bufnr)
+                        (lua "return "))
+                      (if (> num-selections 1)
+                          (do
+                            (vim.cmd :bw!)
+                            (each [_ entry (ipairs (picker:get_multi_selection))]
+                              (vim.cmd (string.format "%s %s" open-cmd
+                                                      entry.value)))
+                            (vim.cmd :stopinsert))
+                          ;;REFACTOR:: (Hermit) refactor using match
+                          (if (= open-cmd :vsplit) (file_vsplit prompt-bufnr)
+                              (= open-cmd :split) (file_split prompt-bufnr)
+                              (= open-cmd :tabe) (file_tab prompt-bufnr)
+                              (file_edit prompt-bufnr))))))
 
 ;; Custom Functions::
-(local custom-actions {:multi_selection_open_tab (fn [prompt-bufnr]
-                                                  (_multiopen prompt-bufnr :tabe))
-                       :multi_selection_open (fn [prompt-bufnr]
-                                                (_multiopen prompt-bufnr :edit))
-                       :multi_selection_open_vsplit (fn [prompt-bufnr]
-                                                     (_multiopen prompt-bufnr :vsplit))
-                       :multi_selection_open_split (fn [prompt-bufnr]
-                                                     (_multiopen prompt-bufnr :split))})
-
+(local custom-actions
+       {:multi_selection_open_tab (fn [prompt-bufnr]
+                                    (_multiopen prompt-bufnr :tabe))
+        :multi_selection_open (fn [prompt-bufnr]
+                                (_multiopen prompt-bufnr :edit))
+        :multi_selection_open_vsplit (fn [prompt-bufnr]
+                                       (_multiopen prompt-bufnr :vsplit))
+        :multi_selection_open_split (fn [prompt-bufnr]
+                                      (_multiopen prompt-bufnr :split))})
 
 (local _mappings {:i {:<C-a> (+ send_to_qflist open_qflist)
                       :<C-d> :preview_scrolling_down
@@ -67,17 +71,23 @@
                       :<C-l> actions-layout.toggle_preview
                       :<C-n> (fn [prompt-bufnr]
                                (local results-win
-                                      (. (state.get_status prompt-bufnr) :results_win))
-                               (local height (vim.api.nvim_win_get_height results-win))
+                                      (. (state.get_status prompt-bufnr)
+                                         :results_win))
+                               (local height
+                                      (vim.api.nvim_win_get_height results-win))
                                (action-set.shift_selection prompt-bufnr
-                                                           (math.floor (/ height 2))))
+                                                           (math.floor (/ height
+                                                                          2))))
                       :<C-o> :select_vertical
                       :<C-p> (fn [prompt-bufnr]
                                (local results-win
-                                      (. (state.get_status prompt-bufnr) :results_win))
-                               (local height (vim.api.nvim_win_get_height results-win))
+                                      (. (state.get_status prompt-bufnr)
+                                         :results_win))
+                               (local height
+                                      (vim.api.nvim_win_get_height results-win))
                                (action-set.shift_selection prompt-bufnr
-                                                           (- (math.floor (/ height 2)))))
+                                                           (- (math.floor (/ height
+                                                                             2)))))
                       :<C-q> (+ send_selected_to_qflist open_qflist)
                       :<C-u> :preview_scrolling_up
                       :<c-p> actions-layout.toggle_prompt_position}
@@ -97,25 +107,23 @@
                       :q close}})
 
 ;; TODO:: Sanitize this, making mappings it's own list, this is just stupid to configure
-(setup :telescope {:defaults {:prompt_prefix "   "
-                              :selection_caret "  "
-                              :entry_prefix "  "
-                              :sorting_strategy :ascending
-                              :layout_strategy :flex
-                              :set_env {:COLORTERM :truecolor}
-                              :dynamix_preview_title true
-                              :layout_config {:horizontal {:prompt_position :top
-                                                           :preview_width 0.55}
-                                              :vertical {:mirror false}
-                                              :width 0.87
-                                              :height 0.8
-                                              :preview_cutoff 120}
-                              :mappings _mappings
-                               ;; TODO:: add custom pickers for Telescope Browser/ Buffers/ Tabs, e.g: deletion and such
-                              :pickers {:oldfiles {:prompt_title "Recent files"}}}})
-
-
-
+(setup :telescope
+       {:defaults {:prompt_prefix "   "
+                   :selection_caret "  "
+                   :entry_prefix "  "
+                   :sorting_strategy :ascending
+                   :layout_strategy :flex
+                   :set_env {:COLORTERM :truecolor}
+                   :dynamix_preview_title true
+                   :layout_config {:horizontal {:prompt_position :top
+                                                :preview_width 0.55}
+                                   :vertical {:mirror false}
+                                   :width 0.87
+                                   :height 0.8
+                                   :preview_cutoff 120}
+                   :mappings _mappings
+                   ;; TODO:: add custom pickers for Telescope Browser/ Buffers/ Tabs, e.g: deletion and such
+                   :pickers {:oldfiles {:prompt_title "Recent files"}}}})
 
 ;; Load extensions
 (packadd! telescope-ui-select.nvim)
@@ -131,9 +139,6 @@
 (setup :telescope-tabs)
 (packadd! telescope-egrepify.nvim)
 (load_extension :egrepify)
-(nyoom-module-p! debugger
-    (packadd! telescope-dap.nvim)
-    (load_extension :dap))
 ;; only install native if the flag is there
 
 ;; TODO:: Remove this for Nix, errors bcs they build fzf, which nix fails to find on rtp
@@ -141,7 +146,6 @@
                  (do
                    (packadd! telescope-fzf-native.nvim)
                    (load_extension :fzf)))
-
 
 ;; load media-files and zoxide only if their executables exist
 (when (executable? :ueberzug)
@@ -183,7 +187,6 @@
                                             {:desc "Local diagnostics"})
                                       (map! [n] :<leader>cX open-diag-float!
                                             {:desc "Project diagnostics"})))))
-
 
 ; local colors = require("current_color_Scheme").get_palete()
 ; local TelescopeColor = {

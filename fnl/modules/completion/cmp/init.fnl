@@ -11,6 +11,7 @@
                           (pack :hrsh7th/cmp-buffer {:after :nvim-cmp})
                           (pack :hrsh7th/cmp-cmdline {:after :nvim-cmp})
                           (pack :hrsh7th/cmp-nvim-lsp {:after :nvim-cmp})
+                          (pack :micangl/cmp-vimtex {:after :nvim-cmp})
                           (pack :hrsh7th/cmp-nvim-lsp-signature-help
                                 {:after :nvim-cmp})
                           (pack :PaterJason/cmp-conjure {:after :conjure})

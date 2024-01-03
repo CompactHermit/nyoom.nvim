@@ -20,10 +20,20 @@
       url = "github:dokutan/check.fnl";
       flake = false;
     };
-    neorocks.url = "github:nvim-neorocks/neorocks";
+    #Vhyrro, I'm trusting you bud;
+    rocks = {
+      url = "github:nvim-neorocks/rocks.nvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "parts";
+      inputs.pre-commit-hooks.follows = "pch";
+    };
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     # Plugins/Parsers::
     himalaya.url = "git+https://git.sr.ht/~soywod/himalaya-vim";
+    wrapping-paper = {
+      url = "github:benlubas/wrapping-paper.nvim";
+      flake = false;
+    };
     tree-sitter-just = {
       url = "github:IndianBoy42/tree-sitter-just";
       flake = false;
@@ -44,6 +54,7 @@
       url = "github:nvim-neorg/tree-sitter-norg-meta";
       flake = false;
     };
+    #mdBook.url = "github:adisbladis/mdbook-nixdoc";
   };
   outputs = {
     self,
@@ -88,18 +99,24 @@
         system,
         ...
       }: let
+        inherit (pkgs.vimUtils) buildVimPlugin;
+        inherit (pkgs.neovimUtils) makeNeovimConfig grammarToPlugin;
+        mkNeovimPlugin = src: pname:
+          buildVimPlugin {
+            inherit pname src;
+            version = src.lastModifiedDate;
+          };
         l = lib // builtins;
         grammar = pkgs.callPackage "${inputs.nixpkgs}/pkgs/development/tools/parsing/tree-sitter/grammar.nix" {};
-        NeovimConfig = pkgs.neovimUtils.makeNeovimConfig {
+        NeovimConfig = makeNeovimConfig {
           extraLuaPackages = p: [p.luarocks p.magick];
-          # TODO:: (Hermit) add https://github.com/nvim-neorocks/rocks-config.nvim/, and replace packer
           plugins = with pkgs;
             [
               (pkgs.symlinkJoin {
                 name = "nvim-treesitter";
                 paths =
                   [pkgs.vimPlugins.nvim-treesitter.withAllGrammars] #NOTE:: (Hermit) Use NageFire's branch and rewrite
-                  ++ map pkgs.neovimUtils.grammarToPlugin (pkgs.vimPlugins.nvim-treesitter.allGrammars
+                  ++ map grammarToPlugin (pkgs.vimPlugins.nvim-treesitter.allGrammars
                     ++ (with self'.packages; [tree-sitter-nim tree-sitter-just tree-sitter-typst tree-sitter-norg tree-sitter-norg-meta])
                     ++ (with pkgs.tree-sitter-grammars; [tree-sitter-nu]));
               })
@@ -109,51 +126,72 @@
               sqlite-lua
               mini-nvim
               markdown-preview-nvim
+              rocks-nvim
+              nfnl
             ])
             ++ (with inputs; [
               himalaya.packages."${system}".default
-            ]);
+            ])
+            ++ (map (x: mkNeovimPlugin inputs."${x}" (x + ".nvim")) ["wrapping-paper"]);
           withNodeJs = true;
           withRuby = true;
           withPython3 = true;
           customRC = import ./nix;
         };
-        #(Hermit) Dump all wrapper args here
         wrapperArgs = let
-          path = l.makeBinPath (with pkgs; [
-            sqlite
-            deadnix
-            statix
-            marksman
-            alejandra
-            nil
-            biome
-            ripgrep
-            fd
-            xxd
-            lua-language-server
-            python311Packages.jupytext
-            stylua
-          ]);
+          binpath = l.makeBinPath (with pkgs;
+            [
+              #cargo
+              sqlite
+              deadnix
+              statix
+              marksman
+              alejandra
+              nil
+              biome
+              ripgrep
+              fd
+              xxd
+              python311Packages.jupytext
+              stylua
+            ]
+            ++ (with pkgs.lua51Packages; [lua-language-server lua luarocks]));
         in
-          NeovimConfig.wrapperArgs
-          ++ [
-            "--prefix"
-            "PATH"
-            ":"
-            path
-          ];
+          # NOTE::(Hermit) This is so fking anal
+          l.escapeShellArgs NeovimConfig.wrapperArgs
+          + " "
+          + ''--suffix LUA_CPATH ";" "${
+              lib.concatMapStringsSep ";"
+              pkgs.lua51Packages.getLuaCPath
+              (with pkgs.lua51Packages; [
+                luarocks-build-rust-mlua
+                toml
+                toml-edit
+                fidget-nvim
+                nvim-nio
+                fzy
+              ])
+            }"''
+          + " "
+          + ''--suffix LUA_PATH ";" "${
+              l.concatMapStringsSep ";"
+              pkgs.lua51Packages.getLuaPath
+              (with pkgs.lua51Packages; [
+                fidget-nvim
+                nvim-nio
+                fzy
+              ])
+            }"''
+          + " "
+          + ''--prefix PATH : ${binpath}'';
       in {
         _module.args.pkgs = import self.inputs.nixpkgs {
           inherit system;
           overlays = [
-            inputs.neorocks.overlays.default #NOTE:: (Hermitl) This overlay is bloated, need to reduce the amount of packages, we only realy need neorocks
+            inputs.rocks.overlays.default
             (_: _: {
               neovim-custom =
-                pkgs.wrapNeovimUnstable
-                self.inputs.neovim-nightly-overlay.packages."${system}".default ## Until I learn how to avoid the vim.re issue, this stays
-                
-                (NeovimConfig // {inherit wrapperArgs;});
+                pkgs.wrapNeovimUnstable self.inputs.neovim-nightly-overlay.packages."${system}".default (NeovimConfig // {inherit wrapperArgs;});
             })
           ];
         };
@@ -237,7 +275,7 @@
                   cd ~/.config/nvim
                   echo "Deleting Temp Cache"
                   rm -rf /tmp/nyoom
-                  XDG_CACHE_HOME=/tmp/nyoom NYOOM_CLI=true ${l.getExe pkgs.neovim-custom} --headless -c 'autocmd User PackerComplete quitall' -c 'lua require("packer").sync()'
+                  NYOOM_CLI=true XDG_CACHE_HOME=/tmp/nyoom ${l.getExe pkgs.neovim-custom} --headless -c 'autocmd User PackerComplete quitall' -c 'lua require("packer").sync()'
                 '';
             };
           };

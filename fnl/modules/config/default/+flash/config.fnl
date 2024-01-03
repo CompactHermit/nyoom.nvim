@@ -120,35 +120,35 @@
 ;; NOTE:: (CompactHermit) <09/04> Many of these are broken, because the `swap_with` api is broken, need to fix
 (nyoom-module-p! tree-sitter
                  (do
-                  (map! [n] :<leader>sa
+                  (map! [n] :<leader>Sa
                         `(treesitter_search {:label {:before true :after true :style :inline}
                                              :remote_op {:restore true}})
                         {:desc "TS::<Show Nodes>"})
-                  (map! [n o x] :<leader>st
+                  (map! [n o x] :<leader>St
                         `(jump {:mode ";remote_ts"})
                          {:desc "<BROKEN>"})
-                  (map! [x o] "<leader>sn"
+                  (map! [x o] "<leader>Sn"
                         `(jump {:mode ";remote_ts" :treesitter {:starting_from_pos true}})
                         {:desc "Jump:: <Start Node(x)>"})
-                  (map! [x o] :<leader>se
+                  (map! [x o] :<leader>Se
                         `(jump {:mode ";remote_ts" :treesitter {:ending_at_pos true}})
                         {:desc "Select node(e)"})
-                  (map! [n] :<leader>sw
+                  (map! [n] :<leader>Sw
                         `(jump {:mode :textcase :pattern (vim.fn.expand "<cWORD>")})
                         {:desc "Jump:: <textcase>"})
-                  (map! [n x] :<leader>sX
+                  (map! [n x] :<leader>SX
                         `(lib.swap_with {:mode ";remote_ts"})
                         {:desc "Swaps"})
-                  (map! [n x] :<leader>sx
+                  (map! [n x] :<leader>Sx
                         `(lib.swap_with {})
                         {:desc "Exchange <motion1> with <node>"})
-                  (map! [n x] :<leader>sy
+                  (map! [n x] :<leader>Sy
                         `(lib.swap_with {:exchange {:not_there true}})
                         {:desc "Replace with <remote-motion>"})
-                  (map! [n x] :<leader>sd
+                  (map! [n x] :<leader>Sd
                         `(lib.swap_with {:exchange {:not_there true}})
                         {:desc "Replace with d<remote-motion>"})
-                  (map! [n x] :<leader>sc
+                  (map! [n x] :<leader>Sc
                         `(lib.swap_with {:exchange {:not_there true}})
                         {:desc "Replace with c<remote-motion>"})))
 

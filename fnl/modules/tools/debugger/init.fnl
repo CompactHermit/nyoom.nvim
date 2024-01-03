@@ -1,6 +1,6 @@
 (import-macros {: use-package! : pack} :macros)
 
-(use-package! :rcarriga/nvim-dap
+(use-package! :mfussenegger/nvim-dap
               {:nyoom-module tools.debugger
                :opt true
                :defer nvim-dap

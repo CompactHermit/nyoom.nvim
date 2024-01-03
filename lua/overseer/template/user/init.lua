@@ -9,4 +9,5 @@ return {
     "user.misc",
     "user.julia",
     "user.haskell",
+    "user.c",
 }

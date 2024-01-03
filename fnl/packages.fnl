@@ -89,15 +89,6 @@
 ; TODO:: (CH) <10/06> Debug this.
 (use-package! :dstein64/vim-startuptime {:opt true :cmd [:StartupTime]})
 
-(use-package! :mizlan/iswap.nvim
-              {:opt true
-               :cmd [:ISwapWith
-                     :ISwap
-                     :ISwapNodeWith
-                     :IMoveWith
-                     :IMoveNodeWith
-                     :IMove]
-               :call-setup iswap})
 
 (use-package! :pysan3/autosession.nvim
               {:opt true :cmd [:AutoSession] :call-setup autosession})

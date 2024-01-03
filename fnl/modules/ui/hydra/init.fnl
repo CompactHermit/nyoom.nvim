@@ -8,14 +8,15 @@
                       :<leader>cl
                       :<leader>d
                       :<leader>e
-                      :<leader>g
                       :<leader>f
+                      :<leader>g
                       :<leader>G
-                      :<leader>ne
-                      :<leader>m
-                      :<leader>o
                       :<leader>l
+                      :<leader>m
+                      :<leader>ne
+                      :<leader>o
                       :<leader>qq
+                      :<leader>s
                       :<leader>t
                       :<leader>u
                       :<leader>v

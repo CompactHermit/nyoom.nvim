@@ -1,0 +1,4 @@
+# ADD CUSTOM SCRIPTS HERE
+default:
+	@just --list
+## vim: ft=make

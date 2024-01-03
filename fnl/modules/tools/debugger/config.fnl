@@ -2,10 +2,10 @@
 (local dap (autoload :dap))
 
 ;;NOTE:: All Dap Binaries will be loaded in the devshell
-(set dap.adapters.codelldb
-     {:type :server
-      :port "${port}"
-      :executable {:command :codelldb :args [:--port "${port}"]}})
+(set dap.adapters.lldb {:type :server
+                        :port "${port}"
+                        :executable {:command :codelldb
+                                     :args [:--port "${port}"]}})
 
 (local lldb-configs
        [{:name "lldb: Launch (console)"
@@ -22,6 +22,7 @@
          :program (fn []
                     (vim.fn.input "Path to executable: "
                                   (.. (vim.fn.getcwd) "/") :file))}])
+
 
 (local coreclr-configs
        [{:name :netcoredbg
@@ -77,14 +78,14 @@
                           :type :haskell
                           :workspace "${workspaceFolder}"}])))
 
-(nyoom-module-p! python
-                 (do
-                   (packadd! nvim-dap-python)
-                   (local python-debug-path "~/.virtualenvs/debugpy/bin/python")
-                   (nyoom-module-p! mason
-                                    (local python-debug-path
-                                           "~/.local/share/nvim/mason/packages/debugpy/venv/bin/python"))
-                   (setup :dap-python python-debug-path)))
+; (nyoom-module-p! python
+;                  (do
+;                    (packadd! nvim-dap-python)
+;                    (local python-debug-path "~/.virtualenvs/debugpy/bin/python")
+;                    (nyoom-module-p! mason
+;                                     (local python-debug-path
+;                                            "~/.local/share/nvim/mason/packages/debugpy/venv/bin/python"))
+;                    (setup :dap-python python-debug-path)))
 
 (packadd! nvim-dap-ui)
 (setup :dapui {:icons {:expanded "" :collapsed " " :current_frame ""}

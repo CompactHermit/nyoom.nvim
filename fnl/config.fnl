@@ -1,21 +1,39 @@
 (require-macros :macros)
 (import-macros {: >==} :util.macros)
 
+(local rocks-config
+       {:luarocks_binary :luarocks
+        :rocks_path (.. (vim.fn.stdpath :data) :/rocks)})
+
+(set vim.g.rocks_nvim rocks-config)
+(local luarocks-path [(vim.fs.joinpath rocks-config.rocks_path :share :lua :5.1
+                                       :?.lua)
+                      (vim.fs.joinpath rocks-config.rocks_path :share :lua :5.1
+                                       "?" :init.lua)])
+
+(set package.path (.. package.path ";" (table.concat luarocks-path ";")))
+(local luarocks-cpath [(vim.fs.joinpath rocks-config.rocks_path :lib :lua :5.1
+                                        :?.so)
+                       (vim.fs.joinpath rocks-config.rocks_path :lib64 :lua
+                                        :5.1 :?.so)])
+
+(set package.cpath (.. package.cpath ";" (table.concat luarocks-cpath ";")))
+(vim.opt.runtimepath:append (vim.fs.joinpath rocks-config.rocks_path :lib
+                                             :luarocks :rocks-5.1 :rocks.nvim))
+
 (colorscheme oxocarbon)
 (set! background :dark)
 ;;   ┌──────────────────────┐
 ;;   │    CUSTOM AUTOCMDS   │
 ;;   └──────────────────────┘
 
-(set! gcr [:i-c-ci-ve:blinkoff500-blinkon500-block-TermCursor
-           :n-v:block-Curosr/lCursor
-           :o:hor50-Curosr/lCursor
-           :r-cr:hor20-Curosr/lCursor])
- 
+(set! gcr ["i-c-ci-ve:blinkoff500-blinkon500-block-TermCursor"
+           "n-v:block-Curosr/lCursor"
+           "o:hor50-Curosr/lCursor"
+           "r-cr:hor20-Curosr/lCursor"])
+
 (set! relativenumber)
 (set! conceallevel 2)
-
-
 
 (let! maplocalleader " m")
 (let! tex_conceal :abdgm)
@@ -56,8 +74,7 @@
   (autocmd! :FileType filetype
             #(vim.cmd (string.format " setlocal expandtab tabstop=%d shiftwidth=%d softtabstop=%d "
                                      shiftwidth shiftwidth shiftwidth)
-
-                    {:nested true})))
+                      {:nested true})))
 
 (augroup! neogit-config (autocmd! FileType Neogit* `(local-set! nolist))
           (autocmd! [FileType BufEnter] NeogitCommitView

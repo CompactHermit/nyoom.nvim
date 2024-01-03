@@ -107,9 +107,6 @@
             bash
             */
             ''
-              echo "buildPhase PWD: $PWD"
-              echo "buildPhase out: $out"
-              echo "buildPhase ls: $(ls)"
               mkdir -p ${CARGO_HOME}
               cp --remove-destination  ${storedCargoConfig} ${CARGO_CONFIG_PATH}
             '';

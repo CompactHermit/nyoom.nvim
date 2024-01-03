@@ -3,7 +3,7 @@
 
 ;; NOTE:: (Hermit Does this even work?
 (local exec (fn [command args cwd]
-             " 
+             "
              Returns a Oneshot Shell which runs the rust file
              "
              (let [{: Terminal} (require :toggleterm.terminal)
@@ -21,5 +21,11 @@
                             "Server Settings"
                             {:rust-analyzer {:check {:command :clippy}
                                              :workspace {:symbol {:search {:kind :all_symbols}}}}})}
-       :dap {:auto_generate_source_map true}
+       :dap {:auto_generate_source_map false}
+             ; :adapter {
+             ;           :type  "server"
+             ;           :port  "${port}"
+             ;           :executable  {
+             ;                         :command  "codelldb"
+             ;                         :args  { "--port" "${port}"}}}}
        :tools {:executor {:execute_command exec}}})

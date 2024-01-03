@@ -1,4 +1,5 @@
-(import-macros {: let! : set!} :macros)
+(import-macros {: let! : set!} :macros {: err!} :core.lib.io)
+
 (local {: executable?} (autoload :core.lib))
 
 ;; load constants
@@ -6,23 +7,35 @@
 (autoload :core.shared)
 
 ;; add userconfig to runtimepath
-
 (set! rtp+ (.. (vim.loop.os_homedir) :/.config/nyoom))
 
-;; add python provider and mason binaries
+;; Boot-strapping rocks
+(local rocks-config
+       {:luarocks_binary :luarocks
+        :rocks_path (.. (vim.fn.stdpath :data) :/rocks)})
 
-(set vim.env.PATH (.. vim.env.PATH ":" (vim.fn.stdpath :data) :/mason/bin))
-(set vim.env.PATH (.. vim.env.PATH ":" (vim.fn.stdpath :config) :/bin))
-;; Image Nvim Hack
-; (set package.path (.. package.path ";" (vim.fn.expand :$HOME)
-;                       "/.luarocks/share/lua/5.1/?/init.lua;"))
-; (set package.path (.. package.path ";" (vim.fn.expand :$HOME)
-;                       "/.luarocks/share/lua/5.1/?.lua;"))
+(set vim.g.rocks_nvim rocks-config)
+(local luarocks-path [(vim.fs.joinpath rocks-config.rocks_path :share :lua :5.1
+                                       :?.lua)
+                      (vim.fs.joinpath rocks-config.rocks_path :share :lua :5.1
+                                       "?" :init.lua)])
 
-(let! python3_host_prog (if (executable? "python") (vim.fn.exepath "python")
-                          (executable? "python3") (vim.fn.exepath "python3")
-                          nil))
+(set package.path (.. package.path ";" (table.concat luarocks-path ";")))
+(local luarocks-cpath [(vim.fs.joinpath rocks-config.rocks_path :lib :lua :5.1
+                                        :?.so)
+                       (vim.fs.joinpath rocks-config.rocks_path :lib64 :lua
+                                        :5.1 :?.so)])
 
+(set package.cpath (.. package.cpath ";" (table.concat luarocks-cpath ";")))
+(set! rtp+ (vim.fs.joinpath rocks-config.rocks_path :lib :luarocks :rocks-5.1
+                            :rocks.nvim))
+
+;; NOTE:: (Hermit) Deprecating this, we don't need mason anymore
+; (set vim.env.PATH (.. vim.env.PATH ":" (vim.fn.stdpath :data) :/mason/bin))
+; (set vim.env.PATH (.. vim.env.PATH ":" (vim.fn.stdpath :config) :/bin))
+(let! python3_host_prog (if (executable? :python) (vim.fn.exepath :python)
+                            (executable? :python3) (vim.fn.exepath :python3)
+                            nil))
 
 ;; check for cli
 
@@ -77,7 +90,8 @@
       ;; nightly only options
       (local {: nightly?} (autoload :core.lib))
       (if (nightly?)
-          (do))
+          (do
+            ))
       ;; gui options
       (set! list)
       (set! fillchars {:eob " "
@@ -101,20 +115,21 @@
       (let! neovide_padding_bottom 20)
       ;; load userconfig
       (require :config)
-      (require :packer_compiled)
-      ;; (require :pacttesting)
-      ;; disable packer commands
+      (require :packer_compiled)))
 
-      (fn disable-packer [command]
-        (fn first-to-upper [str]
-          (str:gsub "^%l" string.upper))
+;; (require :pacttesting)
+;; disable packer commands
 
-        (local packer-command (.. :Packer (first-to-upper command)))
-        (vim.api.nvim_create_user_command packer-command
-                                          (fn []
-                                            (err! (.. "Please use the `nyoom` cli")))
-                                          {}))
-
-      (let [packer-commands [:install :update :compile :sync :status :lockfile]]
-        (each [_ v (ipairs packer-commands)]
-          (disable-packer v)))))
+; (fn disable-packer [command]
+;   (fn first-to-upper [str]
+;     (str:gsub "^%l" string.upper))
+;
+; (local packer-command (.. :Packer (first-to-upper command)))
+;   (vim.api.nvim_create_user_command packer-command
+;                                     (fn []
+;                                       (err! "Please use the `nyoom` cli"))
+;                                     {}))
+;
+; (let [packer-commands [:install :update :compile :sync :status :lockfile]]
+;   (each [_ v (ipairs packer-commands)]
+;     (disable-packer v)))))

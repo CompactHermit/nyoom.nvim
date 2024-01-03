@@ -1,4 +1,5 @@
 (local {: close-task} (require :util.overseer))
+(local Border [ "🭽" "▔" "🭾" "▕" "🭿" "▁" "🭼" "▏"])
 
 ;; (local util (require :overseer.util))
 ;; (local STATUS (. (require :overseer.constants) :STATUS))
@@ -111,7 +112,10 @@
 ;;                     :task
 ;;                     :user]})
 
-(setup :overseer {:templates [:cargo
+(setup :overseer {:dap true
+                  :form {:border Border :win_opts {:winblend 0}}
+                  :task_list {:separator "────────────────────────────────────────────────────────────────────────────────"}
+                  :templates [:cargo
                               :just
                               :make
                               :npm

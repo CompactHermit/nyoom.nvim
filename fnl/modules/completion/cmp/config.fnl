@@ -94,7 +94,8 @@
 (table.insert cmp-sources {:name :buffer :group_index 2})
 (table.insert cmp-sources {:name :path :group_index 2})
 
-(nyoom-module-p! rust   (table.insert cmp-sources {:name :crates :group_index 1}))
+;(nyoom-module-p! rust   (table.insert cmp-sources {:name :crates :group_index 1}))
+(nyoom-module-p! latex   (table.insert cmp-sources {:name :vimtex :group_index 1}))
 (nyoom-module-p! neorg  (table.insert cmp-sources {:name :neorg :group_index 1}))
 (nyoom-module-p! quarto (table.insert cmp-sources {:name :otter :group_index 1}))
 (nyoom-module-p! eval   (table.insert cmp-sources {:name :conjure :group_index 1}))

@@ -1,0 +1,27 @@
+release_build_dir := "release"
+debug_build_dir := "debug"
+default:
+	@just --list
+
+alias sr := __setup-release
+__setup-release:
+	meson setup {{release_build_dir}}
+
+alias sd := __setup-debug
+__setup-debug:
+	meson setup {{debug_build_dir}}
+
+alias sdc := __setup-debug-clean
+__setup-debug-clean:
+	meson setup --wipe {{debug_build_dir}}
+
+alias cd := __compile-debug
+__compile-debug: __setup-debug
+	meson configure --buildtype debug --debug -Db_lundef=false --optimization 0 -Dcpp_debugstl=true -Db_sanitize=address,undefined --warnlevel 3 {{ debug_build_dir }}
+	meson compile -C {{ debug_build_dir }} faker
+
+alias rd := __run-debug
+__run-debug:
+	{{ debug_build_dir }}/src/faker
+
+## vim: ft=make

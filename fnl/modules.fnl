@@ -31,9 +31,10 @@
         (hotpot +reflect)    ; NOTE: essential module (for now), don't disable
         scratch              ; emacs-like scratch buffer functionality
         mini                 ; Nice, micro features with 10K LOC you got there
-        ;;firenvim
+        firenvim
         word-wrap            ; language-aware smart soft and hard wrapping
         windows              ; Fancy animations, for that extra bloated Config
+        swap                 ; And you're not using macros why?
         (cutlass);+plunder   ; Make yourself better at stealing code from others
 
         :term
@@ -60,7 +61,7 @@
         tmux                 ; God, make this shit broken, I fucking swear
         hex                  ; Hex Done Right
         zellij               ; What if everything was written in WASM, jk, useless...
-        harpoon              ; With the power of the gods!
+        ;harpoon              ; With the power of the gods!
         oil                  ; Vinegar Was never a good salid dressing
         eval                 ; run code, run (also, repls)modu
         antifennel           ; for all the fennel haters out there. this ones for you

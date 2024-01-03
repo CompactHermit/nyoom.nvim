@@ -8,8 +8,8 @@
 (let! mapleader " ")
 ;(leap.add_default_mappings)
 
-;; easier command line mode + 
 
+;; NOTE:: Want more Hydra Binds
 (map! [n] ";" ":" {:desc :vim-ex})
 ;;; z
 

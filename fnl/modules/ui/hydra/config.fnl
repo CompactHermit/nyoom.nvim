@@ -26,11 +26,11 @@
                    (local git-hint "
                     Git
 
-    _J_: next hunk     _d_: show deleted
-    _K_: prev hunk     _u_: undo last stage
-    _s_: stage hunk    _/_: show base file
-    _p_: preview hunk  _S_: stage buffer
-    _b_: blame line    _B_: blame show full
+    ^^_J_: next hunk     _d_: show deleted  ^^
+    ^^_K_: prev hunk     _u_: undo last stage ^^ 
+    ^^_s_: stage hunk    _/_: show base file  ^^
+    ^^_p_: preview hunk  _S_: stage buffer  ^^
+    ^^_b_: blame line    _B_: blame show full ^^
   ^
     _<Enter>_: Neogit       _<Esc>_: Exit
       ")
@@ -41,7 +41,10 @@
                            :config {:buffer bufnr
                                     :color :red
                                     :invoke_on_body true
-                                    :hint {:border :solid :position :middle}
+                                    :hint {:type :window
+                                           :float_opts {:style :minimal :noautocmd true}
+                                           :position :middle
+                                           :show_name true}
                                     :on_key (fn []
                                               (vim.wait 50))
                                     :on_enter (fn []
@@ -134,7 +137,10 @@
                            :hint options-hint
                            :config {:color :amaranth
                                     :invoke_on_body true
-                                    :hint {:border :solid :position :middle}}
+                                    :hint {:type :window
+                                           :float_opts {:style :minimal :noautocmd true}
+                                           :position :middle
+                                           :show_name true}}
                            :mode [:n :x]
                            :body :<leader>v
                            :heads [[:b
@@ -335,8 +341,10 @@
                            :hint octo-hints
                            :config {:color :teal
                                     :invoke_on_body true
-                                    :hint {:border :solid
-                                           :position :middle-right}}
+                                    :hint {:type :window
+                                           :float_opts {:style :minimal :noautocmd true}
+                                           :position :middle-right
+                                           :show_name true}}
                            :mode [:n :v]
                            :body :<leader>o
                            :heads [[:g
@@ -623,6 +631,7 @@
                           (require :util))
                    (local flash-hints "
 ^^  - Mode
+──────────────────────────
 ^^ _s_: Jump
 ^^ _S_: Treesitter
 ^^ _<c-s>_: Word Selection
@@ -631,10 +640,7 @@
 ^^ _w_: Flash Windows
 ^^ _W_: Flash Beginning words
 ^^ _M_: Flash Bounce
-──────────────────────────
-^^ _i_: SwapNode
-^^ _h_: Swap Left
-^^ _l_: Swap Right
+^^ _R_: Flash TS remote
 
 ^^ _<Esc>_: Escape")
                    (Hydra {:name :+flash
@@ -675,9 +681,6 @@
                                     (fn []
                                       (tree_bounce))
                                     {:desc "Flash TreeBounce"}]
-                                   [:i
-                                    (fn []
-                                      #(vim.cmd :ISwapNodeWith))]
                                    [:r
                                     (fn []
                                       ((. (require :flash) :remote)))]
@@ -685,8 +688,6 @@
                                     (fn []
                                       ((->> :treesitter_search
                                             (. (require :flash)))))]
-                                   [:h #(vim.cmd :ISwapNodeWithRight)]
-                                   [:l #(vim.cmd :ISwapNodeWithLeft)]
                                    [:<Esc> nil {:exit true :nowait true}]]})))
 
 ;; Neorg ;;
@@ -822,7 +823,7 @@
                            : hint
                            :config {:color :pink
                                     :invoke_on_body true
-                                    :hint {:border :solid :position :middle}}
+                                    :hint {:border :solid :position :bottom-middle}}
                            :mode [:n]
                            :body :<leader>d
                            :heads [[:H dap.step_out {:desc "step out"}]
@@ -965,10 +966,44 @@ _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
                                       :t [#((. hoogle :hoogle_signature) (vim.api.nvim_get_current_line))
                                           "Hoogle search Line"]}}
                                  {:prefix :<leader>} 4))
-
                    (augroup! localleader-hydras
                              (autocmd! FileType haskell `(haskell-hydra)))))
 
+(nyoom-module-p! swap
+                 (hydra-key! :n
+                             {:s {:hydra true
+                                  :name :+Swap
+                                  :config {:color :teal
+                                           :invoke_on_body true
+                                           :hint {:type :window
+                                                  :offset 0
+                                                  :float_opts {:style :minimal :noautocmd false}
+                                                  :position :bottom-middle
+                                                  :show_name true}}
+                                  :k [(fn []
+                                        ((->> :swap_next
+                                           (. (require "nvim-treesitter.textobjects.swap"))) "@parameter.inner")) "TS [N] @Outer"]
+                                  :j [(fn []
+                                        ((->> :swap_previous
+                                           (. (require "nvim-treesitter.textobjects.swap"))) "@parameter.inner")) "TS [N] @Inner"]
+                                  :s [#(vim.cmd :ISwap) "ISwap"]
+                                  :S [#(vim.cmd :ISwapWith) "ISwapWith"]
+                                  :w [(fn []
+                                        ((->> :go_to_top_node_and_execute_commands (. (require :syntax-tree-surfer)))
+                                         false
+                                         ["normal! O"
+                                          "normal! O"
+                                          :startinsert])) "Surf [Top] Node"]
+                                  :n [#(vim.cmd :STSSelectMasterNode) "Swap [Cur] Node"]
+                                  :N [#(vim.cmd :STSSelectCurrentNode) "Surf [Mas] Node"]
+                                  :H [#(vim.cmd :STSSelectNextSiblingNode) "Surf [N] Sibling"]
+                                  :J [#(vim.cmd :STSSelectPrevSiblingNode) "Surf [P] Sibling"]
+                                  :K [#(vim.cmd :STSSelectParentNode) "Surf Parent"]
+                                  :L [#(vim.cmd :STSSelectChildNode) "Surf Child"]
+                                  :v [#(vim.cmd :STSSwapNextVisual) "Surf [N] Swap"]
+                                  :V [#(vim.cmd :STSSwapPrevVisual) "Surf [P] Swap"]
+                                  :<Esc> [#(print "Exiting") "Exit" true]}}
+                            {:prefix "<leader>"} 4))
 ;; Go faster, wagie! ;;
 ; (nyoom-module-p! go
 ;                  (do

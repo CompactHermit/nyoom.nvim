@@ -1,7 +1,7 @@
 (import-macros {: map! : nyoom-module-p!} :macros)
 (local qn (require :quicknote))
 
-(setup :quicknote {:mode :resident :sign "" :filetype :norg})
+(setup :quicknote {:mode :resident :sign " " :filetype :norg})
 
 ;; TODO:: find a way to handle a vim.ui.input that returns back a value, rather then exec a function and consume the val.
 ;; It's this stupid thing that's forcing me to use the "require". 

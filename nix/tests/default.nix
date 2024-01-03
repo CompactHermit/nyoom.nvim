@@ -2,6 +2,8 @@
   imports = [
     inputs.treefmt-nix.flakeModule
     inputs.pch.flakeModule
+    ./busted.nix
+    ./docs.nix
   ];
 
   perSystem = {
@@ -49,7 +51,7 @@
         hooks = {
           treefmt = mkHook "treefmt" {enable = true;};
           fnl-lint = mkHook "fnl-linter" {
-            enable = true;
+            enable = false;
             name = "Fennel Linter";
             entry = ''${self'.packages.fnl-linter}/bin/check.fnl -c ${__fnl-config}'';
             files = "\.fnl$";

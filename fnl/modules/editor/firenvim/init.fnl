@@ -1,5 +1,7 @@
 (import-macros {: use-package!} :macros)
 
 (use-package! :glacambre/firenvim
-             {:opt true})
+ {:opt false
+  :nyoom-module editor.firenvim
+  :run "vim.fn['firenvim#install'](0)"})
  
