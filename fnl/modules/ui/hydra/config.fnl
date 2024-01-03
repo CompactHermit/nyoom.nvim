@@ -755,7 +755,7 @@
                                       (vim.cmd.Telescope :find_files))]
                                    [:g
                                     (fn []
-                                      (vim.cmd.Telescope :egrepify))]
+                                      ((. (autoload :telescope) :extensions :egrepify :egrepify) ((->> :get_ivy (. (require :telescope.themes))) {})))]
                                    [:o
                                     (fn []
                                       (vim.cmd.Telescope :oldfiles))
@@ -964,8 +964,9 @@ _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
                                       :M [#((. project :telescope_package_grep))
                                           "Telescope Packages"]
                                       :t [#((. hoogle :hoogle_signature) (vim.api.nvim_get_current_line))
-                                          "Hoogle search Line"]}}
-                                 {:prefix :<leader>} 4))
+                                          "Hoogle search Line"]
+                                      :<Esc> [#(print "Exiting") "Exit" true]}}
+                                 {:prefix :<leader>}))
                    (augroup! localleader-hydras
                              (autocmd! FileType haskell `(haskell-hydra)))))
 
@@ -1004,6 +1005,7 @@ _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
                                   :V [#(vim.cmd :STSSwapPrevVisual) "Surf [P] Swap"]
                                   :<Esc> [#(print "Exiting") "Exit" true]}}
                             {:prefix "<leader>"} 4))
+
 ;; Go faster, wagie! ;;
 ; (nyoom-module-p! go
 ;                  (do

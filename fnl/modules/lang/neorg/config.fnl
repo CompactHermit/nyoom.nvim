@@ -1,8 +1,6 @@
 (import-macros {: packadd! : nyoom-module-p! : nyoom-module-ensure!} :macros)
 
 ;; conditional modules
-
-
 (packadd! :neorg-exec)
 (packadd! :neorg-telescope)
 (local neorg-modules

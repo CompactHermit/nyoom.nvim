@@ -25,9 +25,9 @@
         : preview_scrolling_up
         : preview_scrolling_down
         : close} (autoload :telescope.actions))
-
 (local actions-layout (require :telescope.actions.layout))
 (local state (require :telescope.state))
+(local actions (require "telescope.actions"))
 (local action-set (require :telescope.actions.set))
 (local action-state (require :telescope.actions.state))
 
@@ -43,15 +43,29 @@
                           (do
                             (vim.cmd :bw!)
                             (each [_ entry (ipairs (picker:get_multi_selection))]
-                              (vim.cmd (string.format "%s %s" open-cmd
-                                                      entry.value)))
+                              (vim.cmd (string.format "%s %s" open-cmd entry.value)))
                             (vim.cmd :stopinsert))
-                          ;;REFACTOR:: (Hermit) refactor using match
                           (if (= open-cmd :vsplit) (file_vsplit prompt-bufnr)
                               (= open-cmd :split) (file_split prompt-bufnr)
                               (= open-cmd :tabe) (file_tab prompt-bufnr)
                               (file_edit prompt-bufnr))))))
 
+(local flash (fn [prompt_bufnr]
+               ((->> :jump (. (require :flash))) {:action (fn [matched]
+                                                            (local picker
+                                                                   ((. (require :telescope.actions.state)
+                                                                       :get_current_picker) prompt_bufnr))
+                                                            (picker:set_selection (- (. matched.pos
+                                                                                        1)
+                                                                                     1)))
+                                                   :label {:after [0 0]}
+                                                   :pattern "^"
+                                                   :search {:exclude [(fn [win]
+                                                                        (not= (. (. vim.bo
+                                                                                    (vim.api.nvim_win_get_buf win))
+                                                                                 :filetype)
+                                                                              :TelescopeResults))]
+                                                            :mode :search}})))
 ;; Custom Functions::
 (local custom-actions
        {:multi_selection_open_tab (fn [prompt-bufnr]
@@ -68,7 +82,7 @@
                       :<C-h> :which_key
                       :<c-j> :move_selection_next
                       :<C-k> :move_selection_previous
-                      :<C-l> actions-layout.toggle_preview
+                      :<C-l> flash
                       :<C-n> (fn [prompt-bufnr]
                                (local results-win
                                       (. (state.get_status prompt-bufnr)
@@ -90,9 +104,14 @@
                                                                              2)))))
                       :<C-q> (+ send_selected_to_qflist open_qflist)
                       :<C-u> :preview_scrolling_up
-                      :<c-p> actions-layout.toggle_prompt_position}
+                      :<c-p> actions-layout.toggle_prompt_position
+                      :<c-S> custom-actions.multi_selection_open_split
+                      :<c-t> custom-actions.multi_selection_open_tab
+                      :<c-v> custom-actions.multi_selection_open_vsplit
+                      :<cr> custom-actions.multi_selection_open}
                   :n {:<C-Q> (+ send_selected_to_qflist open_qflist)
                       :<C-a> (+ send_to_qflist open_qflist)
+                      :s flash
                       :<C-d> :preview_scrolling_down
                       :<C-h> :which_key
                       :<C-j> :move_selection_next

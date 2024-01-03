@@ -1,25 +1,24 @@
 (require-macros :macros)
 (import-macros {: >==} :util.macros)
 
+;; NOTE:: We need to append on the luarocks cPath/lPath, or else we have to manually packadd the plugins
 (local rocks-config
        {:luarocks_binary :luarocks
         :rocks_path (.. (vim.fn.stdpath :data) :/rocks)})
-
-(set vim.g.rocks_nvim rocks-config)
-(local luarocks-path [(vim.fs.joinpath rocks-config.rocks_path :share :lua :5.1
-                                       :?.lua)
-                      (vim.fs.joinpath rocks-config.rocks_path :share :lua :5.1
-                                       "?" :init.lua)])
-
-(set package.path (.. package.path ";" (table.concat luarocks-path ";")))
-(local luarocks-cpath [(vim.fs.joinpath rocks-config.rocks_path :lib :lua :5.1
-                                        :?.so)
-                       (vim.fs.joinpath rocks-config.rocks_path :lib64 :lua
-                                        :5.1 :?.so)])
-
-(set package.cpath (.. package.cpath ";" (table.concat luarocks-cpath ";")))
+; (set vim.g.rocks_nvim rocks-config)
+; (local luarocks-path [(vim.fs.joinpath rocks-config.rocks_path :share :lua :5.1
+;                                        :?.lua)
+;                       (vim.fs.joinpath rocks-config.rocks_path :share :lua :5.1
+;                                        "?" :init.lua)])
+; (set package.path (.. package.path ";" (table.concat luarocks-path ";")))
+; (local luarocks-cpath [(vim.fs.joinpath rocks-config.rocks_path :lib :lua :5.1
+;                                         :?.so)
+;                        (vim.fs.joinpath rocks-config.rocks_path :lib64 :lua
+;                                         :5.1 :?.so)])
+; (set package.cpath (.. package.cpath ";" (table.concat luarocks-cpath ";")))
 (vim.opt.runtimepath:append (vim.fs.joinpath rocks-config.rocks_path :lib
-                                             :luarocks :rocks-5.1 :rocks.nvim))
+                                             :luarocks :rocks-5.1 :rocks.nvim
+                                             "*"))                                                                                                                                                                                                                                                                                                                                              	
 
 (colorscheme oxocarbon)
 (set! background :dark)

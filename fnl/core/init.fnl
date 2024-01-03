@@ -90,8 +90,8 @@
       ;; nightly only options
       (local {: nightly?} (autoload :core.lib))
       (if (nightly?)
-          (do
-            ))
+          (do))
+            
       ;; gui options
       (set! list)
       (set! fillchars {:eob " "
@@ -108,7 +108,7 @@
                        :precedes "«"
                        :extends "»"})
       (set! scrolloff 4)
-      (set! guifont "Liga SFMono Nerd Font:h14")
+      (set! guifont "VictorMono Nerd Font:h14")
       (let! neovide_padding_top 45)
       (let! neovide_padding_left 38)
       (let! neovide_padding_right 38)

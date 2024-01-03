@@ -8,6 +8,7 @@
                 : unpack!
                 : autocmd!} :macros)
 
+;; TODO:: (Hermit) Move away from packer, and simply call the setup tbl
 (packadd! packer.nvim)
 ;(local {: build} (autoload :hotpot.api.make))
 (local {: init} (autoload :packer))

@@ -11,6 +11,7 @@
                       :<leader>f
                       :<leader>g
                       :<leader>G
+                      :<leader>H
                       :<leader>l
                       :<leader>m
                       :<leader>ne

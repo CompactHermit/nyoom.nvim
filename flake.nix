@@ -29,9 +29,13 @@
     };
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     # Plugins/Parsers::
-    himalaya.url = "git+https://git.sr.ht/~soywod/himalaya-vim";
+    #himalaya.url = "git+https://git.sr.ht/~soywod/himalaya-vim";
     wrapping-paper = {
       url = "github:benlubas/wrapping-paper.nvim";
+      flake = false;
+    };
+    neophyte = {
+      url = "github:tim-harding/neophyte";
       flake = false;
     };
     tree-sitter-just = {
@@ -54,7 +58,10 @@
       url = "github:nvim-neorg/tree-sitter-norg-meta";
       flake = false;
     };
-    #mdBook.url = "github:adisbladis/mdbook-nixdoc";
+    tree-sitter-cabal = {
+      url = "git+https://gitlab.com/magus/tree-sitter-cabal";
+      flake = false;
+    };
   };
   outputs = {
     self,
@@ -117,7 +124,7 @@
                 paths =
                   [pkgs.vimPlugins.nvim-treesitter.withAllGrammars] #NOTE:: (Hermit) Use NageFire's branch and rewrite
                   ++ map grammarToPlugin (pkgs.vimPlugins.nvim-treesitter.allGrammars
-                    ++ (with self'.packages; [tree-sitter-nim tree-sitter-just tree-sitter-typst tree-sitter-norg tree-sitter-norg-meta])
+                    ++ (with self'.packages; [tree-sitter-nim tree-sitter-just tree-sitter-typst tree-sitter-norg tree-sitter-norg-meta tree-sitter-cabal])
                     ++ (with pkgs.tree-sitter-grammars; [tree-sitter-nu]));
               })
               parinfer-rust
@@ -129,10 +136,9 @@
               rocks-nvim
               nfnl
             ])
-            ++ (with inputs; [
-              himalaya.packages."${system}".default
-            ])
-            ++ (map (x: mkNeovimPlugin inputs."${x}" (x + ".nvim")) ["wrapping-paper"]);
+            # ++ (with inputs; [
+            # ])
+            ++ (map (x: mkNeovimPlugin inputs."${x}" (x + ".nvim")) ["wrapping-paper" "neophyte"]);
           withNodeJs = true;
           withRuby = true;
           withPython3 = true;
@@ -190,8 +196,9 @@
           overlays = [
             inputs.rocks.overlays.default
             (_: _: {
-              neovim-custom =
-                pkgs.wrapNeovimUnstable self.inputs.neovim-nightly-overlay.packages."${system}".default (NeovimConfig // {inherit wrapperArgs;});
+              neovim-custom = pkgs.wrapNeovimUnstable
+                self.inputs.neovim-nightly-overlay.packages."${system}".default 
+                (NeovimConfig // {inherit wrapperArgs;});
             })
           ];
         };
@@ -211,8 +218,6 @@
           };
         };
         packages = {
-          # NOTE:: (Hemrit) If we can get hotpot to just compile within a sandbox, we should be fine
-          #cached_bytecode  = pkgs.stdenv.mkDerivation {};
           fnl-linter = pkgs.stdenv.mkDerivation {
             name = "Fnl-linter";
             src = inputs.fnl-linter;
@@ -261,7 +266,18 @@
             src = inputs.tree-sitter-norg-meta;
             inherit (pkgs.tree-sitter) version;
           };
+          tree-sitter-cabal = grammar {
+            language = "cabal";
+            src = inputs.tree-sitter-cabal;
+            inherit (pkgs.tree-sitter) version;
+          };
         };
+        #// l.genAttrs lib.genAttrs [ ]
+        # (x: x = (grammar {
+        # language = l.match "treesitter.(.+)" x
+        # src = inputs."${x}"
+        # inherit (inputs."${x}") lastModified;
+        #});
         apps = {
           sync = {
             type = "app";

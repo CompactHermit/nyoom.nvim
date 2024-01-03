@@ -84,7 +84,7 @@
                         (button "SPC f P" "  Open private configuration"
                                 ":Telescope keymaps<CR>")
                         (button "SPC h d h" "  Open documentation"
-                                ":Telescope keymaps<CR>")]
+                                ":Telescope help_tags<CR>")]
                   :opts {:spacing 1}}
         :footer {:type :text :val text :opts {:position :center :hl :Comment}}
         :icon {:type :button

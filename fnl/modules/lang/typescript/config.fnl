@@ -1,32 +1,45 @@
 (setup :typescript-tools
-       {;;:on_attach (fn [])
-        ;;:handlers {}
-        :settings {:separate_diagnostic_server true}})
-; require("typescript-tools").setup {
-;                                    on_attach = function() ... end,
-;                                    handlers = { ... },
-;                                    ...
-;                                    settings = {
-;                                                -- spawn additional tsserver instance to calculate diagnostics on it
-;                                                separate_diagnostic_server = true,
-;                                                -- "change"|"insert_leave" determine when the client asks the server about diagnostic
-;                                                publish_diagnostic_on = "insert_leave",
-;                                                -- array of strings("fix_all"|"add_missing_imports"|"remove_unused")
-;                                                -- specify commands exposed as code_actions
-;                                                expose_as_code_action = {},
-;                                                -- string|nil - specify a custom path to `tsserver.js` file, if this is nil or file under path
-;                                                -- not exists then standard path resolution strategy is applied
-;                                                tsserver_path = nil,
-;                                                -- specify a list of plugins to load by tsserver, e.g., for support `styled-components`
-;                                                -- (see 💅 `styled-components` support section)
-;                                                tsserver_plugins = {},
-;                                                -- this value is passed to: https://nodejs.org/api/cli.html#--max-old-space-sizesize-in-megabytes
-;                                                -- memory limit in megabytes or "auto"(basically no limit)
-;                                                tsserver_max_memory = "auto",
-;                                                -- described below
-;                                                tsserver_format_options = {},
-;                                                tsserver_file_preferences = {},
-;                                                -- mirror of VSCode's `typescript.suggest.completeFunctionCalls`
-;                                                complete_function_calls = false,}
-;                                    ,}
-;
+        {:settings {:expose_as_code_action [:organize_imports :remove_unused]
+                     :publish_diagnostic_on :insert_leave
+                     :separate_diagnostic_server true
+                     :tsserver_file_preferences {:includeInlayEnumMemberValueHints true
+                                                 :includeInlayFunctionLikeReturnTypeHints false
+                                                 :includeInlayFunctionParameterTypeHints true
+                                                 :includeInlayParameterNameHints :literal
+                                                 :includeInlayParameterNameHintsWhenArgumentMatchesName false
+                                                 :includeInlayPropertyDeclarationTypeHints true
+                                                 :includeInlayVariableTypeHints true
+                                                 :includeInlayVariableTypeHintsWhenTypeMatchesName false}
+                     :tsserver_max_memory 8096}
+            :on_attach (fn [client bufnr]
+                        (set client.server_capabilities.documentFormattingProvider false)
+                        (set client.server_capabilities.documentRangeFormattingProvider false)
+                        (tset client.handlers :textDocument/definition
+                              (fn [err result ...]
+                                (var patched-result {})
+                                (local target-path-line-map {})
+                                (if (and (or (vim.tbl_islist result) (= (type result) :table))
+                                         (> (length result) 1))
+                                    (let [internal-entries {}
+                                          external-entries {}]
+                                      (each [_ v (ipairs result)]
+                                        (local target-path v.targetUri)
+                                        (local target-line v.targetRange.start.line)
+                                        (when (not (. target-path-line-map target-path))
+                                          (tset target-path-line-map target-path {}))
+                                        (local mapped-target-lines
+                                               (. target-path-line-map target-path))
+                                        (when (not (. mapped-target-lines target-line))
+                                          (tset mapped-target-lines target-line true)
+                                          (if (= (vim.fn.stridx target-path :node_modules)
+                                                 (- 1))
+                                              (table.insert internal-entries v)
+                                              (table.insert external-entries v))))
+                                      (set patched-result
+                                           (or (and (vim.tbl_isempty internal-entries)
+                                                    external-entries)
+                                               internal-entries)))
+                                    (set patched-result result))
+                                ((. vim.lsp.handlers :textDocument/definition) err
+                                                                               patched-result
+                                                                               ...))))})
