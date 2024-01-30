@@ -3,7 +3,7 @@ title: index
 id: 42589f53-46ed-411d-88db-116795432add
 workspace: default
 created: 2023-12-09T14:27:12-0500
-updated: 2024-01-04T12:34:13-0500
+updated: 2024-01-29T15:58:58-0500
 @end
 
 * TODOS::
@@ -20,7 +20,7 @@ updated: 2024-01-04T12:34:13-0500
   - ( ) Nyoom CMD::
   -- ( ) JustFile:: Headless neovim hotpot compile command.
   -- (_) Find way to force Hotpot to use A /tmp directory instead of XDG_DATA_DIR
-  --- (x) Just have Neovim Run with {https://github.com/konradmalik/neovim-flake/blob/main/packages/neovim-pde/default.nix}[XDG_CACHE_DIR] set to /tmp
+  --- (x) Just have Neovim Run with {! https://github.com/konradmalik/neovim-flake/blob/main/packages/neovim-pde/default.nix}[XDG_CACHE_DIR] set to /tmp
 
   #contexts GTD
   - (-) Nfnl Port::
@@ -29,6 +29,11 @@ updated: 2024-01-04T12:34:13-0500
   --- ( ) Packer -> Pckr
   -- (=) Mlua Bindings for fennel
   -- (x) CI:: Fnl --> Lua action Via Pre-commit-hook
+
 * inspiration::
   %Why doesn't neorg have tables??%
-  - {https://github.com/konradmalik/neovim-flake}[Konradmalik]
+  - {!&gh konradmalik/neovim-flake}[Konradmalik]
+
+  @code rust
+  fn main(){}
+  @end

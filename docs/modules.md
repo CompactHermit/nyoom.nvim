@@ -710,7 +710,6 @@ Distraction-free mode for the eternally distracted
 This module uses `truezen` to turn neovim into a more comfortable writing or coding environment. Folks familiar with “distraction-free” or “zen” modes from other editors will feel right at home.
 
 ### noice
-
 ```
 noice ui
 ```

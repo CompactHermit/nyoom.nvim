@@ -1,4 +1,10 @@
-(import-macros {: set! : nyoom-module-p! : packadd!} :macros)
+(import-macros {: set!
+                : nyoom-module-p!
+                : packadd!
+                : autocmd!
+                : augroup!
+                : map!} :macros)
+
 (local cmp (autoload :cmp))
 (local luasnip (autoload :luasnip))
 ;; (local {: func} (require :utils.cmp))
@@ -78,6 +84,7 @@
                                    :-E=node_modules/
                                    :-E=vendor/
                                    :-E=venv/]})
+
 (fn entry_filter [entry _]
   (not (vim.tbl_contains ["No matches found" :Searching... "Workspace loading"]
                          entry.completion_item.label)))
@@ -87,7 +94,6 @@
 (set! completeopt [:menu :menuone :noselect])
 
 ;; add general cmp sources
-
 (local cmp-sources [])
 
 (table.insert cmp-sources {:name :luasnip :group_index 1})
@@ -95,10 +101,15 @@
 (table.insert cmp-sources {:name :path :group_index 2})
 
 ;(nyoom-module-p! rust   (table.insert cmp-sources {:name :crates :group_index 1}))
-(nyoom-module-p! latex   (table.insert cmp-sources {:name :vimtex :group_index 1}))
-(nyoom-module-p! neorg  (table.insert cmp-sources {:name :neorg :group_index 1}))
-(nyoom-module-p! quarto (table.insert cmp-sources {:name :otter :group_index 1}))
-(nyoom-module-p! eval   (table.insert cmp-sources {:name :conjure :group_index 1}))
+(nyoom-module-p! latex
+                 (table.insert cmp-sources {:name :vimtex :group_index 1}))
+
+(nyoom-module-p! neorg (table.insert cmp-sources {:name :neorg :group_index 1}))
+(nyoom-module-p! quarto
+                 (table.insert cmp-sources {:name :otter :group_index 1}))
+
+(nyoom-module-p! eval
+                 (table.insert cmp-sources {:name :conjure :group_index 1}))
 
 (nyoom-module-p! lsp (do
                        (table.insert cmp-sources
@@ -106,8 +117,6 @@
                        (table.insert cmp-sources
                                      {:name :nvim_lsp_signature_help
                                       :group_index 1})))
-
-
 
 ;; copilot uses lines above/below current text which confuses cmp, fix:
 
@@ -171,48 +180,67 @@
              :formatting {:fields {1 :kind 2 :abbr 3 :menu}
                           :format (fn [_ vim-item]
                                     (set vim-item.menu vim-item.kind)
-                                    (set vim-item.kind (. shared.codicons vim-item.kind))
+                                    (set vim-item.kind
+                                         (. shared.codicons vim-item.kind))
                                     vim-item)}})
-
-
 
 ;; LSP specific Autocompletions::
 
 (nyoom-module-p! c
- (cmp.setup.filetype [:c :cpp] {:sorting {:comparators
-                                          (vim.list_extend [(require :clangd_extensions.cmp_scores)]
-                                                           ((->> :comparators
-                                                                 (. (require :cmp.config) :get :sorting))))}}))
-
+                 (cmp.setup.filetype [:c :cpp]
+                                     {:sorting {:comparators (vim.list_extend [(require :clangd_extensions.cmp_scores)]
+                                                                              ((->> :comparators
+                                                                                    (. (require :cmp.config)
+                                                                                       :get
+                                                                                       :sorting))))}}))
 
 ;; Enable command-line completions
 
 (cmp.setup.cmdline "/"
-    {:mapping (cmp.mapping.preset.cmdline)
-     :sources [{:name :buffer :group_index 1}]})
+                   {:mapping (cmp.mapping.preset.cmdline)
+                    :sources [{:name :buffer :group_index 1}]})
 
 ;; Enable search completions
 
 (cmp.setup.cmdline ":"
-    {:mapping (cmp.mapping.preset.cmdline)
-     :sources [{:name :path} {:name :cmdline :group_index 1}]})
+                   {:mapping (cmp.mapping.preset.cmdline)
+                    :sources [{:name :path} {:name :cmdline :group_index 1}]})
 
 ;; Enable Completion for vim.ui.select()
 (cmp.setup.cmdline "@"
-    {:enabled true
-     :sources [{:entry_filter entry_filter
-                :group_index 1
-                :name :fuzzy_path
-                :option fuzzy-path-option}
-               {:group_index 1
-                :name :cmdline
-                :option {:ignore_cmds {}}}]})
+                   {:enabled true
+                    :sources [{: entry_filter
+                               :group_index 1
+                               :name :fuzzy_path
+                               :option fuzzy-path-option}
+                              {:group_index 1
+                               :name :cmdline
+                               :option {:ignore_cmds {}}}]})
 
-;; DAP Completion::
-;; snippets
-((. (autoload :luasnip.loaders.from_vscode) :lazy_load))
-((. (require :luasnip.loaders.from_lua) :load) {:paths ["~/.config/nvim/snippets/"]})
-(nyoom-module-p! haskell
-                 (local haskell_snippets (autoload :haskell_snippets))
-                 ((. (luasnip.add_snippets :haskell haskell_snippets [:key :haskell]))))
+;; Snippets-nvim::
+(do
+  (vim.api.nvim_create_augroup :nvim-scissors {:clear true})
+  (autocmd! InsertEnter *
+            `(fn []
+               ((->> :setup
+                     (. (require :scissors))) {:snipperDir "~/.config/nvim"}))))
 
+; (autocmd! Filetype *.py '(print \"Hello World\") {:group \"a-nice-group\"})
+; (autocmd! Filetype *.sh '(print \"Hello World\") {:group \"a-nice-group\"}))
+
+(map! [n] :<leader>cse `((->> :editSnippet
+                              (. (require :scissors))))
+      {:desc "Edit Snippet"})
+
+(map! [n] :<leader>csc `((->> :addNewSnippet
+                              (. (require :scissors))))
+      {:desc "create Snippet"})
+
+;; custom snippets
+((. (autoload :luasnip.loaders.from_vscode) :lazy_load) {:paths ["~/.config/nvim/snippets/"]})
+;;require("luasnip.loaders.from_vscode").lazy_load { paths = { "path/to/your/snippetFolder" } }
+((. (autoload :luasnip.loaders.from_lua) :load) {:paths ["~/.config/nvim/snippets/"]})
+
+(nyoom-module-p! haskell (local haskell_snippets (autoload :haskell_snippets))
+                 ((. (luasnip.add_snippets :haskell haskell_snippets
+                                           [:key :haskell]))))

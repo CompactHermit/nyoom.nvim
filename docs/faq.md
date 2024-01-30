@@ -7,7 +7,6 @@ created: 2022-12-09
 version: 0.1.0
 ---
 
-
 # General 
 
 This is the section for questions on how Nyoom works, is it for you, how does it compare to other configurations, and how can you get started.

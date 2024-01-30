@@ -7,30 +7,19 @@
   };
 
   outputs = inputs:
-    inputs.flake-parts.lib.mkFlake {inherit inputs;} {
-      systems = ["x86_64-linux"];
-      perSystem = {
-        config,
-        self',
-        pkgs,
-        ...
-      }: {
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [ "x86_64-linux" ];
+      perSystem = { config, self', pkgs, ... }: {
         packages.default = pkgs.stdenv.mkDerivation rec {
           name = "CLOX Interpreter";
           version = "0.1.0";
 
           src = ./.;
-          buildInputs = with pkgs;
-            [cmake]
-            ++ (with self'.packages; []);
+          buildInputs = with pkgs; [ cmake ] ++ (with self'.packages; [ ]);
 
-          configurePhase = ''
+          configurePhase = "\n";
 
-          '';
-
-          buildPhase = ''
-
-          '';
+          buildPhase = "\n";
 
           installPhase = ''
             mkdir -p $out/bin
@@ -38,37 +27,40 @@
           '';
         };
 
-        devShells.default = pkgs.mkShell.override {stdenv = pkgs.clangStdenv;} {
-          hardeningDisable = ["all"];
-          inputsFrom = [];
-          packages = with pkgs; [
-            libclang.lib
-          ];
-          nativeBuildInputs = with pkgs; [
-            # Tools
-            ninja
-            pkg-config
-            cmake
-            just
-            meson
-            bear
-            mold
+        devShells.default =
+          pkgs.mkShell.override { stdenv = pkgs.clangStdenv; } {
+            hardeningDisable = [ "all" ];
+            inputsFrom = [ ];
+            packages = with pkgs; [
+              #Builds
+              ninja
+              pkg-config
+              cmake
+              just
+              meson
+              bear
+              mold
 
-            # Debugging
-            gdb
-            gf
-            vim
+              # Debugging
+              gdb
+              gf
+              vim
+              (vscode-extensions.ms-vscode.cpptools.overrideAttrs
+                (_: { meta.unfree = false; }))
+              rr-unstable
 
-            #Libs
-            glibc.dev
-          ];
-          CLANGD_PATH = "${pkgs.clang-tools}/bin/clangd";
-          CPATH = "${pkgs.libclang.lib}/lib/clang/16/include/";
-          LIBCLANG_PATH = "${pkgs.libclang.lib}/lib/clang/16/include";
-          ASAN_SYMBOLIZER_PATH = "${pkgs.llvmPackages_latest.bintools-unwrapped}/bin/llvm-symbolizer"; #ASAN
-          CXX_LD = "mold"; # FOR DYN LINKER
-          C_INCLUDE_PATH = "${pkgs.glibc.dev}/include"; # FOR GCC HEADERS
-        };
+              #Libs
+              glibc.dev
+              libclang.lib
+            ];
+            CLANGD_PATH = "${pkgs.clang-tools}/bin/clangd";
+            CPATH = "${pkgs.libclang.lib}/lib/clang/16/include/";
+            LIBCLANG_PATH = "${pkgs.libclang.lib}/lib/clang/16/include";
+            ASAN_SYMBOLIZER_PATH =
+              "${pkgs.llvmPackages_latest.bintools-unwrapped}/bin/llvm-symbolizer"; # ASAN
+            CXX_LD = "mold"; # FOR DYN LINKER
+            C_INCLUDE_PATH = "${pkgs.glibc.dev}/include"; # FOR GCC HEADERS
+          };
       };
     };
 }

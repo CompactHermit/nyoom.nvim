@@ -21,5 +21,8 @@
                                  :wants :friendly-snippets
                                  :requires [(pack :rafamadriz/friendly-snippets)]
                                  :config (fn []
+                                           ((->> :setup (. (require :luasnip_snippets.common.snip_utils))))
                                            (local {: setup} (require :luasnip))
-                                           (setup {:enable_autosnippets true}))})]})
+                                           (setup {:enable_autosnippets true
+                                                   :load_ft_func (. (require :luasnip_snippets.common.snip_utils) :load_ft_func)
+                                                   :ft_func (. (require :luasnip_snippets.common.snip_utils) :ft_func)}))})]})

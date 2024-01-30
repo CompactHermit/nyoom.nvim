@@ -1,8 +1,6 @@
-(import-macros {: nyoom-module-p!} :macros)
+(import-macros {: nyoom-module-p! : autocmd! : augroup!} :macros)
 (local lsp (autoload :lspconfig))
 (local lsp-servers {})
-
-;; TODO:: add more doc specs
 
 ;;; Improve UI
 
@@ -10,12 +8,13 @@
      (fn [bufnr contents opts]
        (set-forcibly! contents
                       (vim.lsp.util._normalize_markdown contents
-                        {:width (vim.lsp.util._make_floating_popup_size contents
-                                                                        opts)}))
+                                                        {:width (vim.lsp.util._make_floating_popup_size contents
+                                                                                                        opts)}))
        (tset (. vim.bo bufnr) :filetype :markdown)
        (vim.treesitter.start bufnr)
        (vim.api.nvim_buf_set_lines bufnr 0 (- 1) false contents)
        contents))
+
 (set vim.lsp.handlers.textDocument/signatureHelp
      (vim.lsp.with vim.lsp.handlers.signature_help {:border :solid}))
 
@@ -24,7 +23,7 @@
 
 (fn format! [bufnr ?async?]
   (vim.lsp.buf.format {: bufnr
-                       :filter #(not (contains? [:jsonls :tsserver] $.name))
+                       :filter #(not (vim.tbl_contains [:jsonls :tsserver] $.name))
                        :async ?async?}))
 
 (fn on-attach [client bufnr]
@@ -51,10 +50,10 @@
 
   ;; Enable lsp formatting if available
   (nyoom-module-p! format.+onsave
-                   (when (client.supports_method :textDocument/formatting)
-                     (augroup! format-before-saving (clear! {:buffer bufnr})
-                               (autocmd! BufWritePre <buffer> #(format! bufnr)
-                                         {:buffer bufnr})))))
+        (when (client.supports_method :textDocument/formatting)
+          (augroup! format-before-saving (clear! {:buffer bufnr})
+                    (autocmd! BufWritePre <buffer> #(format! bufnr true)
+                              {:buffer bufnr})))))
 
 ;; LSP Documents Types::
 
@@ -116,19 +115,11 @@
                        {:settings {:Lua {:diagnostics {:globals [:vim]}
                                          :workspace {:library (vim.api.nvim_list_runtime_paths)
                                                      :maxPreload 1000
-                                                     :ignoreDir [:.direnv]}}}})) ;; Stop Lua-ls from shitting itself
+                                                     :ignoreDir [:.direnv]}}}}))
+
+;; Stop Lua-ls from shitting itself
 
 (nyoom-module-p! markdown (tset lsp-servers :marksman {}))
-
-;; TODO:: add custom lsp defs, such as a cursom callback feature for on-save
-;; require'lspconfig'.svelte.setup {
-;;                                 on_attach = function(client)
-;;                                 vim.api.nvim_create_autocmd("BufWritePost", {
-;;                                                             pattern = { "*.js", "*.ts" },
-;;                                                             callback = function(ctx)
-;;                                                             client.notify("$/onDidChangeTsOrJsFile", { uri = ctx.file})
-;;                                                             end,})
-;;                                 end}
 
 (nyoom-module-p! svelte
                  (tset lsp-servers :svelte
@@ -157,7 +148,8 @@
                                                        :useLibraryCodeForTypes true
                                                        :disableOrganizeImports false}}}}))
 
-(nyoom-module-p! typst (tset lsp-servers :typst_lsp {:settings {:exportPdf :never}}))
+(nyoom-module-p! typst
+                 (tset lsp-servers :typst_lsp {:settings {:exportPdf :never}}))
 
 (nyoom-module-p! yaml
                  (tset lsp-servers :yamlls
@@ -170,10 +162,18 @@
 (nyoom-module-p! zig (tset lsp-servers :zls {}))
 
 ;; Load lsp
-
 (local {: deep-merge} (autoload :core.lib))
 (let [servers lsp-servers]
   (each [server server_config (pairs servers)]
     ((. (. lsp server) :setup) (deep-merge defaults server_config))))
+
+;; Autocmds FOR Inlay hints
+(augroup! UserLspConfig
+          (autocmd! LspAttach "*"
+                    (fn [args]
+                      (local client
+                             (vim.lsp.get_client_by_id args.data.client_id))
+                      (when client.server_capabilities.inlayHintProvider
+                        (vim.lsp.inlay_hint.enable args.buf true)))))
 
 {: on-attach}

@@ -41,6 +41,7 @@
               :right [{:ft :tsplayground
                        :title (.. :TSPlayground "::")}
                       :dapui_scopes
+                      :syntax.rust
                       :neotest-output-panel
                       :neotest-summary]
               :animate {:enabled true
@@ -62,8 +63,8 @@
                    :winhighlight "WinBar:EdgyWinBar,Normal:EdgyNormal"
                    :signcolumn "yes"}
               :options {:left {:size 40}
-                        :right {:size 30}
-                        :bottom {:size 5}}})
+                        :right {:size 45}
+                        :bottom {:size 14}}})
 
 (custom-set-face! :EdgyWinBar [:bold :italic] {:fg "#180030"})
 ; ```fennel

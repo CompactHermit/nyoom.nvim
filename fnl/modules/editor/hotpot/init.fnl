@@ -1,3 +1,4 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: nyoom-module!} :macros)
 
-(use-package! :rktjmp/hotpot.nvim)
+;(use-package! :rktjmp/hotpot.nvim)
+(nyoom-module! editor.hotpot)

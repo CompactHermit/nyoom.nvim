@@ -5,6 +5,9 @@
 (setup :clangd_extensions {:inline true
                            :extensions {:autoSetHints false
                                         :inlay_hints {:only_current_line  true
+                                                      :inline true
+                                                      :right_align true
+                                                      :show_parameter_hints true
                                                       :highlight :LspInlayHint}
                                         :ast  {:role_icons {:type  icons.Type
                                                             :declaration  icons.Function
@@ -19,8 +22,8 @@
                                                             :TemplateTypeParm  icons.TypeParameter
                                                             :TemplateTemplateParm  icons.TypeParameter
                                                             :TemplateParamObject  icons.TypeParameter}}}
-                                       :memory_usage {:border :solid}
-                                       :symbol_info  {:border :solid}})
+                                       :memory_usage {:border :none}
+                                       :symbol_info  {:border :none}})
 
 ;; ┌──────────────────────────────────────┐
 ;; │       Keybinds and autocmds          │

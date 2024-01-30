@@ -16,7 +16,7 @@
                       :<leader>m
                       :<leader>ne
                       :<leader>o
-                      :<leader>qq
+                      :<leader>q
                       :<leader>s
                       :<leader>t
                       :<leader>u

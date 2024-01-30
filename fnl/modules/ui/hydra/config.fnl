@@ -42,7 +42,8 @@
                                     :color :red
                                     :invoke_on_body true
                                     :hint {:type :window
-                                           :float_opts {:style :minimal :noautocmd true}
+                                           :float_opts {:style :minimal
+                                                        :noautocmd true}
                                            :position :middle
                                            :show_name true}
                                     :on_key (fn []
@@ -138,7 +139,8 @@
                            :config {:color :amaranth
                                     :invoke_on_body true
                                     :hint {:type :window
-                                           :float_opts {:style :minimal :noautocmd true}
+                                           :float_opts {:style :minimal
+                                                        :noautocmd true}
                                            :position :middle
                                            :show_name true}}
                            :mode [:n :x]
@@ -342,7 +344,8 @@
                            :config {:color :teal
                                     :invoke_on_body true
                                     :hint {:type :window
-                                           :float_opts {:style :minimal :noautocmd true}
+                                           :float_opts {:style :minimal
+                                                        :noautocmd true}
                                            :position :middle-right
                                            :show_name true}}
                            :mode [:n :v]
@@ -451,9 +454,9 @@
     ^ ^     Browser   ^ ^
     _w_: Browse
     _W_: Default browse
-    _d_: DevDocsOpen
-    _D_: DevDocsFT
-    _K_: DevDocCursor
+    _d_: DD [open Ft Float]
+    _D_: DD [open FT]
+    _K_: DevDoc
     _s_: Search DDG
     _S_: Updoc Searcher
     _z_: Zeal Searcher
@@ -481,7 +484,7 @@
                                       (vim.cmd "lua require('browse').input_search()"))]
                                    [:d
                                     (fn []
-                                      (vim.cmd :DevdocsOpen))]
+                                      (vim.cmd :DevdocsOpenCurrentFloat))]
                                    [:D
                                     (fn []
                                       (vim.cmd "lua require('browse.devdocs').search_with_filetype()"))]
@@ -755,7 +758,9 @@
                                       (vim.cmd.Telescope :find_files))]
                                    [:g
                                     (fn []
-                                      ((. (autoload :telescope) :extensions :egrepify :egrepify) ((->> :get_ivy (. (require :telescope.themes))) {})))]
+                                      ((. (autoload :telescope) :extensions
+                                          :egrepify :egrepify) ((->> :get_ivy
+                                                                                                                                                 (. (autoload :telescope.themes))) {})))]
                                    [:o
                                     (fn []
                                       (vim.cmd.Telescope :oldfiles))
@@ -807,45 +812,27 @@
                  (do
                    (local dap (autoload :dap))
                    (local ui (autoload :dapui))
-                   (local hint "
-                 Debug
-      ^ ^Step^ ^ ^     ^ ^     Action
-      ^ ^ ^ ^ ^ ^      ^ ^
-      ^ ^back^ ^ ^     ^_t_ toggle breakpoint
-      ^ ^ _K_^ ^        _T_ clear breakpoints
-  out _H_ ^ ^ _L_ into  _c_ continue
-      ^ ^ _J_ ^ ^       _x_ terminate
-      ^ ^over ^ ^     ^^_r_ open repl
-      ^
-  _<Esc>_               _<Enter>_: DapUI
-")
-                   (Hydra {:name :+debug
-                           : hint
-                           :config {:color :pink
-                                    :invoke_on_body true
-                                    :hint {:border :solid :position :bottom-middle}}
-                           :mode [:n]
-                           :body :<leader>d
-                           :heads [[:H dap.step_out {:desc "step out"}]
-                                   [:J dap.step_over {:desc "step over"}]
-                                   [:K dap.step_back {:desc "step back"}]
-                                   [:L dap.step_into {:desc "step into"}]
-                                   [:t
-                                    dap.toggle_breakpoint
-                                    {:desc "toggle breakpoint"}]
-                                   [:T
-                                    dap.clear_breakpoints
-                                    {:desc "clear breakpoints"}]
-                                   [:c dap.continue {:desc :continue}]
-                                   [:x dap.terminate {:desc :terminate}]
-                                   [:r
-                                    dap.repl.open
-                                    {:exit true :desc "open repl"}]
-                                   [:<Esc> nil {:exit true :nowait true}]
-                                   [:<Enter>
-                                    (fn []
-                                      (ui.toggle))]]})))
-
+                   (hydra-key! :n
+                       {:d {:hydra true
+                            :name " Debug"
+                            :config {:color :pink
+                                     :invoke_on_body true
+                                     :hint {:type :window
+                                            :offset 1
+                                            :float_opts {:style :minimal
+                                                         :noautocmd false}
+                                            :position :bottom-middle}}
+                            :H [#(dap.step_out) "[s]out"]
+                            :J [#(dap.step_over) "[s]over"]
+                            :K [#(dap.step_back) "[s]back"]
+                            :L [#(dap.step_into) "[s]into"]
+                            :t [#(dap.toggle_breakpoint) "[Tog]BreakPt"]
+                            :T [#(dap.clear_breakpoints) "[Clr]BreakPt"]
+                            :c [#(dap.continue) "[D]Continue"]
+                            :x [#(dap.terminate) "[D]Stop"]
+                            :r [#(dap.repl) "[D]Repl"]
+                            :<Enter> [#(ui.toggle) "[UI] Toggle"]}}
+                    {:prefix :<leader>} 4)))
 ;; LSP Utilities ;;
 (nyoom-module-p! lsp (do
                        (hydra-key! :n
@@ -861,7 +848,6 @@
                                              "+ PeekDefinition"]
                                          :m [#(vim.cmd "Lspsaga peek_type_definition")
                                              "+ PeekTypeDefinition"]
-                                         :M [#(vim.cmd :Navbuddy) "+ Navbuddy"]
                                          :t [#(vim.cmd "Lspsaga outline")
                                              "+ Outline"]
                                          :L [#(vim.cmd :LspLensOn) "+ LspLens"]}}
@@ -876,37 +862,36 @@
                                       :name "  Rust"
                                       :config {:color :teal
                                                :invoke_on_body true
-                                               :hint {:position :middle
-                                                      :border :solid}}
+                                               :hint {:position :bottom}}
                                       :c [#(vim.cmd "RustLsp codeAction")
-                                          "Rust codeAction"]
+                                          "[C]Action"]
                                       :C [#(vim.cmd "RustLsp crateGraph")
-                                          "Rust crateGraph"]
+                                          "[CR]Graph"]
                                       :d [#(vim.cmd "RustLsp debuggables")
-                                          "Rust debuggables"]
+                                          "[R]debuggables"]
                                       :e [#(vim.cmd "RustLsp expandMacro")
-                                          "Rust expandMacro"]
+                                          "[R]expandMacro"]
                                       :D [#(vim.cmd "RustLsp externalDocs")
-                                          "Rust externalDocs"]
+                                          "[R]externalDocs"]
                                       :h [#(vim.cmd "RustLsp hover range")
-                                          "Rust hover"]
+                                          "[R]hover"]
                                       :r [#(vim.cmd "RustLsp runnables")
-                                          "Rust runnables"]
+                                          "[R]runnables"]
                                       :l [#(vim.cmd "RustLsp joinLines")
-                                          "Rust joinLines"]
+                                          "[R]joinLines"]
                                       :m [#(vim.cmd "RustLsp moveItem")
-                                          "Rust moveItem"]
+                                          "[R]moveItem"]
                                       :o [#(vim.cmd "RustLsp openCargo")
-                                          "Rust openCargo"]
+                                          "[Ro]Cargo"]
                                       :p [#(vim.cmd "RustLsp parentModule")
-                                          "Rust parentModule"]
-                                      :s [#(vim.cmd "RustLsp ssr") "Rust ssr"]
+                                          "[R][P]Module"]
+                                      :s [#(vim.cmd "RustLsp ssr") "[R]ssr"]
                                       :w [#(vim.cmd "RustLsp reloadWorkspace")
-                                          "Rust reloadWorkspace"]
+                                          "[Rl]lsp-Reload"]
                                       :S [#(vim.cmd "RustLsp syntaxTree")
-                                          "Rust syntaxTree"]
+                                          "[R]syncTree"]
                                       :f [#(vim.cmd "RustLsp flyCheck")
-                                          "Rust flyCheck"]}}
+                                          "[R]flyCheck"]}}
                                  {:prefix :<leader>}))
                    (augroup! localleader-hydras
                              (autocmd! FileType rust `(rust-hydra)))))
@@ -947,6 +932,7 @@ _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
                    (local haskell-tools (autoload :haskell-tools))
                    (local project (autoload :haskell-tools.project))
                    (local hoogle (autoload :haskell-tools.hoogle))
+
                    (fn haskell-hydra []
                      (hydra-key! :n
                                  {:H {:hydra true
@@ -965,46 +951,58 @@ _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
                                           "Telescope Packages"]
                                       :t [#((. hoogle :hoogle_signature) (vim.api.nvim_get_current_line))
                                           "Hoogle search Line"]
-                                      :<Esc> [#(print "Exiting") "Exit" true]}}
+                                      :<Esc> [#(print :Exiting) :Exit true]}}
                                  {:prefix :<leader>}))
+
                    (augroup! localleader-hydras
                              (autocmd! FileType haskell `(haskell-hydra)))))
 
-(nyoom-module-p! swap
-                 (hydra-key! :n
-                             {:s {:hydra true
-                                  :name :+Swap
-                                  :config {:color :teal
-                                           :invoke_on_body true
-                                           :hint {:type :window
-                                                  :offset 0
-                                                  :float_opts {:style :minimal :noautocmd false}
-                                                  :position :bottom-middle
-                                                  :show_name true}}
-                                  :k [(fn []
-                                        ((->> :swap_next
-                                           (. (require "nvim-treesitter.textobjects.swap"))) "@parameter.inner")) "TS [N] @Outer"]
-                                  :j [(fn []
-                                        ((->> :swap_previous
-                                           (. (require "nvim-treesitter.textobjects.swap"))) "@parameter.inner")) "TS [N] @Inner"]
-                                  :s [#(vim.cmd :ISwap) "ISwap"]
-                                  :S [#(vim.cmd :ISwapWith) "ISwapWith"]
-                                  :w [(fn []
-                                        ((->> :go_to_top_node_and_execute_commands (. (require :syntax-tree-surfer)))
-                                         false
-                                         ["normal! O"
-                                          "normal! O"
-                                          :startinsert])) "Surf [Top] Node"]
-                                  :n [#(vim.cmd :STSSelectMasterNode) "Swap [Cur] Node"]
-                                  :N [#(vim.cmd :STSSelectCurrentNode) "Surf [Mas] Node"]
-                                  :H [#(vim.cmd :STSSelectNextSiblingNode) "Surf [N] Sibling"]
-                                  :J [#(vim.cmd :STSSelectPrevSiblingNode) "Surf [P] Sibling"]
-                                  :K [#(vim.cmd :STSSelectParentNode) "Surf Parent"]
-                                  :L [#(vim.cmd :STSSelectChildNode) "Surf Child"]
-                                  :v [#(vim.cmd :STSSwapNextVisual) "Surf [N] Swap"]
-                                  :V [#(vim.cmd :STSSwapPrevVisual) "Surf [P] Swap"]
-                                  :<Esc> [#(print "Exiting") "Exit" true]}}
-                            {:prefix "<leader>"} 4))
+(nyoom-module-p! swap (hydra-key! :n
+                                  {:s {:hydra true
+                                       :name :+Swap
+                                       :config {:color :teal
+                                                :invoke_on_body true
+                                                :hint {:type :window
+                                                       :offset 0
+                                                       :float_opts {:style :minimal
+                                                                    :noautocmd false}
+                                                       :position :bottom-middle
+                                                       :show_name true}}
+                                       :k [(fn []
+                                             ((->> :swap_next
+                                                   (. (require :nvim-treesitter.textobjects.swap))) "@parameter.inner"))
+                                           "TS [N] @Outer"]
+                                       :j [(fn []
+                                             ((->> :swap_previous
+                                                   (. (require :nvim-treesitter.textobjects.swap))) "@parameter.inner"))
+                                           "TS [N] @Inner"]
+                                       :s [#(vim.cmd :ISwap) :ISwap]
+                                       :S [#(vim.cmd :ISwapWith) :ISwapWith]
+                                       :w [(fn []
+                                             ((->> :go_to_top_node_and_execute_commands
+                                                   (. (require :syntax-tree-surfer))) false
+                                                                                                                                                                              ["normal! O"
+                                                                                                                                                                               "normal! O"
+                                                                                                                                                                               :startinsert]))
+                                           "Surf [Top] Node"]
+                                       :n [#(vim.cmd :STSSelectMasterNode)
+                                           "Swap [Cur] Node"]
+                                       :N [#(vim.cmd :STSSelectCurrentNode)
+                                           "Surf [Mas] Node"]
+                                       :H [#(vim.cmd :STSSelectNextSiblingNode)
+                                           "Surf [N] Sibling"]
+                                       :J [#(vim.cmd :STSSelectPrevSiblingNode)
+                                           "Surf [P] Sibling"]
+                                       :K [#(vim.cmd :STSSelectParentNode)
+                                           "Surf Parent"]
+                                       :L [#(vim.cmd :STSSelectChildNode)
+                                           "Surf Child"]
+                                       :v [#(vim.cmd :STSSwapNextVisual)
+                                           "Surf [N] Swap"]
+                                       :V [#(vim.cmd :STSSwapPrevVisual)
+                                           "Surf [P] Swap"]
+                                       :<Esc> [#(print :Exiting) :Exit true]}}
+                                  {:prefix :<leader>} 4))
 
 ;; Go faster, wagie! ;;
 ; (nyoom-module-p! go

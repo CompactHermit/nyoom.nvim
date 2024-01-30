@@ -2,7 +2,7 @@
 
 ;; TODO:: allow custom modes
 ;; TODO:: Cananocalize "config/body/hint" options. 
-    ;;E.g:: config is a table, and passes onto the hydra arg {:config {:color :_color_ :position :_position_}}
+;;E.g:: config is a table, and passes onto the hydra arg {:config {:color :_color_ :position :_position_}}
 (fn chunks [arr size]
   (var chunk 1)
   (var idx-in-chunk 1)
@@ -25,7 +25,7 @@
     (.. str space)))
 
 (lambda hydra-key! [mode keymaps ?opts ?num]
-   "
+  "
       Recursively define keybinds using nested tables
 
       ```fennel
@@ -50,92 +50,74 @@
         which-key (require :which-key)
         opts (or ?opts {})
         num (or ?num 4)
-        {:prefix ?prefix
-         &       opts} opts
+        {:prefix ?prefix & opts} opts
         prefix (or ?prefix "")
-        {:hydra  hydra?
-         :name   name?
+        {:hydra hydra?
+         :name name?
          :config config?
          ;; :docs   docs?
          & keymaps} keymaps
         is-valid-cmd (fn [rhs]
-                       (vim.tbl_contains
-                         [:string :function]
-                         (type rhs)))
+                       (vim.tbl_contains [:string :function] (type rhs)))
         canonicalize-rhs (fn [rhs]
-                           (if
-                             ;; Undocumented rhs
-                             (is-valid-cmd rhs)
-                             {:cmd   rhs
-                              :final true}
-
-                             ;; Documented rhs
-                             (and (vim.tbl_islist rhs)
-                                  (is-valid-cmd (. rhs 1)))
-                             {:cmd   (. rhs 1)
-                              :desc  (. rhs 2)
-                              :exit (or false (. rhs 3))
-                              :final true}
-
-                             ;; Nested table, leave be
-                             (not (vim.tbl_islist rhs))
-                             rhs
-
-                             ;; else
-                             nil))
+                           (if ;; Undocumented rhs
+                               (is-valid-cmd rhs)
+                               {:cmd rhs :final true}
+                               ;; Documented rhs
+                               (and (vim.tbl_islist rhs)
+                                    (is-valid-cmd (. rhs 1)))
+                               {:cmd (. rhs 1)
+                                :desc (. rhs 2)
+                                :exit (or false (. rhs 3))
+                                :final true}
+                               ;; Nested table, leave be
+                               (not (vim.tbl_islist rhs))
+                               rhs
+                               ;; else
+                               nil))
         keymaps (vim.tbl_map canonicalize-rhs keymaps)
         autogen-hint (fn [keysMAP name num]
                        (let [bind-desc (collect [lhs rhs (pairs keysMAP)]
-                                        (. lhs)
-                                        (. rhs :desc))
+                                         (. lhs)
+                                         (. rhs :desc))
                              max-strlen (accumulate [max 0 k v (pairs bind-desc)]
                                           (math.max max (length (.. k v))))
                              spaced-strs (icollect [k v (pairs bind-desc)]
-                                           (respace-str (.. "_" k "_: " v) (+ 7 max-strlen)))
+                                           (respace-str (.. "_" k "_: " v)
+                                                        (+ 7 max-strlen)))
                              name (or name "")]
                          (table.sort spaced-strs)
-                         (.. "  " name ":\n" (-> (icollect [_ v (ipairs (chunks spaced-strs num))]
-                                                   (.. "    " (table.concat v)))
-                                                 (table.concat "\n")))))
-        base-keymap-opts {:silent  true
-                          :noremap true}
-        keymap-opts (vim.tbl_extend "force"
-                                    base-keymap-opts
-                                    opts)]
+                         (.. "  " name ":\n"
+                             (-> (icollect [_ v (ipairs (chunks spaced-strs num))]
+                                   (.. "    " (table.concat v)))
+                                 (table.concat "\n")))))
+        base-keymap-opts {:silent true :noremap true}
+        keymap-opts (vim.tbl_extend :force base-keymap-opts opts)]
     ;; NOTE:: (Hermit) Just use a Match, wtf are you doing??
-    (if 
-      (= hydra? true)
-      ;; DEBUG::
+    (if (= hydra? true)
+        ;; DEBUG::
         ;; (print (autogen-hint keymaps name? num)
-      (hydra {:name   name?
-              :hint (autogen-hint keymaps name? num)
-              :config config?
-              :mode   mode
-              :body   prefix
-              :heads  (icollect [lhs rhs (pairs keymaps)]
-                        (if rhs.final
-                            [lhs rhs.cmd {:desc rhs.desc :exit rhs.exit}]))})
-      ;; else
-      (each [lhs rhs (pairs keymaps)]
-        (let [lhs (.. prefix lhs)]
-          (if
-            rhs.final
-            (vim.keymap.set mode
-                            lhs
-                            rhs.cmd
-                            (vim.tbl_extend
-                              "force"
-                              keymap-opts
-                              {:desc rhs.desc}))
-            ;; else
-            (do
-              (when (and rhs.name)
-                  ;; Add name for group
-                  (which-key.register {lhs {:name rhs.name}}))
-              (hydra-key! mode  rhs
-                    (vim.tbl_extend
-                      "force"
-                      opts
-                      {:prefix lhs})))))))))
+        (hydra {:name name?
+                :hint (autogen-hint keymaps name? num)
+                :config config?
+                : mode
+                :body prefix
+                :heads (icollect [lhs rhs (pairs keymaps)]
+                         (if rhs.final
+                             [lhs rhs.cmd {:desc rhs.desc :exit rhs.exit}]))})
+        ;; else
+        (each [lhs rhs (pairs keymaps)]
+          (let [lhs (.. prefix lhs)]
+            (if rhs.final
+                (vim.keymap.set mode lhs rhs.cmd
+                                (vim.tbl_extend :force keymap-opts
+                                                {:desc rhs.desc}))
+                ;; else
+                (do
+                  (when (and rhs.name)
+                    ;; Add name for group
+                    (which-key.register {lhs {:name rhs.name}}))
+                  (hydra-key! mode rhs
+                              (vim.tbl_extend :force opts {:prefix lhs})))))))))
 
 {: hydra-key!}

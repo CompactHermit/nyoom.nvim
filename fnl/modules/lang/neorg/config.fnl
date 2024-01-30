@@ -3,6 +3,11 @@
 ;; conditional modules
 (packadd! :neorg-exec)
 (packadd! :neorg-telescope)
+(packadd! :neorg-timelog)
+(packadd! :neorg-hop-extras)
+(fn neorg_leader [key]
+  (.. :<leader>n key))
+
 (local neorg-modules
        {:core.defaults {}
         :core.esupports.indent {:config {:dedent_excess true
@@ -11,6 +16,31 @@
         :core.ui {}
         :core.integrations.telescope {}
         :external.exec {}
+        :external.timelog {}
+        ;; NOTE:: (Hemrit) Only until janet has been added
+        :external.hop-extras {:config {:aliases {:gh "https://github.com/{}"}}}
+        ; :external.chronicle {:config {:workspace :main
+        ;                               :directory :chronicle
+        ;                               :modes {:daily {:path_format ["%Y"
+        ;                                                             "%m-%B"
+        ;                                                             "%d-%A"
+        ;                                                             :daily.norg]}}
+        ;                               :daily {:template_path ["%Y"
+        ;                                                       "%m-%B"
+        ;                                                       "%d-%A"
+        ;                                                       :daily.norg]}
+        ;                               :weekly {:template_path ["%Y"
+        ;                                                        "%m-%B"
+        ;                                                        "%W"
+        ;                                                        :weekly.norg]}
+        ;                               :monthly {:template_path ["%Y"
+        ;                                                         "%m-%B"
+        ;                                                         :monthly.norg]}
+        ;                               :quarterly {:template_path ["%Y"
+        ;                                                           "%Q"
+        ;                                                           :quarterly.norg]}
+        ;                               :yearly {:template_path ["%Y"
+        ;                                                        :yearly.norg]}}}
         :core.summary {:config {:strategy :default}}
         :core.tempus {}
         :core.ui.calendar {}
@@ -19,14 +49,34 @@
         :core.keybinds {:config {:default_keybinds true
                                  :neorg_leader :<leader>n
                                  :hook (fn [keybinds]
-                                         (keybinds.map :norg :n "]s"
-                                                       "<cmd>Neorg keybind norg core.integrations.treesitter.next.heading<cr>")
-                                         (keybinds.map :norg :n "[s"
-                                                       "<cmd>Neorg keybind norg core.integrations.treesitter.previous.heading<cr>")
-                                         (keybinds.map :norg :n :gj
-                                                       "<cmd> Neorg keybind norg core.manoeuvre.item_down<cr>")
-                                         (keybinds.map :norg :n :gk
-                                                       "<cmd> Neorg keybind norg core.manoeuvre.item_up<cr>"))}}
+                                         (keybinds.map_event_to_mode :norg
+                                                                     {:n [[(neorg_leader :lt)
+                                                                           :core.integrations.telescope.find_aof_tasks]
+                                                                          [(neorg_leader :lc)
+                                                                           :core.integrations.telescope.find_context_tasks]
+                                                                          [(neorg_leader :in)
+                                                                           :core.itero.next-iteration]
+                                                                          [(neorg_leader :ip)
+                                                                           :core.itero.next-iteration]
+                                                                          [:gk
+                                                                           :core.manoeuvre.item_up]
+                                                                          [:gk
+                                                                           :core.manoeuvre.item_down]
+                                                                          [:<Tab>
+                                                                           :core.integrations.treesitter.next.link]
+                                                                          [:<S-Tab>
+                                                                           :core.integrations.treesitter.previous.link]
+                                                                          ["]]"
+                                                                           :core.integrations.treesitter.next.heading]
+                                                                          ["[["
+                                                                           :core.integrations.treesitter.previous.heading]]}
+                                                                     {:noremap true
+                                                                      :silent true})
+                                         (keybinds.map_to_mode :norg
+                                                               {:n [[(neorg_leader :li)
+                                                                     "<cmd>Neorg timelog insert *<cr>"]]}
+                                                               {:noremap true
+                                                                :silent true}))}}
         :core.dirman {:config {:workspaces {:main "~/neorg"
                                             :Math "~/neorg/Math"
                                             :NixOS "~/neorg/nixDocs"
@@ -35,7 +85,7 @@
                                             :Academic_Math "~/neorg/Papers/Math"
                                             :Academic_CS "~/neorg/Papers/CS"
                                             :Linuxopolis "~/neorg/linux"}
-                                :default_workspace :main}}})
+                               :default_workspace :main}}})
 
 ;; add conditional modules
 (nyoom-module-p! cmp (tset neorg-modules :core.completion
@@ -106,13 +156,16 @@
 
 (packadd! image.nvim)
 ((->> :setup
-     (. (require :image))) {:backend :kitty
-                            :integrations {:markdown {:enabled true
-                                                      :download_remote_images true
-                                                      :filetypes [:markdown :quarto :vimwiki]}
-                                           :neorg {:enabled true
-                                                   :download_remote_images true
-                                                   :clear_in_insert_mode false
-                                                   :only_render_image_at_cursor false
-                                                   :filetypes [:norg]}}})
+      (. (require :image))) {:backend :kitty
+                                          :integrations {:markdown {:enabled true
+                                                                    :download_remote_images true
+                                                                    :filetypes [:markdown
+                                                                                :quarto
+                                                                                :vimwiki]}
+                                                         :neorg {:enabled true
+                                                                 :download_remote_images true
+                                                                 :clear_in_insert_mode false
+                                                                 :only_render_image_at_cursor false
+                                                                 :filetypes [:norg]}}})
+
 (setup :neorg {:load neorg-modules})

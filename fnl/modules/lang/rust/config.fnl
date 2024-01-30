@@ -1,10 +1,11 @@
 (import-macros {: let! : nyoom-module-p!} :macros)
 (local {: lsp_init} (require :util.lsp))
 
-;; NOTE:: (Hermit Does this even work?
+;; NOTE:: It fucking does bozo
 (local exec (fn [command args cwd]
              "
-             Returns a Oneshot Shell which runs the rust file
+             exec:: IO.Cmd -> String::FilePath -> RustaceanExecutor
+                 Returns a Oneshot Shell which runs the rust file
              "
              (let [{: Terminal} (require :toggleterm.terminal)
                    shell (require :rustaceanvim.shell)]
@@ -20,12 +21,8 @@
                 :settings (fn []
                             "Server Settings"
                             {:rust-analyzer {:check {:command :clippy}
-                                             :workspace {:symbol {:search {:kind :all_symbols}}}}})}
-       :dap {:auto_generate_source_map false}
-             ; :adapter {
-             ;           :type  "server"
-             ;           :port  "${port}"
-             ;           :executable  {
-             ;                         :command  "codelldb"
-             ;                         :args  { "--port" "${port}"}}}}
+                                             :workspace {:symbol {:search {:kind :all_symbols}}}
+                                             :cargo {:allFeatures true}
+                                             :checkOnSave true
+                                             :proMacro {:enabled true}}})}
        :tools {:executor {:execute_command exec}}})

@@ -24,18 +24,15 @@
        :auto_reload_compiled false
        :display {:non_interactive headless}})
 
-;; compile healthchecks
 
-(echo! "Compiling Nyoom Doctor")
+;(echo! "Compiling Nyoom Doctor")
 ; (build (vim.fn.stdpath :config) {:verbosity 0}
 ;        (.. (vim.fn.stdpath :config) :/fnl/core/doctor.fnl)
 ;        (fn []
 ;          (.. (vim.fn.stdpath :config) :/lua/health.lua)))
-;
-;; packer can manage itself
 
 ;; (use-package! :EdenEast/packer.nvim {:opt true :branch :feat/lockfile})
-(use-package! :wbthomason/packer.nvim {:opt true})
+; (use-package! :wbthomason/packer.nvim {:opt true})
 
 ;; libraries
 
@@ -73,13 +70,6 @@
 ;; Put your plugins here
 ;; ---------------------
 
-;; Bloated when not in use
-; (use-package! :danymay/neogen {:call-setup neogen
-;                                :opt true
-;                                :cmd [:Neogen]})
-;; markdown stuff
-
-;; LSP-SAGA - The based lsp helper
 (use-package! :nvimdev/lspsaga.nvim
               {:opt true
                :cmd [:Lspsaga]
@@ -90,23 +80,14 @@
 ; TODO:: (CH) <10/06> Debug this.
 (use-package! :dstein64/vim-startuptime {:opt true :cmd [:StartupTime]})
 
+(use-package! :stevearc/resession.nvim
+              {:opt true :event [:BufReadPost] :call-setup resession})
 
-(use-package! :pysan3/autosession.nvim
-              {:opt true :cmd [:AutoSession] :call-setup autosession})
-
-;;SilverSurfer Nvim
-(use-package! :kelly-lin/telescope-ag
-              {:requires :nvim-telescope/telescope.nvim :opt true :cmd :Ag})
-
-;; TODO :: Add to browser module
 ;;Docs and browse
-
 (use-package! :loganswartz/updoc.nvim
               {:call-setup updoc :opt true :events :BufReadPost})
 
 (use-package! :KabbAmine/zeavim.vim {:opt true :cmd :Zeavim})
-
-(echo! "Setting Up nixpgs, please ensure you've built the package first!")
 
 ;; Send plugins to packer
 

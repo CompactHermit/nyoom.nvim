@@ -1,4 +1,4 @@
-(import-macros {: autocmd!} :macros)
+(import-macros {: autocmd! : map!} :macros)
 (local oil (require :oil))
 (local preview-wins {})
 (local preview-bufs {})
@@ -9,6 +9,7 @@
   (let [ok (pcall vim.cmd.lcd dir)]
     (when (not ok)
       (vim.notify (.. "[oil.nvim] failed to cd to " dir) vim.log.levels.WARN))))
+
 (fn nopreview [msg height width]
   (let [lines {}
         fillchar (or (. (vim.opt_local.fillchars:get) :diff) "-")
@@ -29,6 +30,7 @@
     (table.insert lines line-below)
     (for [_ 1 half-height-d] (table.insert lines line-fill))
     lines))
+
 (fn end-preview [oil-win]
   (set-forcibly! oil-win (or oil-win (vim.api.nvim_get_current_win)))
   (local preview-win (. preview-wins oil-win))
@@ -40,6 +42,7 @@
     (vim.api.nvim_win_close preview-buf true))
   (tset preview-wins oil-win nil)
   (tset preview-bufs oil-win nil))
+
 (fn preview []
   (let [entry (oil.get_cursor_entry)
         fname (and entry entry.name)
@@ -116,6 +119,7 @@
     (local ft (vim.filetype.match {:buf preview-buf :filename fpath}))
     (when (and ft (not (pcall vim.treesitter.start preview-buf ft)))
       (tset (. vim.bo preview-buf) :syntax ft))))
+
 (local groupid-preview (vim.api.nvim_create_augroup :OilPreview {}))
 (vim.api.nvim_create_autocmd [:CursorMoved :WinScrolled]
                              {:callback (fn []
@@ -139,6 +143,7 @@
                               :desc "Update floating preview window when cursor moves or window scrolls."
                               :group groupid-preview
                               :pattern "oil:///*"})
+
 (vim.api.nvim_create_autocmd :BufEnter
                              {:callback (fn [info]
                                           (when (not= (. (. vim.bo info.buf)
@@ -147,6 +152,7 @@
                                             (end-preview)))
                               :desc "Close preview window when leaving oil buffers."
                               :group groupid-preview})
+
 (vim.api.nvim_create_autocmd :WinClosed
                              {:callback (fn [info]
                                           (local win (tonumber info.match))
@@ -154,6 +160,7 @@
                                             (end-preview win)))
                               :desc "Close preview window when closing oil windows."
                               :group groupid-preview})
+
 (fn toggle-preview []
   (let [oil-win (vim.api.nvim_get_current_win)
         preview-win (. preview-wins oil-win)]
@@ -161,15 +168,18 @@
       (preview)
       (lua "return "))
     (end-preview)))
+
 (local preview-mapping {:callback toggle-preview
                         :desc "Toggle preview"
                         :mode [:n :x]})
+
 (local permission-hlgroups
        (setmetatable {:- :OilPermissionNone
                       :r :OilPermissionRead
                       :w :OilPermissionWrite
                       :x :OilPermissionExecute}
                      {:__index (fn [] :OilDir)}))
+
 (local type-hlgroups
        (setmetatable {:- :OilTypeFile
                       :d :OilTypeDir
@@ -177,6 +187,7 @@
                       :p :OilTypeFifo
                       :s :OilTypeSocket}
                      {:__index (fn [] :OilTypeFile)}))
+
 (setup :oil {:cleanup_delay_ms 0
              :columns [{1 :type
                         :highlight (fn [type-str] (. type-hlgroups type-str))
@@ -198,10 +209,9 @@
                                      hls)}
                        {1 :size :highlight :Special}
                        {1 :mtime :highlight :Number}
-                       {1 :icon
-                        :add_padding false}]
-                        ;;:default_file icon-file
-                        ;;:directory icon-dir}]
+                       {1 :icon :add_padding false}]
+             ;;:default_file icon-file
+             ;;:directory icon-dir}]
              :delete_to_trash true
              :float {:border :solid :win_options {:winblend 0}}
              :keymaps {:+ :actions.select
@@ -256,7 +266,8 @@
                                           (lua "return "))
                                         (local entry-path (.. dir entry.name))
                                         (vim.fn.setreg "\"" entry-path)
-                                        (vim.fn.setreg vim.v.register entry-path)
+                                        (vim.fn.setreg vim.v.register
+                                                       entry-path)
                                         (vim.notify (string.format "[oil] yanked '%s' to register '%s'"
                                                                    entry-path
                                                                    vim.v.register)))
@@ -273,6 +284,7 @@
                            :relativenumber false
                            :signcolumn :no
                            :statuscolumn ""}})
+
 (local groupid (vim.api.nvim_create_augroup :OilSyncCwd {}))
 (vim.api.nvim_create_autocmd [:BufEnter :TextChanged]
                              {:callback (fn [info]
@@ -289,6 +301,9 @@
                               :desc "Set cwd to follow directory shown in oil buffers."
                               :group groupid
                               :pattern "oil:///*"})
+
+(map! [n] :<M-o> :<cmd>Oil<cr>)
+
 (vim.api.nvim_create_autocmd :DirChanged
                              {:callback (fn [info]
                                           (when (= (. (. vim.bo info.buf)

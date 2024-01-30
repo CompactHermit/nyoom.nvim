@@ -1,8 +1,8 @@
 (import-macros {: use-package! : pack} :macros)
 
-(use-package! :Nagefire/nvim-treesitter
+(use-package! :nvim-treesitter/nvim-treesitter
               {:nyoom-module tools.tree-sitter
-               :branch :feat/typst
+               ; :branch :feat/typst
                :cmd [:TSInstall
                      :TSUpdate
                      :TSInstallSync
@@ -15,8 +15,10 @@
                :requires [(pack :nvim-treesitter/playground
                                 {:cmd :TSPlayground})
                           (pack :HiPhish/nvim-ts-rainbow2 {:opt true})
-                          (pack :JoosepAlviste/nvim-ts-context-commentstring {:opt true})
-                          (pack :nvim-treesitter/nvim-treesitter-refactor {:opt true})
+                          (pack :JoosepAlviste/nvim-ts-context-commentstring
+                                {:opt true})
+                          (pack :nvim-treesitter/nvim-treesitter-refactor
+                                {:opt true})
                           (pack :nvim-treesitter/nvim-treesitter-textobjects
                                 {:opt true})
                           (pack :Ckolkey/ts-node-action {:opt true})]
@@ -44,4 +46,3 @@
                :config (fn []
                          (local {: setup} (require :treesitter-context))
                          (setup {:enable false}))})
-

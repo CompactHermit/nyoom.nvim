@@ -1,4 +1,10 @@
-(import-macros {: nyoom-module-p! : map! : let! : buf-map! : augroup! : autocmd!} :macros)
+(import-macros {: nyoom-module-p!
+                : map!
+                : let!
+                : buf-map!
+                : augroup!
+                : autocmd!} :macros)
+
 (local {: nightly?} (autoload :core.lib))
 ;(local leap (autoload :leap))
 ;;(local {: } util)
@@ -7,7 +13,6 @@
 
 (let! mapleader " ")
 ;(leap.add_default_mappings)
-
 
 ;; NOTE:: Want more Hydra Binds
 (map! [n] ";" ":" {:desc :vim-ex})
@@ -39,11 +44,18 @@
 
 (nyoom-module-p! neorg
                  (do
-                  (map! [n] :<leader>nlg "<cmd>Neorg keybind all core.looking-glass.magnify-code-block<CR>" {:desc "Neorg Looking Glass"})
-                  (map! [n] :<leader>nle "<cmd>Neorg generate-workspace-summary<CR>" {:desc "Neorg Generate Summary"})
-                  (map! [n] :<leader>nlt "<cmd>Neorg tangle current-file<CR>" {:desc "Neorg Tangle"})
-                  (map! [n] :<leader>nuc "<cmd>Neorg exec cursor<CR>" {:desc "Neorg exec cursor"})
-                  (map! [n] :<leader>nud "<cmd>Neorg exec clear<CR>" {:desc "Neorg exec clear"})))
+                   (map! [n] :<leader>nlg
+                         "<cmd>Neorg keybind all core.looking-glass.magnify-code-block<CR>"
+                         {:desc "Neorg Looking Glass"})
+                   (map! [n] :<leader>nle
+                         "<cmd>Neorg generate-workspace-summary<CR>"
+                         {:desc "Neorg Generate Summary"})
+                   (map! [n] :<leader>nlt "<cmd>Neorg tangle current-file<CR>"
+                         {:desc "Neorg Tangle"})
+                   (map! [n] :<leader>nuc "<cmd>Neorg exec cursor<CR>"
+                         {:desc "Neorg exec cursor"})
+                   (map! [n] :<leader>nud "<cmd>Neorg exec clear<CR>"
+                         {:desc "Neorg exec clear"})))
 
 ;; ~ Open messages
 (nyoom-module-p! telescope
@@ -99,9 +111,9 @@
 
 (nyoom-module-p! telescope
                  (do
-                   (map! [n] :<leader><tab>r "<cmd>AutoSessionRestore<CR>"
+                   (map! [n] :<leader><tab>r :<cmd>AutoSessionRestore<CR>
                          {:desc "Reload Current Session"})
-                   (map! [n] :<leader><tab>s "<cmd>AutoSessionSave<CR>"
+                   (map! [n] :<leader><tab>s :<cmd>AutoSessionSave<CR>
                          {:desc "Save current session"})))
 
 (map! [n] :<leader><tab>x :<cmd>tabclose<CR> {:desc "Delete this tab"})
@@ -210,8 +222,6 @@
 
 (map! [n] :<leader>cW "<cmd>v/\\_s*\\S/d<CR>"
       {:desc "Delete trailing newlines"})
-
-
 
 ;; QuickFix Keybinds
 ;;(nyoom-module-p! quickfix
@@ -358,11 +368,9 @@
 
 ;; - Dired
 
-
 ;; (map! [n] :<leader>oa "<cmd><CR>" {:desc "Tags search"})
 ;; (map! [n] :<leader>oa "<cmd><CR>" {:desc "Todo list"})
 ;; (map! [n] :<leader>oa "<cmd><CR>" {:desc "View search"})))
-
 
 ; (nyoom-module-p! debug
 ;                  (map! [n] :<leader>od "<cmd>lua require('dapui').toggle()CR>"
@@ -382,8 +390,6 @@
 (when (= (vim.fn.has :mac) 1)
   (map! [n] :<leader>oo "<cmd>!open %:p:h<CR>" {:desc "Reveal file in finder"})
   (map! [n] :<leader>oO "<cmd>!open .<CR>" {:desc "Reveal project in finder"}))
-
-
 
 ; (nyoom-module-p! eval (map! [n] :<leader>or :<cmd>ConjureLogToggle<CR>
 ;                             {:desc "Conjure log split"}))
@@ -411,5 +417,3 @@
 
 ;;; Tmux and harpoon junk
 ;;; z +tmux
-
-

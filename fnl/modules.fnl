@@ -25,7 +25,7 @@
 
         :editor
         fold                 ; (nigh) universal code folding
-        (format) ;;+onsave   ; automated prettiness
+        (format +onsave)     ; automated prettiness
         ;;multiple-cursors   ;  learn macros you dingus
         ;;parinfer           ; turn lisp into python, sort of
         (hotpot +reflect)    ; NOTE: essential module (for now), don't disable
@@ -97,7 +97,7 @@
         ; (org +pretty)        ; WIP: organize your plain life in plain text, the emacs way
         nix                  ; I hereby declare "nix geht mehr!"
         nickel               ; Dhall, but nixified
-        ocaml                ; Nested Let Blocks? Nested Let blocks!!
+        ; ocaml                ; Nested Let Blocks? Nested Let blocks!!
         python               ; beautiful is better than ugly
         rust                 ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
         typescript           ; Javas Ugly, bloated, linter-tool
@@ -107,7 +107,7 @@
         (sh +nu) ;+fish)     ; she sells {ba,z,fi}sh shells on the C xor
         ;;xml                ; extend my language
         ;;yaml               ; yet another markup language to enable
-        go                 ; No Bitches??
+        go                  ; No Bitches??
         lean                 ; Make your category-theory coursework 1000x harder.
         ;agda                ; TODO:: add cornelis nix bindings
         haskell              ; Functionally Braindead parsers

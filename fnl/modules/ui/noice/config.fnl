@@ -26,18 +26,27 @@
                      :override {:vim.lsp.util.convert_input_to_markdown_lines true
                                 :vim.lsp.util.stylize_markdown true
                                 :cmp.entry.get_documentation true}}
+               :messages {:enabled true}
+               :commands {:history {:view :split :opt {:enter true :format "details"}}}
+               :documentation {:view "hover"
+                               :opts {:lang "markdown"
+                                      :replace true
+                                      :render  "plain"
+                                      :format ["{message}"]
+                                      :win_options  {:concealcursor  "n" :conceallevel  3}}}
                :views {:cmdline_popup {:position {:row 0 :col "50%"}
                                        :size {:width "98%"}}}
                :presets {:long_message_to_split true :lsp_doc_border true}
-               :popupmenu {:backend :cmp}
+               :popupmenu {:enabled true :backend :cmp}
+               :notify {:enabled false}
                :format {}})
 
-(set vim.notify
-     (fn [msg level opts]
-       (packadd! nvim-notify)
-       (set vim.notify (autoload :notify))
-       (vim.notify msg level opts)
-       (nyoom-module-p! telescope
-                        (do
-                          (local {: load_extension} (autoload :telescope))
-                          (load_extension :notify)))))
+; (set vim.notify
+;      (fn [msg level opts]
+;        (packadd! nvim-notify)
+;        (set vim.notify (autoload :notify))
+;        (vim.notify msg level opts)
+;        (nyoom-module-p! telescope
+;                         (do
+;                           (local {: load_extension} (autoload :telescope))
+;                           (load_extension :notify)))))
