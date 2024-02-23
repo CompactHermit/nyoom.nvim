@@ -12,26 +12,17 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = {
-    self,
-    parts,
-    ...
-  } @ inputs:
-    parts.lib.mkFlake {inherit inputs;} {
-      systems = ["x86_64-linux" "aarch64-linux"];
+  outputs = { self, parts, ... }@inputs:
+    parts.lib.mkFlake { inherit inputs; } {
+      systems = [ "x86_64-linux" "aarch64-linux" ];
       debug = true;
       imports = with inputs; [
         treefmt-nix.flakeModule
         pch.flakeModule
         haskellFlakeProjectModules.default
       ];
-      flake = {};
-      perSystem = {
-        system,
-        config,
-        pkgs,
-        ...
-      }: {
+      flake = { };
+      perSystem = { system, config, pkgs, ... }: {
         treefmt = {
           projectRootFile = "flake.nix";
           programs = {
@@ -55,18 +46,18 @@
         };
 
         haskellProjects.default = {
-          autoWire = ["packages" "checks"];
+          autoWire = [ "packages" "checks" ];
           devShell.tools = hp: {
             inherit (pkgs) haskell-language-server ghci-dap;
           };
-          settings = {};
+          settings = { };
           location-updates.check = false;
         };
 
         pre-commit = {
           check.enable = true;
           settings.settings = {
-            excludes = ["flake.lock" "r'.+\.age$'"];
+            excludes = [ "flake.lock" "r'.+.age$'" ];
             treefmt.package = config.treefmt.build.wrapper;
           };
           hooks = {
@@ -86,7 +77,7 @@
             config.pre-commit.devSHell
             config.haskellProjects.default.outputs.devShell
           ];
-          packages = [];
+          packages = [ ];
           shellHook = ''
             ${self.checks.${system}.pre-commit-check.shellHook}
             nu

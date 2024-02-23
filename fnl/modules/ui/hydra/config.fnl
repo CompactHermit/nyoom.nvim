@@ -641,7 +641,6 @@
 ^^ _r_: Remote
 ^^ _a_: Flash Line
 ^^ _w_: Flash Windows
-^^ _W_: Flash Beginning words
 ^^ _M_: Flash Bounce
 ^^ _R_: Flash TS remote
 
@@ -670,13 +669,6 @@
                                     (fn []
                                       (win_select))
                                     {:desc "Select Any Word"}]
-                                   [:W
-                                    (fn []
-                                      ((->> :jump
-                                            (. (require :flash))) {:search {:mode (fn [str]
-                                                                                      (.. "\\<"
-                                                                                          str))}}))
-                                    {:desc "Match beginning of words only"}]
                                    [:S
                                     (fn []
                                       ((. (require :flash) :treesitter)))]
@@ -706,16 +698,19 @@
                                      :Academic_Math]
                                     {:prompt "Select a workspace, slow bitch"
                                      :format_item (fn [item]
-                                                    (.. "Neorg workspace " item))}
+                                                    (.. "WorkSpace:: " item))}
                                     (fn [choice]
                                       (vim.cmd (.. "Neorg workspace " choice)))))
                    (hydra-key! :n
                                {:ne {:hydra true
                                      :name :+Toggle
                                      :config {:color :pink
-                                              :hint {:border :solid
-                                                     :position :middle}
-                                              :invoke_on_body true}
+                                              :invoke_on_body true
+                                              :hint {:type :window
+                                                     :float_opts {:style :minimal
+                                                                  :noautocmd true}
+                                                     :show_name true
+                                                     :position :middle}}
                                      :t [#(vim.cmd "Neorg journal today")
                                          "Journal Today"]
                                      :m [#(vim.cmd "Neorg journal tomorrow")
@@ -733,18 +728,20 @@
                                {:prefix :<leader>} 4)))
 
 ;; Gods given grace on earth ;;
+
+;; fnlfmt: skip
 (nyoom-module-p! telescope
                  (do
                    (local telescope-hint "
-           _o_: old files   _g_: egrepify
-           _p_: projects    _/_: search in file
-           _r_: resume      _f_: find files
+           _o_: old files   _g_: egrepify^^
+           _p_: projects    _/_: search in file^^
+           _r_: resume      _f_: find files^^
    ▁
-           _h_: vim help    _c_: execute command
-           _k_: keymaps     _;_: commands history
-           _O_: options     _?_: search history
-  ^
-  _<Esc>_         _<Enter>_: NvimTree
+           _h_: vim help    _c_: execute command^^
+           _k_: keymaps     _;_: commands history^^
+           _O_: options     _?_: search history^^
+
+  _<Esc>_         _<Enter>_: Neotree^^
     ")
                    (Hydra {:name :+file
                            :hint telescope-hint
@@ -760,14 +757,14 @@
                                     (fn []
                                       ((. (autoload :telescope) :extensions
                                           :egrepify :egrepify) ((->> :get_ivy
-                                                                                                                                                 (. (autoload :telescope.themes))) {})))]
+                                                                 (. (autoload :telescope.themes))) {})))]
                                    [:o
                                     (fn []
                                       (vim.cmd.Telescope :oldfiles))
                                     {:desc "recently opened files"}]
                                    [:h
                                     (fn []
-                                      (vim.cmd.Telescope :help_tags))
+                                      ((. (autoload :telescope.builtin) :help_tags) ((. (autoload :telescope.themes) :get_ivy))))
                                     {:desc "vim help"}]
                                    [:k
                                     (fn []
@@ -803,7 +800,7 @@
                                     {:desc "execute command"}]
                                    [:<Enter>
                                     (fn []
-                                      (vim.cmd :NvimTreeToggle))
+                                      (vim.cmd :Neotree))
                                     {:exit true :desc :NvimTree}]
                                    [:<Esc> nil {:exit true :nowait true}]]})))
 
@@ -813,26 +810,33 @@
                    (local dap (autoload :dap))
                    (local ui (autoload :dapui))
                    (hydra-key! :n
-                       {:d {:hydra true
-                            :name " Debug"
-                            :config {:color :pink
-                                     :invoke_on_body true
-                                     :hint {:type :window
-                                            :offset 1
-                                            :float_opts {:style :minimal
-                                                         :noautocmd false}
-                                            :position :bottom-middle}}
-                            :H [#(dap.step_out) "[s]out"]
-                            :J [#(dap.step_over) "[s]over"]
-                            :K [#(dap.step_back) "[s]back"]
-                            :L [#(dap.step_into) "[s]into"]
-                            :t [#(dap.toggle_breakpoint) "[Tog]BreakPt"]
-                            :T [#(dap.clear_breakpoints) "[Clr]BreakPt"]
-                            :c [#(dap.continue) "[D]Continue"]
-                            :x [#(dap.terminate) "[D]Stop"]
-                            :r [#(dap.repl) "[D]Repl"]
-                            :<Enter> [#(ui.toggle) "[UI] Toggle"]}}
-                    {:prefix :<leader>} 4)))
+                               {:d {:hydra true
+                                    :name " Debug"
+                                    :config {:color :pink
+                                             :invoke_on_body true
+                                             :hint {:type :window
+                                                    :offset 1
+                                                    :float_opts {:style :minimal
+                                                                 :noautocmd false}
+                                                    :position :bottom-middle
+                                                    :on_enter (fn []
+                                                                (print "Patching Overseer Tasks")
+                                                                ((->> :patch_dap
+                                                                      (. (autoload :overseer))) true))}}
+                                    :H [#(dap.step_out) "[s]out"]
+                                    :J [#(dap.step_over) "[s]over"]
+                                    :K [#(dap.step_back) "[s]back"]
+                                    :L [#(dap.step_into) "[s]into"]
+                                    :t [#(dap.toggle_breakpoint)
+                                        "[Tog]BreakPt"]
+                                    :T [#(dap.clear_breakpoints)
+                                        "[Clr]BreakPt"]
+                                    :c [#(dap.continue) "[D]Continue"]
+                                    :x [#(dap.terminate) "[D]Stop"]
+                                    :r [#(dap.repl) "[D]Repl"]
+                                    :<Enter> [#(ui.toggle) "[UI] Toggle"]}}
+                               {:prefix :<leader>} 4)))
+
 ;; LSP Utilities ;;
 (nyoom-module-p! lsp (do
                        (hydra-key! :n
@@ -854,47 +858,44 @@
                                    {:prefix :<leader>} 4)))
 
 ;; Rusty tools for rusty mans ;;
-(nyoom-module-p! rust
-                 (do
-                   (fn rust-hydra []
-                     (hydra-key! :n
-                                 {:m {:hydra true
-                                      :name "  Rust"
-                                      :config {:color :teal
-                                               :invoke_on_body true
-                                               :hint {:position :bottom}}
-                                      :c [#(vim.cmd "RustLsp codeAction")
-                                          "[C]Action"]
-                                      :C [#(vim.cmd "RustLsp crateGraph")
-                                          "[CR]Graph"]
-                                      :d [#(vim.cmd "RustLsp debuggables")
-                                          "[R]debuggables"]
-                                      :e [#(vim.cmd "RustLsp expandMacro")
-                                          "[R]expandMacro"]
-                                      :D [#(vim.cmd "RustLsp externalDocs")
-                                          "[R]externalDocs"]
-                                      :h [#(vim.cmd "RustLsp hover range")
-                                          "[R]hover"]
-                                      :r [#(vim.cmd "RustLsp runnables")
-                                          "[R]runnables"]
-                                      :l [#(vim.cmd "RustLsp joinLines")
-                                          "[R]joinLines"]
-                                      :m [#(vim.cmd "RustLsp moveItem")
-                                          "[R]moveItem"]
-                                      :o [#(vim.cmd "RustLsp openCargo")
-                                          "[Ro]Cargo"]
-                                      :p [#(vim.cmd "RustLsp parentModule")
-                                          "[R][P]Module"]
-                                      :s [#(vim.cmd "RustLsp ssr") "[R]ssr"]
-                                      :w [#(vim.cmd "RustLsp reloadWorkspace")
-                                          "[Rl]lsp-Reload"]
-                                      :S [#(vim.cmd "RustLsp syntaxTree")
-                                          "[R]syncTree"]
-                                      :f [#(vim.cmd "RustLsp flyCheck")
-                                          "[R]flyCheck"]}}
-                                 {:prefix :<leader>}))
-                   (augroup! localleader-hydras
-                             (autocmd! FileType rust `(rust-hydra)))))
+(nyoom-module-p! rust (hydra-key! :n
+                                  {:m {:hydra true
+                                       :name " Rust"
+                                       :config {:color :teal
+                                                :invoke_on_body true
+                                                :hint {:type :window
+                                                       :position :bottom-middle}}
+                                       :c [#(vim.cmd "RustLsp codeAction")
+                                           "[C]Action"]
+                                       :C [#(vim.cmd "RustLsp crateGraph")
+                                           "[CR]Graph"]
+                                       :d [#(vim.cmd "RustLsp debuggables")
+                                           "[R]debuggables"]
+                                       :e [#(vim.cmd "RustLsp expandMacro")
+                                           "[R]expandMacro"]
+                                       :D [#(vim.cmd "RustLsp externalDocs")
+                                           "[R]externalDocs"]
+                                       :h [#(vim.cmd "RustLsp hover range")
+                                           "[R]hover"]
+                                       :r [#(vim.cmd "RustLsp runnables")
+                                           "[R]runnables"]
+                                       :l [#(vim.cmd "RustLsp joinLines")
+                                           "[R]joinLines"]
+                                       :m [#(vim.cmd "RustLsp moveItem")
+                                           "[R]moveItem"]
+                                       :o [#(vim.cmd "RustLsp openCargo")
+                                           "[Ro]Cargo"]
+                                       :p [#(vim.cmd "RustLsp parentModule")
+                                           "[R][P]Module"]
+                                       :s [#(vim.cmd "RustLsp ssr") "[R]ssr"]
+                                       :w [#(vim.cmd "RustLsp reloadWorkspace")
+                                           "[Rl]lsp-Reload"]
+                                       :S [#(vim.cmd "RustLsp syntaxTree")
+                                           "[R]syncTree"]
+                                       :f [#(vim.cmd "RustLsp flyCheck")
+                                           "[R]flyCheck"]
+                                       :<Esc> [#(print :Exiting) :Exit true]}}
+                                  {:prefix :<leader>} 4))
 
 ;;TODO:: add more utilities and tinker with HT
 (nyoom-module-p! animate
@@ -957,6 +958,9 @@ _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
                    (augroup! localleader-hydras
                              (autocmd! FileType haskell `(haskell-hydra)))))
 
+;; TODO:: Make SubHydras For Swapping and Node Selection
+
+;; fnlfmt: skip
 (nyoom-module-p! swap (hydra-key! :n
                                   {:s {:hydra true
                                        :name :+Swap
@@ -971,36 +975,36 @@ _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
                                        :k [(fn []
                                              ((->> :swap_next
                                                    (. (require :nvim-treesitter.textobjects.swap))) "@parameter.inner"))
-                                           "TS [N] @Outer"]
+                                           "[N] @Inner"]
                                        :j [(fn []
                                              ((->> :swap_previous
                                                    (. (require :nvim-treesitter.textobjects.swap))) "@parameter.inner"))
-                                           "TS [N] @Inner"]
+                                           "[P] @Inner"]
                                        :s [#(vim.cmd :ISwap) :ISwap]
                                        :S [#(vim.cmd :ISwapWith) :ISwapWith]
                                        :w [(fn []
                                              ((->> :go_to_top_node_and_execute_commands
                                                    (. (require :syntax-tree-surfer))) false
-                                                                                                                                                                              ["normal! O"
-                                                                                                                                                                               "normal! O"
-                                                                                                                                                                               :startinsert]))
-                                           "Surf [Top] Node"]
+                                                    ["normal! O"
+                                                     "normal! O"
+                                                     :startinsert]))
+                                           "Edit::[T]Node"]
                                        :n [#(vim.cmd :STSSelectMasterNode)
-                                           "Swap [Cur] Node"]
+                                           "STS::[Cr]Node"]
                                        :N [#(vim.cmd :STSSelectCurrentNode)
-                                           "Surf [Mas] Node"]
+                                           "STS::[Ms]Node"]
                                        :H [#(vim.cmd :STSSelectNextSiblingNode)
-                                           "Surf [N] Sibling"]
+                                           "STS::[N]Sibling"]
                                        :J [#(vim.cmd :STSSelectPrevSiblingNode)
-                                           "Surf [P] Sibling"]
+                                           "STS::[P]Sibling"]
                                        :K [#(vim.cmd :STSSelectParentNode)
-                                           "Surf Parent"]
+                                           "STS::[P]node"]
                                        :L [#(vim.cmd :STSSelectChildNode)
-                                           "Surf Child"]
+                                           "STS::[C]Node"]
                                        :v [#(vim.cmd :STSSwapNextVisual)
-                                           "Surf [N] Swap"]
+                                           "STS::[N]Swap"]
                                        :V [#(vim.cmd :STSSwapPrevVisual)
-                                           "Surf [P] Swap"]
+                                           "STS::[P]Swap"]
                                        :<Esc> [#(print :Exiting) :Exit true]}}
                                   {:prefix :<leader>} 4))
 

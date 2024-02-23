@@ -44,7 +44,7 @@
         :checkers
         diagnostics          ; tasing you for every semicolon you forget
         grammar              ; tasing grammar mistake every you make
-        ;;spell              ; tasing you for misspelling mispelling
+        ; spell              ; tasing you for misspelling mispelling
 
         :tools
         debugger             ; stepping through code, to help you add bugs
@@ -53,15 +53,15 @@
         ; magma              ; tame Jupyter notebooks
         quickfix             ; Monkey Simulator, circa 23 colorized
         overseer             ; Run jobs, for when your too lazy to do your job
-        mason                ; setting your tools in stone
-        otter                ; Need some diagnostic, ask an otter.
+        ;mason               ; Nixified Mason Integration. DevShell hotfixing included
+        quarto               ; Need some diagnostic, ask an otter.
         (browse              ; Im too lazy to open a browser
           +tmp_clone)
         octo                 ; All hail the octussy
         tmux                 ; God, make this shit broken, I fucking swear
         hex                  ; Hex Done Right
         zellij               ; What if everything was written in WASM, jk, useless...
-        ;harpoon              ; With the power of the gods!
+        harpoon              ; With the power of the gods!
         oil                  ; Vinegar Was never a good salid dressing
         eval                 ; run code, run (also, repls)modu
         antifennel           ; for all the fennel haters out there. this ones for you
@@ -70,6 +70,7 @@
         neotest              ; This won't help you pass your Homotopy Exams
         (neogit              ; a git porclain for neovim
           +diffview)         ; a git diff view for neovim
+        ;;galore               ; A notMuch client for neovim
         rgb                  ; creating color strings
         tree-sitter          ; syntax and parsing, sitting in a tree...
 
@@ -88,12 +89,11 @@
         ; nim                ; python + lisp at the speed of c
         (neorg               ; organize your plain life in plain text, the neovim way
           +pretty
-          ;;+headline
           +present
           +export
           +quicknote
           +nabla
-           +roam)              ; Currently bugged
+          +roam)              ; Currently bugged
         ; (org +pretty)        ; WIP: organize your plain life in plain text, the emacs way
         nix                  ; I hereby declare "nix geht mehr!"
         nickel               ; Dhall, but nixified

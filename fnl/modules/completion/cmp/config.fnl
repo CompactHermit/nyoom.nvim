@@ -89,8 +89,6 @@
   (not (vim.tbl_contains ["No matches found" :Searching... "Workspace loading"]
                          entry.completion_item.label)))
 
-;; vim settings
-
 (set! completeopt [:menu :menuone :noselect])
 
 ;; add general cmp sources
@@ -100,25 +98,34 @@
 (table.insert cmp-sources {:name :buffer :group_index 2})
 (table.insert cmp-sources {:name :path :group_index 2})
 
-;(nyoom-module-p! rust   (table.insert cmp-sources {:name :crates :group_index 1}))
+(nyoom-module-p! rust (table.insert cmp-sources {:name :crates :group_index 1}))
+(nyoom-module-p! tree-sitter
+                 (do
+                   ;;(packadd! cmp-treesitter)
+                   (table.insert cmp-sources {:name :treesitter})))
+
 (nyoom-module-p! latex
                  (table.insert cmp-sources {:name :vimtex :group_index 1}))
 
-(nyoom-module-p! neorg (table.insert cmp-sources {:name :neorg :group_index 1}))
-(nyoom-module-p! quarto
-                 (table.insert cmp-sources {:name :otter :group_index 1}))
+(nyoom-module-p! neorg
+                 (do
+                   ;;(packadd! cmp-latexsym)
+                   (doto cmp-sources
+                     (table.insert {:name :neorg :group_index 1})
+                     (table.insert {:name :otter})
+                     (table.insert {:name :latex_symbols :option {:strategy 0}}))))
+
+(nyoom-module-p! overseer
+                 (table.insert cmp-sources {:name :cmp_overseer :group_index 1}))
 
 (nyoom-module-p! eval
                  (table.insert cmp-sources {:name :conjure :group_index 1}))
 
 (nyoom-module-p! lsp (do
-                       (table.insert cmp-sources
-                                     {:name :nvim_lsp :group_index 1})
+                       (table.insert cmp-sources {:name :nvim_lsp})
                        (table.insert cmp-sources
                                      {:name :nvim_lsp_signature_help
                                       :group_index 1})))
-
-;; copilot uses lines above/below current text which confuses cmp, fix:
 
 (fn has-words-before []
   (let [(line col) (unpack (vim.api.nvim_win_get_cursor 0))]
@@ -208,7 +215,7 @@
 
 ;; Enable Completion for vim.ui.select()
 (cmp.setup.cmdline "@"
-                   {:enabled true
+                   {:mapping (cmp.mapping.preset.cmdline)
                     :sources [{: entry_filter
                                :group_index 1
                                :name :fuzzy_path
@@ -224,9 +231,6 @@
             `(fn []
                ((->> :setup
                      (. (require :scissors))) {:snipperDir "~/.config/nvim"}))))
-
-; (autocmd! Filetype *.py '(print \"Hello World\") {:group \"a-nice-group\"})
-; (autocmd! Filetype *.sh '(print \"Hello World\") {:group \"a-nice-group\"}))
 
 (map! [n] :<leader>cse `((->> :editSnippet
                               (. (require :scissors))))

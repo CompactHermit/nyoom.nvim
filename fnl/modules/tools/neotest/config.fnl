@@ -1,14 +1,14 @@
-
 (import-macros {: nyoom-module-p! : command! : packadd!} :macros)
 
 (packadd! neotest-python)
 (packadd! neotest-haskell)
 (packadd! neotest-rust)
-
 (local testings {:adapters [((require :neotest-python) {:dap {:justMyCode false}})
-                            (require :neotest-rust)
-                            ((require :neotest-haskell) {:build_tools [:stack :cabal]
-                                                         :framework [:tasty :hspec]})]
+                            (require :rustaceanvim.neotest)
+                            ;;(require :neotest-rust)
+                            ((require :neotest-haskell) {:build_tools [:cabal]
+                                                         :framework [:tasty
+                                                                     :hspec]})]
                  :build {:enabled true}
                  :diagnostic {:enabled true}
                  :highlights {:adapter_name :NeotestAdapterName
@@ -38,49 +38,56 @@
                          :unknown "?"}
                  :output {:enabled true :open_on_build :short}
                  :status {:enabled true}
-                 :strategies {:integrated {:height 40
-                                           :width 120}}
+                 :strategies {:integrated {:height 40 :width 120}}
+                 ;;:consumers {:overseer (require :neotest.consumers.overseer)}
+                 :overseer {:enabled true :force_default true}
                  :summary {:enabled true
                            :expand_errors true
                            :follow true
                            :mappings {:attach :a
                                       :build :r
-                                      :expand [:<CR>
-                                               :<2-LeftMouse>]
+                                      :expand [:<CR> :<2-LeftMouse>]
                                       :expand_all :e
                                       :jumpto :i
                                       :output :o
                                       :short :O
                                       :stop :u}}})
-(setup :neotest testings)
 
+(setup :neotest testings)
 
 ;; =============================================================== ;;
 (fn Near []
   (vim.cmd "lua require('neotest').run.run(vim.fn.expand('%'))"))
+
 (fn Current []
   (vim.cmd "lua require('neotest').run.run(vim.fn.expand('%'))"))
+
 (fn output []
   (vim.cmd "lua require('neotest').output.open({ enter = true})"))
+
 (fn stop []
   (vim.cmd "lua require('neotest').run.stop()"))
+
 (fn summary []
   (vim.cmd "lua require('neotest').summary.toggle()"))
+
 (fn attach []
   (vim.cmd "lua require('neotest').run.attach()"))
 
 ;; TODO:: Refactor this. There's Probably a better way to do This
 (nyoom-module-p! neotest
- (do
-  (command! TestNear `(Near) {:desc "Neotest Run test"})
-  (command! TestCurrent `(Current) {:desc "Neotest Run Curent file"})
-  (command! TestOutput `(output) {:desc "Neotest Open output"})
-  (command! TestSummary `(summary) {:desc "Neotest Run test"})
-  (command! TestStrat (fn [args]
-                       (let [options [:dap :integrated]]
-                         (if (vim.tbl_contains options args.arg)
-                             ((. (. (require :neotest) :run) :run) {:strategy args.args})
-                             ((. (. (require :neotest) :run) :run) {:strategy :integrated}))))
-            {:desc "Neotest strategen"})
-  (command! TestStop `(stop) {:desc "Neotest Test stop"})
-  (command! TestAttach `(attach))))
+                 (do
+                   (command! TestNear `(Near) {:desc "Neotest Run test"})
+                   (command! TestCurrent `(Current)
+                             {:desc "Neotest Run Curent file"})
+                   (command! TestOutput `(output) {:desc "Neotest Open output"})
+                   (command! TestSummary `(summary) {:desc "Neotest Run test"})
+                   (command! TestStrat
+                             (fn [args]
+                               (let [options [:dap :integrated]]
+                                 (if (vim.tbl_contains options args.arg)
+                                     ((. (. (require :neotest) :run) :run) {:strategy args.args})
+                                     ((. (. (require :neotest) :run) :run) {:strategy :integrated}))))
+                             {:desc "Neotest strategen"})
+                   (command! TestStop `(stop) {:desc "Neotest Test stop"})
+                   (command! TestAttach `(attach))))

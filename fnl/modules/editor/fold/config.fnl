@@ -1,4 +1,9 @@
-(import-macros {: packadd! : set! : map! : nyoom-module-ensure!} :macros)
+(import-macros {: packadd!
+                : set!
+                : map!
+                : nyoom-module-ensure!
+                : autocmd!
+                : augroup!} :macros)
 
 (nyoom-module-ensure! tree-sitter)
 (packadd! promise-async)
@@ -13,60 +18,59 @@
 (map! [n] :zR `(openAllFolds) {:desc "Open all folds"})
 (map! [n] :zM `(closeAllFolds {:desc "Close all folds"}))
 
-(setup :ufo {:provider_selector (fn [bufnr filetype buftype]
-                                  [:treesitter :indent])})
-; "kevinhwang91/nvim-ufo",
-; dependencies = { "kevinhwang91/promise-async" },
-; config = function()
-;       vim.o.foldlevel = 99
-;       vim.o.foldlevelstart = 99
-;       vim.o.foldenable = true
-;
-;       vim.keymap.set("n", "<leader>fo", require("ufo").openAllFolds, { desc = "open all folds"})
-;       vim.keymap.set("n", "<leader>fc", require("ufo").closeAllFolds, { desc = "close all folds"})
-;       vim.keymap.set("n", "<leader>i", "za", { desc = "toggle fold"})
-;
-;       -- Need to disable this plugin in some files. Specifically ones that have custom folds or
-;       -- don't need folds
-;       local ufo_disable_augroup = vim.api.nvim_create_augroup("ufo_disable_augroup", { clear = true})
-;       vim.api.nvim_create_autocmd("BufEnter", {
-;                                                pattern = { "*.norg" },
-;                                                group = ufo_disable_augroup,
-;                                                callback = function()
-;                                                require("ufo").detach()
-;                                                end,})
-;       
-;
-;       require("ufo").setup({
-;                             provider_selector = function()
-;                             return { "treesitter", "indent"}
-;                             end,
-;                             fold_virt_text_handler = function(virtText, lnum, endLnum, width, truncate)
-;                             local newVirtText = {}
-;                             local suffix = ("  %d "):format(endLnum - lnum)
-;                             local sufWidth = vim.fn.strdisplaywidth(suffix)
-;                             local targetWidth = width - sufWidth
-;                             local curWidth = 0
-;                             for _, chunk in ipairs(virtText) do
-;                             local chunkText = chunk[1]
-;                             local chunkWidth = vim.fn.strdisplaywidth(chunkText)
-;                             if targetWidth > curWidth + chunkWidth then
-;                             table.insert(newVirtText, chunk)
-;                             else
-;                             chunkText = truncate(chunkText, targetWidth - curWidth)
-;                             local hlGroup = chunk[2]
-;                             table.insert(newVirtText, { chunkText, hlGroup})
-;                             chunkWidth = vim.fn.strdisplaywidth(chunkText)
-;                             if curWidth + chunkWidth < targetWidth then
-;                             suffix = suffix .. (" "):rep(targetWidth - curWidth - chunkWidth)
-;                             end
-;                             break
-;                             end
-;                             curWidth = curWidth + chunkWidth
-;                             end
-;                             table.insert(newVirtText, { suffix, "MoreMsg"})
-;                             return newVirtText
-;                             end,})
-;       
-;     end,
-;   ,
+(setup :ufo {:provider_selector (fn provider_selector [_bufnr
+                                                       _filetype
+                                                       _buftype]
+                                  [:treesitter])
+             :fold_virt_text_handler (fn [virt-text
+                                          lnum
+                                          end-lnum
+                                          width
+                                          truncate]
+                                       (local new-virt-text {})
+                                       (var suffix
+                                            ;;.........................................  %
+                                            (: "   %d " :format
+                                               (- end-lnum lnum)))
+                                       (local suf-width
+                                              (vim.fn.strdisplaywidth suffix))
+                                       (local target-width (- width suf-width))
+                                       (var cur-width 0)
+                                       (each [_ chunk (ipairs virt-text)]
+                                         (var chunk-text (. chunk 1))
+                                         (var chunk-width
+                                              (vim.fn.strdisplaywidth chunk-text))
+                                         (if (> target-width
+                                                (+ cur-width chunk-width))
+                                             (table.insert new-virt-text chunk)
+                                             (do
+                                               (set chunk-text
+                                                    (truncate chunk-text
+                                                              (- target-width
+                                                                 cur-width)))
+                                               (local hl-group (. chunk 2))
+                                               (table.insert new-virt-text
+                                                             [chunk-text
+                                                              hl-group])
+                                               (set chunk-width
+                                                    (vim.fn.strdisplaywidth chunk-text))
+                                               (when (< (+ cur-width
+                                                           chunk-width)
+                                                        target-width)
+                                                 (set suffix
+                                                      (.. suffix
+                                                          (: " " :rep
+                                                             (- (- target-width
+                                                                   cur-width)
+                                                                chunk-width)))))
+                                               (lua :break)))
+                                         (set cur-width
+                                              (+ cur-width chunk-width)))
+                                       (table.insert new-virt-text
+                                                     [suffix :MoreMsg])
+                                       new-virt-text)})
+
+(do
+  (vim.api.nvim_create_augroup :ufo_disable_augroup {:clear true})
+  (autocmd! :BufEnter :*.norg `((->> :detach (. (autoload :ufo))))
+            {:group :ufo_disable_augroup}))

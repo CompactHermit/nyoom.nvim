@@ -104,63 +104,10 @@
                    (set dap.configurations.c lldb-configs)
                    (set dap.configurations.cpp
                         [(. (autoload :nvim-dap-rr) :get_config)])
-                   (set dap.configurations.c dap.configurations.cpp)))
+                   (table.insert dap.configurations.c dap.configurations.cpp)))
 
-(fn get_rust_gdb []
-  "get_rust_gdb:: _ -> <Path::binary>
-          Returns the path to rust-gdb based off the toolchain location:
-          Nix:: We set an environment variable pointing to the toolchain Directory
-          _ :: IDK really, we just hard query lmao, patzers"
-  (local toolchain (match (os.getenv :RUST_BIN)
-                     (where c1 (not= c1 nil)) (string.gsub (os.getenv :RUST_BIN)
-                                                           "\n" "")
-                     _ (string.gsub (vim.fn.system "rustc --print sysroot")
-                                    "\n" "")))
-  (local rustgdb (.. toolchain :/rust-gdb))
-  rustgdb)
-
-(fn get_program []
-  "TODO:: REFACTOR THIS SHIT
-    Get_Program::_ ->[]"
-  (let [pickers (autoload :telesope.pickers)
-        conf (. (autoload :telescope.config) :values)
-        actions (autoload :telescope.actions)
-        action-state (autoload :telescope.actions.state)
-        finders (autoload :telescope.finders)]
-    (coroutine.create (fn [coro]
-                        (let [opts {}]
-                          (: (pickers.new opts
-                                          {:attach_mappings (fn [buffer-number]
-                                                              (actions.select_default:replace (fn []
-                                                                                                (actions.close buffer-number)
-                                                                                                (coroutine.resume coro
-                                                                                                                  (. (action-state.get_selected_entry)
-                                                                                                                     1))))
-                                                              true)
-                                           :finder (finders.new_oneshot_job [:fd
-                                                                             :--exclude
-                                                                             :.git
-                                                                             :--no-ignore
-                                                                             :--type
-                                                                             :x]
-                                                                            {})
-                                           :prompt_title "Path to executable"
-                                           :sorter (conf.generic_sorter opts)})
-                             :find))))))
-
-(nyoom-module-p! rust
-                 (doto dap.configurations.rust
-                   (set {})
-                   (table.insert [(. (require :nvim-dap-rr) :get_rust_config)]))
-                 ; (table.insert [{:name "(GDB) Launch file"
-                 ;                 :type :cppdbg
-                 ;                 :request :launch
-                 ;                 :program (get_program)
-                 ;                 :miDebuggerPath (get_rust_gdb)
-                 ;                 :cwd (vim.fn.getcwd)
-                 ;                 :stopAtEntry true}]))
-                 (let! rustaceanvim {:dap {:disable true}}))
-
+;
+;
 ;; VIRT TEXT
 ((->> :setup (. (require :nvim-dap-virtual-text))))
 

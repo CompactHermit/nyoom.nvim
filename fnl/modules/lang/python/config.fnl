@@ -13,9 +13,8 @@
                    (command! GetVenv
                              "lua require('swenv.api').get_current_venv()"
                              {:desc "Get Current Poetry Venv"})))
+
 ; {
-;     "benlubas/molten-nvim",
-;     -- dependencies = { "3rd/image.nvim" },
 ;     dependencies = { "benlubas/image.nvim", dev = true },
 ;     dev = true,
 ;     build = ":UpdateRemotePlugins",

@@ -6,5 +6,4 @@
                :defer nvim-dap
                :requires [(pack :rcarriga/nvim-dap-ui {:opt true})
                           (pack :mfussenegger/nvim-dap-python {:opt true})
-                          (pack :jbyuki/one-small-step-for-vimkind {:opt true})
-                          (pack :jonboh/nvim-dap-rr {:opt true})]})
+                          (pack :jbyuki/one-small-step-for-vimkind {:opt true})]})

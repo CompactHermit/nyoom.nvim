@@ -16,5 +16,3 @@ updated: 2023-12-01T11:24:38-0500
    - (?) Create Custom Module/Macro Snippets Using Luasnips
    - (-) Fix `nix run` issue
    -- Currently it fails to load sync if the `/tmp` directory doesn't exist. This Makes storing the luajit cache suboptimal, as before I was simply just going to pass the bytecompiled code into a DRV, and just run `nvim -u ${drv}/init.lua`.
-
-

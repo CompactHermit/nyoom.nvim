@@ -37,6 +37,13 @@
           settings = { treefmt.package = config.treefmt.build.wrapper; };
           hooks = {
             treefmt = mkHook "treefmt" { enable = true; };
+            norg-fmt = mkHook "norg-fmt" {
+              enable = false;
+              name = "Norg-fmt";
+              entry = "${self'.packages.norg-fmt}/bin/norg-fmt";
+              files = ".norg$";
+              fail_fast = true;
+            };
             fnl-lint = mkHook "fnl-linter" {
               enable = false;
               name = "Fennel Linter";

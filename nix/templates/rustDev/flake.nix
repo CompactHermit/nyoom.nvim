@@ -87,6 +87,8 @@
             buildInputs = with pkgs; [
               sccache
               evcxr
+              gdb
+              vscode-extensions.vadimcn.vscode-lldb.adapter
               (vscode-extensions.ms-vscode.cpptools.overrideAttrs
                 (_: { meta.unfree = false; }))
               rr-unstable
@@ -96,10 +98,14 @@
               pre-commit.devShell
             ];
             shellHook = let
-              storedCargoConfig = pkgs.writeText "config.toml" ''
-                [build]
-                rustc-wrapper = "${pkgs.sccache}/bin/sccache"
-              '';
+              storedCargoConfig = pkgs.writeText "config.toml" # toml
+                ''
+                  [target.x86_64-unknown-linux-gnu]
+                  linker = "${pkgs.clang}/bin/clang"
+                  rustflags = ["-C", "link-arg=--ld-path=${pkgs.mold}/bin/mold"]
+                  [build]
+                  rustc-wrapper = "${pkgs.sccache}/bin/sccache"
+                '';
               CARGO_CONFIG_PATH = CARGO_HOME + "/config.toml";
               # bash
             in ''
@@ -108,6 +114,7 @@
             '';
             RUST_SRC_PATH =
               "${nightlyToolchain.availableComponents.rust-src}/lib/rustlib/src/rust/library";
+            RUST_BIN = "${nightlyToolchain.availableComponents.rust-src}";
             # LD_LIBRARY_PATH = lib.makeLibraryPath [];
             CARGO_HOME = "/tmp/.cargo_${name}";
             SCCACHE_DIR = "/tmp/.sccache_${name}";

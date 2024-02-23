@@ -15,7 +15,7 @@
   get_codeblock:: _ -> Bool
       A brutish way to get norg-codeblocks. Essentially just uses a long query on the
   "
-  true)
+  (let [node (vim.treesitter.node)]))
 
 (augroup! OtterActivate
           (autocmd! :FileType [:*.md "*." :*.org]

@@ -1,5 +1,11 @@
-(import-macros {: packadd! : nyoom-module-p! : map! : custom-set-face! : let! : autocmd! : augroup!}
-               :macros)
+(import-macros {: packadd!
+                : nyoom-module-p!
+                : map!
+                : custom-set-face!
+                : let!
+                : autocmd!
+                : augroup!} :macros)
+
 ;; (local utils (require :util.treesitter))
 
 ;; Conditionally enable leap-ast
@@ -118,7 +124,7 @@
 ;; load dependencies
 
 ;(packadd! nvim-ts-rainbow2)
-(packadd! nvim-ts-refactor)
+;; (packadd! nvim-ts-refactor)
 (packadd! nvim-treesitter-textobjects)
 (packadd! ts-node-action)
 
@@ -131,7 +137,6 @@
 (custom-set-face! :TSRainbowGreen [] {:fg "#8f8b8b" :bg :NONE})
 (custom-set-face! :TSRainbowViolet [] {:fg "#ada8a8" :bg :NONE})
 (custom-set-face! :TSRainbowCyan [] {:fg "#878d96" :bg :NONE})
-
 
 ;; ┌─────────────────────────┬
 ;; │  Treesitter Autocmds::  │

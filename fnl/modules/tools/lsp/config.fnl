@@ -23,7 +23,8 @@
 
 (fn format! [bufnr ?async?]
   (vim.lsp.buf.format {: bufnr
-                       :filter #(not (vim.tbl_contains [:jsonls :tsserver] $.name))
+                       :filter #(not (vim.tbl_contains [:jsonls :tsserver]
+                                                       $.name))
                        :async ?async?}))
 
 (fn on-attach [client bufnr]
@@ -47,13 +48,12 @@
                      (buf-map! [n] :gt goto-type-definition!)
                      (buf-map! [n] :<leader>gr goto-references!)
                      (buf-map! [n] :gr goto-references!)))
-
   ;; Enable lsp formatting if available
   (nyoom-module-p! format.+onsave
-        (when (client.supports_method :textDocument/formatting)
-          (augroup! format-before-saving (clear! {:buffer bufnr})
-                    (autocmd! BufWritePre <buffer> #(format! bufnr true)
-                              {:buffer bufnr})))))
+                   (when (client.supports_method :textDocument/formatting)
+                     (augroup! format-before-saving (clear! {:buffer bufnr})
+                               (autocmd! BufWritePre <buffer>
+                                         #(format! bufnr true) {:buffer bufnr})))))
 
 ;; LSP Documents Types::
 
@@ -79,7 +79,26 @@
 
 ;; conditional servers::
 
-(nyoom-module-p! cc (tset lsp-servers :clangd {:cmd [:clangd]}))
+(nyoom-module-p! cc
+                 (do
+                   (local clangd_commands
+                          [(or (os.getenv :CLANGD_PATH) :clangd)
+                           :--background-index
+                           :--clang-tidy
+                           :--completion-style=detailed
+                           :--header-insertion=never
+                           :--header-insertion-decorators
+                           :--all-scopes-completion
+                           :--enable-config
+                           :--pch-storage=disk
+                           :--log=info])
+                   (match (os.getenv :GCC_PATH)
+                     (where __val (not= __val nil)) (table.insert clangd_commands
+                                                                  (: "--query-driver=%s"
+                                                                     :format
+                                                                     __val))
+                     _ nil)
+                   (tset lsp-servers :clangd {:cmd clangd_commands})))
 
 (nyoom-module-p! csharp (tset lsp-servers :omnisharp {:cmd [:omnisharp]}))
 

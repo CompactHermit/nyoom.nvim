@@ -120,4 +120,12 @@
                   (hydra-key! mode rhs
                               (vim.tbl_extend :force opts {:prefix lhs})))))))))
 
+; (lambda sub-hydra! []
+;   "
+;     sub-hydra!:: <VarArgs> -> Hydra::Hydra!
+;     Returns a subhydra. 
+;     Inspired from vsedov's `innerModule` design
+;   "
+;   (nil))
+
 {: hydra-key!}

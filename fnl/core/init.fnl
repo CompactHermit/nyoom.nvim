@@ -76,6 +76,7 @@
       (set! noswapfile)
       ;; external config files
       (set! exrc)
+      (set! shell :nu)
       ;; search and replace
       (set! ignorecase)
       (set! smartcase)
@@ -88,10 +89,6 @@
       (set! diffopt+ "linematch:60")
       (set! splitkeep :screen)
       ;; nightly only options
-      (local {: nightly?} (autoload :core.lib))
-      (if (nightly?)
-          (do))
-            
       ;; gui options
       (set! list)
       (set! fillchars {:eob " "

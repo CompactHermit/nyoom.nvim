@@ -12,13 +12,13 @@
 ;; rename groups to mimick doom
 
 (register {:<leader><tab> {:name :+workspace}})
-(register {:<leader>a {:name :+Harpoooon}})
+(register {:<leader>a {:name "+Hydra::Harpoooon"}})
 (register {:<leader>b {:name :+buffer}})
 (register {:<leader>c {:name :+code}})
-(register {:<leader>e {:name :+Flash}})
+(register {:<leader>e {:name "+Hydra::Flash"}})
 (register {:<leader>f {:name :+file}})
-(register {:<leader>fe {:name :+movements}})
-(register {:<leader>g {:name :+git}})
+(register {:<M-s> {:name :+flash}})
+(register {:<leader>g {:name "+Hydra::git"}})
 (register {:<leader>h {:name :+help}})
 (register {:<leader>hn {:name :+nyoom}})
 (register {:<leader>i {:name :+insert}})

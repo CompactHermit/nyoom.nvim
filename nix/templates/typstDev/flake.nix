@@ -1,35 +1,21 @@
 {
   description = "An Overengineered Notes Set:: For slacking off on my thesis";
-  outputs = {self, ...} @ inputs:
-    inputs.parts.lib.mkFlake {inherit inputs;} {
-      systems = ["x86_64-linux" "aarch64-linux"];
+  outputs = { self, ... }@inputs:
+    inputs.parts.lib.mkFlake { inherit inputs; } {
+      systems = [ "x86_64-linux" "aarch64-linux" ];
       debug = true;
       imports = with inputs;
-        [
-          pch.flakeModule
-          treefmt.flakeModule
-        ]
-        ++ [
-          ./lib.nix
-        ];
-      perSystem = {
-        self',
-        lib,
-        config,
-        pkgs,
-        ...
-      }: {
+        [ pch.flakeModule treefmt.flakeModule ] ++ [ ./lib.nix ];
+      perSystem = { self', lib, config, pkgs, ... }: {
         _module.args.pkgs = import inputs.nixpkgs {
           system = "x86_64-linux";
-          overlays = [inputs.typst.overlays.default];
+          overlays = [ inputs.typst.overlays.default ];
         };
-        packages =
-          {
-            typst-lsp-wrapped = self.lib.makeWrapper "typst-lsp";
-            typst-wrapped = self.lib.makeWrapper "typst";
-            typst-dev-wrapped = self.lib.makeWrapper "typst-dev";
-          }
-          // (self.lib.import' ./src self pkgs);
+        packages = {
+          typst-lsp-wrapped = self.lib.makeWrapper "typst-lsp";
+          typst-wrapped = self.lib.makeWrapper "typst";
+          typst-dev-wrapped = self.lib.makeWrapper "typst-dev";
+        } // (self.lib.import' ./src self pkgs);
 
         treefmt = {
           projectRootFile = "flake.nix";
@@ -41,18 +27,16 @@
 
         pre-commit = {
           settings = {
-            settings = {
-              treefmt.package = config.treefmt.build.wrapper;
-            };
+            settings = { treefmt.package = config.treefmt.build.wrapper; };
             hooks = {
               treefmt.enable = true;
               typstfmt = {
                 enable = true;
                 name = "Typst Fmt Hook";
                 entry = "typstfmt";
-                files = "\.typ$";
-                types = ["text"];
-                excludes = ["\.age"];
+                files = ".typ$";
+                types = [ "text" ];
+                excludes = [ ".age" ];
                 language = "system";
               };
             };
@@ -62,12 +46,17 @@
         devShells = {
           default = pkgs.mkShell {
             name = "Awooga!";
-            buildInputs = with pkgs; [typst-fmt] ++ (with self'.packages; [typst-lsp-wrapped typst-dev-wrapped typst-wrapped]);
+            buildInputs = with pkgs;
+              [ typst-fmt ] ++ (with self'.packages; [
+                typst-lsp-wrapped
+                typst-dev-wrapped
+                typst-wrapped
+              ]);
             inputsFrom = with config; [
               treefmt.build.devShell
               pre-commit.devShell
             ];
-            packages = with pkgs; [just];
+            packages = with pkgs; [ just ];
           };
         };
       };

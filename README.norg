@@ -3,18 +3,10 @@ title: index
 id: 42589f53-46ed-411d-88db-116795432add
 workspace: default
 created: 2023-12-09T14:27:12-0500
-updated: 2024-01-29T15:58:58-0500
+updated: 2024-02-21T11:58:04-0500
 @end
 
 * TODOS::
-  - (x) Secondary Tasks
-  -- (x) Fix HLS issues with haskell-flake
-  -- (_) Rewrite `+format` to use [Conform]
-
-  #time.due {@ Sunday 8 October 2023}#color 
-  - (x) Fix Nix Flake
-  -- (x) Make App 
-
   #contexts Someday
   - (-) Fixup AppName using nix instead of the script.
   - ( ) Nyoom CMD::
@@ -22,18 +14,25 @@ updated: 2024-01-29T15:58:58-0500
   -- (_) Find way to force Hotpot to use A /tmp directory instead of XDG_DATA_DIR
   --- (x) Just have Neovim Run with {! https://github.com/konradmalik/neovim-flake/blob/main/packages/neovim-pde/default.nix}[XDG_CACHE_DIR] set to /tmp
 
-  #contexts GTD
+  #contexts GTD::Next
+  - ( ) CI:: Fnl -> Busted Tests?
+  -- (-) Write Busted Tests for macros and inbuilt functions (e.g:: coogler search?)
+  - ( ) CI:: FMT::
+  -- (=) Fix nixfmt bug:: `/*<lang>*/`  -> `#<lang>` should be done (maybe a potential PR?)
+  -- (=) fnl-linter bug:: certain options are ignored, will need to manually patch em %(maybe use C-ffi's or RIIR?)%
+  -- (?) Norg-fmt:: Wait for {!&gh nvim-neorg/norg-fmt}[Update] 
+
+  #contexts GTD::Inbox
   - (-) Nfnl Port::
-  -- (=) The Actual Port:;
+  -- (=) The Actual Port: %Eventually(TM)%
   --- ( ) Macro's Rewrite
-  --- ( ) Packer -> Pckr
-  -- (=) Mlua Bindings for fennel
-  -- (x) CI:: Fnl --> Lua action Via Pre-commit-hook
+  --- ( ) Packer -> Custom InHouse Package Loading (using nix for management and fennel to load)
+  ---- (?) Global Autocmds?
+  ---- (?) ReWrite (use-package!) Macro to just packadd the object on exec
+  - (x) CI:: Fnl --> Lua action Via Pre-commit-hook
+  - (-) Hydra:: Add Rust Subhydra:: Rustacean + Crates
+  -- (!) Hydra:: Add SubHydras
 
 * inspiration::
   %Why doesn't neorg have tables??%
   - {!&gh konradmalik/neovim-flake}[Konradmalik]
-
-  @code rust
-  fn main(){}
-  @end

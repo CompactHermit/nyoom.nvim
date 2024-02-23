@@ -16,13 +16,6 @@
 
 ;; NOTE:: Want more Hydra Binds
 (map! [n] ";" ":" {:desc :vim-ex})
-;;; z
-
-;;; g
-
-;;; <leader>
-
-;; RET jump to bookmark
 
 ;; * LSP symbols in project (telescope)
 
@@ -214,8 +207,7 @@
                    ;; l +lsp
                    (map! [n] :<leader>ck
                          `(vim.lsp.buf.code_action {:source {:organizeImports true}})
-                         {:desc "LSP Organize Imports"})
-                   (map! [n] :<leader>cr ":IncRename " {:desc "LSP Rename"})))
+                         {:desc "LSP Organize Imports"})))
 
 (map! [n] :<leader>cw "<cmd>%s/\\s\\+$//e<CR>"
       {:desc "Delete trailing whitespace"})

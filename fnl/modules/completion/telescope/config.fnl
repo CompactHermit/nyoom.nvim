@@ -146,8 +146,8 @@
                                    :height 0.8
                                    :preview_cutoff 120}
                    :mappings _mappings
-                   ;; TODO:: add custom pickers for Telescope Browser/ Buffers/ Tabs, e.g: deletion and such
-                   :pickers {:oldfiles {:prompt_title "Recent files"}}}})
+                   :pickers {:oldfiles {:prompt_title "Recent files"}
+                             :help_tags {:theme :ivy}}}})
 
 ;; Load extensions
 (packadd! telescope-ui-select.nvim)
@@ -211,25 +211,3 @@
                                             {:desc "Local diagnostics"})
                                       (map! [n] :<leader>cX open-diag-float!
                                             {:desc "Project diagnostics"})))))
-
-; local colors = require("current_color_Scheme").get_palete()
-; local TelescopeColor = {
-;                         	TelescopeMatching = { fg = colors.flamingo },
-;                         	TelescopeSelection = { fg = colors.text, bg = colors.surface0, bold = true },
-;
-;                         	TelescopePromptPrefix = { bg = colors.surface0 },
-;                         	TelescopePromptNormal = { bg = colors.surface0 },
-;                         	TelescopeResultsNormal = { bg = colors.mantle },
-;                         	TelescopePreviewNormal = { bg = colors.mantle },
-;                         	TelescopePromptBorder = { bg = colors.surface0, fg = colors.surface0 },
-;                         	TelescopeResultsBorder = { bg = colors.mantle, fg = colors.mantle },
-;                         	TelescopePreviewBorder = { bg = colors.mantle, fg = colors.mantle },
-;                         	TelescopePromptTitle = { bg = colors.pink, fg = colors.mantle },
-;                         	TelescopeResultsTitle = { fg = colors.mantle },
-;                         	TelescopePreviewTitle = { bg = colors.green, fg = colors.mantle },}
-;
-;
-; for hl, col in pairs(TelescopeColor) do
-;   	vim.api.nvim_set_hl(0, hl, col)
-; end
-;

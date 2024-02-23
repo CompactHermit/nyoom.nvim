@@ -1,91 +1,5 @@
-;; TODO:: Move these over to utility folder
-
-;; NOTE: it would just be better to create a hydra-utils file, IMO
-(local default-terminal 1)
-(local input-prompt "enter the command: cmd >")
-(local terminal-prompt "Enter a terminal Number ")
-;; Tmux/Harpoon Util functions
-(local cache {:command "ls -a" :tmux {:selected_plane ""}})
-(local use_tmux_or_normal
-       {:harpoon {:goto_harpoon false :use_tmux_or_normal :tmux}})
-
-;; defines container for tmux
-(fn plane []
-  (let [data (vim.fn.system "tmux list-panes")
-        lines (vim.split data "\n")
-        container {}]
-    (each [_ line (ipairs lines)]
-      (local (output output-2) (line:match "^(%d+):.*(%%%d+)"))
-      (when (and (and (not= output nil) (not= output-2 nil)) (not= output :1))
-        (table.insert container (.. output " : " output-2))))
-    (local unicode ["Σ" "Φ" "Ψ" "λ" "Ω"])
-    (each [i symbol (ipairs unicode)]
-      (table.insert container (.. symbol " : " i)))
-    container))
-
-(fn tmux-goto [term]
-  (if (and (not= (vim.fn.getenv :TMUX) vim.NIL) use_tmux_or_normal)
-      ((->> :gotoTerminal
-            (. (require :harpoon.tmux))) term)
-      ((->> (. (require :harpoon.term) :gotoTerminal)) term)))
-
-(fn terminal-send [term cmd]
-  (var module nil)
-  (local goto-func :gotoTerminal)
-  (if (not= (vim.fn.getenv :TMUX) vim.NIL)
-      (do
-        (set module (or (and (string.find term "%%") :harpoon.tmux)
-                        :harpoon.tmux))
-        (when (not (string.find term "%%"))
-          (set-forcibly! term (tonumber term))))
-      (set module :harpoon.term))
-  ((. (require module) :sendCommand) term cmd)
-  (when (= use_tmux_or_normal.goto_harpoon true)
-    (vim.defer_fn (fn []
-                    ((. (require module) goto-func) term))
-      (or (and (string.find module :tmux) 500) 1000))))
-
-(fn handle-tmux []
-  (let [data (plane)]
-    (var selected-plane cache.tmux.selected_plane)
-    (when (= selected-plane "")
-      (local filtered (vim.tbl_filter (fn [item] (string.find item "%%")) data))
-      (set selected-plane
-           (or (and (> (length filtered) 0)
-                    (. (vim.split (. filtered 1) " : ") 2))
-               (. (vim.split (. data 1) " : ") 2))))
-    (set cache.tmux.selected_plane selected-plane)
-    (table.insert data (.. "0: cache : " selected-plane))
-    (table.sort data (fn [a b] (< (a:lower) (b:lower))))
-    (vim.ui.select data {:prompt "Select a Plane "}
-                   (fn [selected-item]
-                     (let [selected-plane (or (and (= selected-item :cache)
-                                                   cache.tmux.selected_plane)
-                                              (. (vim.split selected-item " : ")
-                                                 2))]
-                       (set cache.tmux.selected_plane
-                            (or (and (string.find selected-plane "%%")
-                                     selected-plane)
-                                (tonumber selected-plane)))
-                       (set cache.command
-                            (or (and (string.find cache.command "%D")
-                                     cache.command)
-                                (tonumber cache.command)))
-                       (terminal-send cache.tmux.selected_plane cache.command))))))
-
-(fn handle-non-tmux []
-  (vim.ui.input {:default default-terminal :prompt terminal-prompt}
-                (fn [terminal-number]
-                  (when (not (string.find terminal-number "%D"))
-                    (local term (tonumber terminal-number))
-                    (terminal-send term cache.command)))))
-
-(fn handle-command-input [command]
-  (set cache.command (or (and (not= command "") command) cache.command))
-  (handle-tmux))
-
 ;;===============================================================;;
-;;Octo-puss;;;;;;;;;;
+;;Octo
 (local choice_edge_case {:all ""})
 (local defaults {:repo :CompactHermit
                  :pr :all
@@ -299,16 +213,10 @@
 
 ;;===============================================================;;
 
-{: plane
- : test_class
+{: test_class
  : test_method
  : debug_selection
- : tmux-goto
- : terminal-send
  : treejump
- : handle-tmux
- : handle-non-tmux
- : handle-command-input
  : jump_window
  : win_select
  : tree_bounce

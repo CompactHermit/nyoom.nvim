@@ -24,7 +24,6 @@
        :auto_reload_compiled false
        :display {:non_interactive headless}})
 
-
 ;(echo! "Compiling Nyoom Doctor")
 ; (build (vim.fn.stdpath :config) {:verbosity 0}
 ;        (.. (vim.fn.stdpath :config) :/fnl/core/doctor.fnl)
@@ -39,7 +38,7 @@
 (use-package! :nvim-lua/plenary.nvim {:module :plenary})
 (use-package! :MunifTanjim/nui.nvim {:module :nui})
 (use-package! :nyoom-engineering/oxocarbon.nvim)
-(use-package! :EdenEast/nightfox.nvim)
+;;(use-package! :EdenEast/nightfox.nvim)
 
 ;; include modules
 

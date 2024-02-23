@@ -1,6 +1,8 @@
-(import-macros {: packadd! : nyoom-module-p! : nyoom-module-ensure!} :macros)
+(import-macros {: packadd! : nyoom-module-p! : autocmd! : nyoom-module-ensure!}
+               :macros)
 
 ;; conditional modules
+; (packadd! :neorg)
 (packadd! :neorg-exec)
 (packadd! :neorg-telescope)
 (packadd! :neorg-timelog)
@@ -49,11 +51,18 @@
         :core.keybinds {:config {:default_keybinds true
                                  :neorg_leader :<leader>n
                                  :hook (fn [keybinds]
+                                         ;; Wezterm things
+                                         (keybinds.remap :norg :i :<M-CR>
+                                                         :<S-CR>)
                                          (keybinds.map_event_to_mode :norg
                                                                      {:n [[(neorg_leader :lt)
                                                                            :core.integrations.telescope.find_aof_tasks]
                                                                           [(neorg_leader :lc)
                                                                            :core.integrations.telescope.find_context_tasks]
+                                                                          [(neorg_leader :lh)
+                                                                           :core.integrations.telescope.find_header_backlinks]
+                                                                          [(neorg_leader :lb)
+                                                                           :core.integrations.telescope.find_backlinks]
                                                                           [(neorg_leader :in)
                                                                            :core.itero.next-iteration]
                                                                           [(neorg_leader :ip)
@@ -105,7 +114,6 @@
 (packadd! :neorg-roam.nvim)
 (nyoom-module-p! neorg.+roam
                  (do
-                   (packadd! :neorg-roam.nvim)
                    (tset neorg-modules :core.integrations.roam
                          {:config {:keymaps {:select_prompt :<c-space>
                                              :insert_link :<leader>ncl
@@ -169,3 +177,8 @@
                                                                  :filetypes [:norg]}}})
 
 (setup :neorg {:load neorg-modules})
+; (do
+;   (vim.api.nvim_create_augroup :NeorgSetup {:clear true})
+;   (autocmd! Filetype :*.norg
+;             `((->> :setup (. (require :neorg))) {:load neorg-modules})
+;             {:group :NeorgSetup}))

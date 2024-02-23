@@ -14,6 +14,7 @@ result
 target/
 packages.json
 tags
+TAGS
 
 # Tests/Hooks/Checks::
 .direnv/
