@@ -102,7 +102,7 @@
 (nyoom-module-p! tree-sitter
                  (do
                    ;;(packadd! cmp-treesitter)
-                   (table.insert cmp-sources {:name :treesitter})))
+                   (table.insert cmp-sources {:name :treesitter :group_index 2})))
 
 (nyoom-module-p! latex
                  (table.insert cmp-sources {:name :vimtex :group_index 1}))
@@ -116,7 +116,7 @@
                      (table.insert {:name :latex_symbols :option {:strategy 0}}))))
 
 (nyoom-module-p! overseer
-                 (table.insert cmp-sources {:name :cmp_overseer :group_index 1}))
+                 (table.insert cmp-sources {:name :cmp_overseer :group_index 2}))
 
 (nyoom-module-p! eval
                  (table.insert cmp-sources {:name :conjure :group_index 1}))
@@ -125,7 +125,7 @@
                        (table.insert cmp-sources {:name :nvim_lsp})
                        (table.insert cmp-sources
                                      {:name :nvim_lsp_signature_help
-                                      :group_index 1})))
+                                      :group_index 2})))
 
 (fn has-words-before []
   (let [(line col) (unpack (vim.api.nvim_win_get_cursor 0))]

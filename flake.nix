@@ -2,7 +2,7 @@
   description = "Nyoom Interfaces with Nix";
 
   outputs = { self, parts, ... }@inputs:
-    parts.lib.mkFlake { inherit inputs; } {
+    parts.lib.mkFlake { inherit inputs; } ({ flake-parts-lib, ... }: {
       systems =
         [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
       imports = [ ./nix/tests ];
@@ -18,13 +18,28 @@
                 Welcome ya bloated fuck, ur building a devshell for ${name}, enjoy it .
               '';
             }));
+        flake-module = let inherit (flake-parts-lib) importApply withSystem;
+        in { flakeModule = importApply ./nix/modules { inherit withSystem; }; };
       };
       perSystem = { self', lib, pkgs, config, system, ... }:
         let
+          l = lib // builtins;
           inherit (pkgs.vimUtils) buildVimPlugin;
           inherit (pkgs.neovimUtils) makeNeovimConfig grammarToPlugin;
-
-          l = lib // builtins;
+          __additional-parsers = l.genAttrs [
+            "cabal"
+            #"norg" # Note::(Hermit) We need to symlink the queries along with neorg's plugin.
+            "norg-meta"
+            "typst"
+            "just"
+            "nim"
+            #"nu"
+          ] (x:
+            (pkgs.tree-sitter.buildGrammar {
+              language = x;
+              src = inputs."tree-sitter-${x}";
+              version = "${inputs."tree-sitter-${x}".shortRev}";
+            }));
           mkNeovimPlugin = src: pname: __extraOpts: __opt: {
             plugin = buildVimPlugin ({
               inherit pname src;
@@ -32,21 +47,6 @@
             } // __extraOpts);
             optional = __opt;
           };
-          grammar = pkgs.tree-sitter.buildGrammar;
-          __mkLuaRock = src: deps:
-            pkgs.callPackage ({ buildLuarocksPackage, fetchgit, lua, luaOlder
-              , luarocks-build-rust-mlua, }:
-              { __useRust ? false, }:
-              buildLuarocksPackage {
-                pname = "${src}";
-                version =
-                  inputs."${src}".lastModifiedDate; # TODO::(Hermit)<02/07> Find a better way to add versions from the luarockSpec
-                src = inputs."${src}";
-                knownrockspec = { };
-                disabled = (luaOlder "5.1");
-                propagatedBuildInputs = [ lua ] ++ (l.mkIf __useRust [ ]);
-              }) { };
-
           NeovimConfig = makeNeovimConfig {
             withPython3 = true;
             extraLuaPackages = p: [ p.luarocks p.magick ];
@@ -59,15 +59,13 @@
                     pkgs.vimPlugins.nvim-treesitter.withAllGrammars
                     (map grammarToPlugin
                       (pkgs.vimPlugins.nvim-treesitter.allGrammars
-                        # ((__filter (x: __match ".*(norg).*" x.name == null)
-                        #   pkgs.vimPlugins.nvim-treesitter.allGrammars)
                         ++ (with self'.packages; [
                           cabal
                           just
                           nim
                           norg-meta
                           #norg
-                          nu
+                          #nu
                           typst
                         ])))
                   ];
@@ -89,6 +87,7 @@
                   "nvim-scissors"
                   "luasnip_snippets"
                   "nvim-dap-virtual-text"
+                  "nu-syntax"
                   "molten"
                 ]) ++ (map (x: mkNeovimPlugin inputs."${x}" x { } true) [
                   "neorg-telescope"
@@ -97,7 +96,9 @@
                   "cmp-latexsym"
                   "galore"
                   "nvim-dap-rr"
+                  "smuggler"
                   "actions-preview"
+                  "ts-error-translator"
                   "gitconflict"
                   "gitignore"
                   "otter"
@@ -165,8 +166,8 @@
             overlays = [
               inputs.rocks.overlays.default
               (_: super: {
-                tree-sitter =
-                  inputs.tree-sitter-0290.legacyPackages.${system}.tree-sitter;
+                # tree-sitter =
+                #   inputs.tree-sitter-0290.legacyPackages.${system}.tree-sitter;
                 neovim-custom = pkgs.wrapNeovimUnstable
                   (pkgs.neovim-unwrapped.overrideAttrs (oa: {
                     src = inputs.nvim-git;
@@ -244,20 +245,7 @@
                 XDG_CACHE_HOME=/tmp/nyoom ${l.getExe pkgs.neovim-custom} "$@"
               '';
             };
-          } // l.genAttrs [
-            "cabal"
-            #"norg" # Note::(Hermit) We need to symlink the queries along with neorg's plugin.
-            "norg-meta"
-            "typst"
-            "just"
-            "nim"
-            "nu"
-          ] (x:
-            (grammar {
-              language = x;
-              src = inputs."tree-sitter-${x}";
-              version = "${inputs."tree-sitter-${x}".shortRev}";
-            }));
+          } // __additional-parsers;
           apps = {
             sync = {
               type = "app";
@@ -280,7 +268,7 @@
             };
           };
         };
-    };
+    });
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -324,7 +312,7 @@
       inputs.flake-parts.follows = "parts";
       inputs.pre-commit-hooks.follows = "pch";
     };
-    tree-sitter-0290.url = "github:polarmutex/nixpkgs/update-treesitter";
+    #tree-sitter-0290.url = "github:polarmutex/nixpkgs/update-treesitter";
     cmp-latexsym = {
       url = "github:kdheepak/cmp-latex-symbols";
       flake = false;
@@ -369,6 +357,10 @@
       url = "github:dagle/galore";
       flake = false;
     };
+    hover-nvim = {
+      url = "github:lewis6991/hover.nvim";
+      flake = false;
+    };
     neorg = {
       url = "github:nvim-neorg/neorg";
       flake = false;
@@ -389,6 +381,14 @@
       url = "github:theHamsta/nvim-dap-virtual-text";
       flake = false;
     };
+    nvim-nu = {
+      url = "github:lhkipp/nvim-nu";
+      flake = false;
+    };
+    nu-syntax = {
+      url = "github:elkasztano/nushell-syntax-vim";
+      flake = false;
+    };
     neorg-chronicle = {
       url = "github:MartinEekGerhardsen/neorg-chronicle";
       flake = false;
@@ -399,6 +399,10 @@
     };
     smuggler = {
       url = "github:Klafyvel/nvim-smuggler";
+      flake = false;
+    };
+    ts-error-translator = {
+      url = "github:dmmulroy/ts-error-translator.nvim";
       flake = false;
     };
     tree-sitter-just = {
@@ -414,7 +418,9 @@
       flake = false;
     };
     tree-sitter-norg = {
-      url = "github:nvim-neorg/tree-sitter-norg3";
+      #url = "github:nvim-neorg/tree-sitter-norg3";
+      url =
+        "github:boltlessengineer/tree-sitter-norg3-pr1/null_detached_modifier";
       # "github:boltlessengineer/tree-sitter-norg3-pr1/null_detached_modifier";
       flake = false;
     };

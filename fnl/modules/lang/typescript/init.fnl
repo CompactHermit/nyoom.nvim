@@ -3,4 +3,5 @@
 (use-package! :pmizio/typescript-tools.nvim
               {:nyoom-module lang.typescript
                :opt true
-               :ft [:ts :tsc :typescript :typescriptreact]})
+               :ft [:ts :tsc :typescript :typescriptreact]
+               :requires :neovim/nvim-lspconfig})

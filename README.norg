@@ -3,10 +3,16 @@ title: index
 id: 42589f53-46ed-411d-88db-116795432add
 workspace: default
 created: 2023-12-09T14:27:12-0500
-updated: 2024-02-21T11:58:04-0500
+updated: 2024-02-29T16:46:51-0500
 @end
 
 * TODOS::
+  #contexts GTD::completed
+  - (-) Nonels::
+  -- (x) [null-ls] You required a deprecated builtin (formatting/clang_format.lua), which will be removed in March.
+  -- (-) Move Ruff-ls -> Rufflsp
+
+
   #contexts Someday
   - (-) Fixup AppName using nix instead of the script.
   - ( ) Nyoom CMD::
@@ -22,7 +28,7 @@ updated: 2024-02-21T11:58:04-0500
   -- (=) fnl-linter bug:: certain options are ignored, will need to manually patch em %(maybe use C-ffi's or RIIR?)%
   -- (?) Norg-fmt:: Wait for {!&gh nvim-neorg/norg-fmt}[Update] 
 
-  #contexts GTD::Inbox
+    #contexts GTD::Inbox
   - (-) Nfnl Port::
   -- (=) The Actual Port: %Eventually(TM)%
   --- ( ) Macro's Rewrite

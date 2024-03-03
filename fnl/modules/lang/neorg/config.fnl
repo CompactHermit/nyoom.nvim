@@ -163,18 +163,21 @@
                          {:config {:extensions :all}})))
 
 (packadd! image.nvim)
+
+;; fnlfmt: skip
 ((->> :setup
-      (. (require :image))) {:backend :kitty
-                                          :integrations {:markdown {:enabled true
-                                                                    :download_remote_images true
-                                                                    :filetypes [:markdown
-                                                                                :quarto
-                                                                                :vimwiki]}
-                                                         :neorg {:enabled true
-                                                                 :download_remote_images true
-                                                                 :clear_in_insert_mode false
-                                                                 :only_render_image_at_cursor false
-                                                                 :filetypes [:norg]}}})
+      (. (require :image))) 
+ {:backend :kitty
+  :integrations {:markdown {:enabled true
+                            :download_remote_images true
+                            :filetypes [:markdown
+                                        :quarto
+                                        :vimwiki]}
+                 :neorg {:enabled true
+                         :download_remote_images true
+                         :clear_in_insert_mode false
+                         :only_render_image_at_cursor false
+                         :filetypes [:norg]}}})
 
 (setup :neorg {:load neorg-modules})
 ; (do

@@ -161,11 +161,13 @@
                                    :root_dir [:flake.nix :.git]}}))
 
 (nyoom-module-p! python
-                 (tset lsp-servers :pyright
-                       {:root_dir (lsp.util.root_pattern [:.flake8])
-                        :settings {:python {:analysis {:autoImportCompletions true
-                                                       :useLibraryCodeForTypes true
-                                                       :disableOrganizeImports false}}}}))
+                 (doto lsp-servers
+                   (tset :ruff_lsp {:single_file_support true})
+                   (tset :pyright
+                         {:root_dir (lsp.util.root_pattern [:.flake8])
+                          :settings {:python {:analysis {:autoImportCompletions true
+                                                         :useLibraryCodeForTypes true
+                                                         :disableOrganizeImports false}}}})))
 
 (nyoom-module-p! typst
                  (tset lsp-servers :typst_lsp {:settings {:exportPdf :never}}))
