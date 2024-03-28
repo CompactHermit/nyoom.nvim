@@ -1,6 +1,6 @@
 (import-macros {: custom-set-face!} :macros)
-;;TODO:: Somehow prettify LaSpaghet
 ;; NVM:: Spaghett (tm) is unavoidable
+(custom-set-face! :EdgyWinBar [:bold :italic] {:fg "#180030"})
 (setup :edgy
        {:left [{:title :NeoTree
                 :ft :neo-tree
@@ -27,7 +27,7 @@
                {:ft :DiffviewFiles :title " Diffs"}
                {:title "  Tasks" :ft :OverseerList :open :OverseerToggle}
                {:ft :dapui_breakpoints :title :BreakPoints}
-               {:ft :dapui_stacks :title :Scopes}
+               {:ft :dapui_stacks :title :Stacks}
                {:ft :dapui_watches :title :Watches}]
         ;; all other Neotree windows
         :bottom [{:filter (fn [buf win]
@@ -73,12 +73,3 @@
              :winhighlight "WinBar:EdgyWinBar,Normal:EdgyNormal"
              :signcolumn :yes}
         :options {:left {:size 40} :right {:size 45} :bottom {:size 14}}})
-
-(custom-set-face! :EdgyWinBar [:bold :italic] {:fg "#180030"})
-; ```fennel
-;   (custom-set-face! Error [:bold] {:fg \"#ff0000\"})
-;   ```
-;   That compiles to:
-;   ```fennel
-;   (vim.api.nvim_set_hl 0 \"Error\" {:fg \"#ff0000\"
-;                                     :bold true})

@@ -74,14 +74,13 @@
                           :type :haskell
                           :workspace "${workspaceFolder}"}])))
 
-; (nyoom-module-p! python
-;                  (do
-;                    (packadd! nvim-dap-python)
-;                    (local python-debug-path "~/.virtualenvs/debugpy/bin/python")
-;                    (nyoom-module-p! mason
-;                                     (local python-debug-path
-;                                            "~/.local/share/nvim/mason/packages/debugpy/venv/bin/python"))
-;                    (setup :dap-python python-debug-path)))
+(nyoom-module-p! python (do
+                          (packadd! nvim-dap-python)
+                          (match vim.env.VIRTUAL_ENV
+                            (where _Path) ((->> :setup
+                                                (. (require :dap-python))) (vim.fn.exepath :debugpy))
+                            _ nil)))
+
 (packadd! nvim-dap-rr)
 ((->> :setup (. (require :nvim-dap-rr))) {:mappings {:continue :<F7>
                                                      :step_over :<F8>
@@ -106,8 +105,6 @@
                         [(. (autoload :nvim-dap-rr) :get_config)])
                    (table.insert dap.configurations.c dap.configurations.cpp)))
 
-;
-;
 ;; VIRT TEXT
 ((->> :setup (. (require :nvim-dap-virtual-text))))
 

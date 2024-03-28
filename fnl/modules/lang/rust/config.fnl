@@ -67,7 +67,7 @@
 ;                   :cwd (vim.fn.getcwd)
 ;                   :stopAtEntry true}])
 ;
-(set dap.configurations.rust dap-config)
+;(set dap.configurations.rust dap-config)
 
 (let! rustaceanvim
       {:server {:on_attach (fn [client bufnr] "Default Rust LSP Attach"

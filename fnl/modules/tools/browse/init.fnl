@@ -9,5 +9,6 @@
 
 (use-package! :luckasRanarison/nvim-devdocs
               {:opt true
-               :event [:BufReadPost]
+               ;:event [:BufReadPost]
+               :cmd [:DevDocs]
                :call-setup nvim-devdocs})

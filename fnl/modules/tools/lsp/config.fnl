@@ -1,7 +1,7 @@
 (import-macros {: nyoom-module-p! : autocmd! : augroup!} :macros)
 (local lsp (autoload :lspconfig))
+(local lspUtil (autoload :util.lsp))
 (local lsp-servers {})
-
 ;;; Improve UI
 
 (set vim.lsp.util.stylize_markdown
@@ -82,7 +82,7 @@
 (nyoom-module-p! cc
                  (do
                    (local clangd_commands
-                          [(or (os.getenv :CLANGD_PATH) :clangd)
+                          [(or vim.env.CLANGD_PATH :clangd)
                            :--background-index
                            :--clang-tidy
                            :--completion-style=detailed
@@ -92,7 +92,7 @@
                            :--enable-config
                            :--pch-storage=disk
                            :--log=info])
-                   (match (os.getenv :GCC_PATH)
+                   (match vim.env.GCC_PATH
                      (where __val (not= __val nil)) (table.insert clangd_commands
                                                                   (: "--query-driver=%s"
                                                                      :format
@@ -160,14 +160,9 @@
                        {:settings {:filetypes [:ncl :nickel]
                                    :root_dir [:flake.nix :.git]}}))
 
-(nyoom-module-p! python
-                 (doto lsp-servers
-                   (tset :ruff_lsp {:single_file_support true})
-                   (tset :pyright
-                         {:root_dir (lsp.util.root_pattern [:.flake8])
-                          :settings {:python {:analysis {:autoImportCompletions true
-                                                         :useLibraryCodeForTypes true
-                                                         :disableOrganizeImports false}}}})))
+(nyoom-module-p! python (doto lsp-servers
+                          (tset :ruff_lsp {:single_file_support true})
+                          (tset :basedpyright {})))
 
 (nyoom-module-p! typst
                  (tset lsp-servers :typst_lsp {:settings {:exportPdf :never}}))

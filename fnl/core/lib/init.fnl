@@ -1,6 +1,5 @@
 (local stdlib {})
 
-
 ;; Load shared Contstant::
 (require :core.lib.shared)
 ;; load modified luafun + core libs by default
@@ -300,7 +299,7 @@
 
 (fn stdlib.kv-pairs [t]
   "Returns a list of all key-value pairs in the given table.
-  
+
   Arguments:
   * `t`: the table to get the key-value pairs from
   Example:

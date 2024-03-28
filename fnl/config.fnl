@@ -2,13 +2,13 @@
 (import-macros {: >==} :util.macros)
 
 ;; NOTE:: We need to append on the luarocks cPath/lPath, or else we have to manually packadd the plugins
-(local rocks-config
-       {:luarocks_binary :luarocks
-        :rocks_path (.. (vim.fn.stdpath :data) :/rocks)})
-
-(vim.opt.runtimepath:append (vim.fs.joinpath rocks-config.rocks_path :lib
-                                             :luarocks :rocks-5.1 :rocks.nvim
-                                             "*"))
+; (local rocks-config
+;        {:luarocks_binary :luarocks
+;         :rocks_path (.. (vim.fn.stdpath :data) :/rocks)})
+;
+; (vim.opt.runtimepath:append (vim.fs.joinpath rocks-config.rocks_path :lib
+;                                              :luarocks :rocks-5.1 :rocks.nvim
+;                                              "*"))
 
 (colorscheme oxocarbon)
 (set! background :dark)

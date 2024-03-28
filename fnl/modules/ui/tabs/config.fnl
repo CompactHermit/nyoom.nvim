@@ -1,4 +1,3 @@
-
 (setup :bufferline
        {:options {:numbers :none
                   :diagnostics :nvim_lsp

@@ -163,6 +163,8 @@
 (setup :telescope-tabs)
 (packadd! telescope-egrepify.nvim)
 (load_extension :egrepify)
+(packadd! telescope_hoogle)
+(load_extension :hoogle)
 ;; only install native if the flag is there
 
 ;; TODO:: Remove this for Nix, errors bcs they build fzf, which nix fails to find on rtp

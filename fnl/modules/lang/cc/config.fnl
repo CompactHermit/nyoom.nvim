@@ -77,6 +77,7 @@
     (vim.api.nvim_buf_set_keymap :n :<CR> :<cmd>MonkeyPatched<cr>
                                  {:desc "Bootleg hop-link"})
     (vim.api.nvim_buf_set_option :modifiable false)
+    (vim.api.nvim_buf_set_option :winfixbuf true)
     (vim.api.nvim_open_win 1 opts))
   (vim.api.nvim_win_set_cursor [0 0]))
 

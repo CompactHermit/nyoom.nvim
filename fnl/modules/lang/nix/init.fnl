@@ -1,3 +1,3 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: nyoom-module!} :macros)
 
-(use-package! :LnL7/vim-nix {:opt false})
+(nyoom-module! lang.nix)

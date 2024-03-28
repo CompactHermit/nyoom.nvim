@@ -1,4 +1,4 @@
-;; Opinionated Macros, for the hermit::
+;; fennel-ls: macro-file
 
 (fn assert-tbl [tbl]
   "A simple sanity check"

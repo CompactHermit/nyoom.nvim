@@ -34,6 +34,11 @@
           devShells.default = pkgs.mkShell {
             name = "goDev Devshells";
             nativeBuildInputs = [ goEnv pkgs.gomod2nix ];
+            shellHook = ''
+              export XDG_CACHE_HOME=$(mktemp -d)
+              #export XDG_DATA_HOME=$(mktemp -d)
+              export XDG_STATE_HOME=$(mktemp -d)
+            '';
           };
           packages.default = pkgs.buildGoApplication {
             pname = "goDev Package";

@@ -4,18 +4,12 @@
     inputs.pch.flakeModule
     ./busted.nix
     ./docs.nix
+    ./hercule.nix
   ];
 
   perSystem = { pkgs, config, self', lib, system, ... }:
     let
       l = lib // builtins;
-      mkHook = n: _args:
-        # * SANITIZE:: (Hermit) Move to ./nix/checks folder
-        {
-          description = "pre-commit hook for ${n}";
-          fail_fast = true;
-          excludes = [ "flake.lock" "index.norg" "r.'+.yml$'" ];
-        } // _args;
       __fnl-config = pkgs.writeTextFile {
         name = "config.fnl";
         text =
@@ -31,12 +25,21 @@
             }
           '';
       };
+      mkHook = n: _args:
+        # * SANITIZE:: (Hermit) Move to ./nix/checks folder
+        {
+          description = "pre-commit hook for ${n}";
+          fail_fast = true;
+          excludes = [ "flake.lock" "index.norg" "r.'+.yml$'" ];
+        } // _args;
     in {
       pre-commit = {
         settings = {
-          settings = { treefmt.package = config.treefmt.build.wrapper; };
           hooks = {
-            treefmt = mkHook "treefmt" { enable = true; };
+            treefmt = mkHook "treefmt" {
+              enable = true;
+              package = config.treefmt.build.wrapper;
+            };
             norg-fmt = mkHook "norg-fmt" {
               enable = false;
               name = "Norg-fmt";

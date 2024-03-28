@@ -3,7 +3,7 @@ title: index
 id: 42589f53-46ed-411d-88db-116795432add
 workspace: default
 created: 2023-12-09T14:27:12-0500
-updated: 2024-02-29T16:46:51-0500
+updated: 2024-03-25T03:12:16-0500
 @end
 
 * TODOS::
@@ -28,13 +28,15 @@ updated: 2024-02-29T16:46:51-0500
   -- (=) fnl-linter bug:: certain options are ignored, will need to manually patch em %(maybe use C-ffi's or RIIR?)%
   -- (?) Norg-fmt:: Wait for {!&gh nvim-neorg/norg-fmt}[Update] 
 
-    #contexts GTD::Inbox
+  #contexts GTD::Inbox
   - (-) Nfnl Port::
-  -- (=) The Actual Port: %Eventually(TM)%
+  -- (-) The Actual Port: %Eventually(TM)%
   --- ( ) Macro's Rewrite
-  --- ( ) Packer -> Custom InHouse Package Loading (using nix for management and fennel to load)
-  ---- (?) Global Autocmds?
-  ---- (?) ReWrite (use-package!) Macro to just packadd the object on exec
+  --- (?) Packer -> Custom InHouse Package Loading (using nix for management and fennel to load)
+  ---- (x) Test Lazy-On-cmd! macro
+  ----- (-) Custom Cmd's like seen with {https://lewis6991/pckr.nvim/blob/main/lua/pckr/loader/cmd.lua}[Pckr's Implementation]
+
+  ---- (x) ReWrite (use-package!)::
   - (x) CI:: Fnl --> Lua action Via Pre-commit-hook
   - (-) Hydra:: Add Rust Subhydra:: Rustacean + Crates
   -- (!) Hydra:: Add SubHydras
@@ -42,3 +44,5 @@ updated: 2024-02-29T16:46:51-0500
 * inspiration::
   %Why doesn't neorg have tables??%
   - {!&gh konradmalik/neovim-flake}[Konradmalik]
+  - {!&gh rjtkmp/neovim-flake}[Pact]
+  - {}[Pckr-nvim]

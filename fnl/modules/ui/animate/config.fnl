@@ -44,7 +44,7 @@
                :name :default
                :priority 100})
 
-(packadd! :reactive-nvim)
+(packadd! reactive)
 ((->> :setup (. (require :reactive))) {:builtin {:cursorline true
                                                  :cursor true
                                                  :modemsg true}})
