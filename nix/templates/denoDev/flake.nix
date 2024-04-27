@@ -8,14 +8,26 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { self, ... }@inputs:
+  outputs =
+    { self, ... }@inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [ "x86_64-linux" "aarch64-linux" ];
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
       imports = [ inputs.treefmt-nix.flakeModule ];
       flake = { };
-      perSystem = { pkgs, system, config, ... }:
-        let _module.args.pkgs = import inputs.nixpkgs { inherit system; };
-        in {
+      perSystem =
+        {
+          pkgs,
+          system,
+          config,
+          ...
+        }:
+        let
+          _module.args.pkgs = import inputs.nixpkgs { inherit system; };
+        in
+        {
           treefmt = {
             projectRootFile = "";
             programs = {
@@ -28,8 +40,7 @@
             name = "denoDev Devshells";
             nativeBuildInputs = [ ];
           };
-          packages.default =
-            pkgs.stdenvNoCC.mkderivation { pname = "denoDev Package"; };
+          packages.default = pkgs.stdenvNoCC.mkderivation { pname = "denoDev Package"; };
         };
     };
 }

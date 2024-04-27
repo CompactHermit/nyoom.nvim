@@ -84,7 +84,7 @@
                  (do
                    (nyoom-module-p! lua
                                     (table.insert null-ls-sources
-                                                  null-ls.builtins.diagnostics.selene))))
+                                                  null-ls.builtins.diagnostics.))))
 
 (nyoom-module-p! vc-gutter
                  (table.insert null-ls-sources

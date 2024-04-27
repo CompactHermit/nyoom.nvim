@@ -3,6 +3,7 @@
 (use-package! :lewis6991/gitsigns.nvim
               {:nyoom-module ui.vc-gutter
                :ft :gitcommit
+               :commit :d96ef3bbff0bdbc3916a220f5c74a04c4db033f2
                :module :gitsigns
                :setup (fn []
                         (autocmd! BufRead *

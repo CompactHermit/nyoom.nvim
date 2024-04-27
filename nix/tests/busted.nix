@@ -1,7 +1,8 @@
 { ... }:
 ## Running Busted Tests with luarocks + .nfnl macro tests
 {
-  perSystem = { pkgs, ... }:
+  perSystem =
+    { pkgs, ... }:
     {
       # checks.integration-nightly = pkgs.neorocksTest {
       #   name = "integration-nightly";

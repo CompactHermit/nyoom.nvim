@@ -3,6 +3,7 @@
                 : nyoom-module-p!
                 : augroup!
                 : clear!
+                : custom-set-face!
                 : autocmd!} :macros)
 
 (local {: load_extension} (autoload :telescope))

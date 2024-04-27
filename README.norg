@@ -3,46 +3,52 @@ title: index
 id: 42589f53-46ed-411d-88db-116795432add
 workspace: default
 created: 2023-12-09T14:27:12-0500
-updated: 2024-03-25T03:12:16-0500
+updated: 2024-04-24T13:05:59-0500
 @end
 
 * TODOS::
   #contexts GTD::completed
-  - (-) Nonels::
+  - (x) Nonels::
   -- (x) [null-ls] You required a deprecated builtin (formatting/clang_format.lua), which will be removed in March.
-  -- (-) Move Ruff-ls -> Rufflsp
+  -- (x) Move Ruff-ls -> Rufflsp
 
 
   #contexts Someday
-  - (-) Fixup AppName using nix instead of the script.
-  - ( ) Nyoom CMD::
-  -- ( ) JustFile:: Headless neovim hotpot compile command.
-  -- (_) Find way to force Hotpot to use A /tmp directory instead of XDG_DATA_DIR
+  - (x) Fixup AppName using nix instead of the script.
+  -- (x) Find way to force Hotpot to use A /tmp directory instead of XDG_DATA_DIR
   --- (x) Just have Neovim Run with {! https://github.com/konradmalik/neovim-flake/blob/main/packages/neovim-pde/default.nix}[XDG_CACHE_DIR] set to /tmp
+
+  - (-) Hydra:: Add Rust Subhydra:: Rustacean + Crates
+  -- (!) Hydra:: Add SubHydras
+
 
   #contexts GTD::Next
   - ( ) CI:: Fnl -> Busted Tests?
   -- (-) Write Busted Tests for macros and inbuilt functions (e.g:: coogler search?)
-  - ( ) CI:: FMT::
-  -- (=) Fix nixfmt bug:: `/*<lang>*/`  -> `#<lang>` should be done (maybe a potential PR?)
-  -- (=) fnl-linter bug:: certain options are ignored, will need to manually patch em %(maybe use C-ffi's or RIIR?)%
-  -- (?) Norg-fmt:: Wait for {!&gh nvim-neorg/norg-fmt}[Update] 
+
+  - (-) CI:: FMT::
+  -- (-) Fix nixfmt bug:: `/*<lang>*/` -> `#<lang>` should not be done (maybe a potential PR?)
+  -- (-) fnl-linter bug:: certain options are ignored, will need to manually patch em %(maybe use C-ffi's or RIIR?)%
+  -- (?) Norg-fmt:: Wait for {!&gh nvim-neorg/norg-fmt}[Update]
+
+  - ( ) Port Treesitter completely to nix
 
   #contexts GTD::Inbox
   - (-) Nfnl Port::
-  -- (-) The Actual Port: %Eventually(TM)%
+  -- (-) The Actual Port::
   --- ( ) Macro's Rewrite
   --- (?) Packer -> Custom InHouse Package Loading (using nix for management and fennel to load)
-  ---- (x) Test Lazy-On-cmd! macro
-  ----- (-) Custom Cmd's like seen with {https://lewis6991/pckr.nvim/blob/main/lua/pckr/loader/cmd.lua}[Pckr's Implementation]
+  ---- (x) Test `lazy-cmd!` custom Cmd's like seen with {https://lewis6991/pckr.nvim/blob/main/lua/pckr/loader/cmd.lua}[Pckr's Implementation]
+  ---- (-) ReWrite (use-package!)::
 
-  ---- (x) ReWrite (use-package!)::
-  - (x) CI:: Fnl --> Lua action Via Pre-commit-hook
-  - (-) Hydra:: Add Rust Subhydra:: Rustacean + Crates
-  -- (!) Hydra:: Add SubHydras
+  - (=) CI:: Fnl -> Lua -> /tmp/nyoom
+
+  - (=) Doctor Rewrite::
+  -- ( ) Nix Aware Module Lookup:: (JSON Querying?)
+  -- ( ) Proper LSP Healthcheck (display all config values + enabled/disabled LSP info <textDocs/etc>)
 
 * inspiration::
   %Why doesn't neorg have tables??%
   - {!&gh konradmalik/neovim-flake}[Konradmalik]
-  - {!&gh rjtkmp/neovim-flake}[Pact]
-  - {}[Pckr-nvim]
+  - {!&gh rktjmp/pact.nvim}[Pact]
+  - {!&gh lewis6991/pckr.nvim}[Pckr-nvim]

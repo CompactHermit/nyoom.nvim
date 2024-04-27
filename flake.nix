@@ -1,204 +1,275 @@
 {
   description = "Nyoom Interfaces with Nix";
-
-  outputs = { self, parts, ... }@inputs:
-    parts.lib.mkFlake { inherit inputs; } ({ flake-parts-lib, withSystem, ... }:
+  outputs =
+    { self, parts, ... }@inputs:
+    parts.lib.mkFlake { inherit inputs; } (
+      { flake-parts-lib, withSystem, ... }:
       let
-        flakeModule = let inherit (flake-parts-lib) importApply;
-        in importApply ./nix/flake-modules { inherit self withSystem; };
-      in {
-        systems =
-          [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
-        imports = [ ./nix/tests flakeModule ];
+        flakeModule =
+          let
+            inherit (flake-parts-lib) importApply;
+          in
+          importApply ./nix/flake-modules { inherit self withSystem; };
+      in
+      {
+        systems = [
+          "x86_64-linux"
+          "aarch64-linux"
+          "aarch64-darwin"
+          "x86_64-darwin"
+        ];
+        imports = [
+          ./nix/tests
+          flakeModule
+        ];
         debug = true;
         flake = {
           inherit flakeModule;
-          templates = let inherit (inputs.nixpkgs) lib;
-          in (lib.attrsets.genAttrs (lib.attrNames
-            (lib.filterAttrs (_: v: v != "regular")
-              (builtins.readDir ./nix/templates))) (name: {
+          templates =
+            let
+              inherit (inputs.nixpkgs) lib;
+            in
+            (lib.attrsets.genAttrs
+              (lib.attrNames (lib.filterAttrs (_: v: v != "regular") (builtins.readDir ./nix/templates)))
+              (name: {
                 path = ./nix/templates/${name};
                 description = "${name}-Template";
                 welcomeText = ''
                   Welcome ya bloated fuck, ur building a devshell for ${name}, enjoy it .
                 '';
-              }));
+              })
+            );
         };
-        perSystem = { self', lib, pkgs, config, system, ... }: {
-          _module.args.pkgs = import self.inputs.nixpkgs {
-            inherit system;
-            overlays = [ inputs.rocks.overlays.default ];
-          };
-          # TODO (Hermit):: Remove the plugins.*.lazy option -> plugins.lazy and hard check for attrs there;
-          neohermit = {
-            src = inputs.nvim-git;
-            strip = true;
-            plugins = {
-              lazy = [
-                "actions-preview"
-                "neorg-telescope"
-                "neorg-chronicle"
-                "neorg-exec"
-                "neorg-roam"
-                "neorg-timelog"
-                "neorg-hop-extras"
-                "image-nvim"
-                "cmp-treesitter" # For whatever reason, cmp-sources get packadded automagically? WTF CMP
-                "cmp-latexsym"
-                "direnv"
-                "galore"
-                "gitconflict"
-                "gitignore"
-                "nvim-dap-rr"
-                "nvim-dap-python"
-                "nfnl"
-                "smuggler"
-                "go-nvim"
-                "harpoon"
-                "iedit"
-                "ts-error-translator"
-                "telescope_hoogle"
-                "otter"
-                "oqt"
-                "quarto"
-                "reactive"
-                "ratatoskr"
-                "tailwind-tools"
-                "yeet"
-              ];
-              eager = [
-                "lua-utils"
-                "luasnip_snippets"
-                "molten"
-                "nvim-dap-virtual-text"
-                "nvim-scissors"
-                "nu-syntax"
-                "wrapping-paper"
+        perSystem =
+          {
+            self',
+            lib,
+            pkgs,
+            config,
+            system,
+            ...
+          }:
+          {
+            _module.args.pkgs = import self.inputs.nixpkgs {
+              inherit system;
+              overlays = with inputs; [
+                #rocks.overlays.default
+                fnl-tools.overlays.default
               ];
             };
-            lua = {
-              extraPacks = with pkgs.lua51Packages; [
-                rustaceanvim
-                lgi
-                toml
-                toml-edit
-                fidget-nvim
-                nvim-nio
-                fzy
+            # TODO (Hermit):: Remove the plugins.*.lazy option -> plugins.lazy and hard check for attrs there;
+            neohermit = {
+              src = inputs.nvim-git;
+              strip = true;
+              plugins = {
+                lazy = [
+                  "actions-preview"
+                  "bufferline"
+                  "diffview"
+                  "cmp-treesitter" # For whatever reason, cmp-sources get packadded automagically? WTF CMP
+                  "cmp-latexsym"
+                  "direnv"
+                  "galore"
+                  "gitconflict"
+                  "gitignore"
+                  "ibl"
+                  "image-nvim"
+                  "multicursor"
+                  "neodev"
+                  "neogit"
+                  "neorg"
+                  "neorg-telescope"
+                  "neorg-chronicle"
+                  "neorg-exec"
+                  "neorg-roam"
+                  "neorg-timelog"
+                  "neorg-hop-extras"
+                  "nui-components"
+                  "nvim-dap-rr"
+                  "nfnl"
+                  "nvim-dap-python"
+                  "nvim-nio" # Needed for Docs, will just igrnore for now
+                  "smuggler"
+                  "go-nvim"
+                  "harpoon"
+                  "resession"
+                  "ts-error-translator"
+                  "tsplayground"
+                  "rainbow-delimiters"
+                  "ts-context"
+                  "ts-context-commentstring"
+                  "ts-refactor"
+                  "ts-textobjects"
+                  "ts-node-action"
+                  "telescope_hoogle"
+                  "octo"
+                  "otter"
+                  "oqt"
+                  "overseer"
+                  "pathlib"
+                  "quarto"
+                  "reactive"
+                  "ratatoskr"
+                  "tailwind-tools"
+                  "yeet"
+                ];
+                eager = [
+                  "nightfox"
+                  "haskellTools"
+                  "haskell-snippets"
+                  "luasnip_snippets"
+                  "lua-utils"
+                  "molten"
+                  "nvim-dap-virtual-text"
+                  "rustaceanvim"
+                  "nvim-scissors"
+                  "nu-syntax"
+                  "wrapping-paper"
+                ];
+              };
+              lua = {
+                extraPacks = builtins.attrValues {
+                  inherit (pkgs.lua51Packages)
+                    rustaceanvim
+                    lgi
+                    toml
+                    toml-edit
+                    fidget-nvim
+                    nvim-nio
+                    fzy
+                    ;
+                };
+                jit = builtins.attrValues { inherit (pkgs.luajitPackages) magick luarocks; };
+              };
+              extraParsers = [
+                "cabal"
+                "norg"
+                "norg-meta"
+                "typst"
+                "just"
+                "nim"
+                "nu"
+                "gleam"
               ];
-              jit = with pkgs.luajitPackages; [ magick luarocks ];
-            };
-            extraParsers = [
-              "cabal"
-              "norg-meta"
-              "typst"
-              "just"
-              "nim"
-              "norg" # Note::(Hermit) We need to symlink the queries along with neorg's plugin.
-            ];
-            defaultPlugins = with pkgs.vimPlugins; [
-              sqlite-lua
-              mini-nvim
-              markdown-preview-nvim
-              rocks-nvim
-              lsp_lines-nvim
-              packer-nvim # TODO (Adjoint) :: Deprecate Packer, use nix and inhouse lazy-loading with C=>>
-              hotpot-nvim # TODO (Adjoint) :: Deprecate hotpot, and use nfnl
-            ];
-            bins = with pkgs;
-              [
-                marksman
-                selene
-                haskellPackages.fast-tags # NOTE:: (Hermit) Im in love, marry me
-                nil
-                ripgrep
-                fd
-                stylua
-              ] ++ [ inputs.nixfmt-rfc.packages."${system}".default ]
-              ++ (with pkgs.lua51Packages; [
-                lua-language-server
-                lua
-                luarocks
-              ]);
-          };
-          devShells = {
-            default = pkgs.mkShell {
-              name = "Hermit:: Dev";
-              inputsFrom = with config; [
-                treefmt.build.devShell
-                pre-commit.devShell
+              defaultPlugins = with pkgs.vimPlugins; [
+                sqlite-lua
+                mini-nvim
+                markdown-preview-nvim
+                #rocks-nvim
+                lsp_lines-nvim
+                packer-nvim # TODO (Adjoint) :: Deprecate Packer, use nix and inhouse lazy-loading with C=>>
+                hotpot-nvim # TODO (Adjoint) :: Deprecate hotpot, and use nfnl
               ];
-              packages = with pkgs; [ lua-language-server selene fnlfmt ];
-              DIRENV_LOG_FORMAT = ""; # NOTE:: Makes direnv shutup
+              bins = (
+                builtins.attrValues {
+                  inherit (pkgs)
+                    selene
+                    nil
+                    ripgrep
+                    fd
+                    stylua
+                    lua-language-server
+                    nixfmt-rfc-style
+                    ;
+                  inherit (pkgs.haskellPackages) fast-tags;
+                  #inherit (pkgs.lua51Packages)  lua luarocks;
+                }
+              );
+              #++ (builtins.attrValues { inherit (pkgs.lua51Packages) lua-language-server lua luarocks; })
             };
-          };
-          packages = {
-            fnl-linter = pkgs.stdenv.mkDerivation {
-              name = "Fnl-linter";
-              src = inputs.fnl-linter;
-              nativeBuildInputs = with pkgs; [ lua5_4_compat fennel ];
-              configurePhase = ''
-                substituteInPlace Makefile \
-                --replace "/usr/lib64/liblua.so"  ${pkgs.lua5_4_compat}/lib/liblua.so \
-                --replace "/usr/include/lua" ${pkgs.lua5_4_compat}/bin/lua
-              '';
-              buildPhase = ''
-                make binary
-              '';
-              installPhase = ''
-                mkdir -p $out/bin
-                cp ./check.fnl $out/bin
-              '';
-            };
-            fnl-Docgen = pkgs.stdenv.mkDerivation {
-              name = "fenneldoc";
-              version = "0.0.1";
-              src = inputs.fnl-Docgen;
-              strictDeps = true;
-              nativeBuildInputs = with pkgs; [ fennel ];
-              configurePhase = ''
-                substituteInPlace Makefile \
-                --replace '$(shell git describe --abbrev=0 || "unknown")'  "1.0.1"\
-                --replace './fenneldoc --config --project-version $(VERSION)' ""
-              '';
-              buildPhase = ''
-                make
-              '';
-              installPhase = ''
-                mkdir -p $out/bin
-                cp fenneldoc $out/bin
-              '';
-            };
-            norg-fmt = pkgs.rustPlatform.buildRustPackage {
-              pname = "norg-fmt";
-              src = inputs.norg-fmt;
-              version = "1.1.0";
-              cargoLock = {
-                # VHYRO STOP USING GIT DEPS U FKING BASTARD!!!!!!!
-                lockFileContents =
-                  builtins.readFile ("${inputs.norg-fmt}" + "/Cargo.lock");
-                allowBuiltinFetchGit = true;
+            # };
+            devShells = {
+              default = pkgs.mkShell {
+                name = "Hermit:: Dev";
+                inputsFrom = with config; [
+                  treefmt.build.devShell
+                  pre-commit.devShell
+                ];
+                packages = builtins.attrValues {
+                  inherit (pkgs)
+                    lua-language-server
+                    selene
+                    faith
+                    fennel-ls
+                    fnlfmt
+                    fenneldoc
+                    fennel-unstable-luajit
+                    ;
+                };
+                DIRENV_LOG_FORMAT = ""; # NOTE:: Makes direnv shutup
+                FENNEL_PATH = "${pkgs.faith}/bin/?;./src/?.fnl;./src/?/init.fnl";
+                FENNEL_MACRO_PATH = "./fnl/macros.fnl;./fnl/util/macros.fnl";
               };
             };
-            norgopolis-client-lua = pkgs.rustPlatform.buildRustPackage {
-              pname = "norgopolis-lua";
-              src = inputs.norgopolis-client-lua;
-              version = "0.2.0";
-              buildFeatures = [ "luajit" ];
-              nativeBuildInputs = [ pkgs.protobuf ];
-              cargoLock = {
-                lockFileContents = builtins.readFile
-                  ("${inputs.norgopolis-client-lua}" + "/Cargo.lock");
-                allowBuiltinFetchGit = true;
+            packages = {
+              fnl-linter = pkgs.stdenv.mkDerivation {
+                name = "Fnl-linter";
+                src = inputs.fnl-linter;
+                nativeBuildInputs = with pkgs; [
+                  lua5_4_compat
+                  fennel
+                ];
+                configurePhase = ''
+                  substituteInPlace Makefile \
+                  --replace "/usr/lib64/liblua.so"  ${pkgs.lua5_4_compat}/lib/liblua.so \
+                  --replace "/usr/include/lua" ${pkgs.lua5_4_compat}/bin/lua
+                '';
+                buildPhase = ''
+                  make binary
+                '';
+                installPhase = ''
+                  mkdir -p $out/bin
+                  cp ./check.fnl $out/bin
+                '';
               };
-              postInstall = ''
-                mkdir -p $out/share/lib/lua/5.1
-                cp $out/lib/libnorgopolis.so $out/lib/lua/5.1
-              '';
+              fnl-Docgen = pkgs.stdenv.mkDerivation {
+                name = "fenneldoc";
+                version = "0.0.1";
+                src = inputs.fnl-Docgen;
+                strictDeps = true;
+                nativeBuildInputs = with pkgs; [ fennel ];
+                configurePhase = ''
+                  substituteInPlace Makefile \
+                  --replace '$(shell git describe --abbrev=0 || "unknown")'  "1.0.1"\
+                  --replace './fenneldoc --config --project-version $(VERSION)' ""
+                '';
+                buildPhase = ''
+                  make
+                '';
+                installPhase = ''
+                  mkdir -p $out/bin
+                  cp fenneldoc $out/bin
+                '';
+              };
+              norg-fmt = pkgs.rustPlatform.buildRustPackage {
+                pname = "norg-fmt";
+                src = inputs.norg-fmt;
+                version = "1.1.0";
+                cargoLock = {
+                  # VHYRO STOP USING GIT DEPS U FKING BASTARD!!!!!!!
+                  lockFileContents = builtins.readFile ("${inputs.norg-fmt}" + "/Cargo.lock");
+                  allowBuiltinFetchGit = true;
+                };
+              };
+              norgopolis-client-lua = pkgs.rustPlatform.buildRustPackage {
+                pname = "norgopolis-lua";
+                src = inputs.norgopolis-client-lua;
+                version = "0.2.0";
+                buildFeatures = [ "luajit" ];
+                nativeBuildInputs = [ pkgs.protobuf ];
+                cargoLock = {
+                  lockFileContents = builtins.readFile ("${inputs.norgopolis-client-lua}" + "/Cargo.lock");
+                  allowBuiltinFetchGit = true;
+                };
+                postInstall = ''
+                  mkdir -p $out/share/lib/lua/5.1
+                  cp $out/lib/libnorgopolis.so $out/lib/lua/5.1
+                '';
+              };
             };
           };
-        };
-      });
+      }
+    );
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -223,7 +294,7 @@
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixfmt-rfc.url = "github:piegamesde/nixfmt/rfc101-style";
+    #nixfmt-rfc.url = "github:piegamesde/nixfmt/rfc101-style";
     fnl-linter = {
       url = "github:dokutan/check.fnl";
       flake = false;
@@ -232,6 +303,7 @@
       url = "gitlab:andreyorst/fenneldoc";
       flake = false;
     };
+    fnl-tools.url = "github:m15a/flake-fennel-tools";
     #Vhyrro, I'm trusting you bud;
     rocks = {
       url = "github:nvim-neorocks/rocks.nvim";
@@ -246,12 +318,20 @@
       inputs.flake-parts.follows = "parts";
       inputs.pre-commit-hooks.follows = "pch";
     };
+    bufferline = {
+      url = "github:akinsho/bufferline.nvim/";
+      flake = false;
+    };
     cmp-latexsym = {
       url = "github:kdheepak/cmp-latex-symbols";
       flake = false;
     };
     cmp-treesitter = {
       url = "github:ray-x/cmp-treesitter";
+      flake = false;
+    };
+    diffview = {
+      url = "github:sindrets/diffview.nvim";
       flake = false;
     };
     wrapping-paper = {
@@ -262,10 +342,19 @@
       url = "github:aznhe21/actions-preview.nvim";
       flake = false;
     };
+    csharp = {
+      url = "github:iabdelkareem/csharp.nvim";
+      flake = false;
+    };
     direnv = {
       url = "github:direnv/direnv.vim";
       flake = false;
     };
+    flutter-tools = {
+      url = "github:akinsho/flutter-tools.nvim";
+      flake = false;
+    };
+    #flash = {};
     gitconflict = {
       url = "github:akinsho/git-conflict.nvim";
       flake = false;
@@ -278,6 +367,10 @@
       url = "github:dagle/galore";
       flake = false;
     };
+    gitsigns = {
+      url = "github:lewis6991/gitsigns.nvim/d96ef3bbff0bdbc3916a220f5c74a04c4db033f2";
+      flake = false;
+    };
     go-nvim = {
       url = "github:ray-x/go.nvim";
       flake = false;
@@ -286,12 +379,20 @@
       url = "github:ThePrimeagen/harpoon/harpoon2";
       flake = false;
     };
+    haskellTools = {
+      url = "github:mrcjkb/haskell-tools.nvim";
+      flake = false;
+    };
+    haskell-snippets = {
+      url = "github:mrcjkb/haskell-snippets.nvim";
+      flake = false;
+    };
     hover-nvim = {
       url = "github:lewis6991/hover.nvim";
       flake = false;
     };
-    iedit = {
-      url = "github:altermo/iedit.nvim";
+    ibl = {
+      url = "github:lukas-reineke/indent-blankline.nvim";
       flake = false;
     };
     lua-utils = {
@@ -306,8 +407,28 @@
       url = "github:benlubas/molten-nvim";
       flake = false;
     };
+    multicursor = {
+      url = "github:smoka7/multicursors.nvim";
+      flake = false;
+    };
+    nightfox = {
+      url = "github:EdenEast/nightfox.nvim";
+      flake = false;
+    };
     norgopolis-client-lua = {
       url = "github:nvim-neorg/norgopolis-client.lua";
+      flake = false;
+    };
+    neodev = {
+      url = "github:folke/neodev.nvim";
+      flake = false;
+    };
+    nvim-nio = {
+      url = "github:nvim-neotest/nvim-nio";
+      flake = false;
+    };
+    neogit = {
+      url = "github:NeogitOrg/neogit/nightly";
       flake = false;
     };
     neorg = {
@@ -366,16 +487,32 @@
       url = "github:elkasztano/nushell-syntax-vim";
       flake = false;
     };
+    nui-components = {
+      url = "github:grapp-dev/nui-components.nvim";
+      flake = false;
+    };
     neorg-chronicle = {
       url = "github:MartinEekGerhardsen/neorg-chronicle";
+      flake = false;
+    };
+    octo = {
+      url = "github:pwntester/octo.nvim";
       flake = false;
     };
     otter = {
       url = "github:benlubas/otter.nvim/feat/remove_leading_whitespace/";
       flake = false;
     };
+    overseer = {
+      url = "github:stevearc/overseer.nvim";
+      flake = false;
+    };
     oqt = {
       url = "github:itsfrank/overseer-quick-tasks";
+      flake = false;
+    };
+    pathlib = {
+      url = "github:pysan3/pathlib.nvim";
       flake = false;
     };
     quarto = {
@@ -386,8 +523,16 @@
       url = "github:vigoux/ratatoskr.nvim";
       flake = false;
     };
+    roslyn = {
+      url = "github:jmederosalvarado/roslyn.nvim";
+      flake = false;
+    };
     reactive = {
       url = "github:rasulomaroff/reactive.nvim";
+      flake = false;
+    };
+    resession = {
+      url = "github:stevearc/resession.nvim";
       flake = false;
     };
     smuggler = {
@@ -402,12 +547,50 @@
       url = "github:luc-tielen/telescope_hoogle";
       flake = false;
     };
+    #todoloc = {};
     ts-error-translator = {
       url = "github:dmmulroy/ts-error-translator.nvim";
       flake = false;
     };
+    treesitter = {
+      url = "github:nvim-treesitter/nvim-treesitter";
+      flake = false;
+    };
+    tsplayground = {
+      url = "github:nvim-treesitter/playground";
+      flake = false;
+    };
+    rainbow-delimiters = {
+      url = "gitlab:HiPhish/rainbow-delimiters.nvim";
+      flake = false;
+    };
+    ts-context = {
+      url = "github:nvim-treesitter/nvim-treesitter-context";
+      flake = false;
+    };
+    ts-context-commentstring = {
+      url = "github:JoosepAlviste/nvim-ts-context-commentstring";
+      flake = false;
+    };
+    ts-refactor = {
+      url = "github:nvim-treesitter/nvim-treesitter-refactor";
+      flake = false;
+    };
+    ts-textobjects = {
+      url = "github:nvim-treesitter/nvim-treesitter-textobjects";
+      flake = false;
+    };
+    ts-node-action = {
+      url = "github:Ckolkey/ts-node-action";
+      flake = false;
+    };
     yeet = {
       url = "github:samharju/yeet.nvim";
+      flake = false;
+    };
+    #tree-sitter-agda = { };
+    tree-sitter-gleam = {
+      url = "github:gleam-lang/tree-sitter-gleam";
       flake = false;
     };
     tree-sitter-just = {
@@ -423,8 +606,7 @@
       flake = false;
     };
     tree-sitter-norg = {
-      url =
-        "github:boltlessengineer/tree-sitter-norg3-pr1/null_detached_modifier";
+      url = "github:boltlessengineer/tree-sitter-norg3-pr1/null_detached_modifier";
       flake = false;
     };
     tree-sitter-norg-meta = {

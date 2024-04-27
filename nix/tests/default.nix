@@ -1,4 +1,5 @@
-{ inputs, ... }: {
+{ inputs, ... }:
+{
   imports = [
     inputs.treefmt-nix.flakeModule
     inputs.pch.flakeModule
@@ -7,7 +8,15 @@
     ./hercule.nix
   ];
 
-  perSystem = { pkgs, config, self', lib, system, ... }:
+  perSystem =
+    {
+      pkgs,
+      config,
+      self',
+      lib,
+      system,
+      ...
+    }:
     let
       l = lib // builtins;
       __fnl-config = pkgs.writeTextFile {
@@ -25,14 +34,21 @@
             }
           '';
       };
-      mkHook = n: _args:
+      mkHook =
+        n: _args:
         # * SANITIZE:: (Hermit) Move to ./nix/checks folder
         {
           description = "pre-commit hook for ${n}";
           fail_fast = true;
-          excludes = [ "flake.lock" "index.norg" "r.'+.yml$'" ];
-        } // _args;
-    in {
+          excludes = [
+            "flake.lock"
+            "index.norg"
+            "r.'+.yml$'"
+          ];
+        }
+        // _args;
+    in
+    {
       pre-commit = {
         settings = {
           hooks = {
@@ -50,8 +66,7 @@
             fnl-lint = mkHook "fnl-linter" {
               enable = false;
               name = "Fennel Linter";
-              entry =
-                "${self'.packages.fnl-linter}/bin/check.fnl -c ${__fnl-config}";
+              entry = "${self'.packages.fnl-linter}/bin/check.fnl -c ${__fnl-config}";
               files = ".fnl$";
               language = "system";
               fail_fast = false;
@@ -62,7 +77,7 @@
       treefmt = {
         projectRootFile = "flake.nix";
         programs = {
-          nixfmt.enable = true;
+          nixfmt-rfc-style.enable = true;
           fnlfmt.enable = true;
         };
       };

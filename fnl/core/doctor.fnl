@@ -1,3 +1,4 @@
+;; TODO:: (Hermit) Refactor this::
 (local config (require :lspconfig))
 (local {:report_start report-start!
         :report_info report-info!
@@ -6,8 +7,7 @@
         :report_error report-error!} vim.health)
 
 (lambda spaces [amount]
-  (table.concat (fcollect [i 0 amount]
-                  " ") ""))
+  (table.concat (fcollect [i 0 amount] " ") ""))
 
 (lambda report! [name max-name-length]
   (assert (= :string (type name)) "expected string for name")

@@ -1,6 +1,8 @@
 (import-macros {: custom-set-face!} :macros)
 ;; NVM:: Spaghett (tm) is unavoidable
 (custom-set-face! :EdgyWinBar [:bold :italic] {:fg "#180030"})
+
+((->> :setup (. (autoload :fidget))))
 (setup :edgy
        {:left [{:title :NeoTree
                 :ft :neo-tree

@@ -30,7 +30,7 @@
                                        (local new-virt-text {})
                                        (var suffix
                                             ;;.........................................  %
-                                            (: "   %d " :format
+                                            (: "  %d " :format
                                                (- end-lnum lnum)))
                                        (local suf-width
                                               (vim.fn.strdisplaywidth suffix))

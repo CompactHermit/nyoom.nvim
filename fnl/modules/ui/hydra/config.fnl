@@ -31,9 +31,9 @@
 
     ^^_J_: next hunk     _d_: show deleted  ^^
     ^^_K_: prev hunk     _u_: undo last stage ^^ 
-    ^^_s_: stage hunk   _B_: blame show full ^^ 
+    ^^_s_: stage hunk    _B_: blame show full ^^ 
     ^^_p_: preview hunk  _S_: stage buffer  ^^
-    ^^_b_: blame line    
+    ^^_b_: blame Line
   ^
     _<Enter>_: Neogit       _<Esc>_: Exit
       ")
@@ -200,7 +200,7 @@
 ;; Octussy ;;
 (nyoom-module-p! octo
                  (do
-                   (local {: caller} (require :util))
+                   (local {: caller} (require :util.octo))
                    (local octo-hints "
 ^    Octo
 ^▔▔▔▔▔▔▔▔▔▔▔^
@@ -223,6 +223,8 @@
                            :hint octo-hints
                            :config {:color :teal
                                     :invoke_on_body true
+                                    :on_enter #(vim.api.nvim_exec_autocmds :User
+                                                                           {:pattern :octo.setup})
                                     :hint {:type :window
                                            :float_opts {:style :minimal
                                                         :noautocmd true}
@@ -527,7 +529,7 @@
 ^^ _<Esc>_: Escape")
                    (Hydra {:name :+flash
                            :hint flash-hints
-                           :config {:color :teal
+                           :config {:color :red
                                     :hint {:border :solid
                                            :position :middle-right}
                                     :invoke_on_body true}
@@ -841,11 +843,11 @@ _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
                          _harpAdd (fn []
                                     (vim.api.nvim_buf_clear_namespace 0 (_harpNS) 0 -1)
                                     (_harpSign (vim.fn.line "."))
-                                    (: (: harpoon :list) :append))]
+                                    (: (: harpoon :list) :add))]
                     (hydra-key! :n
                                 {:a {:hydra true
                                      :name "+Hydra::Harpoon"
-                                     :config {:color :teal
+                                     :config {:color :pink
                                               :hint {:border :solid
                                                      :position :bottom-middle}
                                               :on_enter (fn []
@@ -854,20 +856,16 @@ _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
                                                                                       {:pattern :harpoon.setup}))
                                               :invoke_on_body true}
                                      :A [#(_harpAdd) "[A]dd [F]tag"]
-                                     :a [#(: (: harpoon :list) :append)
+                                     :p [#(-> harpoon (: :list) (: :prev)) :Prev]
+                                     :n [#(-> harpoon (: :list) (: :next)) :Next]
+                                     :a [#(-> harpoon (: :list) (: :add))
                                          "[A]dd [F]ile"]
                                      :s [#(: (. harpoon :ui) :toggle_quick_menu (: harpoon :list "oqt"))
                                           "[OS] [L]task"]
                                      :S [#((. (require "oqt") :prompt_new_task))
                                          "[OS] [N]task"]
-                                     ;:n [#(nil) "[A]dd Harpoon"]
-                                     ;:N [#(nil) "[A]dd Harpoon"]
-                                     ;:w [#(nil) "[A]dd Harpoon"]
-                                     ;:t [#(nil) "[A]dd Harpoon"]
-                                     ;:d [#(nil) "[A]dd Harpoon"]
-                                     ;:z [#(nil) "[A]dd Harpoon"]
                                      :<CR> [#(: (. harpoon :ui) :toggle_quick_menu (: harpoon :list)) "[Q]uick [M]enu"]
-                                      :<Esc> [#(print :Exiting) :Exit true]}}
+                                     :<Esc> [#(print :Exiting) :Exit true]}}
                                 {:prefix :<leader>}))))
 
 ;; TODO:: Make SubHydras For Swapping and Node Selection

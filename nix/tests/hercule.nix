@@ -1,4 +1,5 @@
-{ inputs, ... }: {
+{ inputs, ... }:
+{
   imports = [ inputs.hci.flakeModule ];
 
   hercules-ci.flake-update = {

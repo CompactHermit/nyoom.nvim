@@ -81,31 +81,6 @@
     (vim.api.nvim_open_win 1 opts))
   (vim.api.nvim_win_set_cursor [0 0]))
 
-; M.toggle = function(opts)
-;   if M.is_open() then
-;     M.close()
-;   else
-;     M.open(opts)
-;   end
-; end
-
-; M.close = function()
-;   local winid = M.get_win_id()
-;   if winid then
-;     if winid == vim.api.nvim_get_current_win() then
-;       vim.cmd.wincmd({ args = { "p"}})
-;     end
-;     -- The sidebar is the last open window. Open a new window.
-;     local winids = vim.api.nvim_tabpage_list_wins(0)
-;     local overseer_wins = vim.tbl_filter(is_overseer_window, winids)
-;     if #winids == #overseer_wins then
-;       vim.cmd.new()
-;     end
-;     vim.api.nvim_win_close(winid, false)
-;   end
-; end
-;
-
 ;; NOTE:: This is a WIP, for now we'll just display strings on a buffer. Not entirely sure how to creates links::
 (map! [n] :<leader>cr `(vim.ui.input {:prompt "Enter type to check:: "}
                                      (fn [input]

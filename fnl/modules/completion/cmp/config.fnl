@@ -122,10 +122,11 @@
                  (table.insert cmp-sources {:name :conjure :group_index 1}))
 
 (nyoom-module-p! lsp (do
-                       (table.insert cmp-sources {:name :nvim_lsp})
+                       (table.insert cmp-sources
+                                     {:name :nvim_lsp :group_index 1})
                        (table.insert cmp-sources
                                      {:name :nvim_lsp_signature_help
-                                      :group_index 2})))
+                                      :group_index 1})))
 
 (fn has-words-before []
   (let [(line col) (unpack (vim.api.nvim_win_get_cursor 0))]
@@ -245,6 +246,7 @@
 ;;require("luasnip.loaders.from_vscode").lazy_load { paths = { "path/to/your/snippetFolder" } }
 ((. (autoload :luasnip.loaders.from_lua) :load) {:paths ["~/.config/nvim/snippets/"]})
 
-(nyoom-module-p! haskell (local haskell_snippets (autoload :haskell_snippets))
-                 ((. (luasnip.add_snippets :haskell haskell_snippets
-                                           [:key :haskell]))))
+(nyoom-module-p! haskell
+                 (let [haskell_snippets (. (autoload :haskell_snippets) :all)]
+                   (luasnip.add_snippets :haskell haskell_snippets
+                                         {:key :haskell})))

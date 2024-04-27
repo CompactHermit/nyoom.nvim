@@ -20,12 +20,14 @@
 
 (set! guifont "Cascadia Code PL:w10, Symbols Nerd Font, Noto Color Emoji")
 
-; (set! gcr ["i-c-ci-ve:blinkoff500-blinkon500-block-TermCursor"
-;            "n-v:block-Curosr/lCursor"
-;            "o:hor50-Curosr/lCursor"
-;            "r-cr:hor20-Curosr/lCursor"])
+(set! gcr ["i-c-ci-ve:blinkoff500-blinkon500-block-TermCursor"
+           "n-v:block-Curosr/lCursor"
+           "o:hor50-Curosr/lCursor"
+           "r-cr:hor20-Curosr/lCursor"])
+
 (set! relativenumber)
 
+(let! fennel_use_luajit true)
 (let! maplocalleader " m")
 (let! tex_conceal :abdgm)
 (let! vimtex_view_mode :zathura)

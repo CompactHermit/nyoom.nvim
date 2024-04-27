@@ -79,12 +79,9 @@
 ; TODO:: (CH) <10/06> Debug this.
 (use-package! :dstein64/vim-startuptime {:opt true :cmd [:StartupTime]})
 
-(use-package! :stevearc/resession.nvim
-              {:opt true :event [:BufReadPost] :call-setup resession})
-
 ;;Docs and browse
-(use-package! :loganswartz/updoc.nvim
-              {:call-setup updoc :opt true :events :BufReadPost})
+; (use-package! :loganswartz/updoc.nvim
+;               {:call-setup updoc :opt true :events :BufReadPost})
 
 (use-package! :KabbAmine/zeavim.vim {:opt true :cmd :Zeavim})
 

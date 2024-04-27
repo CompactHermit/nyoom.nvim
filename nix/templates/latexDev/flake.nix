@@ -9,9 +9,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { self, ... }@inputs:
+  outputs =
+    { self, ... }@inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [ "x86_64-linux" "aarch64-linux" ];
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
       imports = [
         inputs.treefmt-nix.flakeModule
         inputs.haskellFlakeProjectModules.default
@@ -20,9 +24,17 @@
         schemas = inputs.flake-schemas.schemas;
         flakeModule = ./nix/flake-module.nix;
       };
-      perSystem = { self', config, pkgs, ... }:
-        let inherit (pkgs) lib;
-        in {
+      perSystem =
+        {
+          self',
+          config,
+          pkgs,
+          ...
+        }:
+        let
+          inherit (pkgs) lib;
+        in
+        {
           treefmt = {
             projectRootFile = "flake.nix";
             programs = {
@@ -50,7 +62,11 @@
             projectRoot = ./.;
             projectFlakeName = "Testing Haskell Support";
             import = [ ];
-            autowire = [ "packages" "checks" "apps" ];
+            autowire = [
+              "packages"
+              "checks"
+              "apps"
+            ];
             packages = {
               ## Add Overrides here
             };
@@ -58,16 +74,18 @@
             settings = { };
             location-updates.check = false;
           };
-          devShells.default = lib.addMetaAttrs {
-            description = "A Generic Haskell Devshell, Batteries Included!";
-          } (pkgs.mkShell {
-            name = "Haskell Devshells";
-            nativeBuildInputs = [ ];
-            inputsFrom = [
-              config.treefmt.build.devShell
-              config.haskellProjects.default.outputs.devShell
-            ];
-          });
+          devShells.default =
+            lib.addMetaAttrs { description = "A Generic Haskell Devshell, Batteries Included!"; }
+              (
+                pkgs.mkShell {
+                  name = "Haskell Devshells";
+                  nativeBuildInputs = [ ];
+                  inputsFrom = [
+                    config.treefmt.build.devShell
+                    config.haskellProjects.default.outputs.devShell
+                  ];
+                }
+              );
           packages.appname = "";
         };
     };

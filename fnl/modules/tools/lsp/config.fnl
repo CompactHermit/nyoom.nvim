@@ -1,4 +1,4 @@
-(import-macros {: nyoom-module-p! : autocmd! : augroup!} :macros)
+(import-macros {: nyoom-module-p! : autocmd! : augroup! : packadd!} :macros)
 (local lsp (autoload :lspconfig))
 (local lspUtil (autoload :util.lsp))
 (local lsp-servers {})
@@ -100,7 +100,7 @@
                      _ nil)
                    (tset lsp-servers :clangd {:cmd clangd_commands})))
 
-(nyoom-module-p! csharp (tset lsp-servers :omnisharp {:cmd [:omnisharp]}))
+;(nyoom-module-p! csharp (tset lsp-servers :omnisharp {:cmd [:omnisharp]}))
 
 (nyoom-module-p! clojure (tset lsp-servers :clojure_lsp {}))
 
@@ -129,12 +129,17 @@
 
 (nyoom-module-p! latex (tset lsp-servers :texlab {}))
 
+;(tset lsp-servers :fennel_ls {})
 (nyoom-module-p! lua
-                 (tset lsp-servers :lua_ls
-                       {:settings {:Lua {:diagnostics {:globals [:vim]}
-                                         :workspace {:library (vim.api.nvim_list_runtime_paths)
-                                                     :maxPreload 1000
-                                                     :ignoreDir [:.direnv]}}}}))
+                 (do
+                   (packadd! neodev)
+                   ((->> :setup (. (require :neodev))))
+                   (tset lsp-servers :lua_ls
+                         {:settings {:Lua {:diagnostics {:globals [:vim]}
+                                           :completion {:callSnippet :Replace}
+                                           :workspace {:library (vim.api.nvim_list_runtime_paths)
+                                                       :maxPreload 1000
+                                                       :ignoreDir [:.direnv]}}}})))
 
 ;; Stop Lua-ls from shitting itself
 
@@ -165,7 +170,11 @@
                           (tset :basedpyright {})))
 
 (nyoom-module-p! typst
-                 (tset lsp-servers :typst_lsp {:settings {:exportPdf :never}}))
+                 (tset lsp-servers :tinymist
+                       {:single_file_support true
+                        :settings {:exportPdf :onType
+                                   :outputPath :$root/target/$dir/name
+                                   :fontPaths (or vim.env.TYPST_FONTS nil)}}))
 
 (nyoom-module-p! yaml
                  (tset lsp-servers :yamlls
@@ -190,6 +199,6 @@
                       (local client
                              (vim.lsp.get_client_by_id args.data.client_id))
                       (when client.server_capabilities.inlayHintProvider
-                        (vim.lsp.inlay_hint.enable args.buf true)))))
+                        (vim.lsp.inlay_hint.enable)))))
 
 {: on-attach}

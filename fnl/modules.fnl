@@ -12,7 +12,7 @@
         dashboard            ; a nifty splash screen for neovim
         ;nyoom-quit         ; WIP: buggy, terrible implementation of doom-quit.
         hydra                ; Discount modality for mythological beast hunters
-        ;;indent-guides      ; highlighted indent columns
+        indent-guides        ; highlighted indent columns
         modeline             ; snazzy, nano-emacs-inspired modeline
         nvimtree             ; a project drawer, like NERDTree for vim
         neotree              ; tree-like structures for neovim
@@ -26,7 +26,7 @@
         :editor
         fold                 ; (nigh) universal code folding
         (format +onsave)     ; automated prettiness
-        ;;multiple-cursors   ;  learn macros you dingus
+        multiple-cursors   ;  learn macros you dingus
         ;;parinfer           ; turn lisp into python, sort of
         (hotpot +reflect)    ; NOTE: essential module (for now), don't disable
         scratch              ; emacs-like scratch buffer functionality
@@ -47,8 +47,8 @@
         ; spell              ; tasing you for misspelling mispelling
 
         :tools
-        debugger             ; stepping through code, to help you add bugs
-        docker               ; row row row your boat TODO +netman?
+        ;;debugger             ; stepping through code, to help you add bugs
+        ;docker               ; row row row your boat TODO +netman?
         ; editorconfig       ; let someone else argue about tabs vs spaces
         ; magma              ; tame Jupyter notebooks
         quickfix             ; Monkey Simulator, circa 23 colorized
@@ -79,7 +79,8 @@
         clojure              ; java with a lisp
         common-lisp          ; if you've seen one lisp, you've seen them all
         ; csharp             ; java but with linq
-        java                ; the poster child for carpal tunnel syndrome
+        flutter              ; Flap
+        java                 ; the poster child for carpal tunnel syndrome
         julia                ; a better, faster MATLAB
         ; kotlin             ; a better, slicker Java(Script)
         ; json               ; { "dʒeɪsən":  "Javascript Object Notation" }
@@ -114,7 +115,7 @@
         ;zig                  ; C, but slower and fatter
 
         :app
-        ;;himalaya             ; Enable Himalaya Integration
+        ;;himalaya           ; Enable Himalaya Integration
         ;;calendar           ; Watch your missed deadlines in real time
         ;;runner             ; Whether to enable the nyoom wrapper for nix
 

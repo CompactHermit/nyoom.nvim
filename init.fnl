@@ -37,21 +37,11 @@
 (if (pcall require :hotpot)
     (do
       ;; if it does, load it
-      ((. (require :hotpot) :setup) {;; enables using the fennel compiler as a linter
-                                     :enable_hotpot_diagnostics true
+      ((. (require :hotpot) :setup) {:enable_hotpot_diagnostics true
                                      :provide_require_fennel true
-                                     :compiler {;; let us access `vim.*` in macros
-                                                :macros {:allowGlobals true
+                                     :compiler {:macros {:allowGlobals true
                                                          :compilerEnv _G
                                                          :env :_COMPILER}
-                                                ;; injects nyoom macros into every file
-                                                ;;                                               :preprocessor (fn [src {: path : modname : macro?}]
-                                                ;;                                                               (print path modname (string.match path "config/nvim/"))
-                                                ;;                                                               ;; (vim.notify (.. "compiling " path " in " modname))
-                                                ;;                                                               (if (or (= modname "macros") (= modname "core.lib"))
-                                                ;;                                                                 src
-                                                ;;                                                                 (string.format "(require-macros :macros)%s" src)))
-                                                ;; better line errors/compat
                                                 :modules {:correlate true
                                                           :useBitLib true}}})
       ;; if NYOOM_PROFILE is set, load profiling code

@@ -1,12 +1,3 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: use-package! : nyoom-module!} :macros)
 
-;; A fucking broken git checker
-(use-package! :pwntester/octo.nvim
-              {:nyoom-module tools.octo
-               :opt true
-               :event :BufWritePost
-               :dependencies [:nvim-lua/plenary.nvim
-                              :nvim-telescope/telescope.nvim
-                              :nvim-tree/nvim-web-devicons]})
-
-;;:call-setup octo})
+(nyoom-module! tools.octo)

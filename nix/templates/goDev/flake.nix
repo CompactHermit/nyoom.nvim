@@ -9,12 +9,23 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { self, ... }@inputs:
+  outputs =
+    { self, ... }@inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [ "x86_64-linux" "aarch64-linux" ];
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
       imports = [ inputs.treefmt-nix.flakeModule ];
       flake = { };
-      perSystem = { self', inputs', system, config, ... }:
+      perSystem =
+        {
+          self',
+          inputs',
+          system,
+          config,
+          ...
+        }:
         let
           pkgs = import inputs.nixpkgs {
             inherit system;
@@ -22,7 +33,8 @@
           };
           goVersion = 20;
           goEnv = pkgs.mkGoEnv { pwd = ./.; };
-        in {
+        in
+        {
           treefmt = {
             projectRootFile = "flake.nix";
             programs = {
@@ -33,7 +45,10 @@
           };
           devShells.default = pkgs.mkShell {
             name = "goDev Devshells";
-            nativeBuildInputs = [ goEnv pkgs.gomod2nix ];
+            nativeBuildInputs = [
+              goEnv
+              pkgs.gomod2nix
+            ];
             shellHook = ''
               export XDG_CACHE_HOME=$(mktemp -d)
               #export XDG_DATA_HOME=$(mktemp -d)

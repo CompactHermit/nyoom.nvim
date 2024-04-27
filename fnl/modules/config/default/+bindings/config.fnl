@@ -168,10 +168,6 @@
 (nyoom-module-p! lsp (map! [n] :<leader>ca `(vim.lsp.buf.code_action)
                            {:desc "LSP Code actions"}))
 
-(map! [n] :<leader>cc :<cmd>make<CR> {:desc "Compile with quickfix list"})
-(map! [n] :<leader>cC :<cmd>lmake<CR {:desc "Compile with location list"})
-
-(map! [n] :<leader>cC :<cmd>lmake<CR {:desc "Compile with location list"})
 (nyoom-module-p! lsp
                  (do
                    (map! [n] :<leader>cd `(vim.lsp.buf.definition)

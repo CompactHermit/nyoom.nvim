@@ -1,5 +1,3 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: nyoom-module!} :macros)
 
-(use-package! :lukas-reineke/indent-blankline.nvim {:nyoom-module ui.indent-guides
-                                                    :opt true
-                                                    :defer indent-blankline.nvim})
+(nyoom-module! ui.indent-guides)

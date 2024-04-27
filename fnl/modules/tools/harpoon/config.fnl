@@ -42,7 +42,7 @@
   (if (not= (pcall require :plenary) true)
       (packadd! plenary.nvim))
   (if (not= (pcall require :overseer) true)
-      (packadd! overseer.nvim))
+      (packadd! overseer))
   (let [fidget (require :fidget)
         progress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :harpoon}})
         harpn (require :harpoon)
@@ -101,25 +101,8 @@
                                 ;:group :harpoon.setup
                                 :once true}))
 
-;; TODO:: (Hemrit) Make this it's own seperate multicursor module, and add extra functionality to it
-
 ;; fnlfmt: skip
-(do
-  (vim.api.nvim_create_augroup :iedit.setup {:clear true})
-  (vim.api.nvim_create_autocmd :User
-                               {:pattern :iedit.setup
-                                :callback (fn []
-                                            (packadd! iedit)
-                                            (map! [n i] :fx `((. (require :iedit) :select)) {:desc "Iedit::Select"})
-                                            (map! [n i] :fa `((. (require :iedit) :select_all)) {:desc "Iedit::Select_all"})
-                                            (map! [n i] :fb `((. (require :iedit) :stop)) {:desc "Iedit::Stop"}))
-                                :group :iedit.setup
-                                :once true
-                                :desc "<IEDIT::Setup>"}))
-
-
-
-;; fnlfmt: skip
+;; NOTE (Hermit):: Testing BufExtmarks, would love to use Async Here holy sheez
 ; (local harpoon (require :harpoon))
 ; (local M {})
 ; (set M._maps [])
