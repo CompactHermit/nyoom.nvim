@@ -157,14 +157,15 @@
     (progress:report {:message "PackStrapping <Neorg-Deps>"
                       :level vim.log.levels.ERROR
                       :progress 0})
-    (packadd! :neorg)
-    (packadd! :image-nvim)
-    (packadd! :pathlib)
-    (packadd! :neorg-exec)
-    (packadd! :neorg-telescope)
-    (packadd! :neorg-roam)
-    (packadd! :neorg-timelog)
-    (packadd! :neorg-hop-extras)
+    (packadd! lua-utils)
+    (packadd! neorg)
+    (packadd! image-nvim)
+    (packadd! pathlib)
+    (packadd! neorg-exec)
+    (packadd! neorg-telescope)
+    (packadd! neorg-roam)
+    (packadd! neorg-timelog)
+    (packadd! neorg-hop-extras)
     (progress:report {:message "Initializing Image-nvim"
                           :level vim.log.levels.ERROR
                           :progress 10})
@@ -189,10 +190,8 @@
     ;(nio.sleep 5)
     (progress:finish)))
 
-(vim.api.nvim_create_autocmd :BufRead
+(vim.api.nvim_create_autocmd :BufReadPre
                              {:pattern :*.norg
                               :callback #(__neorgSetup)
                               :once true
                               :desc "Neorg Setup"})
-
-;; fnlfmt: skip

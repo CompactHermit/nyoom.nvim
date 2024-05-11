@@ -3,7 +3,8 @@
 
 ;; NOTE (Hermit) :: Remove after Adding Lazy! Macro and Proper buffer Autocmds
 (fn __overseerSetup []
-  (packadd! :overseer)
+  (packadd! overseer)
+  (packadd! compiler)
   (let [fidget (require :fidget)
         progress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :overseer}})
         close-task (. (require :util.overseer) :close-task)
@@ -119,11 +120,15 @@
                             :vscode
                             :task
                             :user]}]
-    (progress:report {:message "Setting Up OverSeer"
+    (progress:report {:message "Setting Up Modules::Runners"
                       :level vim.log.levels.ERROR
                       :progress 0})
     ((->> :setup (. (require :overseer))) __opts)
     (progress:report {:message "Setup Overseer"
+                      :title :Completed!
+                      :progress 50})
+    ((->> :setup (. (require :compiler))))
+    (progress:report {:message "Setup Compiler.nvim"
                       :title :Completed!
                       :progress 99})))
 
@@ -138,7 +143,7 @@
   (vim.api.nvim_exec_autocmds :User {:pattern :overseer.setup}))
 
 ;; fnlfmt: skip
-(let [commands [:OverseerRunCmd :OverseerToggle]]
+(let [commands [:OverseerRunCmd :OverseerToggle :CompilerOpen :CompilerToggleResults]]
   (each [_ cmd (ipairs commands)]
     (vim.api.nvim_create_user_command cmd
                                       (fn [args]
@@ -166,6 +171,3 @@
                                                                              " ")
                                                                          :cmdline))
                                        :nargs "*"})))
-
-(fn [cmd]
-  (fn [loader]))

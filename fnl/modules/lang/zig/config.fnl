@@ -1,7 +1,35 @@
-(setup :zig-tools {:expose_commands true
-                   :project {:flags {:build "--prominent-compile-errors"
-                                     :run ""}}})
+(import-macros {: packadd! : let!} :macros)
+(local _opts {})
 
+;; NOTE (Hermit) :: Remove after Adding Lazy! Macro and Proper buffer Autocmds
+(fn __zigSetup []
+  (packadd! zigTools)
+  (let [fidget (autoload :fidget)
+        progress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :zig}})]
+    (progress:report {:message "Setting Up zig"
+                      :level vim.log.levels.ERROR
+                      :progress 0})
+    (let! zigtools_config
+          {:expose_commands true
+           :formatter {:enable false}
+           :checker {:enable true :before_compilation true}
+           :integrations {:package_managers {}
+                          :zls {:hints true :management {:enable false}}}
+           :project {:flags {:build :--prominent-compile-errors :run ""}
+                     :build_tasks true}})
+    ((->> :setup (. (require :zig-tools))))
+    (progress:report {:message "Setup Complete"
+                      :title :Completed!
+                      :progress 99})))
+
+(do
+  (vim.api.nvim_create_autocmd :Filetype
+                               {:pattern :zig
+                                :callback #(__zigSetup)
+                                :once true}))
+
+; --- zig-tools.nvim configuration
+; ---@type table
 ; _G.zigtools_config = {
 ;                       --- Commands to interact with your project compilation
 ;                       ---@type boolean
@@ -69,20 +97,13 @@
 ;                                       zls = {
 ;                                              --- Enable inlay hints
 ;                                              ---@type boolean
-;                                              hints = false,
-;                                              --- Manage installation
-;                                              ---@type table
-;                                              management = {
-;                                                            --- Enable ZLS management
-;                                                            ---@type boolean
-;                                                            enable = false,
-;                                                            --- Installation path
-;                                                            ---@type string
-;                                                            install_path = os.getenv("HOME") .. "/.local/bin",
-;                                                            --- Source path (where to clone repository when building from source)
-;                                                            ---@type string
-;                                                            source_path = os.getenv("HOME") .. "/.local/zig/zls",}
-;                                              ,}
-;                                       ,}}
+;                                       ,}
 ;   
+;
+;                       ---@type table
+;                       terminal = {
+;                                   direction = "vertical",
+;                                   auto_scroll = true,
+;                                   close_on_exit = false,}
+;                       ,}
 ;

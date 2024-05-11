@@ -6,7 +6,6 @@
                 : packadd!} :macros)
 
 (local {: hydra-key!} (require :util.hydra))
-;; BUG:: hydra-key! ignores the ?num arg
 (local Hydra (autoload :hydra))
 
 ;; fnlfmt: skip
@@ -382,67 +381,57 @@
                                    [:<Esc> nil {:exit true :nowait true}]]})))
 
 ;; Neotest ;;
+
+;; fnlfmt: skip
 (nyoom-module-p! neotest
-                 (do
-                   (local {: test_class : test_method : debug_selection}
-                          (require :util))
-                   (local neotest-hints "
- ^    Neotest
- ^▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔^
-
- ^▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔^
- ^^_<leader>_: Test Near
- ^^ _c_: Test Current
- ^^ _o_: Test Output
- ^^ _s_: Test Summary
- ^^ _S_: Test Strat
- ^^ _D_: Test Stop
- ^^ _a_: Test Attach
- ^^ _C_: Test Class
- ^^ _m_: Test Method
- ^^ _d_: Debug Selection
- ^^ _<Esc>_: Escape
-
-    ")
-                   (Hydra {:name :+Neotest
-                           :hint neotest-hints
-                           :config {:color :pink
-                                    :invoke_on_body true
-                                    :hint {:border :solid
-                                           :position :middle-right}}
-                           :mode [:n :v :x :o]
-                           :body :<leader>u
-                           :heads [[:<leader>
-                                    (fn []
-                                      (vim.cmd :TestNear))]
-                                   [:c
-                                    (fn []
-                                      (vim.cmd :TestCurrent))]
-                                   [:o
-                                    (fn []
-                                      (vim.cmd :TestOutput))]
-                                   [:s
-                                    (fn []
-                                      (vim.cmd :TestSummary))]
-                                   [:S
-                                    (fn []
-                                      (vim.cmd :TestStrat))]
-                                   [:D
-                                    (fn []
-                                      (vim.cmd :TestStop))]
-                                   [:a
-                                    (fn []
-                                      (vim.cmd :TestAttach))]
-                                   [:C
-                                    (fn []
-                                      (test_class))]
-                                   [:m
-                                    (fn []
-                                      (test_method))]
-                                   [:d
-                                    (fn []
-                                      (debug_selection))]
-                                   [:<Esc> nil {:exit true :nowait true}]]})))
+            (hydra-key! :n
+                        {:u {:hydra true
+                             :name :+Neotest
+                             :config {:color :pink
+                                      :invoke_on_body true
+                                      :on_enter #(vim.api.nvim_exec_autocmds :User
+                                                                             {:pattern :neotest.setup})
+                                      :hint {:type :window
+                                             :float_opts {:style :minimal}
+                                             :show_name true
+                                             :position :bottom-middle}}
+                             :<CR> [#((->> :run
+                                           (. (require :neotest)
+                                              :run)) (vim.fn.expand "%"))
+                                    "[R]un Current File"]
+                             :c [#((->> :run
+                                        (. (require :neotest) :run)) (vim.fn.expand "%"))
+                                 "[R]un File"]
+                             :o [#((->> :open
+                                        (. (require :neotest) :output)) {:enter true})
+                                 "[O]utput Open"]
+                             :s [#((->> :toggle
+                                        (. (require :neotest) :summary)))
+                                 "[T]oggle Summary"]
+                             :S [(fn [arg]
+                                   (let [options [:dap :integrated]]
+                                        (match (vim.tbl_contains options
+                                                                 args.arg)
+                                          (where k1 (= k1 true)) ((->> :run
+                                                                       (. (require :neotest)
+                                                                          :run)) {:strategy args.arg})
+                                          (where k2 (= k2 false)) ((->> :run
+                                                                        (. (require :neotest)
+                                                                           :run)) {:strategy :integrated}))))
+                                 "[T]est integrated"]
+                             :D [#((->> :stop
+                                        (. (require :neotest) :run)))
+                                 "[S]top Runner"]
+                             :a [#((->> :attach
+                                        (. (require :neotest) :run)))
+                                 "[R]un Attach"]
+                             :C [#(when (= vim.bo.filetype :python)
+                                    ((. (require :dap-python) :test_class))) "[Py] [T]est Class"]
+                             :m [#(when (= vim.bo.filetype :python)
+                                   ((. (require :dap-python) :test_method))) "[Py] [T]est Method"]
+                             :d [#(when (= vim.bo.filetype :python)
+                                    ((. (require :dap-python) :debug_selection))) "[Py] [D]ebug Visual"]}}
+                        {:prefix :<leader>} 1))
 
 ;;Overseer ;;
 (nyoom-module-p! overseer
@@ -529,7 +518,7 @@
 ^^ _<Esc>_: Escape")
                    (Hydra {:name :+flash
                            :hint flash-hints
-                           :config {:color :red
+                           :config {:color :pink
                                     :hint {:border :solid
                                            :position :middle-right}
                                     :invoke_on_body true}
@@ -685,37 +674,36 @@
                                    [:<Esc> nil {:exit true :nowait true}]]})))
 
 ;; Debugger ;;
-(nyoom-module-p! debugger
+(nyoom-module-p! debug
                  (do
-                   (local dap (autoload :dap))
-                   (local ui (autoload :dapui))
-                   (hydra-key! :n
-                               {:d {:hydra true
-                                    :name " Debug"
-                                    :config {:color :pink
-                                             :invoke_on_body true
-                                             :hint {:type :window
-                                                    :offset 1
-                                                    :float_opts {:style :minimal
-                                                                 :noautocmd false}
-                                                    :position :bottom-middle
-                                                    :on_enter (fn []
-                                                                (print "Patching Overseer Tasks")
-                                                                ((->> :patch_dap
-                                                                      (. (autoload :overseer))) true))}}
-                                    :H [#(dap.step_out) "[s]out"]
-                                    :J [#(dap.step_over) "[s]over"]
-                                    :K [#(dap.step_back) "[s]back"]
-                                    :L [#(dap.step_into) "[s]into"]
-                                    :t [#(dap.toggle_breakpoint)
-                                        "[Tog]BreakPt"]
-                                    :T [#(dap.clear_breakpoints)
-                                        "[Clr]BreakPt"]
-                                    :c [#(dap.continue) "[D]Continue"]
-                                    :x [#(dap.terminate) "[D]Stop"]
-                                    :r [#(dap.repl) "[D]Repl"]
-                                    :<Enter> [#(ui.toggle) "[UI] Toggle"]}}
-                               {:prefix :<leader>} 4)))
+                   (let [dap (autoload :dap)
+                         ui (autoload :dapui)]
+                     (hydra-key! :n
+                                 {:d {:hydra true
+                                      :name " Debug"
+                                      :config {:color :pink
+                                               :invoke_on_body true
+                                               :hint {:type :window
+                                                      :offset 1
+                                                      :float_opts {:style :minimal
+                                                                   :noautocmd false}
+                                                      :position :bottom-middle}
+                                               :on_enter (fn []
+                                                           (vim.api.nvim_exec_autocmds :User
+                                                                                       {:pattern :debug.setup}))}
+                                      :H [#(dap.step_out) "[s]out"]
+                                      :J [#(dap.step_over) "[s]over"]
+                                      :K [#(dap.step_back) "[s]back"]
+                                      :L [#(dap.step_into) "[s]into"]
+                                      :t [#(dap.toggle_breakpoint)
+                                          "[Tog]BreakPt"]
+                                      :T [#(dap.clear_breakpoints)
+                                          "[Clr]BreakPt"]
+                                      :c [#(dap.continue) "[D]Continue"]
+                                      :x [#(dap.terminate) "[D]Stop"]
+                                      :r [#(dap.repl) "[D]Repl"]
+                                      :<Enter> [#(ui.toggle) "[UI] Toggle"]}}
+                                 {:prefix :<leader>} 4))))
 
 ;; LSP Utilities ;;
 (nyoom-module-p! lsp (do
@@ -809,28 +797,36 @@ _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
 ;;TODO:: add more utilities and tinker with HT
 ;; Haskell ;;
 (nyoom-module-p! haskell
-                 (let [haskell-tools (autoload :haskell-tools)
+                 (let [ht (autoload :haskell-tools)
                        project (autoload :haskell-tools.project)
                        hoogle (autoload :haskell-tools.hoogle)]
                    (hydra-key! :n
-                               {:ch {:hydra true
-                                     :name "+Hydra::Haskell"
-                                     :config {:color :teal
-                                              :hint {:border :solid
-                                                     :position :bottom-middle}
-                                              :invoke_on_body true}
-                                     :s [#(vim.cmd :HSProjectFile)
-                                         "Open Project-File"]
-                                     :S [#(vim.cmd :HsPackageYaml)
-                                         "Open package.yaml"]
-                                     :m [#(vim.cmd :HsPackageCabal)
-                                         "Open *.cabal"]
-                                     :M [#((. project :telescope_package_grep))
-                                         "Telescope Packages"]
-                                     :t [#((. hoogle :hoogle_signature) (vim.api.nvim_get_current_line))
-                                         "Hoogle search Line"]
-                                     :<Esc> [#(print :Exiting) :Exit true]}}
-                               {:prefix :<leader>})))
+                               {:h {:hydra true
+                                    :name "+Hydra::Haskell"
+                                    :config {:color :pink
+                                             :hint {:type :window
+                                                    :offset 1
+                                                    :float_opts {:style :minimal
+                                                                 :noautocmd false}
+                                                    :position :bottom-middle}
+                                             :invoke_on_body true}
+                                    :f [#(vim.cmd :HSProjectFile)
+                                        "[O]pen *.project"]
+                                    :S [#(vim.cmd :HsPackageYaml)
+                                        "[O]pen [Y]aml"]
+                                    :m [#(vim.cmd :HsPackageCabal)
+                                        "[O]pen [C]abal"]
+                                    :M [#((. project :telescope_package_grep))
+                                        "[T]ele [P]ack"]
+                                    :w [#(ht.repl.cword_type)
+                                        "[R]epl [P] <Cword>"]
+                                    :r [#(ht.repl.toggle) "[R]epl [T]oggle"]
+                                    :s [#(ht.repl.reload) "[R]epl [R]eload"]
+                                    :t [#(ht.repl.paste_type) "[R]epl [P]aste"]
+                                    :u [#(ht.repl.toggle (vim.api.nvim_buf_get_name (vim.api.nvim_get_current_buf)))
+                                        "[R]epl [P] Buffer"]
+                                    :q [#(ht.repl.quit) "[R]epl [Q]uit"]}}
+                               {:prefix :<leader>} 4)))
 
 ;; fnlfmt: skip
 (nyoom-module-p! harpoon
@@ -864,9 +860,8 @@ _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
                                           "[OS] [L]task"]
                                      :S [#((. (require "oqt") :prompt_new_task))
                                          "[OS] [N]task"]
-                                     :<CR> [#(: (. harpoon :ui) :toggle_quick_menu (: harpoon :list)) "[Q]uick [M]enu"]
-                                     :<Esc> [#(print :Exiting) :Exit true]}}
-                                {:prefix :<leader>}))))
+                                     :<CR> [#(: (. harpoon :ui) :toggle_quick_menu (: harpoon :list)) "[Q]uick [M]enu"]}}
+                                {:prefix :<leader>} 4))))
 
 ;; TODO:: Make SubHydras For Swapping and Node Selection
 
@@ -919,63 +914,63 @@ _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
                                   {:prefix :<leader>} 4))
 
 ; Go faster, wagie! ;;
-(nyoom-module-p! go
-                 (do
-                   (fn go-hydra []
-                     (hydra-key! :n
-                                 {:G {:hydra true
-                                      :name "Go:: Coding"
-                                      :config {:color :teal
-                                               :hint {:border :solid
-                                                      :position :middle-right}
-                                               :invoke_on_body true}
-                                      :a [#(vim.cmd :GoCodeAction) "Add tags"]
-                                      :e [#(vim.cmd :GoIfErr) "Add if err"]
-                                      :i [#(vim.cmd :GoToggleInlay)
-                                          "Toggle inlay"]
-                                      :l [#(vim.cmd :GoLint) "Run linter"]
-                                      :o [#(vim.cmd :GoPkgOutline) :Outline]
-                                      :r [#(vim.cmd :GoRun) :Run]
-                                      :s [#(vim.cmd :GoFillStruct)
-                                          "Autofill struct"
-                                          {:prefix :<leader>}
-                                          1]}})
-                     (hydra-key! :n
-                                 {:fh {:name "Go:: Helpers"
-                                       :a [#(vim.cmd :GoAddTag)
-                                           "Add tags to struct"]
-                                       :r [#(vim.cmd :GoRMTag)
-                                           "Remove tags to struct"]
-                                       :c [#(vim.cmd :GoCoverage)
-                                           "Test coverage"]
-                                       :g [#(vim.cmd "lua require('go.comment').gen()")
-                                           "Generate comment"]
-                                       :v [#(vim.cmd :GoVet) "Go vet"]
-                                       :t [#(vim.cmd :GoModTidy) "Go mod tidy"]
-                                       :i [#(vim.cmd :GoModInit) "Go mod init"]}}
-                                 {:prefix :<leader>})
-                     (hydra-key! :n
-                                 {:ft {:name "Go:: Tests"
-                                       :r [#(vim.cmd :GoTest) "Run tests"]
-                                       :a [#(vim.cmd :GoAlt!) "Open alt file"]
-                                       :s [#(vim.cmd :GoAltS!)
-                                           "Open alt file in split"]
-                                       :v [#(vim.cmd :GoAltV!)
-                                           "Open alt file in vertical split"]
-                                       :u [#(vim.cmd :GoTestFunc)
-                                           "Run test for current func"]
-                                       :f [#(vim.cmd :GoTestFile)
-                                           "Run test for current file"]}}
-                                 {:prefix :<leader>})
-                     (hydra-key! :n
-                                 {:fx {:name "Go:: Codelens"
-                                       :l [#(vim.cmd :GoCodeLenAct)
-                                           "Toggle Lens"]
-                                       :a [#(vim.cmd :GoCodeAction)
-                                           "Code Action"]}}
-                                 {:prefix :<leader>}))
-                   (augroup! localleader-hydras
-                             (autocmd! FileType :*.go `(go-hydra)))))
+; (nyoom-module-p! go
+;                  (do
+;                    (fn go-hydra []
+;                      (hydra-key! :n
+;                                  {:G {:hydra true
+;                                       :name "Go:: Coding"
+;                                       :config {:color :teal
+;                                                :hint {:border :solid
+;                                                       :position :middle-right}
+;                                                :invoke_on_body true}
+;                                       :a [#(vim.cmd :GoCodeAction) "Add tags"]
+;                                       :e [#(vim.cmd :GoIfErr) "Add if err"]
+;                                       :i [#(vim.cmd :GoToggleInlay)
+;                                           "Toggle inlay"]
+;                                       :l [#(vim.cmd :GoLint) "Run linter"]
+;                                       :o [#(vim.cmd :GoPkgOutline) :Outline]
+;                                       :r [#(vim.cmd :GoRun) :Run]
+;                                       :s [#(vim.cmd :GoFillStruct)
+;                                           "Autofill struct"
+;                                           {:prefix :<leader>}
+;                                           1]}})
+;                      (hydra-key! :n
+;                                  {:fh {:name "Go:: Helpers"
+;                                        :a [#(vim.cmd :GoAddTag)
+;                                            "Add tags to struct"]
+;                                        :r [#(vim.cmd :GoRMTag)
+;                                            "Remove tags to struct"]
+;                                        :c [#(vim.cmd :GoCoverage)
+;                                            "Test coverage"]
+;                                        :g [#(vim.cmd "lua require('go.comment').gen()")
+;                                            "Generate comment"]
+;                                        :v [#(vim.cmd :GoVet) "Go vet"]
+;                                        :t [#(vim.cmd :GoModTidy) "Go mod tidy"]
+;                                        :i [#(vim.cmd :GoModInit) "Go mod init"]}}
+;                                  {:prefix :<leader>})
+;                      (hydra-key! :n
+;                                  {:ft {:name "Go:: Tests"
+;                                        :r [#(vim.cmd :GoTest) "Run tests"]
+;                                        :a [#(vim.cmd :GoAlt!) "Open alt file"]
+;                                        :s [#(vim.cmd :GoAltS!)
+;                                            "Open alt file in split"]
+;                                        :v [#(vim.cmd :GoAltV!)
+;                                            "Open alt file in vertical split"]
+;                                        :u [#(vim.cmd :GoTestFunc)
+;                                            "Run test for current func"]
+;                                        :f [#(vim.cmd :GoTestFile)
+;                                            "Run test for current file"]}}
+;                                  {:prefix :<leader>})
+;                      (hydra-key! :n
+;                                  {:fx {:name "Go:: Codelens"
+;                                        :l [#(vim.cmd :GoCodeLenAct)
+;                                            "Toggle Lens"]
+;                                        :a [#(vim.cmd :GoCodeAction)
+;                                            "Code Action"]}}
+;                                  {:prefix :<leader>}))
+;                    (augroup! localleader-hydras
+;                              (autocmd! FileType :*.go `(go-hydra)))))
 
 ;Intercourse;;
 (nyoom-module-p! latex

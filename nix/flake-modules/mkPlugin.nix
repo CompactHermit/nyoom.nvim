@@ -23,7 +23,7 @@ let
     optional = __opt;
   };
 in
-#NOTE (Hermit):: Somehow eager is never reached, hmmm
+#TODO: (Hermit) Refactor this, I mean look at this, aren't you ashamed of this?
 {
   __functor =
     self: p:

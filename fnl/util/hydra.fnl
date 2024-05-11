@@ -48,15 +48,11 @@
    "
   (let [hydra (require :hydra)
         which-key (require :which-key)
+        lines (or ?num 4)
         opts (or ?opts {})
-        num (or ?num 4)
         {:prefix ?prefix & opts} opts
         prefix (or ?prefix "")
-        {:hydra hydra?
-         :name name?
-         :config config?
-         ;; :docs   docs?
-         & keymaps} keymaps
+        {:hydra hydra? :name name? :config config? & keymaps} keymaps
         is-valid-cmd (fn [rhs]
                        (vim.tbl_contains [:string :function] (type rhs)))
         canonicalize-rhs (fn [rhs]
@@ -98,7 +94,7 @@
         ;; DEBUG::
         ;; (print (autogen-hint keymaps name? num)
         (hydra {:name name?
-                :hint (autogen-hint keymaps name? num)
+                :hint (autogen-hint keymaps name? lines)
                 :config config?
                 : mode
                 :body prefix

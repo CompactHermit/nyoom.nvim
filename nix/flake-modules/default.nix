@@ -51,6 +51,12 @@ in
                     default = [ ];
                   };
                 };
+                /**
+                  NOTE: (Hermit)
+                      Would be pretty fking useful to have some kind of plugin-wide scope.
+                      This means dependency checking will be done by nix, and failure to find dependency result no Output,
+                          rather then waiting for failure on lua-side.
+                */
                 plugins = mkOption {
                   type = (
                     submodule {
@@ -68,8 +74,19 @@ in
                             description = "${types}-Loaded Plugin";
                           }
                         );
-                      # options.lazy = mkOption { type = listOf str; };
-                      # options.eager = mkOption { type = listOf str; };
+                      /**
+                        TODO: Add this shit to lib.types, following the same design as treefmt
+                        TEST:
+                        Try using::
+                        ```nix
+                            \\ {setting = {type = attrsOf ({plugin = str;
+                                           patch = path;
+                                           phaseOverride = []; #Custom OverrdeAttrs for Plugin
+                                           disableHook = listOf (some strict set of strings, wonder if nix has such options?);
+                                })
+                            };}
+                        ```
+                      */
                     }
                   );
                   description = ''
@@ -81,7 +98,7 @@ in
                 };
                 strip = mkOption {
                   type = bool;
-                  description = "Whether to remove unnecasry paths";
+                  description = "Whether to remove unnecessary paths";
                   default = false;
                 };
                 extraParsers = mkOption {
@@ -157,6 +174,21 @@ in
                 ];
               })
             ]
+            /**
+              TODO: Find A way to just add a patch, or add a `options.plugins.*.doCheck = <bool>`, to patch or change certain plugins.
+              HACK::
+              From:: https://github.com/MagicDuck/grug-far.nvim/blob/main/doc/grug-far.txt
+              Grug Currently has a Double Call to setup in it's docs.
+              This just fixes that bullshit by ignoring the gendock hook completely. Because fuck docs
+            */
+            ++ [
+              {
+                optional = true;
+                plugin = (__head (__plugins { lazy = [ "grug" ]; }).lazy).plugin.overrideAttrs (_: {
+                  nativeBuildInputs = [ ];
+                });
+              }
+            ]
             ++ (lib.trivial.pipe cfg.plugins [
               __plugins
               __attrValues
@@ -192,14 +224,12 @@ in
           escapeShellArgs NeovimConfig.wrapperArgs
           + " "
           + ''--suffix LUA_CPATH ";" "${
-            concatMapStringsSep ";" pkgs.lua51Packages.getLuaCPath (with pkgs.lua51Packages; cfg.lua.extraPacks)
+            concatMapStringsSep ";" pkgs.lua51Packages.getLuaCPath (cfg.lua.extraPacks)
           }"''
           + " "
           + ''--suffix LUA_PATH ";" "${
-            concatMapStringsSep ";" pkgs.lua51Packages.getLuaPath (with pkgs.lua51Packages; cfg.lua.extraPacks)
-          };${
-            concatMapStringsSep ";" pkgs.luajitPackages.getLuaPath (with pkgs.luajitPackages; cfg.lua.jit)
-          }"''
+            concatMapStringsSep ";" pkgs.lua51Packages.getLuaPath (cfg.lua.extraPacks)
+          };${concatMapStringsSep ";" pkgs.luajitPackages.getLuaPath (cfg.lua.jit)}"''
           + " "
           + "--prefix PATH : ${binpath}"
           + " "
@@ -209,7 +239,7 @@ in
         Dhaos = pkgs.wrapNeovimUnstable (cfg.package.overrideAttrs (oa: {
           src = cfg.src;
           version = inputs.nvim-git.shortRev or "dirty";
-          #lua = pkgs.luajit.override ({ enable52Compat = false; }); #NOTE (Hermit): <04/22> There might be a way to merge all luaAttrs here, rather then export them with the wrapper, hmmm
+          #lua = pkgs.luajit.override ({ enable52Compat = false; }); #NOTE: (Hermit): <05/05> This is on by default
           buildInputs = (oa.buildInputs or [ ]) ++ [ ];
           cmakeFlags = [ "" ];
           preConfigure = ''

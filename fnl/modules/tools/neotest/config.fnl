@@ -1,93 +1,86 @@
-(import-macros {: nyoom-module-p! : command! : packadd!} :macros)
+(import-macros {: packadd!} :macros)
 
-(packadd! neotest-python)
-(packadd! neotest-haskell)
-(packadd! neotest-rust)
-(local testings {:adapters [((require :neotest-python) {:dap {:justMyCode false}})
-                            (require :rustaceanvim.neotest)
-                            ;;(require :neotest-rust)
-                            ((require :neotest-haskell) {:build_tools [:cabal]
-                                                         :framework [:tasty
-                                                                     :hspec]})]
-                 :build {:enabled true}
-                 :diagnostic {:enabled true}
-                 :highlights {:adapter_name :NeotestAdapterName
-                              :border :NeotestBorder
-                              :dir :NeotestDir
-                              :expand_marker :NeotestExpandMarker
-                              :failed :NeotestFailed
-                              :file :NeotestFile
-                              :focused :NeotestFocused
-                              :indent :NeotestIndent
-                              :namespace :NeotestNamespace
-                              :passed :NeotestPassed
-                              :running :NeotestRunning
-                              :skipped :NeotestSkipped
-                              :test :NeotestTest}
-                 :icons {:child_indent "│"
-                         :child_prefix "├"
-                         :collapsed "─"
-                         :expanded "╮"
-                         :failed "✖"
-                         :final_child_indent " "
-                         :final_child_prefix "╰"
-                         :non_collapsible "─"
-                         :passed "✔"
-                         :running "🗘"
-                         :skipped "ﰸ"
-                         :unknown "?"}
-                 :output {:enabled true :open_on_build :short}
-                 :status {:enabled true}
-                 :strategies {:integrated {:height 40 :width 120}}
-                 ;;:consumers {:overseer (require :neotest.consumers.overseer)}
-                 :overseer {:enabled true :force_default true}
-                 :summary {:enabled true
-                           :expand_errors true
-                           :follow true
-                           :mappings {:attach :a
-                                      :build :r
-                                      :expand [:<CR> :<2-LeftMouse>]
-                                      :expand_all :e
-                                      :jumpto :i
-                                      :output :o
-                                      :short :O
-                                      :stop :u}}})
+;; NOTE (Hermit) :: Remove after Adding Lazy! Macro and Proper buffer Autocmds
 
-(setup :neotest testings)
+(fn neotestSetup []
+  (packadd! neotest)
+  (packadd! neotest-haskell)
+  ;(packadd! neotest-python)
+  (packadd! neotest-rust)
+  (packadd! neotest-gradle)
+  (packadd! neotest-zig)
+  (packadd! overseer)
+  (let [fidget (require :fidget)
+        animate (fn []
+                  (vim.tbl_map (fn [s]
+                                 (.. s " "))
+                               ["⠋"
+                                "⠙"
+                                "⠹"
+                                "⠸"
+                                "⠼"
+                                "⠴"
+                                "⠦"
+                                "⠧"
+                                "⠇"
+                                "⠏"]))
+        progress ((. (require :fidget.progress) :handle :create) {:lsp_client {:name :neotest}})
+        opts {:adapters [;((autoload :neotest-python) {:dap {:justMyCode false}})
+                         (require :rustaceanvim.neotest)
+                         (require :neotest-zig)
+                         (require :neotest-gradle)
+                         ((require :neotest-haskell) {:build_tools [:cabal]
+                                                      :framework [:tasty
+                                                                  :hspec]})]
+              :build {:enabled true}
+              :diagnostic {:enabled true}
+              :highlights {:adapter_name :NeotestAdapterName
+                           :border :NeotestBorder
+                           :dir :NeotestDir
+                           :expand_marker :NeotestExpandMarker
+                           :failed :NeotestFailed
+                           :file :NeotestFile
+                           :focused :NeotestFocused
+                           :indent :NeotestIndent
+                           :namespace :NeotestNamespace
+                           :passed :NeotestPassed
+                           :running :NeotestRunning
+                           :skipped :NeotestSkipped
+                           :test :NeotestTest}
+              :icons {:passed " "
+                      :running " "
+                      :failed " "
+                      :unknown " "
+                      :running_animated (animate)}
+              :output {:enabled true :open_on_build :short}
+              :status {:enabled true}
+              :strategies {:integrated {:height 40 :width 120}}
+              :overseer {:enabled true :force_default true}
+              :discovery {:enabled true}
+              :quickfix {:enabled true}
+              :summary {:enabled true
+                        :expand_errors true
+                        :follow true
+                        :mappings {:attach :a
+                                   :build :r
+                                   :expand [:<CR> :<2-LeftMouse>]
+                                   :expand_all :e
+                                   :jumpto :i
+                                   :output :o
+                                   :short :O
+                                   :stop :u}}}]
+    (progress:report {:message "Setting Up neotest"
+                      :level vim.log.levels.ERROR
+                      :progress 0})
+    ((->> :setup (. (require :neotest))) opts)
+    (progress:report {:message "Setup Complete"
+                      :title :Completed!
+                      :progress 99})))
 
-;; =============================================================== ;;
-(fn Near []
-  (vim.cmd "lua require('neotest').run.run(vim.fn.expand('%'))"))
+(do
+  (vim.api.nvim_create_autocmd :User
+                               {:pattern :neotest.setup
+                                :callback #(neotestSetup)
+                                :once true}))
 
-(fn Current []
-  (vim.cmd "lua require('neotest').run.run(vim.fn.expand('%'))"))
-
-(fn output []
-  (vim.cmd "lua require('neotest').output.open({ enter = true})"))
-
-(fn stop []
-  (vim.cmd "lua require('neotest').run.stop()"))
-
-(fn summary []
-  (vim.cmd "lua require('neotest').summary.toggle()"))
-
-(fn attach []
-  (vim.cmd "lua require('neotest').run.attach()"))
-
-;; TODO:: Refactor this. There's Probably a better way to do This
-(nyoom-module-p! neotest
-                 (do
-                   (command! TestNear `(Near) {:desc "Neotest Run test"})
-                   (command! TestCurrent `(Current)
-                             {:desc "Neotest Run Curent file"})
-                   (command! TestOutput `(output) {:desc "Neotest Open output"})
-                   (command! TestSummary `(summary) {:desc "Neotest Run test"})
-                   (command! TestStrat
-                             (fn [args]
-                               (let [options [:dap :integrated]]
-                                 (if (vim.tbl_contains options args.arg)
-                                     ((. (. (require :neotest) :run) :run) {:strategy args.args})
-                                     ((. (. (require :neotest) :run) :run) {:strategy :integrated}))))
-                             {:desc "Neotest strategen"})
-                   (command! TestStop `(stop) {:desc "Neotest Test stop"})
-                   (command! TestAttach `(attach))))
+;(vim.api.nvim_exec_autocmds :User {:pattern :faker})

@@ -1,26 +1,26 @@
 ;; fennel-ls: macro-file
 
 ;; fnlfmt: skip
-(comment 
+(comment /*norg*/
   the core implementation of <LazyHermit> Essentially packadd each plugin on the [:Event :Cmd :Keys]
   To Be Used in place of :use-package!)
 
-(lambda __lazyCmd! [_strings ?fname]
+(lambda __lazyCmd! [identifier ?options]
   "
-  LazyCmd:: <Cmd> -> <Fn::Callback> -> <LazyLoader::Once_Key!>
-    @params _strings <Strings | <Strings>> Takes either a string or a list of strings
+  LazyCmd:: <> -> <Fn::Callback> -> <LazyLoader::Once_Key!>
+    @params identifier :: What to use to packadd! or lazy-add the thing
     @params opts [<<Setup::Setup-Opts>,<Opts>>] Options to use for nvim_api_create_command
   Returns a one-shot cmd which setup's the current plugin.
   E.g::
   ```fennel
-    (C=>> [:Oil :Workspace :Neorg] (__callSetup function)
+    (C=>> {:cmds [:Oil :Workspace :Neorg]
+          :event [:BufReadPre]
+          :filetype \"*norg\"}
+          :module :mod-name
+          :opts {:vals :to.pass.to.setup.function}
+          :define (fn []
+                   (what.to.run.pre.setup!))
   ```
-  "
-  (assert-compile (or (sym? _strings) (sequence? _strings))
-                  "expected symbol or table for _strings" _strings)
-  (assert-compile (sym? ?fname) "expected symbol for ?fname" ?fname)
-  (nil))
+  ")
 
-(lambda __lazyEvent! [])
-
-{:C=>> __lazyCmd! :E=>> __lazyEvent!}
+{:C=>> __lazyCmd!}

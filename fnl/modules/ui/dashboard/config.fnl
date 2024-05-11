@@ -3,6 +3,7 @@
 (local package-counter (nyoom-package-count!))
 (local module-counter (nyoom-module-count!))
 
+;; TODO: (Hermit) Fix This shit, jesus christ
 (local startup-file :/tmp/nvim-startuptime)
 (local startup-time-pattern "([%d.]+)  [%d.]+: [-]+ NVIM STARTED [-]+")
 (local startup-time-file (or (and (io.open startup-file)
@@ -88,7 +89,7 @@
                   :opts {:spacing 1}}
         :footer {:type :text :val text :opts {:position :center :hl :Comment}}
         :icon {:type :button
-               :val "ﯙ"
+               :val ""
                :opts {:position :center :hl :Decorator}
                :on_press (fn []
                            (if (= (vim.fn.has :mac) 1)

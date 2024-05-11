@@ -204,6 +204,9 @@
 
 ;; Enable command-line completions
 
+; (nyoom-module-p! debugger
+;                  (cmp.setup.filetype [:dap-repl :dapui_watches :dapui_hover]))
+
 (cmp.setup.cmdline "/"
                    {:mapping (cmp.mapping.preset.cmdline)
                     :sources [{:name :buffer :group_index 1}]})
@@ -247,6 +250,8 @@
 ((. (autoload :luasnip.loaders.from_lua) :load) {:paths ["~/.config/nvim/snippets/"]})
 
 (nyoom-module-p! haskell
-                 (let [haskell_snippets (. (autoload :haskell_snippets) :all)]
-                   (luasnip.add_snippets :haskell haskell_snippets
-                                         {:key :haskell})))
+                 (do
+                   (packadd! haskell-snippets)
+                   (let [haskell_snippets (. (autoload :haskell-snippets) :all)]
+                     (luasnip.add_snippets :haskell haskell_snippets
+                                           {:key :haskell}))))

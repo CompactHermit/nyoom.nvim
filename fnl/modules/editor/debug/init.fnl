@@ -1,3 +1,3 @@
 (import-macros {: nyoom-module!} :macros)
 
-(nyoom-module! tools.neogit.+diffview)
+(nyoom-module! editor.debug)

@@ -40,6 +40,7 @@
                    (map! [n] "]d" goto-diag-next!
                          {:desc "Goto next diagnostics"})))
 
+;; fnlfmt: skip
 (nyoom-module-p! format
                  (do
                    (table.insert null-ls-sources builtins.formatting.fnlfmt)
@@ -56,9 +57,9 @@
                    (nyoom-module-p! kotlin
                                     (table.insert null-ls-sources
                                                   null-ls.builtins.formatting.ktlint))
-                   (nyoom-module-p! lua
-                                    (table.insert null-ls-sources
-                                                  null-ls.builtins.formatting.stylua))
+                   ; (nyoom-module-p! lua
+                   ;                  (table.insert null-ls-sources
+                   ;                                null-ls.builtins.formatting.stylua))
                    (nyoom-module-p! markdown
                                     (table.insert null-ls-sources
                                                   null-ls.builtins.formatting.markdownlint))
@@ -75,16 +76,17 @@
                                                                                                             (utils.root_has_file :flake.nix))}))))
                    (nyoom-module-p! sh
                                     (table.insert null-ls-sources
-                                                  null-ls.builtins.formatting.shfmt))
-                   (nyoom-module-p! zig
-                                    (table.insert null-ls-sources
-                                                  null-ls.builtins.formatting.zigfmt))))
+                                                  null-ls.builtins.formatting.shfmt))))
+
+; (nyoom-module-p! zig
+;                  (table.insert null-ls-sources
+;                                null-ls.builtins.formatting.zigfmt))))
 
 (nyoom-module-p! diagnostics
                  (do
-                   (nyoom-module-p! lua
+                   (nyoom-module-p! kotlin
                                     (table.insert null-ls-sources
-                                                  null-ls.builtins.diagnostics.))))
+                                                  null-ls.builtins.diagnostics.ktlint))))
 
 (nyoom-module-p! vc-gutter
                  (table.insert null-ls-sources

@@ -1,5 +1,4 @@
-(import-macros {: nyoom-module-p! : map! : autocmd! : packadd!} :macros {: -m>}
-               :util.macros)
+(import-macros {: nyoom-module-p! : map! : autocmd! : packadd!} :macros)
 
 (local terminals
        {:automated true
@@ -98,59 +97,4 @@
   (vim.api.nvim_create_autocmd :User
                                {:pattern :harpoon.setup
                                 :callback #(__harpSetup)
-                                ;:group :harpoon.setup
                                 :once true}))
-
-;; fnlfmt: skip
-;; NOTE (Hermit):: Testing BufExtmarks, would love to use Async Here holy sheez
-; (local harpoon (require :harpoon))
-; (local M {})
-; (set M._maps [])
-; (set M._lines [])
-; (var longest_line 155)
-; ; (fn get_buffer []
-; ;   (nil))
-;   
-; (local buff (vim.api.nvim_create_buf false true))
-; (local size (. (vim.api.nvim_list_uis) 1))
-;
-; (each [k v (ipairs (. (: harpoon :list) :items))]
-;       (table.insert  M._maps v))
-; (each [i v (ipairs M._maps)]
-;   (local __lines (.. (tostring i) " " (vim.fn.fnamemodify (. v :value) ":t")))
-;   (table.insert M._lines (tostring __lines)))
-;   ; (if (>= (: __lines :len)  (longest_line))
-;   ;  (set longest_line (: __lines :len))))
-;
-;
-; ; (each [i v (ipairs M._maps)]
-; ;   " NAMESPACE::
-; ;     Setups highlights for line# whenever the file == harpoon.filename
-; ;   "
-; ;   (if (= (vim.fn.expand "%:p") (vim.fn.fnamemodify (. v :value) ":p"))
-; ;     (set M._hl (vim.api.nvim_buf_add_highlight buff 0 :Error (- i 1) 0 -1))))
-;
-; ; (each [_ v (ipairs M._lines)]
-; ;   (print v))
-; (doto buff
-;   (vim.api.nvim_buf_set_name "*faker*")
-;   (vim.api.nvim_buf_set_lines 0 -1 true M._lines)
-;   (vim.api.nvim_buf_clear_namespace M._hl 0 -1))
-;
-; (local debug true)
-;
-; (if M._window (do
-;                 (vim.api.nvim_win_set_height M._window (length M._lines))
-;                 (vim.api.nvim_win_set_width M._window 120))
-;   (set M._window (vim.api.nvim_open_win buff false {:relative  :win
-;                                                     :focusable  (if (= debug true) true false)
-;                                                     :row   (* 0.2 size.height)
-;                                                     :col  size.width
-;                                                     :width  19
-;                                                     :height  (* 3 (length M._maps))
-;                                                     :border  [ :╭ :─ :─ " " :─ :─ :╰ :│]
-;                                                     :style  :minimal})))
-; (print (.. (string.format "Active Window IS:: %s" M._window)))
-; (each [_ v (ipairs (vim.api.nvim_list_wins))]
-;   (print v))
-; (vim.api.nvim_buf_set_name buff "adjoint-faker")

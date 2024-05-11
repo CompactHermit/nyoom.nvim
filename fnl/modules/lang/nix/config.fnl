@@ -8,7 +8,7 @@
   (if (not= (pcall require :toggleterm) true) (packadd! toggleterm.nvim))
   (let [tterm (autoload :toggleterm)
         {: Terminal} (require :toggleterm.terminal)
-        __nixTerminalHandler (Terminal:new {:cmd (string.format "nix repl --debug --show-trace -Lvv --expr '__getFlake \"%s\"' -I nixpkgs=flake:nixpkgs"
+        __nixTerminalHandler (Terminal:new {:cmd (string.format "nix repl --debug --show-trace -Lv --expr '__getFlake \"%s\"' -I nixpkgs=flake:nixpkgs"
                                                                 (vim.uv.cwd))
                                             :dir (vim.uv.cwd)
                                             :close_on_exit false

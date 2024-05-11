@@ -1,7 +1,3 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: nyoom-module!} :macros)
 
-
-(use-package! :NTBBloodbath/zig-tools.nvim
-    {:opt true
-     :ft [:zig]})
-
+(nyoom-module! lang.zig)

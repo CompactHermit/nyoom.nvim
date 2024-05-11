@@ -104,9 +104,11 @@
 
 (nyoom-module-p! telescope
                  (do
-                   (map! [n] :<leader><tab>r :<cmd>AutoSessionRestore<CR>
+                   (map! [n] :<leader><tab>r
+                         "<cmd>lua require'resession'.list()<CR>"
                          {:desc "Reload Current Session"})
-                   (map! [n] :<leader><tab>s :<cmd>AutoSessionSave<CR>
+                   (map! [n] :<leader><tab>s
+                         "<cmd>lua require'resession'.save <CR>"
                          {:desc "Save current session"})))
 
 (map! [n] :<leader><tab>x :<cmd>tabclose<CR> {:desc "Delete this tab"})
@@ -257,72 +259,6 @@
 (map! [n] :<leader>fY "<cmd>let @+ = expand('%:p')<CR>"
       {:desc "Yank full path"})
 
-;;; -- g +git (hydra)
-
-;;; h +help 
-
-(map! [n] :<leader>h<CR> :<cmd>help<CR> {:desc "Vim Help"})
-(map! [n] "<leader>h'" :<cmd>ascii<CR> {:desc "Descibe Char (ascii)"})
-(map! [n] :<leader>h? "<cmd>help help<CR>" {:desc "Help for help"})
-(nyoom-module-p! telescope
-                 (map! [n] :<leader>hb "<cmd>Telescope keymaps<CR>"
-                       {:desc "List keymaps"}))
-
-(map! [n] :<leader>hc "<cmd>help encoding-values<CR>" {:desc "List encodings"})
-(nyoom-module-p! diagnostics
-                 (map! [n] :<leader>hd "<cmd>help diagnostic.txt<CR>"
-                       {:desc "Help for diagnostics"}))
-
-(map! [n] :<leader>he "<cmd>:messages<CR>" {:desc "View message history"})
-
-;; E: TODO nyoom/sandbox
-;; f: describe function?
-
-(if (nightly?)
-    (map! [n] :<leader>hf :<cmd>Inspect<CR> {:desc "Describe face"})
-    (nyoom-module-p! tree-sitter
-                     (map! [n] :<leader>hf
-                           :<cmd>TSHighlightCapturesUnderCursor<CR>
-                           {:desc "Describe face"})))
-
-(map! [n] :<leader>hF :<cmd>hi<CR> {:desc "List highlights/faces"})
-(map! [n] :<leader>hi ":help " {:desc "Help for _"})
-(map! [n] :<leader>hI "<cmd>help x-input-method<CR>"
-      {:desc "Help for X11 input methods"})
-
-(map! [n] :<leader>hl :<cmd>hist<CR> {:desc "List command history"})
-
-;; n nyoom/help
-
-;; o describe symbol
-;; O lookup online
-
-;; r +reload
-;; re env
-;; rf font
-;; rp packages
-;; rr reload
-;; rt theme
-
-;; s describe syntax
-;; S info lookup symbol
-;; t load theme
-
-(nyoom-module-p! telescope
-                 (map! [n] :<leader>ht "<cmd>Telescope colorscheme<CR>"
-                       {:desc "Load theme"}))
-
-(map! [n] :<leader>hT `(profile.toggle) {:desc "Toggle profiler"})
-
-;; u help autodefs
-;; v describe-variable 
-;; w where is
-;; W man or women
-
-;;; i +insert
-
-;; s symbols (telescope)
-
 (map! [n] :<leader>ff "<cmd>r! echo %<CR>" {:desc "Current file name"})
 (map! [n] :<leader>fF "<cmd>r! echo %:p<CR>" {:desc "Current file path"})
 (map! [n] :<leader>fp :<cmd>R!echo<CR> {:desc "Vi ex path"})
@@ -355,18 +291,6 @@
 ;;; o +open
 
 ;; - Dired
-
-;; (map! [n] :<leader>oa "<cmd><CR>" {:desc "Tags search"})
-;; (map! [n] :<leader>oa "<cmd><CR>" {:desc "Todo list"})
-;; (map! [n] :<leader>oa "<cmd><CR>" {:desc "View search"})))
-
-; (nyoom-module-p! debug
-;                  (map! [n] :<leader>od "<cmd>lua require('dapui').toggle()CR>"
-;                        {:desc "Toggle debugger ui"}))
-
-; (nyoom-module-p! docker
-;                  (map! [n] :<leader>od ":Devcontainer"
-;                        {:desc "Docker commands"}))
 
 (nyoom-module-p! fshell)
 

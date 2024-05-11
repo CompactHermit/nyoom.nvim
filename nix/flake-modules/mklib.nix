@@ -5,9 +5,20 @@
   ...
 }:
 let
-  l = lib // builtins;
+  inherit (lib) mkIf genAttrs;
+  inherit (pkgs.tree-sitter) buildGrammar;
   inherit (pkgs.neovimUtils) grammarToPlugin;
-  __mkRock =
+in
+{
+  /**
+    module mkLib where
+    mkLib::mkNeovim -
+    mkLib::mkWrapper -
+    mkLib:: mkTreesitter -
+  */
+  mkWrapper = { };
+  mkNeovim = { };
+  mkRock =
     src: deps:
     pkgs.luajitPackages.callPackage (
       {
@@ -26,25 +37,15 @@ let
         src = inputs."${src}";
         knownrockspec = { };
         disabled = (luaOlder "5.1");
-        propagatedBuildInputs = [ lua ] ++ (l.mkIf __useRust [ ]);
+        propagatedBuildInputs = [ lua ] ++ (mkIf __useRust [ ]);
       }
     ) { };
-in
-{
-  /*
-    module mkLib where
-    mkLib::mkNeovim -
-    mkLib::mkWrapper -
-    mkLib:: mkTreesitter -
-  */
-  mkWrapper = { };
-  mkNeovim = { };
-  mkRock = __mkRock;
+
   mkTreesitter =
     __parsers:
-    l.genAttrs __parsers (
+    genAttrs __parsers (
       x:
-      (pkgs.tree-sitter.buildGrammar {
+      (buildGrammar {
         language = x;
         src = inputs."tree-sitter-${x}";
         version = "${inputs."tree-sitter-${x}".shortRev}";

@@ -96,4 +96,14 @@
       :scheme
       :nix] #(set-shiftwidth $1 2))
 
+;; Vim.g Options::
 (let! typst_conceal_math 2)
+(let! direnv_silent_load 1)
+(let! sweetie {:overrides {}
+               :integrations {:lazy true
+                              :neorg true
+                              :neogit true
+                              :neomake true
+                              :telescope true}
+               :cursor_color true
+               :terminal_colors true})

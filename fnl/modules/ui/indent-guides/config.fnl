@@ -29,7 +29,7 @@
                (hooks.register hooks.type.SCOPE_HIGHLIGHT
                                hooks.builtin.scope_highlight_from_extmark)
                (progress:report {:message "Setup Complete"
-                                 :title :Completed!
+                                 :title "Indent BlankLine"
                                  :progress 99})))))
 
 (local _augroup (vim.api.nvim_create_augroup :ibl.setup {:clear true}))

@@ -113,20 +113,4 @@
 ;; debugging
 
 ;; fnlfmt: skip
-(nyoom-module-p! debugger
-  (do
-    (nyoom-module-p! cc
-      (table.insert mason-tools :codelldb))
-
-    (nyoom-module-p! python
-      (table.insert mason-tools :debugpy))
-
-    (nyoom-module-p! rust
-      (table.insert mason-tools :codelldb))
-
-    (nyoom-module-p! java
-      (do
-        (table.insert mason-tools :java-test)
-        (table.insert mason-tools :java-debug-adapter)))))
-
 (vim.cmd (.. "MasonInstall " (table.concat mason-tools " ")))

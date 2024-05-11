@@ -104,7 +104,9 @@
 
 (nyoom-module-p! clojure (tset lsp-servers :clojure_lsp {}))
 
-(nyoom-module-p! java (tset lsp-servers :jdtls {}))
+(nyoom-module-p! java (do
+                        (tset lsp-servers :kotlin_language_server {})
+                        (tset lsp-servers :jdtls {})))
 
 (nyoom-module-p! sh (tset lsp-servers :bashls {}))
 
@@ -125,15 +127,13 @@
 
 ; (nyoom-module-p! typescript (tset lsp-servers :biome {:settings {:filetypes [:javascript :typescript :javascriptreact :typescript.tsx :typescriptreact :json]}}))
 
-(nyoom-module-p! kotlin (tset lsp-servers :kotlin_langage_server {}))
-
 (nyoom-module-p! latex (tset lsp-servers :texlab {}))
 
 ;(tset lsp-servers :fennel_ls {})
 (nyoom-module-p! lua
                  (do
                    (packadd! neodev)
-                   ((->> :setup (. (require :neodev))))
+                   ((->> :setup (. (require :neodev))) {:library {:plugins [:nvim-nio]}})
                    (tset lsp-servers :lua_ls
                          {:settings {:Lua {:diagnostics {:globals [:vim]}
                                            :completion {:callSnippet :Replace}
@@ -143,7 +143,7 @@
 
 ;; Stop Lua-ls from shitting itself
 
-(nyoom-module-p! markdown (tset lsp-servers :marksman {}))
+;(nyoom-module-p! markdown (tset lsp-servers :marksman {}))
 
 (nyoom-module-p! svelte
                  (tset lsp-servers :svelte

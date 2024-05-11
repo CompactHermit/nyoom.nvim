@@ -5,21 +5,18 @@
 ;; TODO: add this to core.utils, as this is pretty fking useful
 
 ;;===============================================================;;
-;; NOTE: Neotest Utils
-;; Most of these are boilerplates, wonder if theirs a filetype macro for this BS
-;; FIX:: we need these to be ((. (require ...., it's a function over an empty arg, hence the second (
 
-(fn test_class []
-  (when (= vim.bo.filetype :python)
-    ((. (require :dap-python) :test_class))))
-
-(fn debug_selection []
-  (when (= vim.bo.filetype :python)
-    ((. (require :dap-python) :debug_selection))))
-
-(fn test_method []
-  (when (= vim.bo.filetype :python)
-    ((. (require :dap-python) :test_method))))
+; (fn test_class []
+;   (when (= vim.bo.filetype :python)
+;     ((. (require :dap-python) :test_class))))
+;
+; (fn debug_selection []
+;   (when (= vim.bo.filetype :python)
+;     ((. (require :dap-python) :debug_selection))))
+;
+; (fn test_method []
+;   (when (= vim.bo.filetype :python)
+;     ((. (require :dap-python) :test_method))))
 
 ;;===============================================================;;
 ;; NOTE:: Flash Utils
@@ -121,10 +118,4 @@
 
 ;;===============================================================;;
 
-{: test_class
- : test_method
- : debug_selection
- : treejump
- : jump_window
- : win_select
- : tree_bounce}
+{: treejump : jump_window : win_select : tree_bounce}
