@@ -1,5 +1,7 @@
 (import-macros {: set! : map!} :macros)
 
+
+;; fnlfmt: skip
 ((->> :setup
       (. (require :syntax-tree-surfer)))) {:default_desired_types [:function
                                                                    :function_definition

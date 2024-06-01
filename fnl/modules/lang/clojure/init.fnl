@@ -1,6 +1,4 @@
 (import-macros {: use-package!} :macros)
 
 (use-package! :julienvincent/nvim-paredit
-              {:nyoom-module lang.clojure
-               :ft [:fennel :clojure :lisp :racket :scheme :janet :guile]})
-
+              {:nyoom-module lang.clojure :event :BufReadPre})

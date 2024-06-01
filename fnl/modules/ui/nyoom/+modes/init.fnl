@@ -1,4 +1,3 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: nyoom-module!} :macros)
 
-(use-package! :mvllow/modes.nvim
-              {:event :InsertEnter :nyoom-module ui.nyoom.+modes})
+(nyoom-module! ui.nyoom.+modes)

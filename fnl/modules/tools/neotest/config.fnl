@@ -5,6 +5,7 @@
 (fn neotestSetup []
   (packadd! neotest)
   (packadd! neotest-haskell)
+  ;(packadd! neotest-nix) #TODO: Create neotest-nix adapter
   ;(packadd! neotest-python)
   (packadd! neotest-rust)
   (packadd! neotest-gradle)
@@ -82,5 +83,3 @@
                                {:pattern :neotest.setup
                                 :callback #(neotestSetup)
                                 :once true}))
-
-;(vim.api.nvim_exec_autocmds :User {:pattern :faker})

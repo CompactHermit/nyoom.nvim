@@ -1,5 +1,6 @@
-(import-macros {: nyoom-module-p! : nyoom-module-ensure!} :macros)
+(import-macros {: nyoom-module-p! : nyoom-module-ensure! : packadd!} :macros)
 (local {: on-attach} (autoload :modules.tools.lsp.config))
+;;TODO:: Hermit - Add vale-linter
 
 (local null-ls (autoload :null-ls))
 (local {: builtins} (autoload :null-ls))
@@ -100,4 +101,5 @@
                 :debug true
                 :on_attach on-attach})
 
-((->> :setup (. (require :lsp_lines))))
+; (packadd! lsplines)
+; ((->> :setup (. (autoload :lsp_lines))))

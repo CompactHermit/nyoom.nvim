@@ -10,7 +10,7 @@
 
 ;; TODO:: (Hermit) Move away from packer, and simply call the setup tbl
 (packadd! packer.nvim)
-;(local {: build} (autoload :hotpot.api.make))
+
 (local {: init} (autoload :packer))
 (local {: echo!} (autoload :core.lib.io))
 
@@ -18,27 +18,16 @@
 
 (echo! "Loading Packer")
 (local headless (= 0 (length (vim.api.nvim_list_uis))))
-(init {:lockfile {:enable true
-                  :path (.. (vim.fn.stdpath :config) :/lockfile.lua)}
+(init {;:lockfile {:enable true
+                  ;:path (.. (vim.fn.stdpath :config) :/lockfile.lua)
        :compile_path (.. (vim.fn.stdpath :config) :/lua/packer_compiled.lua)
        :auto_reload_compiled false
        :display {:non_interactive headless}})
 
-;(echo! "Compiling Nyoom Doctor")
-; (build (vim.fn.stdpath :config) {:verbosity 0}
-;        (.. (vim.fn.stdpath :config) :/fnl/core/doctor.fnl)
-;        (fn []
-;          (.. (vim.fn.stdpath :config) :/lua/health.lua)))
-
-;; (use-package! :EdenEast/packer.nvim {:opt true :branch :feat/lockfile})
-; (use-package! :wbthomason/packer.nvim {:opt true})
-
 ;; libraries
 
 (use-package! :nvim-lua/plenary.nvim {:module :plenary})
-(use-package! :MunifTanjim/nui.nvim {:module :nui})
 (use-package! :nyoom-engineering/oxocarbon.nvim)
-;;(use-package! :EdenEast/nightfox.nvim)
 
 ;; include modules
 

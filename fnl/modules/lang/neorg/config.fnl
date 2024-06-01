@@ -13,7 +13,8 @@
         :core.todo-introspector {}
         :core.integrations.telescope {}
         :external.exec {}
-        ;;:external.timelog {}
+        :external.conceal-wrap {}
+        ;:external.timelog {}
         ;; NOTE:: (Hemrit) Only until janet has been added
         :external.hop-extras {:config {:aliases {:gh "https://github.com/{}"}}}
         ; :external.chronicle {:config {:workspace :main
@@ -161,6 +162,7 @@
     (packadd! neorg)
     (packadd! image-nvim)
     (packadd! pathlib)
+    (packadd! neorg-lines)
     (packadd! neorg-exec)
     (packadd! neorg-telescope)
     (packadd! neorg-roam)

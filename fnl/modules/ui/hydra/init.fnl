@@ -6,19 +6,19 @@
                :module :hydra
                :keys [:<leader>a
                       :<leader>cl
-                      :<leader>ch
-                      :<leader>d
+                      ";h"
+                      :<leader>cm
                       :<leader>e
                       :<leader>f
                       :<leader>g
-                      :<leader>G
+                      ";g"
                       :<leader>l
                       :<leader>m
                       :<leader>ne
                       :<leader>o
                       :<leader>q
-                      :<leader>s
-                      :<leader>t
+                      ";s"
+                      ";t"
                       :<leader>u
                       :<leader>v
                       :<leader>w

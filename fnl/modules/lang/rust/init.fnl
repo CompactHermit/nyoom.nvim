@@ -1,13 +1,11 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: nyoom-module!} :macros)
 
 ; view rust crate info with virtual text
 
-(use-package! :saecki/crates.nvim
-              {:opt true
-               :call-setup crates
-               :nyoom-module lang.rust
-               :ft :rs
-               :event ["BufRead Cargo.toml"]})
+;(use-package! :saecki/crates.nvim
+;              {:opt true
+;               :event ["BufReadPost Cargo.toml"]})
+(nyoom-module! lang.rust)
 
 ; (use-package! :mrcjkb/rustaceanvim
 ;               {:opt true :nyoom-module lang.rust :ft [:rust]})

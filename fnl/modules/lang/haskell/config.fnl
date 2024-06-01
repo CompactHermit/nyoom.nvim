@@ -25,8 +25,10 @@
 (custom-set-face! :LspCodeLens [] {:fg "#ff7bd6" :bg :NONE})
 
 (local lsp (require :util.lsp))
+
+;; fnlfmt: skip
 (let! haskell_tools
-      {:tools {:codeLens {:autoRefresh true}
+      {:tools {:codeLens {:autoRefresh false}
                :hoogle {:mode :telescope-local}
                :hover {:enable true}
                :tags {:enable true}
@@ -34,17 +36,17 @@
                :definition {:hoogle_signature_fallback true}}
        :hls {:capabilities lsp-capabilities
              :on_attach (fn [_client _bufnr]
-                          ((->> :load_extension (. (autoload :telescope))) :ht)
-                          (local _opts
-                                 {:s :save
-                                  :a :display
-                                  :g :get
-                                  :r :run
-                                  :f :refresh})
-                          (each [k v (pairs _opts)]
-                            (vim.keymap.set :n (.. :<leader>cc (tostring k))
-                                            #((. vim.lsp.codelens (tostring k)))
-                                            {:desc v})))
+                          ((->> :load_extension (. (autoload :telescope))) :ht))
+                          ; (local _opts
+                          ;        {:s :save
+                          ;         :a :display
+                          ;         :g :get
+                          ;         :r :run
+                          ;         :f :refresh})
+                          ; (each [k v (pairs _opts)]
+                          ;   (vim.keymap.set :n (.. :<leader>cc (tostring k))
+                          ;                   #((. vim.lsp.codelens (tostring k)))
+                          ;                   {:desc v})))
              :settings {:haskell {:formattingProvider :fourmolu}
                         :plugin {:ghcide-code-actions-fill-holes {:globalOn true}
                                  :ghcide-completions {:globalOn true}

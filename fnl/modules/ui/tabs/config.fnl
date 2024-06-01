@@ -1,4 +1,4 @@
-(import-macros {: packadd!} :macros)
+(import-macros {: packadd! : map!} :macros)
 
 ;; fnlfmt: skip
 (local __opts
@@ -32,6 +32,7 @@
 ;; NOTE (Hermit) :: Remove after Adding Lazy! Macro and Proper buffer Autocmds
 (fn __bufferSetup []
   (packadd! bufferline)
+  (packadd! grug)
   (let [fidget (require :fidget)
         progress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :buffer}})
         nio (autoload :nio)
@@ -42,6 +43,9 @@
                             :progress 0})
           (nio.scheduler)
           ((->> :setup (. (require :bufferline))) __opts)
+          ((->> :setup (. (require :grug-far))))
+          (map! [n] :<M-r> `((->> :grug_far (. (require :grug-far))))
+                {:desc "Buffer:: Grug Search"})
           (nio.scheduler)
           (progress:report {:message "Setup Complete"
                             :title :Completed!

@@ -59,6 +59,7 @@
                          {:desc "Resume last search"})
                    (map! [n] :<leader>. "<cmd>Telescope find_files<CR>"
                          {:desc "Find file"})
+                   (map! [n] "," "<cmd>Telescope tags<CR>" {:desc "Jump Tags"})
                    (map! [n] :<leader>/ "<cmd>Telescope live_grep<CR>"
                          {:desc "Search project"})
                    (map! [n] "<leader>:" "<cmd>Telescope commands<CR>"

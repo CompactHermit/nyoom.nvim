@@ -24,12 +24,6 @@
 ;; │  Treesitter Autocmds::  │
 ;; └─────────────────────────┘
 
-; (autocmd! :FileType "*" #(fn [ci]
-;                            (vim.fn.schedule (fn []
-;                                               (if (and (utils.active? (ci.buf)) (not= (: vim.opt_local.foldmethod :get) :diff))
-;                                                   (print :hello)))))
-;
-;           {:group (vim.api.nvim_create_augroup :TSFolds {})})
 (nyoom-module-p! nix
                  (do
                    (custom-set-face! "@lsp.mod.builtin.nix" []
@@ -65,7 +59,7 @@
                                           :node_incremental :gnn
                                           :scope_incremental :gnc
                                           :node_decremental :gnm}}
-        :textobjects {:select {:enable true}
+        :textobjects {:select {:enable false}
                       :lookahead true
                       :keymaps {:af "@function.outer"
                                 :if "@function.inner"
@@ -98,7 +92,7 @@
   (let [fidget (require :fidget)
         progress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :treesitter}})
         rainbox (autoload :rainbow-delimiters)]
-    (packadd! tsplayground)
+    ;(packadd! tsplayground)
     ;(packadd! rainbow-delimiters)
     ;(packadd! ts-context)
     (packadd! ts-context-commentstring)

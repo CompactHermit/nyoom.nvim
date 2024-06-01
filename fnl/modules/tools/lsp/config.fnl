@@ -18,6 +18,25 @@
 (set vim.lsp.handlers.textDocument/signatureHelp
      (vim.lsp.with vim.lsp.handlers.signature_help {:border :solid}))
 
+;; NOTE: GodBless Ben, saviour of empty refs
+(tset vim.lsp.handlers :textDocument/definition
+      (fn [_ result ctx]
+        (when (or (not result) (vim.tbl_isempty result))
+          (vim.notify "[lsp]: Could not find definition" vim.log.levels.INFO)
+          (lua "return "))
+        (local client (vim.lsp.get_client_by_id ctx.client_id))
+        (if (vim.tbl_islist result)
+            (let [results (vim.lsp.util.locations_to_items result
+                                                           client.offset_encoding)
+                  (lnum filename) (values (. (. results 1) :lnum)
+                                          (. (. results 1) :filename))]
+              (each [_ val (pairs results)]
+                (when (or (not= val.lnum lnum) (not= val.filename filename))
+                  ((. (require :telescope.builtin) :lsp_definitions))))
+              (vim.lsp.util.jump_to_location (. result 1)
+                                             client.offset_encoding false))
+            (vim.lsp.util.jump_to_location result client.offset_encoding false))))
+
 (set vim.lsp.handlers.textDocument/hover
      (vim.lsp.with vim.lsp.handlers.hover {:border :solid}))
 
@@ -129,13 +148,29 @@
 
 (nyoom-module-p! latex (tset lsp-servers :texlab {}))
 
-;(tset lsp-servers :fennel_ls {})
+; (tset lsp-servers :fennel_ls {:root_dir #(. (vim.fs.find [:fnl :.git]
+;                                                          {:upward true
+;                                                           :type :directory
+;                                                           :path $})
+;                                             1)
+;                               :settings {:fennel-ls {:extra-globals :vim}}
+;                               :macro-path :fnl/**/*macros.fnl
+;                               :checks {}})
+
 (nyoom-module-p! lua
                  (do
                    (packadd! neodev)
                    ((->> :setup (. (require :neodev))) {:library {:plugins [:nvim-nio]}})
                    (tset lsp-servers :lua_ls
-                         {:settings {:Lua {:diagnostics {:globals [:vim]}
+                         {:settings {:Lua {:IntelliSense {:traceLocalSet true}
+                                           :codeLens {:enable true}
+                                           :hint {:enable true}
+                                           :format {:enable false}
+                                           :diagnostics {:globals {:vim :P
+                                                                   :describe :it
+                                                                   :before_each :after_each
+                                                                   :packer_plugins :pending}}
+                                           :telemetry {:enable false}
                                            :completion {:callSnippet :Replace}
                                            :workspace {:library (vim.api.nvim_list_runtime_paths)
                                                        :maxPreload 1000

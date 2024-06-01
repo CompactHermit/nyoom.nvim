@@ -1,6 +1,3 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: nyoom-module!} :macros)
 
-(use-package! :nvim-tree/nvim-web-devicons
-              {:module :nvim-web-devicons
-               :nyoom-module ui.nyoom.+icons
-               :requires [(pack :DaikyXendo/nvim-material-icon {:opt true})]})
+(nyoom-module! ui.nyoom.+icons)

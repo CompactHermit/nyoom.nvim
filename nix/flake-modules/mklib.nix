@@ -16,6 +16,17 @@ in
     mkLib::mkWrapper -
     mkLib:: mkTreesitter -
   */
+  import' =
+    path:
+    let
+      func' = import path;
+      functor = {
+        __functor = self: p: self.set p;
+        varg = builtins.functionArgs func';
+        inherit inputs pkgs;
+      };
+    in
+    functor;
   mkWrapper = { };
   mkNeovim = { };
   mkRock =
@@ -27,8 +38,6 @@ in
         lua,
         luaOlder,
         luarocks-build-rust-mlua,
-      }:
-      {
         __useRust ? false,
       }:
       buildLuarocksPackage {
@@ -37,7 +46,7 @@ in
         src = inputs."${src}";
         knownrockspec = { };
         disabled = (luaOlder "5.1");
-        propagatedBuildInputs = [ lua ] ++ (mkIf __useRust [ ]);
+        propagatedBuildInputs = [ lua ] ++ (mkIf __useRust [ luarocks-build-rust-mlua ]);
       }
     ) { };
 
@@ -51,4 +60,5 @@ in
         version = "${inputs."tree-sitter-${x}".shortRev}";
       })
     );
+  _file = "./mklib.nix";
 }

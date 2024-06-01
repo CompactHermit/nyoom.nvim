@@ -14,6 +14,7 @@
 ;; Git boi ;;
 (nyoom-module-p! vc-gutter
                  (do
+                   (vim.api.nvim_exec_autocmds :BufRead {})
                    (local {: toggle_linehl
                            : toggle_deleted
                            : next_hunk
@@ -34,35 +35,32 @@
     ^^_p_: preview hunk  _S_: stage buffer  ^^
     ^^_b_: blame Line
   ^
-    _<Enter>_: Neogit       _<Esc>_: Exit
+    _<CR>_: Neogit       _<Esc>_: Exit
       ")
                    (Hydra {:name :+git
                            :hint git-hint
                            :mode [:n :x]
                            :body :<leader>g
-                           :config {:buffer bufnr
-                                    :color :red
+                           :config {:color :red
                                     :invoke_on_body true
                                     :hint {:type :window
                                            :float_opts {:style :minimal
-                                                        :noautocmd true}
-                                           :position :middle
-                                           :show_name true}
-                                    :on_key (fn []
-                                              (vim.wait 50))
-                                    :on_enter (fn []
-                                                (vim.cmd.mkview)
-                                                (vim.cmd "silent! %foldopen!")
-                                                (toggle_linehl true))
-                                    :on_exit (fn []
-                                               (local cursor-pos
-                                                      (vim.api.nvim_win_get_cursor 0))
-                                               (vim.cmd.loadview)
-                                               (vim.api.nvim_win_set_cursor 0
-                                                                            cursor-pos)
-                                               (vim.cmd.normal :zv)
-                                               (toggle_linehl false)
-                                               (toggle_deleted false))}
+                                                        :noautocmd false}
+                                           :position :middle}}
+                           :on_key (fn []
+                                     (vim.wait 50))
+                           :on_enter (fn []
+                                       (vim.cmd.mkview)
+                                       (vim.cmd "silent! %foldopen!")
+                                       (toggle_linehl true))
+                           :on_exit (fn []
+                                      (local cursor-pos
+                                             (vim.api.nvim_win_get_cursor 0))
+                                      (vim.cmd.loadview)
+                                      (vim.api.nvim_win_set_cursor 0 cursor-pos)
+                                      (vim.cmd.normal :zv)
+                                      (toggle_linehl false)
+                                      (toggle_deleted fa))
                            :heads [[:J
                                     (fn []
                                       (when vim.wo.diff
@@ -110,7 +108,7 @@
                                       blame_line
                                       {:full true})
                                     {:desc "blame show full"}]
-                                   [:<Enter>
+                                   [:<CR>
                                     (fn []
                                       (vim.cmd :Neogit))
                                     {:exit true :desc :Neogit}]
@@ -411,10 +409,10 @@
                              :S [(fn [arg]
                                    (let [options [:dap :integrated]]
                                         (match (vim.tbl_contains options
-                                                                 args.arg)
+                                                                 arg.arg)
                                           (where k1 (= k1 true)) ((->> :run
                                                                        (. (require :neotest)
-                                                                          :run)) {:strategy args.arg})
+                                                                          :run)) {:strategy arg.arg})
                                           (where k2 (= k2 false)) ((->> :run
                                                                         (. (require :neotest)
                                                                            :run)) {:strategy :integrated}))))
@@ -519,8 +517,13 @@
                    (Hydra {:name :+flash
                            :hint flash-hints
                            :config {:color :pink
-                                    :hint {:border :solid
+                                    :hint {:type :window
+                                           :float_opts {:style :minimal
+                                                        :noautocmd true}
+                                           :show_name true
                                            :position :middle-right}
+                                    ; :hint {:border :solid
+                                    ;        :position :middle-right}
                                     :invoke_on_body true}
                            :mode [:n]
                            :body :<leader>e
@@ -602,23 +605,27 @@
 (nyoom-module-p! telescope
                  (do
                    (local telescope-hint "
-           _o_: old files   _g_: egrepify^^
-           _p_: projects    _/_: search in file^^
-           _r_: resume      _f_: find files^^
+           _o_: old files   _g_: egrepify^^  
+           _p_: projects    _/_: search in file^^  
+           _r_: resume      _f_: find files^^  
    ▁
-           _h_: vim help    _c_: execute command^^
-           _k_: keymaps     _;_: commands history^^
-           _O_: options     _?_: search history^^
+           _h_: vim help    _c_: execute command^^  
+           _k_: keymaps     _;_: commands history^^  
+           _O_: options     _?_: search history^^  
 
-  _<Esc>_         _<Enter>_: Neotree^^
+  _<Esc>_         _<leader>_: Oil^^
     ")
                    (Hydra {:name :+file
                            :hint telescope-hint
                            :config {:color :teal
                                     :invoke_on_body true
-                                    :hint {:position :middle :border :solid}}
+                                    :hint {:type :window
+                                           :offset 1
+                                           :float_opts {:style :minimal
+                                                        :noautocmd true}
+                                           :position :middle}}
                            :mode :n
-                           :body :<Leader>t
+                           :body ";t"
                            :heads [[:f
                                     (fn []
                                       (vim.cmd.Telescope :find_files))]
@@ -652,24 +659,19 @@
                                           :project) {:display_type :full}))
                                     {:desc :projects}]
                                    ["/"
-                                    (fn []
-                                      (vim.cmd.Telescope :current_buffer_fuzzy_find))
+                                      #(vim.cmd.Telescope :current_buffer_fuzzy_find)
                                     {:desc "search in file"}]
                                    ["?"
-                                    (fn []
-                                      (vim.cmd.Telescope :search_history))
+                                      #(vim.cmd.Telescope :search_history)
                                     {:desc "search history"}]
                                    [";"
-                                    (fn []
-                                      (vim.cmd.Telescope :command_history))
+                                      #(vim.cmd.Telescope :command_history)
                                     {:desc "command-line history"}]
                                    [:c
-                                    (fn []
-                                      (vim.cmd.Telescope :commands))
+                                      #(vim.cmd.Telescope :commands)
                                     {:desc "execute command"}]
-                                   [:<Enter>
-                                    (fn []
-                                      (vim.cmd :Neotree))
+                                   [:<leader>
+                                      #(vim.cmd.Oil)
                                     {:exit true :desc :NvimTree}]
                                    [:<Esc> nil {:exit true :nowait true}]]})))
 
@@ -826,7 +828,7 @@ _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
                                     :u [#(ht.repl.toggle (vim.api.nvim_buf_get_name (vim.api.nvim_get_current_buf)))
                                         "[R]epl [P] Buffer"]
                                     :q [#(ht.repl.quit) "[R]epl [Q]uit"]}}
-                               {:prefix :<leader>} 4)))
+                               {:prefix ";"} 4)))
 
 ;; fnlfmt: skip
 (nyoom-module-p! harpoon
@@ -911,7 +913,7 @@ _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
                                        :V [#(vim.cmd :STSSwapPrevVisual)
                                            "STS::[P]Swap"]
                                        :<Esc> [#(print :Exiting) :Exit true]}}
-                                  {:prefix :<leader>} 4))
+                                  {:prefix ";"} 4))
 
 ; Go faster, wagie! ;;
 ; (nyoom-module-p! go

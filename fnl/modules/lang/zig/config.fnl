@@ -4,29 +4,34 @@
 ;; NOTE (Hermit) :: Remove after Adding Lazy! Macro and Proper buffer Autocmds
 (fn __zigSetup []
   (packadd! zigTools)
+  (packadd! toggleterm.nvim)
   (let [fidget (autoload :fidget)
         progress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :zig}})]
     (progress:report {:message "Setting Up zig"
                       :level vim.log.levels.ERROR
                       :progress 0})
-    (let! zigtools_config
-          {:expose_commands true
-           :formatter {:enable false}
-           :checker {:enable true :before_compilation true}
-           :integrations {:package_managers {}
-                          :zls {:hints true :management {:enable false}}}
-           :project {:flags {:build :--prominent-compile-errors :run ""}
-                     :build_tasks true}})
-    ((->> :setup (. (require :zig-tools))))
+    ((->> :setup (. (require :zig-tools))) {:expose_commands true
+                                            :formatter {:enable false}
+                                            :terminal {:direction :horizontal
+                                                       :close_on_exit false}
+                                            :checker {:enable true
+                                                      :before_compilation true}
+                                            :integrations {:package_managers {}
+                                                           :zls {:hints true
+                                                                 :management {:enable false}}
+                                                           :project {:flags {:build :--prominent-compile-errors}
+                                                                     :build_tasks true}}})
     (progress:report {:message "Setup Complete"
                       :title :Completed!
                       :progress 99})))
 
 (do
-  (vim.api.nvim_create_autocmd :Filetype
-                               {:pattern :zig
+  (vim.api.nvim_create_autocmd :BufRead
+                               {:pattern :*.zig
                                 :callback #(__zigSetup)
                                 :once true}))
+
+;(let! zigtools_config {})
 
 ; --- zig-tools.nvim configuration
 ; ---@type table

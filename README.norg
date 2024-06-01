@@ -3,7 +3,7 @@ title: index
 id: 42589f53-46ed-411d-88db-116795432add
 workspace: default
 created: 2023-12-09T14:27:12-0500
-updated: 2024-05-11T14:29:33-0500
+updated: 2024-05-31T23:48:55-0500
 @end
 
 * TODOS::
@@ -20,8 +20,10 @@ updated: 2024-05-11T14:29:33-0500
    -- (x) Find way to force Hotpot to use A /tmp directory instead of XDG_DATA_DIR
    --- (x) Just have Neovim Run with {! https://github.com/konradmalik/neovim-flake/blob/main/packages/neovim-pde/default.nix}[XDG_CACHE_DIR] set to /tmp
 
-   - (-) Hydra:: Add Rust Subhydra:: Rustacean + Crates
+   - ( ) Hydra:: Add Rust Subhydra:: Rustacean + Crates
    -- (!) Hydra:: Add SubHydras
+   -- ( ) Haskell Hydra::
+   --- ( ) Add Telescope Hoogle to binds (why haven't I done this yet you fucking doofus)
 
 ** Next::
    #contexts GTD::Next
@@ -45,6 +47,7 @@ updated: 2024-05-11T14:29:33-0500
    ---- ( ) DocStrings -> Neorg Conversion  [Perhaps write it in Haskell?]{Neorg Parser Combinator when bozo?}
    -- ( ) NUI-components:: {:$/Nui-Comp:}[Docs]
    --- ( ) Actually learn the framework
+   --- (x) Refactor Noice Module -> NUI Module
    -- (-)  Nvim-Nio:: {:$/nio-async:}[Async Docs]
    --- (-)  Learn it properly, try to make multi-module async work
    -- (-) Doctor Rewrite::

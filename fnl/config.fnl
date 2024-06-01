@@ -1,15 +1,6 @@
 (require-macros :macros)
 (import-macros {: >==} :util.macros)
 
-;; NOTE:: We need to append on the luarocks cPath/lPath, or else we have to manually packadd the plugins
-; (local rocks-config
-;        {:luarocks_binary :luarocks
-;         :rocks_path (.. (vim.fn.stdpath :data) :/rocks)})
-;
-; (vim.opt.runtimepath:append (vim.fs.joinpath rocks-config.rocks_path :lib
-;                                              :luarocks :rocks-5.1 :rocks.nvim
-;                                              "*"))
-
 (colorscheme oxocarbon)
 (set! background :dark)
 ;;   ┌──────────────────────┐
@@ -66,16 +57,10 @@
 (autocmd! :FileType :*.norg #(vim.opt.conceallevel 2))
 
 (fn set-shiftwidth [filetype shiftwidth]
-  (autocmd! :FileType filetype
+  (autocmd! :BufRead filetype
             #(vim.cmd (string.format " setlocal expandtab tabstop=%d shiftwidth=%d softtabstop=%d "
                                      shiftwidth shiftwidth shiftwidth)
                       {:nested true})))
-
-(augroup! neogit-config (autocmd! FileType Neogit* `(local-set! nolist))
-          (autocmd! [FileType BufEnter] NeogitCommitView
-                    `(local-set! evenitignore+ :CursorMoved))
-          (autocmd! BufLeave NeogitCommitView
-                    `(local-set! evenitignore- :CursorMoved)))
 
 (>== [:haskell
       :norg
@@ -98,7 +83,7 @@
 
 ;; Vim.g Options::
 (let! typst_conceal_math 2)
-(let! direnv_silent_load 1)
+;(let! direnv_silent_load 1) ;; NOTE: (Hermit) Don't unset this fking idiot
 (let! sweetie {:overrides {}
                :integrations {:lazy true
                               :neorg true

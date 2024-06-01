@@ -1,4 +1,4 @@
-(import-macros {: packadd!} :macros)
+(import-macros {: packadd! : map!} :macros)
 
 ;; NOTE (Hermit) :: Remove after Adding Lazy! Macro and Proper buffer Autocmds
 (fn __multiCursorSetup []
@@ -11,6 +11,8 @@
                       :progress 0})
     ;;NOTE(Hemrit): This will never check for failure, look into a nio function which softwraps errors
     ((->> :setup (. (require :multicursors))) {})
+    (map! [n] :<M-c> `((->> :start (. (require :multicursors))))
+          {:desc "Buffer:: MultiCursor"})
     (progress:report {:message "Setup Complete"
                       :title :Completed!
                       :progress 99})))

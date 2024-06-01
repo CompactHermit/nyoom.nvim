@@ -1,0 +1,33 @@
+## vim: ft=lua
+return {
+    compiler = {
+        macros = {
+            allowGlobals = true;
+            env = "_COMPILER",
+            compilerEnv = _G,
+        },
+        modules = {
+            correlate = true,
+            useBitLib = true,
+        },
+    },
+    build = {
+        {atomic = true, verbose = true},
+        {"fnl/**/*macros.fnl", false},
+        {"fnl/**/*macro*.fnl", false},
+        {"init.fnl", true},
+        {"fnl/**/*.fnl", true},
+        {"after/**/*.fnl", true},
+        {"test/**/macros.fnl", false}, -- focused, some tests have macro in name
+        {"test/**/utils.fnl", false},
+        {"test/**/*.fnl", true},
+        {"fnl/tests/**/*.fnl" , function (path)
+            return path:gsub("fnl/tests", "tests")
+        end},
+    },
+    clean = {
+        {"lua/**/*.lua", true},
+        {"lua/packer-compiled.lua", true}, -- TODO: Deprecate packer completely, u fucking loon
+        {"lua/overseer/**/*.lua", false}
+    }
+}

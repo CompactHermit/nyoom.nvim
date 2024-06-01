@@ -17,15 +17,3 @@
           (autocmd! FileChangedShellPost *
                     #(vim.notify "File changed on disk. Buffer reloaded."
                                  vim.log.levels.INFO)))
-
-; (augroup! properly-open-files-with-gf
-;   (clear!)
-;   (autocmd! FileType [fennel lua]
-;     #(do
-;        (local-set! path^ (.. (vim.fn.stdpath "config") "/lua"))
-;        (local-set! path^ (.. (vim.fn.stdpath "config") "/fnl"))
-;        (local-set! suffixesadd^ "/init.fnl")
-;        (local-set! suffixesadd^ ".fnl")
-;        (local-set! suffixesadd^ "/init.lua")
-;        (local-set! suffixesadd^ ".lua")
-;        (local-set! includeexpr "tr(v:fname,'.','/')"))))

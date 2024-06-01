@@ -28,16 +28,66 @@ in
                   default = "Faker";
                 };
                 src = mkOption {
-                  type = anything;
-                  description = "Src to use";
+                  type = path;
+                  description = "Path for Building Nightly Source";
                   default = "${pkgs.neovim-unwrapped}";
                 };
                 package = mkOption {
-                  type = anything;
+                  type = package;
                   description = ''
                     Which Neovim Package to use
                   '';
                   default = pkgs.neovim-unwrapped;
+                };
+                settings = {
+                  bytecompile = mkOption {
+                    type = bool;
+                    description = ''
+                      Whether to use the `vim.loader` or our own bytecompiled cache
+                    '';
+                    default = false;
+                  };
+                  strip = mkOption {
+                    type = bool;
+                    description = "Whether to remove unnecessary paths";
+                    default = false;
+                  };
+                  temp = mkOption {
+                    type = path;
+                    description = "TempDir for XDG_CACHE_HOME";
+                    default = "/tmp/nyoom";
+                  };
+                  plugins = mkOption {
+                    /**
+                      HACK: Very, very bad way of handling submodules.
+                      TODO: (Hermit) Understand and fking use `types.deferredModule`, pass these types into an eval-module and then
+                    */
+                    type = lazyAttrsOf (submodule {
+                      options =
+                        let
+                          plugopts = {
+                            patches = listOf (either path str);
+                            postInstall = str;
+                            docs = bool;
+                          };
+                        in
+                        genAttrs (__attrNames plugopts) (
+                          x:
+                          mkOption {
+                            type = nullOr plugopts."${x}";
+                            description = "${x}";
+                            default = null;
+                          }
+                        )
+                        // {
+                          dependencies = mkOption {
+                            type = nullOr (listOf package);
+                            description = "Packages Deps";
+                            default = [ ];
+                          };
+                        };
+                    });
+                  };
                 };
                 lua = {
                   extraPacks = mkOption {
@@ -56,6 +106,7 @@ in
                       Would be pretty fking useful to have some kind of plugin-wide scope.
                       This means dependency checking will be done by nix, and failure to find dependency result no Output,
                           rather then waiting for failure on lua-side.
+                    OR, we could, you know, fucking use `vimPlugin.extend` and define dependencies there?
                 */
                 plugins = mkOption {
                   type = (
@@ -74,19 +125,6 @@ in
                             description = "${types}-Loaded Plugin";
                           }
                         );
-                      /**
-                        TODO: Add this shit to lib.types, following the same design as treefmt
-                        TEST:
-                        Try using::
-                        ```nix
-                            \\ {setting = {type = attrsOf ({plugin = str;
-                                           patch = path;
-                                           phaseOverride = []; #Custom OverrdeAttrs for Plugin
-                                           disableHook = listOf (some strict set of strings, wonder if nix has such options?);
-                                })
-                            };}
-                        ```
-                      */
                     }
                   );
                   description = ''
@@ -95,11 +133,6 @@ in
                         lazy:: Of form ::<True|False>
                   '';
                   default = [ ];
-                };
-                strip = mkOption {
-                  type = bool;
-                  description = "Whether to remove unnecessary paths";
-                  default = false;
                 };
                 extraParsers = mkOption {
                   type = listOf str;
@@ -122,11 +155,6 @@ in
                     Extra Bins to wrap in $PATH
                   '';
                   default = [ ];
-                };
-                temp = mkOption {
-                  type = path;
-                  description = "TempDir for XDG_CACHE_HOME";
-                  default = "/tmp/nyoom";
                 };
               };
             };
@@ -152,42 +180,51 @@ in
           concatMapStringsSep
           concatLists
           ;
-        #TODO (Hermit):: Abstract Away the makeNeovimConfig option
         inherit (pkgs.neovimUtils) makeNeovimConfig grammarToPlugin;
-        __lib = import ./mklib.nix { inherit inputs lib pkgs; };
-        __plugins = import ./mkPlugin.nix { inherit pkgs inputs lib; };
         cfg = config.neohermit;
+        __lib = import ./mklib.nix { inherit inputs lib pkgs; };
+        neovimPatched = pkgs.callPackage ./mkNeovim.nix { inherit config inputs; };
+        __wrapper = import ./mkWrapper.nix { inherit config; };
+        __plugins = import ./mkPlugin.nix {
+          inherit
+            pkgs
+            inputs
+            lib
+            config
+            ;
+        };
+        /*
+          NOTE: (Hermit)
+          For the direction I'm heading with this build, we really don't need `makeNeovimConfig`
+          The plan is just to have an init.lua with the following setup::
+                1. PackDir (bytecompiled) set as rtp (shouldnt be a problem, really it's just)
+                2. each luaPackage setup with package.luaPath and package.luacpath
+                3. Hotpot Compile Hook
+                    - (using nightly fennel, might require patching the fennel dir, but I'd need to ask)
+                4. Make default fennel files -> luaTbl -> Plugin, and deprecate the use of config dir and `luafile`.
+          This would imply completely revamping the module system, as well as removing packer.
+          Additionally, the monkey-patched
+        */
         NeovimConfig = makeNeovimConfig {
           customRC = import ../default.nix;
           plugins =
             with pkgs;
             [
+              /**
+                NOTE: (Hermit)
+              */
               parinfer-rust
               (symlinkJoin {
                 name = "nvim-treesitter";
                 paths = [
-                  pkgs.vimPlugins.nvim-treesitter.withAllGrammars
-                  (map grammarToPlugin (
-                    # (__filter (x: __match ".*(norg).*" x.pname == null)
-                    pkgs.vimPlugins.nvim-treesitter.allGrammars ++ (__attrValues (__lib.mkTreesitter cfg.extraParsers))
-                  ))
+                  /**
+                        Note:: This needs to be overriden with nightly-queries.
+                  */
+                  vimPlugins.nvim-treesitter.withAllGrammars
+                  (map grammarToPlugin ((__attrValues (__lib.mkTreesitter cfg.extraParsers))))
+                  (__attrValues (builtins.removeAttrs vimPlugins.nvim-treesitter.grammarPlugins cfg.extraParsers))
                 ];
               })
-            ]
-            /**
-              TODO: Find A way to just add a patch, or add a `options.plugins.*.doCheck = <bool>`, to patch or change certain plugins.
-              HACK::
-              From:: https://github.com/MagicDuck/grug-far.nvim/blob/main/doc/grug-far.txt
-              Grug Currently has a Double Call to setup in it's docs.
-              This just fixes that bullshit by ignoring the gendock hook completely. Because fuck docs
-            */
-            ++ [
-              {
-                optional = true;
-                plugin = (__head (__plugins { lazy = [ "grug" ]; }).lazy).plugin.overrideAttrs (_: {
-                  nativeBuildInputs = [ ];
-                });
-              }
             ]
             ++ (lib.trivial.pipe cfg.plugins [
               __plugins
@@ -196,27 +233,10 @@ in
             ])
             ++ (cfg.defaultPlugins);
         };
-        stringSeps = concatStringsSep "\n" (
-          map (file: "rm -rf $out/share/nvim/${file}") [
-            #"runtime/ftplugin.vim"
-            "runtime/tutor"
-            #"runtime/indent.vim"
-            "runtime/menu.vim"
-            "runtime/mswin.vim"
-            "runtime/plugin/gzip.vim"
-            "runtime/plugin/man.lua"
-            "runtime/plugin/matchit.vim"
-            "runtime/plugin/matchparen.vim"
-            "runtime/plugin/netrwPlugin.vim"
-            "runtime/plugin/rplugin.vim"
-            # "runtime/plugin/shada.vim"
-            "runtime/plugin/spellfile.vim"
-            "runtime/plugin/tarPlugin.vim"
-            "runtime/plugin/tohtml.vim"
-            "runtime/plugin/tutor.vim"
-            "runtime/plugin/zipPlugin.vim"
-          ]
-        );
+        /*
+          TODO:
+           Just add them to package.preload in the init.lua file
+        */
         wrapperArgs =
           let
             binpath = makeBinPath cfg.bins;
@@ -236,31 +256,19 @@ in
           + ''--set LIBSQLITE_CLIB_PATH "${pkgs.sqlite.out}/lib/libsqlite3.so"''
           + " "
           + ''--set LIBSQLITE "${pkgs.sqlite.out}/lib/libsqlite3.so"'';
-        Dhaos = pkgs.wrapNeovimUnstable (cfg.package.overrideAttrs (oa: {
-          src = cfg.src;
-          version = inputs.nvim-git.shortRev or "dirty";
-          #lua = pkgs.luajit.override ({ enable52Compat = false; }); #NOTE: (Hermit): <05/05> This is on by default
-          buildInputs = (oa.buildInputs or [ ]) ++ [ ];
-          cmakeFlags = [ "" ];
-          preConfigure = ''
-            sed -i cmake.config/versiondef.h.in -e "s/@NVIM_VERSION_PRERELEASE@/-dev-$version/"
-          '';
-          postInstall = ''
-            #${if oa ? postInstall then oa.postInstall else ""}
-            ${stringSeps}
-          '';
-        })) (NeovimConfig // { inherit wrapperArgs; });
+
+        Dhaos = pkgs.wrapNeovimUnstable neovimPatched (NeovimConfig // { inherit wrapperArgs; });
       in
       {
         packages = {
-          Dhaos = Dhaos;
-          #faker = "";
+          Dhaos = Dhaos; # NOTE: (Hermit) for easier debugging
+          faker = neovimPatched;
           default = withSystem system (
             { config, ... }:
             pkgs.writeShellApplication {
               name = "nvim";
               text = ''
-                XDG_CACHE_HOME=${cfg.temp} ${getExe Dhaos} "$@"
+                XDG_CACHE_HOME=${cfg.settings.temp} ${getExe Dhaos} "$@"
               '';
             }
           );

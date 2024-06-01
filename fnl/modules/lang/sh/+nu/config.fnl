@@ -1,8 +1,8 @@
 (import-macros {: packadd!} :macros)
 ;
 ;
-(vim.api.nvim_create_autocmd :FileType
-                             {:pattern :nu
+(vim.api.nvim_create_autocmd :BufReadPre
+                             {:pattern :*.nu
                               :once true
                               :callback (fn [event]
                                           (packadd! nu-nvim)
