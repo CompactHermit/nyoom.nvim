@@ -775,7 +775,7 @@
   value -> anything.
   Example of use:
   ```fennel
-  (nyoom! :catagory
+  (nyoom! :category
           module
           (module +with +flags
           :anothercatagory

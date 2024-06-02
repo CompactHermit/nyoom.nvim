@@ -1,5 +1,3 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: nyoom-module!} :macros)
 
-(use-package! :goolord/alpha-nvim {:nyoom-module ui.dashboard})
-
-;(use-package! :jovanlanik/fsplash.nvim)
+(nyoom-module! ui.dashboard)

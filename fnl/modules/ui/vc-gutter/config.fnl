@@ -34,4 +34,5 @@
                       :title :Completed!
                       :progress 99})))
 
+;(vim.api.nvim_create_augroup {:})
 (vim.api.nvim_create_autocmd :BufRead {:once true :callback #(__gitSignsSetup)})

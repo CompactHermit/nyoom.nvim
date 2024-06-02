@@ -5,7 +5,7 @@
     __generate-repl:: [] -> ToggleTerm::Shell
     Returns a repl for nix, loading the cwd's flake
   "
-  (if (not= (pcall require :toggleterm) true) (packadd! toggleterm.nvim))
+  (if (not= (pcall require :toggleterm) true) (vim.api.nvim_exec_autocmds :User {:pattern :toggleterm.setup}))
   (let [tterm (autoload :toggleterm)
         {: Terminal} (require :toggleterm.terminal)
         __nixTerminalHandler (Terminal:new {:cmd (string.format "nix repl --debug --show-trace -Lv --expr '__getFlake \"%s\"' -I nixpkgs=flake:nixpkgs"

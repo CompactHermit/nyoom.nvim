@@ -60,14 +60,14 @@
                                (is-valid-cmd rhs)
                                {:cmd rhs :final true}
                                ;; Documented rhs
-                               (and (vim.tbl_islist rhs)
+                               (and (vim.islist rhs)
                                     (is-valid-cmd (. rhs 1)))
                                {:cmd (. rhs 1)
                                 :desc (. rhs 2)
                                 :exit (or false (. rhs 3))
                                 :final true}
                                ;; Nested table, leave be
-                               (not (vim.tbl_islist rhs))
+                               (not (vim.islist rhs))
                                rhs
                                ;; else
                                nil))

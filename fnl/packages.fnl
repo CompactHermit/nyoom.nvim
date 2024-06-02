@@ -19,60 +19,24 @@
 (echo! "Loading Packer")
 (local headless (= 0 (length (vim.api.nvim_list_uis))))
 (init {;:lockfile {:enable true
-                  ;:path (.. (vim.fn.stdpath :config) :/lockfile.lua)
+       ;:path (.. (vim.fn.stdpath :config) :/lockfile.lua)
        :compile_path (.. (vim.fn.stdpath :config) :/lua/packer_compiled.lua)
        :auto_reload_compiled false
        :display {:non_interactive headless}})
 
 ;; libraries
 
-(use-package! :nvim-lua/plenary.nvim {:module :plenary})
+;(use-package! :nvim-lua/plenary.nvim {:module :plenary})
 (use-package! :nyoom-engineering/oxocarbon.nvim)
-
-;; include modules
 
 (echo! "Initializing Module System")
 (include :fnl.modules)
 (nyoom-init-modules!)
 
-;; To install a package with Nyoom you must declare them here and run 'nyoom sync'
-;; on the command line, then restart nvim for the changes to take effect
-;; The syntax is as follows:
 
-;; (use-package! :username/repo {:opt true
-;;                               :defer reponame-to-defer
-;;                               :call-setup pluginname-to-setup
-;;                               :cmd [:cmds :to :lazyload]
-;;                               :event [:events :to :lazyload]
-;;                               :ft [:ft :to :load :on]
-;;                               :requires [(pack :plugin/dependency)]
-;;                               :run :commandtorun
-;;                               :as :nametoloadas
-;;                               :branch :repobranch
-;;                               :setup (fn [])
-;;                                        ;; same as setup with packer.nvim)})
-;;                               :config (fn [])})
-;;                                        ;; same as config with packer.nvim)})
-
-;; ---------------------
-;; Put your plugins here
-;; ---------------------
-
-(use-package! :nvimdev/lspsaga.nvim
-              {:opt true
-               :cmd [:Lspsaga]
-               :config (fn []
-                         (local {: setup} (require :lspsaga))
-                         (setup {:lightbulb {:enable false}}))})
-
-; TODO:: (CH) <10/06> Debug this.
 (use-package! :dstein64/vim-startuptime {:opt true :cmd [:StartupTime]})
 
-;;Docs and browse
-; (use-package! :loganswartz/updoc.nvim
-;               {:call-setup updoc :opt true :events :BufReadPost})
-
-(use-package! :KabbAmine/zeavim.vim {:opt true :cmd :Zeavim})
+;(use-package! :KabbAmine/zeavim.vim {:opt true :cmd :Zeavim})
 
 ;; Send plugins to packer
 

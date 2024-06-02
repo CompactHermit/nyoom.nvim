@@ -193,6 +193,7 @@ in
             config
             ;
         };
+
         /*
           NOTE: (Hermit)
           For the direction I'm heading with this build, we really don't need `makeNeovimConfig`
@@ -217,9 +218,6 @@ in
               (symlinkJoin {
                 name = "nvim-treesitter";
                 paths = [
-                  /**
-                        Note:: This needs to be overriden with nightly-queries.
-                  */
                   vimPlugins.nvim-treesitter.withAllGrammars
                   (map grammarToPlugin ((__attrValues (__lib.mkTreesitter cfg.extraParsers))))
                   (__attrValues (builtins.removeAttrs vimPlugins.nvim-treesitter.grammarPlugins cfg.extraParsers))
@@ -232,7 +230,9 @@ in
               concatLists
             ])
             ++ (cfg.defaultPlugins);
+          #++ (pkgs.vimUtils.builVimPlugin (pname = "hermit"; version = "adjoint-rev"; src = (<todo>); )) #TODO: (Hermit) <4> Some kind of hotpot-compile hook?
         };
+
         /*
           TODO:
            Just add them to package.preload in the init.lua file
@@ -243,25 +243,57 @@ in
           in
           escapeShellArgs NeovimConfig.wrapperArgs
           + " "
-          + ''--suffix LUA_CPATH ";" "${
-            concatMapStringsSep ";" pkgs.lua51Packages.getLuaCPath (cfg.lua.extraPacks)
-          }"''
-          + " "
-          + ''--suffix LUA_PATH ";" "${
-            concatMapStringsSep ";" pkgs.lua51Packages.getLuaPath (cfg.lua.extraPacks)
-          };${concatMapStringsSep ";" pkgs.luajitPackages.getLuaPath (cfg.lua.jit)}"''
-          + " "
           + "--prefix PATH : ${binpath}"
           + " "
           + ''--set LIBSQLITE_CLIB_PATH "${pkgs.sqlite.out}/lib/libsqlite3.so"''
           + " "
           + ''--set LIBSQLITE "${pkgs.sqlite.out}/lib/libsqlite3.so"'';
 
-        Dhaos = pkgs.wrapNeovimUnstable neovimPatched (NeovimConfig // { inherit wrapperArgs; });
+        Dhaos = pkgs.wrapNeovimUnstable neovimPatched (
+          NeovimConfig
+          // {
+            inherit wrapperArgs;
+            luaRcContent = # lua
+              ''
+                -- HACK: (Hermit) Temporary hack for all the`wrapperArg` hell. Simply expose rtp here, all package paths here.
+                --      Once We remove the wrapper, we can simply make this a luafile with::
+                --       ```lua
+                --              <wrapperArgsHere>, set rtp + $\{custom-packdir}/start, and set preload here::
+                --               "vim.opt.rtp:prepend($\{packDir-start})" 
+                --              vim.loader.enable()
+                --                  ...........
+                --       ```
+                vim.loader.enable()
+                vim.g.sqlite_clib_path = require('luv').os_getenv('LIBSQLITE')
+
+                local default_plugins = {"2html_plugin", "getscript", "getscriptPlugin", "gzip", "logipat", "netrw", "netrwPlugin", "netrwSettings", "netrwFileHandlers", "matchit", "tar", "tarPlugin", "rrhelper", "spellfile_plugin", "vimball", "vimballPlugin", "zip", "zipPlugin", "tutor", "rplugin", "syntax", "synmenu", "optwin", "compiler", "bugreport"}
+
+                for _, plugin in pairs(default_plugins) do vim.g[("loaded_" .. plugin)] = 1 end
+
+                -- Setup lua/luaCPATH, would've loved this in fennel but we cant, fml
+                package.cpath = package.cpath .. ";" .. "${
+                  (concatMapStringsSep ";" pkgs.lua51Packages.getLuaCPath (cfg.lua.extraPacks ++ cfg.lua.jit))
+                }" 
+                package.path = package.path .. ";" .. "${
+                  (concatMapStringsSep ";" pkgs.lua51Packages.getLuaPath (cfg.lua.extraPacks ++ cfg.lua.jit))
+                }"
+
+                -- HACK: Temporary hack for lazyDev, will redo-this when we deprecate the wrapper
+                vim.g.PACKDIR = "${(pkgs.vimUtils.packDir NeovimConfig.packpathDirs)}"
+
+                -- NOTE: Hotpot doesn't need a config dir yet, so we can just set it up now
+                require("hotpot").setup({enable_hotpot_diagnostics = true, provide_require_fennel = true, compiler = {macros = {allowGlobals = true, compilerEnv = _G, env = "_COMPILER"}, modules = {correlate = true, useBitLib = true}}})
+
+                -- We can also call stdlib here
+                local stdlib = require("core.lib")
+                for k, v in pairs(stdlib) do rawset(_G, k, v) end
+              '';
+          }
+        );
       in
       {
         packages = {
-          Dhaos = Dhaos; # NOTE: (Hermit) for easier debugging
+          Dhaos = Dhaos; # HACK: (Hermit) for easier debugging
           faker = neovimPatched;
           default = withSystem system (
             { config, ... }:

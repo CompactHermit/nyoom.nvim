@@ -8,7 +8,6 @@
   ;(packadd! neotest-nix) #TODO: Create neotest-nix adapter
   ;(packadd! neotest-python)
   (packadd! neotest-rust)
-  (packadd! neotest-gradle)
   (packadd! neotest-zig)
   (packadd! overseer)
   (let [fidget (require :fidget)
@@ -29,7 +28,6 @@
         opts {:adapters [;((autoload :neotest-python) {:dap {:justMyCode false}})
                          (require :rustaceanvim.neotest)
                          (require :neotest-zig)
-                         (require :neotest-gradle)
                          ((require :neotest-haskell) {:build_tools [:cabal]
                                                       :framework [:tasty
                                                                   :hspec]})]

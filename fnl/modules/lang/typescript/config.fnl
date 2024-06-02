@@ -18,7 +18,7 @@
                               (fn [err result ...]
                                 (var patched-result {})
                                 (local target-path-line-map {})
-                                (if (and (or (vim.tbl_islist result) (= (type result) :table))
+                                (if (and (or (vim.islist result) (= (type result) :table))
                                          (> (length result) 1))
                                     (let [internal-entries {}
                                           external-entries {}]

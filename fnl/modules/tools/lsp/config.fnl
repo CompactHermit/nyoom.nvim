@@ -25,7 +25,7 @@
           (vim.notify "[lsp]: Could not find definition" vim.log.levels.INFO)
           (lua "return "))
         (local client (vim.lsp.get_client_by_id ctx.client_id))
-        (if (vim.tbl_islist result)
+        (if (vim.islist result)
             (let [results (vim.lsp.util.locations_to_items result
                                                            client.offset_encoding)
                   (lnum filename) (values (. (. results 1) :lnum)
@@ -37,8 +37,8 @@
                                              client.offset_encoding false))
             (vim.lsp.util.jump_to_location result client.offset_encoding false))))
 
-(set vim.lsp.handlers.textDocument/hover
-     (vim.lsp.with vim.lsp.handlers.hover {:border :solid}))
+(tset vim.lsp.handlers :textDocument/hover
+      (vim.lsp.with vim.lsp.handlers.hover {:border :solid}))
 
 (fn format! [bufnr ?async?]
   (vim.lsp.buf.format {: bufnr
@@ -119,8 +119,6 @@
                      _ nil)
                    (tset lsp-servers :clangd {:cmd clangd_commands})))
 
-;(nyoom-module-p! csharp (tset lsp-servers :omnisharp {:cmd [:omnisharp]}))
-
 (nyoom-module-p! clojure (tset lsp-servers :clojure_lsp {}))
 
 (nyoom-module-p! java (do
@@ -159,22 +157,53 @@
 
 (nyoom-module-p! lua
                  (do
-                   (packadd! neodev)
-                   ((->> :setup (. (require :neodev))) {:library {:plugins [:nvim-nio]}})
-                   (tset lsp-servers :lua_ls
-                         {:settings {:Lua {:IntelliSense {:traceLocalSet true}
-                                           :codeLens {:enable true}
-                                           :hint {:enable true}
-                                           :format {:enable false}
-                                           :diagnostics {:globals {:vim :P
-                                                                   :describe :it
-                                                                   :before_each :after_each
-                                                                   :packer_plugins :pending}}
-                                           :telemetry {:enable false}
-                                           :completion {:callSnippet :Replace}
-                                           :workspace {:library (vim.api.nvim_list_runtime_paths)
-                                                       :maxPreload 1000
-                                                       :ignoreDir [:.direnv]}}}})))
+                   (packadd! lazydev)
+                   (packadd! luvit)
+                   ;; HACK: Temp fix for packir, when we finalize a better RTP-setup we'll just search from there
+                   (let [tbl (: (vim.iter {:start [:nvim-nio
+                                                   :nui
+                                                   :rustaceanvim]
+                                           :opt [:neorg
+                                                 :image-nvim
+                                                 :luvit-meta
+                                                 :dap
+                                                 :rustaceanvim]})
+                                :fold []
+                                (fn [acc k v]
+                                  (each [_ plug (ipairs v)]
+                                    (let [path (string.format "%s/pack/myNeovimPackages/%s/%s"
+                                                              vim.g.PACKDIR k
+                                                              plug)]
+                                      (match plug
+                                        (where _nioP (= _nioP :nui)) (table.insert acc
+                                                                                   {: path
+                                                                                    :words [:nui]})
+                                        (where _nioP (= _nioP :nvim-nio)) (table.insert acc
+                                                                                        {: path
+                                                                                         :words [:nio]})
+                                        (where _luvitP (= _luvitP :luvit-meta)) (table.insert acc
+                                                                                              {: path
+                                                                                               :words ["vim%.uv"]})
+                                        _ (table.insert acc path))))
+                                  acc))]
+                     ((->> :setup (. (require :lazydev))) {:library tbl
+                                                           :enabled true})
+                     ; (fn [root] ;   "Dont Load When ./luarcs.json is present. Typically if we've already set it with a nix-shell"
+                     ;   (not (= (vim.uv.fs_stat (.. root "/.luarc.json")) nil))))
+                     (tset lsp-servers :lua_ls
+                           {:settings {:Lua {:IntelliSense {:traceLocalSet true}
+                                             :codeLens {:enable true}
+                                             :hint {:enable true}
+                                             :format {:enable false}
+                                             :diagnostics {:globals {:vim :P
+                                                                     :describe :it
+                                                                     :before_each :after_each
+                                                                     :packer_plugins :pending}}
+                                             :telemetry {:enable false}
+                                             :completion {:callSnippet :Replace}
+                                             :workspace {:library (vim.api.nvim_list_runtime_paths)
+                                                         :maxPreload 1000
+                                                         :ignoreDir [:.direnv]}}}}))))
 
 ;; Stop Lua-ls from shitting itself
 
@@ -231,6 +260,8 @@
 (augroup! UserLspConfig
           (autocmd! LspAttach "*"
                     (fn [args]
+                      (packadd! :lspsaga)
+                      ((->> :setup (. (require :lspsaga))) {:lightbulb {:enable false}})
                       (local client
                              (vim.lsp.get_client_by_id args.data.client_id))
                       (when client.server_capabilities.inlayHintProvider

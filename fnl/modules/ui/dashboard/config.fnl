@@ -93,14 +93,14 @@
                :opts {:position :center :hl :Decorator}
                :on_press (fn []
                            (if (= (vim.fn.has :mac) 1)
-                               (os.execute "open https://github.com/nyoom-engineering/nyoom.nvim")
-                               (os.execute "xdg-open https://github.com/nyoom-engineering/nyoom.nvim")))}})
+                               (os.execute "xdg-open https://git.compacthermit.dev/nyoom.nvim")
+                               (os.execute "xdg-open https://git.compacthermit.dev/nyoom.nvim")))}})
 
-(setup :alpha {:layout [{:type :padding :val 4}
-                        sections.header
-                        {:type :padding :val 2}
-                        sections.buttons
-                        {:type :padding :val 2}
-                        sections.footer
-                        {:type :padding :val 1}
-                        sections.icon]})
+((->> :setup (. (autoload :alpha))) {:layout [{:type :padding :val 4}
+                                              sections.header
+                                              {:type :padding :val 2}
+                                              sections.buttons
+                                              {:type :padding :val 2}
+                                              sections.footer
+                                              {:type :padding :val 1}
+                                              sections.icon]})

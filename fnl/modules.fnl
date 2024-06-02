@@ -108,7 +108,7 @@
         ;;;yaml               ; yet another markup language to enable
         ;go                  ; No Bitches??
         ;lean                 ; Make your category-theory coursework 1000x harder.
-        ;;agda                ; TODO:: add cornelis nix bindings
+        ;;agda              ; TODO:: add cornelis nix bindings
         haskell              ; Functionally Braindead parsers
         zig                  ; C, but slower and fatter
 

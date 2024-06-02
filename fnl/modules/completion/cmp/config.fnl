@@ -28,7 +28,6 @@
   (packadd! cmp-luasnip)
   (packadd! cmp-nvim-lsp-signature-help)
   (packadd! cmp-nvim-lsp) ; (packadd! cmp-nvim-lsp-signature-help) ; (packadd! cmp-conjure) ; (packadd! cmp-lspkind)  ; (packadd! cmp-vimtex) ; (packadd! cmp-latexsm) ; (packadd! cmp-dap)
-  ;(packadd! cmp-treesitter)
   (packadd! haskell-snippets)
   (local fidget (autoload :fidget))
   (local progress
@@ -55,11 +54,10 @@
   (cmp.register_source :luasnip ((. (autoload :cmp_luasnip) :new)))
   ;(cmp.register_source :nvim_lsp_document_symbol ((. (autoload :cmp_nvim_lsp_document_symbol) :new)))
   (cmp.register_source :nvim_lua ((. (autoload :cmp_nvim_lua) :new)))
-  ;(cmp.register_source :treesitter ((. (autoload :cmp_treesitter) :new)))
   ((->> :setup (. (autoload :cmp_nvim_lsp))))
   (cmp.register_source :nvim_lsp_signature_help
                        ((. (autoload :cmp_nvim_lsp_signature_help) :new)))
-  ((->> :setup (. (require :cmp))) {:experimental {:ghost_text true}
+  ((->> :setup (. (require :cmp))) {:experimental {:ghost_text false}
                                     :window {:documentation {:border :solid}
                                              :completion {:col_offset (- 3)
                                                           :side_padding 0
@@ -78,6 +76,7 @@
                                     :sources [{:name :luasnip}
                                               {:name :nvim_lsp}
                                               {:name :nvim_lua}
+                                              {:name :lazydev :group_index 0}
                                               {:name :neorg :group_index 1}
                                               {:name :crates :group_index 2}
                                               {:name :buffer}

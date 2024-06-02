@@ -1,5 +1,3 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: nyoom-module!} :macros)
 
-(use-package! :Pocco81/true-zen.nvim
-              {:call-setup true-zen
-               :cmd [:TZAtaraxis :TZNarrow :TZFocus :TZMinimalist :TZAtaraxis]})
+(nyoom-module! ui.zen)

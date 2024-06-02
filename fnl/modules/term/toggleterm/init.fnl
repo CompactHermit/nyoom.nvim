@@ -1,6 +1,4 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: nyoom-module!} :macros)
 
-(use-package! :akinsho/toggleterm.nvim {:opt true
-                                        :cmd :ToggleTerm
-                                        :event :BufWritePost
-                                        :call-setup toggleterm})
+
+(nyoom-module! term.toggleterm)

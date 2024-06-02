@@ -3,6 +3,7 @@
 (fn __neogitSetup []
   (packadd! neogit)
   (packadd! diffview)
+  (if (= (pcall require :gitsigns) nil) (vim.api.nvim_exec_autocmds :gitsigns))
   (let [neogit (autoload :neogit)
         gitsigns (autoload :gitsigns)
         nio (autoload :nio)

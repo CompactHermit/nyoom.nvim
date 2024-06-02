@@ -83,7 +83,9 @@
 
 ;; Vim.g Options::
 (let! typst_conceal_math 2)
-;(let! direnv_silent_load 1) ;; NOTE: (Hermit) Don't unset this fking idiot
+(let! direnv_silent_load 1)
+
+;; NOTE: (Hermit) Don't unset this fking idiot
 (let! sweetie {:overrides {}
                :integrations {:lazy true
                               :neorg true

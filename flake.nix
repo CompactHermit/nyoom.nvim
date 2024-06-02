@@ -1,5 +1,5 @@
 {
-  description = "Nyoom Interfaces with Nix";
+  description = "Nyoom :: Schizo Edition";
   outputs =
     { self, parts, ... }@inputs:
     parts.lib.mkFlake { inherit inputs; } (
@@ -98,8 +98,7 @@
                   "cmp-latexsym"
                   "luasnip"
                   "friendly-luasnip"
-                  "cmp-treesitter" # For whatever reason, cmp-sources get packadded automagically? WTF CMP
-                  "cmp-latexsym" # and this one doesnt, lmao wtf?
+                  "cmp-latexsym"
                   "compiler"
                   "diffview"
                   "direnv"
@@ -115,10 +114,8 @@
                   "ibl"
                   "image-nvim"
                   "multicursor"
-                  "neodev"
                   "neogit"
                   "neotest"
-                  "neotest-gradle"
                   "neotest-haskell"
                   "neotest-python"
                   "neotest-zig"
@@ -138,15 +135,18 @@
                   "dap-lua"
                   "dap-rr"
                   "dap-python"
-                  # "nfnl" #I'll Trust hotpot once more
                   "smuggler"
                   "gitsigns"
                   "go-nvim"
                   "harpoon"
+                  "lazydev"
+                  "luvit-meta"
                   "libmodal"
                   "lua-utils"
-                  "lsplines"
+                  #"lsplines"
+                  "lspsaga"
                   "resession"
+                  "truezen"
                   "ts-error-translator"
                   "tsplayground"
                   "rainbow-delimiters"
@@ -156,6 +156,7 @@
                   "ts-textobjects"
                   "ts-node-action"
                   "telescope_hoogle"
+                  "toggleterm"
                   "ufold"
                   "psa"
                   "octo"
@@ -172,11 +173,13 @@
                   "zigTools"
                 ];
                 eager = [
+                  "alpha"
                   "hotpot-nvim"
                   "haskellTools"
                   "haskell-snippets"
                   "luasnip_snippets"
                   "molten"
+                  "middleclass"
                   "nightfox"
                   "nvim-nio" # Needed for Docs, will just igrnore for now
                   "nvim-notify"
@@ -228,6 +231,7 @@
                 "norg-meta"
                 "nim"
                 "nu"
+                "vimdoc"
                 "roc"
                 "typst"
               ];
@@ -236,6 +240,7 @@
                   sqlite-lua
                   mini-nvim
                   markdown-preview-nvim
+                  plenary-nvim
                   #rocks-nvim
                   packer-nvim # TODO (Adjoint) :: Deprecate Packer, use nix and inhouse lazy-loading with C=>>
                   ;
@@ -260,7 +265,7 @@
                 name = "Hermit:: Dev";
                 #TODO: https://github.com/rktjmp/hotpot.nvim/issues/125 .hotpot.lua as shellhook
                 # shellHook = ''
-                #     ln -s 
+                #     ln - s 
                 # '';
                 inputsFrom = with config; [
                   treefmt.build.devShell
@@ -390,6 +395,10 @@
       url = "github:aznhe21/actions-preview.nvim";
       flake = false;
     };
+    alpha = {
+      url = "github:goolord/alpha-nvim";
+      flake = false;
+    };
     bmessage = {
       url = "github:ariel-frischer/bmessages.nvim";
       flake = false;
@@ -456,10 +465,6 @@
     };
     cmp-latexsym = {
       url = "github:kdheepak/cmp-latex-symbols";
-      flake = false;
-    };
-    cmp-treesitter = {
-      url = "github:ray-x/cmp-treesitter";
       flake = false;
     };
     luasnip = {
@@ -558,6 +563,18 @@
       url = "github:lukas-reineke/indent-blankline.nvim";
       flake = false;
     };
+    hlchunks = {
+      url = "github:shellRaining/hlchunk.nvim";
+      flake = false;
+    };
+    lazydev = {
+      url = "github:folke/lazydev.nvim";
+      flake = false;
+    };
+    luvit-meta = {
+      url = "github:Bilal2453/luvit-meta";
+      flake = false;
+    };
     #Marry Me
     libmodal = {
       url = "github:Iron-E/nvim-libmodal";
@@ -575,8 +592,12 @@
       url = "github:mireq/luasnip-snippets";
       flake = false;
     };
-    lsplines = {
-      url = "git+https://git.sr.ht/~whynothugo/lsp_lines.nvim";
+    # lsplines = {
+    #   url = "git+https://git.sr.ht/~whynothugo/lsp_lines.nvim";
+    #   flake = false;
+    # };
+    lspsaga = {
+      url = "github:nvimdev/lspsaga.nvim";
       flake = false;
     };
     molten = {
@@ -599,10 +620,6 @@
       url = "github:nvim-neotest/neotest";
       flake = false;
     };
-    neodev = {
-      url = "github:folke/neodev.nvim";
-      flake = false;
-    };
     neotest-zig = {
       url = "github:lawrence-laz/neotest-zig";
       flake = false;
@@ -619,12 +636,8 @@
       url = "github:nvim-neotest/neotest-python";
       flake = false;
     };
-    neotest-gradle = {
-      url = "github:weilbith/neotest-gradle";
-      flake = false;
-    };
     neogit = {
-      url = "github:NeogitOrg/neogit";
+      url = "github:NeogitOrg/neogit/perf/async-refreshing";
       flake = false;
     };
     neorg = {
@@ -809,6 +822,10 @@
       url = "gitlab:HiPhish/rainbow-delimiters.nvim";
       flake = false;
     };
+    truezen = {
+      url = "github:Pocco81/true-zen.nvim";
+      flake = false;
+    };
     ts-autotags = {
       url = "github:windwp/nvim-ts-autotag";
       flake = false;
@@ -833,6 +850,10 @@
       url = "github:Ckolkey/ts-node-action";
       flake = false;
     };
+    toggleterm = {
+      url = "github:akinsho/toggleterm.nvim";
+      flake = false;
+    };
     ufold = {
       url = "github:kevinhwang91/nvim-ufo";
       flake = false;
@@ -850,11 +871,16 @@
       flake = false;
     };
     zigTools = {
-      url = "github:tacogips//zig-tools.nvim";
+      url = "github:tacogips/zig-tools.nvim";
+      flake = false;
+    };
+    # Nightly Rocks/New Luarocks ::
+    middleclass = {
+      url = "github:anuvyklack/middleclass";
       flake = false;
     };
 
-    ## Nightly TreeSitter Parsers::
+    # Nightly TreeSitter Parsers::
     ts-nightly.url = "github:r-ryantm/nixpkgs/auto-update/tree-sitter";
     ts-src = {
       url = "github:tree-sitter/tree-sitter";
@@ -890,6 +916,10 @@
     };
     tree-sitter-nim = {
       url = "github:alaviss/tree-sitter-nim";
+      flake = false;
+    };
+    tree-sitter-vimdoc = {
+      url = "github:neovim/tree-sitter-vimdoc";
       flake = false;
     };
     tree-sitter-roc = {
