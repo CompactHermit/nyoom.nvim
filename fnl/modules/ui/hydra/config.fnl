@@ -7,6 +7,7 @@
 
 (local {: hydra-key!} (require :util.hydra))
 (local Hydra (autoload :hydra))
+(local {: trigger_load} (autoload :lz.n))
 
 ;; fnlfmt: skip
 ;; NOTE!:: The formatter will butcher this file, donnot, under any circumstance, remove this!
@@ -14,7 +15,6 @@
 ;; Git boi ;;
 (nyoom-module-p! vc-gutter
                  (do
-                   (vim.api.nvim_exec_autocmds :BufRead {})
                    (local {: toggle_linehl
                            : toggle_deleted
                            : next_hunk
@@ -40,7 +40,12 @@
                    (Hydra {:name :+git
                            :hint git-hint
                            :mode [:n :x]
-                           :body :<leader>g
+                           :body ";g"
+                           :on_enter (fn []
+                                       (trigger_load :gitsigns)
+                                       (vim.cmd.mkview)
+                                       (vim.cmd "silent! %foldopen!")
+                                       (toggle_linehl true))
                            :config {:color :red
                                     :invoke_on_body true
                                     :hint {:type :window
@@ -49,10 +54,6 @@
                                            :position :middle}}
                            :on_key (fn []
                                      (vim.wait 50))
-                           :on_enter (fn []
-                                       (vim.cmd.mkview)
-                                       (vim.cmd "silent! %foldopen!")
-                                       (toggle_linehl true))
                            :on_exit (fn []
                                       (local cursor-pos
                                              (vim.api.nvim_win_get_cursor 0))
@@ -387,8 +388,7 @@
                              :name :+Neotest
                              :config {:color :pink
                                       :invoke_on_body true
-                                      :on_enter #(vim.api.nvim_exec_autocmds :User
-                                                                             {:pattern :neotest.setup})
+                                      :on_enter #(trigger_load :neotest)
                                       :hint {:type :window
                                              :float_opts {:style :minimal}
                                              :show_name true
@@ -613,11 +613,12 @@
            _k_: keymaps     _;_: commands history^^  
            _O_: options     _?_: search history^^  
 
-  _<Esc>_         _<leader>_: Oil^^
+  _<Esc>_         _<leader>_: [O]il^^
     ")
                    (Hydra {:name :+file
                            :hint telescope-hint
                            :config {:color :teal
+                                    :on_enter #(trigger_load :telescope)
                                     :invoke_on_body true
                                     :hint {:type :window
                                            :offset 1
@@ -685,14 +686,12 @@
                                       :name " Debug"
                                       :config {:color :pink
                                                :invoke_on_body true
+                                               :on_enter #(trigger_load :dap)
                                                :hint {:type :window
                                                       :offset 1
                                                       :float_opts {:style :minimal
                                                                    :noautocmd false}
-                                                      :position :bottom-middle}
-                                               :on_enter (fn []
-                                                           (vim.api.nvim_exec_autocmds :User
-                                                                                       {:pattern :debug.setup}))}
+                                                      :position :bottom-middle}}
                                       :H [#(dap.step_out) "[s]out"]
                                       :J [#(dap.step_over) "[s]over"]
                                       :K [#(dap.step_back) "[s]back"]
@@ -816,6 +815,8 @@ _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
                                         "[O]pen *.project"]
                                     :S [#(vim.cmd :HsPackageYaml)
                                         "[O]pen [Y]aml"]
+                                    :h [#(vim.cmd "Telescope hoogle")
+                                        "[T]ele [H]oogle"]
                                     :m [#(vim.cmd :HsPackageCabal)
                                         "[O]pen [C]abal"]
                                     :M [#((. project :telescope_package_grep))

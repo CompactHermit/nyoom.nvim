@@ -1,8 +1,8 @@
 ;; TODO:: Port the lua autocmds
 (import-macros {: augroup! : autocmd! : packadd!} :macros)
-(setup :windows
-       {:autowidth {:enable true :winwidth 50}
-        :animation {:enable true :duration 100 :fps 60}})
+; (setup :windows
+;        {:autowidth {:enable true :winwidth 50}
+;         :animation {:enable true :duration 100 :fps 60}})
 
 ; (local oxocarbon {:base04 "#37474F"
 ;                   :base05 "#90A4AE"
@@ -18,8 +18,8 @@
 ;                   :base15 "#FFAB91"
 ;                   :blend "#FAFAFA"
 ;                   :none :NONE})
-
-(local oxo (. (require :oxocarbon) :oxocarbon))
+;
+(local oxo (. (autoload :oxocarbon) :oxocarbon))
 (local modes
        {:i {:hl {:MyCursor {:bg oxo.base08}}
             :winhl {:CursorLine {:fg oxo.base08}
@@ -44,9 +44,8 @@
                :name :default
                :priority 100})
 
-(packadd! reactive)
-((->> :setup (. (require :reactive))) {:builtin {:cursorline true
-                                                 :cursor true
-                                                 :modemsg true}})
+((->> :setup (. (autoload :reactive))) {:builtin {:cursorline true
+                                                  :cursor true
+                                                  :modemsg true}})
 
-((->> :add_preset (. (require :reactive))) __mode)
+((->> :add_preset (. (autoload :reactive))) __mode)

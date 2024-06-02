@@ -17,9 +17,6 @@
 
 (local cli (os.getenv :NYOOM_CLI))
 
-;; If its a cli instance, load package management
-;; If its a regular instance, load defaults, userconfig and plugins
-
 (if cli
     (require :packages)
     (do
@@ -45,6 +42,7 @@
       (set! expandtab)
       ;; clipboard and mouse
       (set! clipboard :unnamedplus)
+      (let! lz_n {:load vim.cmd.packadd})
       (set! mouse :a)
       ;; backups are annoying
       (set! undofile)
@@ -86,5 +84,8 @@
       (let! neovide_padding_right 38)
       (let! neovide_padding_bottom 20)
       ;; load userconfig
-      (require :config)
-      (require :packer_compiled)))
+      ;(require :packages)
+      (require :packages)
+      (require :config)))
+
+;(require :packer_compiled)))

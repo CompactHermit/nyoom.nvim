@@ -1,3 +1,11 @@
-(import-macros {: nyoom-module!} :macros)
+(import-macros {: lzn!} :macros)
 
-(nyoom-module! ui.tabs)
+(lzn! :bufferline {:nyoom-module ui.tabs
+                   :cmd [:BufferLine]
+                   :event [:DeferredUIEnter]})
+
+(lzn! :grug {:cmd [:GrugFar]
+             :keys [{1 :<M-r>
+                     2 #((. (require :grug-far) :grug_far))
+                     :desc "[Gr]ug [F]ar"}]
+             :call-setup grug-far})

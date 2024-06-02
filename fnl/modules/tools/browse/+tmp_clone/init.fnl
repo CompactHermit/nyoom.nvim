@@ -1,6 +1,3 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: nyoom-module!} :macros)
 
-(use-package! :danielhp95/tmpclone-nvim
-              {:nyoom-module tools.browse.+tmp_clone
-               :opt true
-               :cmd [:TmpcloneClone :TmpcloneOpen :TmpcloneRemove]})
+(nyoom-module! tools.browse.+tmp_clone)

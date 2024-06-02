@@ -1,12 +1,9 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: lzn!} :macros)
 
-(use-package! :folke/flash.nvim
-             {:nyoom-module config.default.+flash
-              :opt true
-              :event :BufReadPost})
+(lzn! :folke_flash
+      {:nyoom-module config.default.+flash
+       :keys [:f :F :t :T :<M-s>]})
 
-(use-package! :johmsalas/text-case.nvim 
-               {:opt true
-                :event [:BufReadPost]
-                :call-setup textcase})
- 
+(lzn! :text-case 
+      {:cmd [:TextCaseOpenTelescope :TextCase]
+       :call-setup textcase})

@@ -25,6 +25,7 @@
 (custom-set-face! :LspCodeLens [] {:fg "#ff7bd6" :bg :NONE})
 
 (local lsp (require :util.lsp))
+((. (require :telescope) :load_extension) :hoogle)
 
 ;; fnlfmt: skip
 (let! haskell_tools

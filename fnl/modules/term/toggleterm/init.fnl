@@ -1,4 +1,3 @@
-(import-macros {: nyoom-module!} :macros)
+(import-macros {: lzn!} :macros)
 
-
-(nyoom-module! term.toggleterm)
+(lzn! :toggleterm {:nyoom-module term.toggleterm :cmd [:ToggleTerm]})

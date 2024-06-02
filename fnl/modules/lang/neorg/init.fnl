@@ -1,9 +1,17 @@
-(import-macros {: nyoom-module!} :macros)
+(import-macros {: lzn!} :macros)
 
-;(nyoom-module! lang.neorg)
-;;:nvim-neorg/neorg
-; (use-package! :nvim-neorg/neorg {:nyoom-module lang.neorg
-;                                  :ft :norg
-;                                  :cmd [:Neorg]})
-
-(nyoom-module! lang.neorg)
+(lzn! :neorg {:nyoom-module lang.neorg
+              :ft :norg
+              :cmd [:Neorg]
+              :wants [:truezen :telescope]
+              :deps [:lua-utils
+                     :image-nvim
+                     :pathlib
+                     :telescope
+                     :neorg-lines
+                     :neorg-exec
+                     :neorg-telescope
+                     :neorg-roam
+                     :neorg-timelog
+                     :neorg-hop-extras
+                     :neorg-interim-ls]})

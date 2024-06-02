@@ -1,3 +1,5 @@
-(import-macros {: nyoom-module!} :macros)
+(import-macros {: lzn!} :macros)
 
-(nyoom-module! editor.dmacro)
+(lzn! :dynMacro
+      {:nyoom-module editor.dmacro
+       :keys [{1 :<M-q> :desc "Dmacro:: Exec Macro"}]})

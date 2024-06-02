@@ -14,6 +14,7 @@
         :core.integrations.telescope {}
         :external.exec {}
         :external.conceal-wrap {}
+        :external.interim-ls {}
         ;:external.timelog {}
         ;; NOTE:: (Hemrit) Only until janet has been added
         :external.hop-extras {:config {:aliases {:gh "https://github.com/{}"}}}
@@ -83,12 +84,12 @@
                                                                {:noremap true
                                                                 :silent true}))}}
         :core.dirman {:config {:workspaces {:main "~/neorg"
-                                            :Math "~/neorg/Math"
+                                            :Math "~/neorg/Papers/Math"
                                             :NixOS "~/neorg/nixDocs"
                                             :Chess "~/neorg/Chess"
                                             :Programming "~/neorg/CS"
-                                            :Academic_Math "~/neorg/Papers/Math"
-                                            :Academic_CS "~/neorg/Papers/CS"
+                                            :Math "~/neorg/Papers/Math"
+                                            :CS "~/neorg/Papers/CS"
                                             :Linuxopolis "~/neorg/linux"}
                                :default_workspace :main}}})
 
@@ -141,59 +142,43 @@
                                  :date (fn [metadata]
                                          (os.date "%Y-%m-%d"))}}}))
 
-(do
-  (tset neorg-modules :core.presenter {:config {:zen_mode :truezen}}))
+(nyoom-module-p! zen (tset neorg-modules :core.presenter
+                           {:config {:zen_mode :truezen}}))
 
-;(nyoom-module-p! neorg.+export)
-(do
-  (tset neorg-modules :core.export {})
-  (tset neorg-modules :core.export.markdown {:config {:extensions :all}}))
+(nyoom-module-p! neorg.+export
+                 (do
+                   (tset neorg-modules :core.export {})
+                   (tset neorg-modules :core.export.markdown
+                         {:config {:extensions :all}})))
+
+;;TODO:: (Hemrit) Properly add dep-Support with lz.n
 
 ;; fnlfmt: skip
-(fn __neorgSetup []
-  " Neorg Setup Autocmd!::"
-  (let [fidget (require :fidget)
-        nio (require :nio)
-        progress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :neorg}})]
-    (progress:report {:message "PackStrapping <Neorg-Deps>"
-                      :level vim.log.levels.ERROR
-                      :progress 0})
-    (packadd! lua-utils)
-    (packadd! neorg)
-    (packadd! image-nvim)
-    (packadd! pathlib)
-    (packadd! neorg-lines)
-    (packadd! neorg-exec)
-    (packadd! neorg-telescope)
-    (packadd! neorg-roam)
-    (packadd! neorg-timelog)
-    (packadd! neorg-hop-extras)
-    (progress:report {:message "Initializing Image-nvim"
-                          :level vim.log.levels.ERROR
-                          :progress 10})
-    ((->> :setup (. (require :image))) {:backend :kitty
-                                        :integrations {:markdown {:enabled true
-                                                                  :download_remote_images true
-                                                                  :filetypes [:markdown
-                                                                              :quarto
-                                                                              :vimwiki]}
-                                                       :neorg {:enabled true
-                                                               :download_remote_images true
-                                                               :clear_in_insert_mode false
-                                                               :only_render_image_at_cursor false
-                                                               :filetypes [:norg]}}})
-    (progress:report {:message "Initializing Neorg"
-                          :level vim.log.levels.ERROR
-                          :progress 20})
-    ((->> :setup (. (require :neorg))) {:load neorg-modules})
-    (progress:report {:message "<Neorg> Setup Complete!"
-                      :title :Completed!
-                      :progress 99})
-    ;(nio.sleep 5)
-    (progress:finish)))
-
-(vim.api.nvim_create_autocmd :BufReadPre
-                             {:pattern :*.norg
-                              :callback #(__neorgSetup)
-                              :once true
-                              :desc "Neorg Setup"})
+(let [fidget (require :fidget)
+      nio (require :nio)
+      progress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :neorg}})]
+   (progress:report {:message "PackStrapping <Neorg-Deps>"
+                     :level vim.log.levels.ERROR
+                     :progress 0})
+   (progress:report {:message "Initializing Image-nvim"
+                         :level vim.log.levels.ERROR
+                         :progress 10})
+   ((->> :setup (. (require :image))) {:backend :kitty
+                                       :integrations {:markdown {:enabled true
+                                                                 :download_remote_images true
+                                                                 :filetypes [:markdown
+                                                                             :quarto
+                                                                             :vimwiki]}
+                                                      :neorg {:enabled true
+                                                              :download_remote_images true
+                                                              :clear_in_insert_mode false
+                                                              :only_render_image_at_cursor false
+                                                              :filetypes [:norg]}}})
+   (progress:report {:message "Initializing Neorg"
+                         :level vim.log.levels.ERROR
+                         :progress 20})
+   ((->> :setup (. (require :neorg))) {:load neorg-modules})
+   (progress:report {:message "<Neorg> Setup Complete!"
+                     :title :Completed!
+                     :progress 99})
+   (progress:finish))

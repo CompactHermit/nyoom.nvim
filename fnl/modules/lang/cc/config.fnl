@@ -1,30 +1,38 @@
-(import-macros {: map! : nyoom-module-p!} :macros)
+(import-macros {: map! : nyoom-module-p! : packadd!} :macros)
 (local icons _G.shared.codicons)
 (local diags _G.shared.icons)
 
-(setup :clangd_extensions
-       {:inline true
-        :extensions {:autoSetHints false
-                     :inlay_hints {:only_current_line true
-                                   :inline true
-                                   :right_align true
-                                   :show_parameter_hints true
-                                   :highlight :LspInlayHint}
-                     :ast {:role_icons {:type icons.Type
-                                        :declaration icons.Function
-                                        :expression icons.Snippet
-                                        :specifier icons.Specifier
-                                        :statement icons.Statement
-                                        :template icons.TypeParameter}
-                           :kind_icons {:Compound icons.Namespace
-                                        :Recovery icons.DiagnosticSignError
-                                        :TranslationUnit icons.Unit
-                                        :PackExpansion icons.Ellipsis
-                                        :TemplateTypeParm icons.TypeParameter
-                                        :TemplateTemplateParm icons.TypeParameter
-                                        :TemplateParamObject icons.TypeParameter}}}
-        :memory_usage {:border :none}
-        :symbol_info {:border :none}})
+(local opts {:inline true
+             :extensions {:autoSetHints false
+                          :inlay_hints {:only_current_line true
+                                        :inline true
+                                        :right_align true
+                                        :show_parameter_hints true
+                                        :highlight :LspInlayHint}
+                          :ast {:role_icons {:type icons.Type
+                                             :declaration icons.Function
+                                             :expression icons.Snippet
+                                             :specifier icons.Specifier
+                                             :statement icons.Statement
+                                             :template icons.TypeParameter}
+                                :kind_icons {:Compound icons.Namespace
+                                             :Recovery icons.DiagnosticSignError
+                                             :TranslationUnit icons.Unit
+                                             :PackExpansion icons.Ellipsis
+                                             :TemplateTypeParm icons.TypeParameter
+                                             :TemplateTemplateParm icons.TypeParameter
+                                             :TemplateParamObject icons.TypeParameter}}}
+             :memory_usage {:border :none}
+             :symbol_info {:border :none}})
+
+;; NOTE (Hermit) :: Remove after Adding Lazy! Macro and Proper buffer Autocmds
+(let [fidget (require :fidget)
+      progress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :clangD}})]
+  (progress:report {:message "Setting Up clangD"
+                    :level vim.log.levels.ERROR
+                    :progress 0})
+  ((->> :setup (. (require :clangd_extensions))) opts)
+  (progress:report {:message "Setup Complete" :title :Completed! :progress 99}))
 
 ;; ┌──────────────────────────────────────┐
 ;; │       Keybinds and autocmds          │
@@ -82,7 +90,7 @@
   (vim.api.nvim_win_set_cursor [0 0]))
 
 ;; NOTE:: This is a WIP, for now we'll just display strings on a buffer. Not entirely sure how to creates links::
-(map! [n] :<leader>cr `(vim.ui.input {:prompt "Enter type to check:: "}
+(map! [n] :<leader>cc `(vim.ui.input {:prompt "Enter type to check:: "}
                                      (fn [input]
                                        (local out
                                               (vim.fn.systemlist (.. :coogler

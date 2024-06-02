@@ -1,8 +1,7 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: lzn!} :macros)
 
+(lzn! :nonels {:nyoom-module checkers.diagnostics
+               :wants [:lspconfig :gitsigns]
+               :event [:BufReadPost]})
 
-(use-package! :nvimtools/none-ls.nvim
-              {:nyoom-module checkers.diagnostics :after :nvim-lspconfig})
-
-; (use-package! :stevearc/conform.nvim
-              ; {:nyoom-module checkers.diagnostics :after :nvim-lspconfig})
+;(nyoom-module! checkers.diagnostics)

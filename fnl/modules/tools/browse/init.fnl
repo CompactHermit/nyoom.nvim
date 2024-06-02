@@ -1,9 +1,8 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: use-package! : nyoom-module!} :macros)
 ;
 ; (use-package! :torbjo/calendar.vim {:nyoom-module app.calendar
 ;                                     :cmd :Calendar})
-(use-package! :lalitmee/browse.nvim
-              {:nyoom-module tools.browse :after :telescope.nvim})
-
-(use-package! :luckasRanarison/nvim-devdocs
-              {:opt true :cmd [:DevDocs] :call-setup nvim-devdocs})
+(nyoom-module! tools.browse)
+;
+; (use-package! :luckasRanarison/nvim-devdocs
+;               {:opt true :cmd [:DevDocs] :call-setup nvim-devdocs})

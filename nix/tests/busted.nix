@@ -1,36 +1,14 @@
-{ ... }:
-## Running Busted Tests with luarocks + .nfnl macro tests
+{ self, ... }:
+## Running Busted Tests with luarocks +  hotpot tests
 {
   perSystem =
-    { pkgs, ... }:
+    { pkgs, self', ... }:
     {
-      # checks.integration-nightly = pkgs.neorocksTest {
-      #   name = "integration-nightly";
-      #   pname = "rocks.nvim";
-      #   src = ./.;
-      #   neovim = pkgs.neovim-custom;
-      #   luaPackages = ps:
-      #     with ps; [
-      #       toml-edit
-      #       toml
-      #       fidget-nvim
-      #       fzy
-      #       nvim-nio
-      #     ];
-      #
-      #   extraPackages = with pkgs; [
-      #     wget
-      #     git
-      #     cacert
-      #   ];
-      #
-      #   preCheck = ''
-      #     export HOME=$(realpath .)
-      #   '';
-      # };
-      # checks.nfnl-plenary = pkgs.stdenv.mkDerivation {
-      #   name = "Nfnl Macro Tests";
-      #
-      # };
+      checks.neorocks-test = pkgs.neorocksTest {
+        src = self;
+        name = "Nyoom-Test-Suite";
+        neovim = self'.packages.faker;
+        luaPackages = ps: with ps; [ plenary-nvim ];
+      };
     };
 }

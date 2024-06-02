@@ -1,3 +1,6 @@
-(import-macros {: nyoom-module!} :macros)
+(import-macros {: lzn!} :macros)
 
-(nyoom-module! lang.haskell)
+(lzn! :haskellTools {:ft [:haskell :cabal]
+                     :nyoom-module lang.haskell
+                     :deps [:telescope_hoogle]
+                     :wants [:toggleterm :telescope]})

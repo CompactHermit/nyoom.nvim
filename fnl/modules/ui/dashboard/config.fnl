@@ -4,7 +4,7 @@
 (local module-counter (nyoom-module-count!))
 
 ;; TODO: (Hermit) Fix This shit, jesus christ
-(local startup-file :/tmp/nvim-startuptime)
+(local startup-file :/home/CompactHermit/.config/nvim/startup.txt)
 (local startup-time-pattern "([%d.]+)  [%d.]+: [-]+ NVIM STARTED [-]+")
 (local startup-time-file (or (and (io.open startup-file)
                                   (: (io.open startup-file) :read :*a))
@@ -96,11 +96,11 @@
                                (os.execute "xdg-open https://git.compacthermit.dev/nyoom.nvim")
                                (os.execute "xdg-open https://git.compacthermit.dev/nyoom.nvim")))}})
 
-((->> :setup (. (autoload :alpha))) {:layout [{:type :padding :val 4}
-                                              sections.header
-                                              {:type :padding :val 2}
-                                              sections.buttons
-                                              {:type :padding :val 2}
-                                              sections.footer
-                                              {:type :padding :val 1}
-                                              sections.icon]})
+((->> :setup (. (require :alpha))) {:layout [{:type :padding :val 4}
+                                             sections.header
+                                             {:type :padding :val 2}
+                                             sections.buttons
+                                             {:type :padding :val 2}
+                                             sections.footer
+                                             {:type :padding :val 1}
+                                             sections.icon]})

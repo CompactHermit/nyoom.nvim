@@ -86,6 +86,7 @@ in
           x:
           let
             cfg =
+              #DOC: Check to see if plugin is enabled, else errors
               if (builtins.elem x (builtins.attrNames config.neohermit.settings.plugins)) then
                 {
                   inherit (config.neohermit.settings.plugins."${x}")

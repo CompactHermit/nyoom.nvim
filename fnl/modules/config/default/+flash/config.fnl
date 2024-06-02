@@ -8,117 +8,118 @@
 
 (local labels "sfnjklhodwembuyvrgtcxzSZFNJKLHODWEMBUYVRGTCXZ/?.,;#")
 
-(setup :flash {:action nil
-               :continue false
-               :highlight {:backdrop true
-                           :groups {:backdrop :FlashBackdrop
-                                    :current :FlashCurrent
-                                    :label :FlashLabel
-                                    :match :FlashMatch}
-                           :matches true
-                           :priority 5000}
-               :jump {:autojump true
-                      :history true
-                      :jumplist true
-                      :nohlsearch true
-                      :pos :start
-                      :register true}
-               :label {:after true
-                       :before false
-                       :current true
-                       :distance true
-                       :exclude ""
-                       :format (fn [opts]
-                                 [[opts.match.label opts.hl_group]])
-                       :min_pattern_length 0
-                       :rainbow {:enabled false :shade 9}
-                       :reuse :all
-                       :style :overlay
-                       :uppercase true}
-               : labels
-               :modes {:char {:autohide true
-                              :config (fn [opts]
-                                        (set opts.autohide
-                                             (and (: (vim.fn.mode true) :find
-                                                     :no)
-                                                  (= vim.v.operator :y)))
-                                        (set opts.jump_labels
-                                             (and opts.jump_labels
-                                                  (= vim.v.count 0))))
-                              :enabled true
-                              :highlight {:backdrop true}
-                              :jump {:register true}
-                              :jump_labels true
-                              :keys {"," "]s" 1 :f 2 :F 3 :t 4 :T ";" "[s"}
-                              :label {:exclude :hjkliardc}
-                              :search {:wrap false}}
-                       :diagnostics {:highlight {:backdrop true}}
-                       :label {:current true}
-                       :search {:enabled true
-                                :highlight {:backdrop false}
-                                :jump {:history true
-                                       :nohlsearch true
-                                       :register true}
-                                :search {}}
-                       :fuzzy {:search {:mode :fuzzy}}
-                       :hover {:action (fn [Matched state]
-                                         (vim.api.nvim_win_call Matched.win
-                                                                (fn []
-                                                                  (vim.api.nvim_win_set_cursor Matched.win
-                                                                                               Matched.pos)
-                                                                  (lsp-utils.hover (fn [err
-                                                                                        result
-                                                                                        ctx]
-                                                                                     (vim.cmd "Lspsaga hover_doc")
-                                                                                     (vim.api.nvim_win_set_cursor Matched.win
-                                                                                                                  state.pos))))))
-                               :search {:mode :fuzzy}}
-                       :leap {:search {:max_length 2}}
-                       :references {}
-                       :remote {:jump {:autojump true} :search {:mode :fuzzy}}
-                       :search {:enabled true
-                                :highlight {:backdrop false}
-                                :jump {:history true
-                                       :nohlsearch true
-                                       :register true}
-                                :search {}}
-                       :search_diagnostics {:action (lib.there_and_back lsp-utils.diag_line)
-                                            :search {:mode :fuzzy}}
-                       :select {:highlight {:label {:after true :before true}}
-                                :jump {:pos :range}
-                                :search {:mode :fuzzy}}
-                       :textcase {:search {:mode lib.mode_textcase}}
-                       :treesitter {:highlight {:backdrop true :matches true}
+(local flash_opts {:action nil
+                   :continue false
+                   :highlight {:backdrop true
+                               :groups {:backdrop :FlashBackdrop
+                                        :current :FlashCurrent
+                                        :label :FlashLabel
+                                        :match :FlashMatch}
+                               :matches true
+                               :priority 5000}
+                   :jump {:autojump true
+                          :history true
+                          :jumplist true
+                          :nohlsearch true
+                          :pos :start
+                          :register true}
+                   :label {:after true
+                           :before false
+                           :current true
+                           :distance true
+                           :exclude ""
+                           :format (fn [opts]
+                                     [[opts.match.label opts.hl_group]])
+                           :min_pattern_length 0
+                           :rainbow {:enabled false :shade 9}
+                           :reuse :all
+                           :style :overlay
+                           :uppercase true}
+                   : labels
+                   :modes {:char {:autohide true
+                                  :config (fn [opts]
+                                            (set opts.autohide
+                                                 (and (: (vim.fn.mode true) :find
+                                                         :no)
+                                                      (= vim.v.operator :y)))
+                                            (set opts.jump_labels
+                                                 (and opts.jump_labels
+                                                      (= vim.v.count 0))))
+                                  :enabled true
+                                  :highlight {:backdrop true}
+                                  :jump {:register true}
+                                  :jump_labels true
+                                  :keys {"," "]s" 1 :f 2 :F 3 :t 4 :T ";" "[s"}
+                                  :label {:exclude :hjkliardc}
+                                  :search {:wrap false}}
+                           :diagnostics {:highlight {:backdrop true}}
+                           :label {:current true}
+                           :search {:enabled true
+                                    :highlight {:backdrop false}
+                                    :jump {:history true
+                                           :nohlsearch true
+                                           :register true}
+                                    :search {}}
+                           :fuzzy {:search {:mode :fuzzy}}
+                           :hover {:action (fn [Matched state]
+                                             (vim.api.nvim_win_call Matched.win
+                                                                    (fn []
+                                                                      (vim.api.nvim_win_set_cursor Matched.win
+                                                                                                   Matched.pos)
+                                                                      (lsp-utils.hover (fn [err
+                                                                                            result
+                                                                                            ctx]
+                                                                                         (vim.cmd "Lspsaga hover_doc")
+                                                                                         (vim.api.nvim_win_set_cursor Matched.win
+                                                                                                                      state.pos))))))
+                                   :search {:mode :fuzzy}}
+                           :leap {:search {:max_length 2}}
+                           :references {}
+                           :remote {:jump {:autojump true} :search {:mode :fuzzy}}
+                           :search {:enabled true
+                                    :highlight {:backdrop false}
+                                    :jump {:history true
+                                           :nohlsearch true
+                                           :register true}
+                                    :search {}}
+                           :search_diagnostics {:action (lib.there_and_back lsp-utils.diag_line)
+                                                :search {:mode :fuzzy}}
+                           :select {:highlight {:label {:after true :before true}}
                                     :jump {:pos :range}
-                                    :label {:after true
-                                            :before true
-                                            :style :inline}
-                                    : labels
-                                    :search {:incremental false}}
-                       :treesitter_search {:jump {:pos :range}
-                                           :label {:after true
-                                                   :before true
-                                                   :style :inline}
-                                           :remote_op {:restore true}
-                                           :search {:incremental false
-                                                    :multi_window true
-                                                    :wrap true}}}
-               :pattern ""
-               :prompt {:enabled true
-                        :prefix [["⚡" :FlashPromptIcon]]
-                        :win_config {:col 0
-                                     :height 1
-                                     :relative :editor
-                                     :row (- 1)
-                                     :width 1
-                                     :zindex 1000}}
-               :remote_op {:motion true :restore false}
-               :search {:forward true
-                        :incremental true
-                        :mode :exact
-                        :multi_window true
-                        :wrap true}})
+                                    :search {:mode :fuzzy}}
+                           :textcase {:search {:mode lib.mode_textcase}}
+                           :treesitter {:highlight {:backdrop true :matches true}
+                                        :jump {:pos :range}
+                                        :label {:after true
+                                                :before true
+                                                :style :inline}
+                                        : labels
+                                        :search {:incremental false}}
+                           :treesitter_search {:jump {:pos :range}
+                                               :label {:after true
+                                                       :before true
+                                                       :style :inline}
+                                               :remote_op {:restore true}
+                                               :search {:incremental false
+                                                        :multi_window true
+                                                        :wrap true}}}
+                   :pattern ""
+                   :prompt {:enabled true
+                            :prefix [["⚡" :FlashPromptIcon]]
+                            :win_config {:col 0
+                                         :height 1
+                                         :relative :editor
+                                         :row (- 1)
+                                         :width 1
+                                         :zindex 1000}}
+                   :remote_op {:motion true :restore false}
+                   :search {:forward true
+                            :incremental true
+                            :mode :exact
+                            :multi_window true
+                            :wrap true}})
 
+( (. (require :flash) :setup) flash_opts)
 ; ╭────────────────────────────────────────────────────────────────────╮
 ; │         Remote Jumps  and treesitter bindings                      │
 ; ╰────────────────────────────────────────────────────────────────────╯

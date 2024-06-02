@@ -1,4 +1,3 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: lzn!} :macros)
 
-(use-package! :s1n7ax/nvim-window-picker {:nyoom-module ui.window-select
-                                          :keys :<space>w})
+(lzn! :nvim-window-picker {:nyoom-module ui.window-select :keys :<space>w})

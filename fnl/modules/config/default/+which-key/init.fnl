@@ -1,6 +1,5 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: lzn!} :macros)
 
-(use-package! :CompactHermit/which-key.nvim
-              {:nyoom-module config.default.+which-key
-               :module :which-key
-               :keys [:<leader> "\"" "'" "`"]})
+(lzn! :which-key {:nyoom-module config.default.+which-key
+                  :event [:BufRead]
+                  :keys [:<leader>]})

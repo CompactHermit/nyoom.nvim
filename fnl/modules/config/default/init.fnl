@@ -1,3 +1,3 @@
-(import-macros {: nyoom-module!} :macros)
+(import-macros {: lzn!} :macros)
 
-(nyoom-module! config.default)
+(lzn! :profile {:nyoom-module config.default})

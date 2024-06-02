@@ -1,3 +1,3 @@
-(import-macros {: nyoom-module!} :macros)
+(import-macros {: lzn!} :macros)
 
-(nyoom-module! ui.nyoom.+icons)
+(lzn! :nvim-webdev-icons {:nyoom-module ui.nyoom.+icons :event [:DeferredUIEnter]})

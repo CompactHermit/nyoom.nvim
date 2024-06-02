@@ -1,3 +1,6 @@
-(import-macros {: nyoom-module!} :macros)
+(import-macros {: lzn!} :macros)
 
-(nyoom-module! editor.debug)
+(lzn! :dap {:nyoom-module editor.debug
+            :cmd [:DapNew :DapToggleRepl :DapEval]
+            :wants [:overseer :telescope]
+            :deps [:dapui :dap-python :nvim-dap-virtual-text]})

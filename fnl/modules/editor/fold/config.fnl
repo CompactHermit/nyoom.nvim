@@ -60,26 +60,17 @@
                                         new-virt-text)})
 
 ;; NOTE (Hermit) :: Remove after Adding Lazy! Macro and Proper buffer Autocmds
-(fn __foldSetup []
-  " DocStrings::
-        "
-  (packadd! ufold)
-  (packadd! psa)
-  ;(vim.api.nvim_exec_autocmd)
-  (let [fidget (require :fidget)
-        {: closeAllFolds : openAllFolds} (autoload :ufo)
-        progress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :fold}})]
-    (progress:report {:message "Setting Up fold"
-                      :level vim.log.levels.ERROR
-                      :progress 0})
-    ((->> :setup (. (require :ufo))) _opts)
-    (map! [n] :zR `(openAllFolds) {:desc "Open all folds"})
-    (map! [n] :zM `(closeAllFolds {:desc "Close all folds"}))
-    (progress:report {:message "Setup Complete"
-                      :title :Completed!
-                      :progress 99})))
-
-(vim.api.nvim_create_autocmd :BufReadPost {:callback #(__foldSetup) :once true})
+;(vim.api.nvim_exec_autocmd)
+(let [fidget (autoload :fidget)
+      {: closeAllFolds : openAllFolds} (autoload :ufo)
+      progress `,((. (autoload :fidget.progress) :handle :create) {:lsp_client {:name :fold}})]
+  (progress:report {:message "Setting Up fold"
+                    :level vim.log.levels.ERROR
+                    :progress 0})
+  ((->> :setup (. (autoload :ufo))) _opts)
+  ;(map! [n] :zR `(openAllFolds) {:desc "Open all folds"})
+  ;(map! [n] :zM `(closeAllFolds) {:desc "Close all folds"})
+  (progress:report {:message "Setup Complete" :title :Completed! :progress 99}))
 
 (set! foldcolumn :1)
 (set! foldlevel 99)

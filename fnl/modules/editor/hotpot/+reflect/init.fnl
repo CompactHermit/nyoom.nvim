@@ -1,3 +1,4 @@
-(import-macros {: nyoom-module!} :macros)
+(import-macros {: lzn!} :macros)
 
-(nyoom-module! editor.hotpot.+reflect)
+(lzn! :ratatoskr {:nyoom-module editor.hotpot.+reflect
+                  :event [:DeferredUIEnter]})

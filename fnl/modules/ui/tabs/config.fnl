@@ -30,32 +30,20 @@
                              :text_align :center}]}})
 
 ;; NOTE (Hermit) :: Remove after Adding Lazy! Macro and Proper buffer Autocmds
-(fn __bufferSetup []
-  (packadd! bufferline)
-  (packadd! grug)
-  (let [fidget (require :fidget)
-        progress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :buffer}})
-        nio (autoload :nio)
-        nr nio.run]
-    (nr (fn []
-          (progress:report {:message "Setting Up buffer"
-                            :level vim.log.levels.ERROR
-                            :progress 0})
-          (nio.scheduler)
-          ((->> :setup (. (require :bufferline))) __opts)
-          ((->> :setup (. (require :grug-far))))
-          (map! [n] :<M-r> `((->> :grug_far (. (require :grug-far))))
-                {:desc "Buffer:: Grug Search"})
-          (nio.scheduler)
-          (progress:report {:message "Setup Complete"
-                            :title :Completed!
-                            :progress 100})))))
+(let [fidget (require :fidget)
+      progress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :buffer}})]
+  (progress:report {:message "Setting Up buffer"
+                    :level vim.log.levels.ERROR
+                    :progress 0})
+  ((->> :setup (. (require :bufferline))) __opts)
+  (progress:report {:message "Setup Complete" :title :Completed! :progress 100})
+  (progress:finish))
 
-(vim.api.nvim_create_autocmd [:BufAdd :TabEnter]
-                             {:pattern "*"
-                              :group (vim.api.nvim_create_augroup :BufferLineLazyLoading
-                                                                  {:clear true})
-                              :callback #(let [ct (length (vim.fn.getbufinfo {:buflisted 1}))]
-                                           (when (>= ct 2)
-                                             (__bufferSetup)
-                                             (vim.api.nvim_del_augroup_by_name :BufferLineLazyLoading)))})
+; (vim.api.nvim_create_autocmd [:BufAdd :TabEnter]
+;                              {:pattern "*"
+;                               :group (vim.api.nvim_create_augroup :BufferLineLazyLoading
+;                                                                   {:clear true})
+;                               :callback #(let [ct (length (vim.fn.getbufinfo {:buflisted 1}))]
+;                                            (when (>= ct 2)
+;                                              (__bufferSetup)
+;                                              (vim.api.nvim_del_augroup_by_name :BufferLineLazyLoading)))})

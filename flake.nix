@@ -54,7 +54,10 @@
               inherit system;
               overlays =
                 with inputs;
-                [ fnl-tools.overlays.default ]
+                [
+                  fnl-tools.overlays.default
+                  neorocks.overlays.default
+                ]
                 ++ [
                   (_: super: {
                     tree-sitter = inputs.ts-nightly.legacyPackages."${system}".tree-sitter;
@@ -78,11 +81,15 @@
               src = inputs.nvim-git;
               plugins = {
                 lazy = [
+                  "animation"
                   "actions-preview"
+                  "alpha"
                   "bufferline"
                   #"bmessages" #Conjure is Better
                   "crates"
+                  "clangd_extensions"
                   "nvim-cmp"
+                  "comment"
                   "cmp-nvim-lua"
                   "cmp-dap"
                   "cmp-conjure"
@@ -100,6 +107,7 @@
                   "friendly-luasnip"
                   "cmp-latexsym"
                   "compiler"
+                  "conjure"
                   "diffview"
                   "direnv"
                   "dynMacro" # Based
@@ -112,11 +120,15 @@
                   "gitignore"
                   "grug"
                   "ibl"
+                  "iswap"
                   "image-nvim"
+                  "quicknote"
+                  "markview"
                   "multicursor"
                   "neogit"
                   "neotest"
                   "neotest-haskell"
+                  "neotest-busted"
                   "neotest-python"
                   "neotest-zig"
                   "neorg"
@@ -125,10 +137,12 @@
                   "neorg-chronicle"
                   "neorg-exec"
                   "neorg-roam"
+                  "neorg-interim-ls"
                   "neorg-timelog"
                   "neorg-hop-extras"
                   "nvim-webdev-icons"
                   # "nvim-material-icons"
+                  "nvim-parinfer"
                   "nui-components"
                   "dap"
                   "dapui"
@@ -140,22 +154,36 @@
                   "go-nvim"
                   "harpoon"
                   "lazydev"
+                  "lspconfig"
+                  "nonels"
                   "luvit-meta"
                   "libmodal"
                   "lua-utils"
-                  #"lsplines"
+                  "lsplines"
                   "lspsaga"
                   "resession"
+                  "rustaceanvim"
                   "truezen"
                   "ts-error-translator"
                   "tsplayground"
+                  "hydra"
+                  "haskellTools"
                   "rainbow-delimiters"
+                  "syntax-tree-surfer"
                   "ts-context"
                   "ts-context-commentstring"
                   "ts-refactor"
                   "ts-textobjects"
                   "ts-node-action"
+                  "telescope"
                   "telescope_hoogle"
+                  "telescope-ui-select"
+                  "telescope-file-browse"
+                  "telescope-project"
+                  "telescope-tabs"
+                  "telescope-zoxide"
+                  "telescope-egrepify"
+                  "tmpclone-nvim"
                   "toggleterm"
                   "ufold"
                   "psa"
@@ -163,23 +191,30 @@
                   "otter"
                   "oqt"
                   "overseer"
+                  "oil"
                   "pathlib"
                   "profile"
                   "quarto"
+                  "quickfix"
                   "reactive"
                   "ratatoskr"
                   "tailwind-tools"
+                  "windows"
+                  "which-key"
+                  "yanky"
                   "yeet"
+                  "folke_flash"
+                  "matchparens"
+                  "nvim-autopairs"
+                  "text-case"
                   "zigTools"
+
                 ];
                 eager = [
-                  "alpha"
                   "hotpot-nvim"
-                  "haskellTools"
                   "haskell-snippets"
                   "luasnip_snippets"
                   "molten"
-                  "middleclass"
                   "nightfox"
                   "nvim-nio" # Needed for Docs, will just igrnore for now
                   "nvim-notify"
@@ -187,7 +222,7 @@
                   "nvim-scissors"
                   "nu-syntax"
                   "nui"
-                  "rustaceanvim"
+                  "oxocarbon"
                   "sweetie"
                   "wrapping-paper"
                 ];
@@ -214,10 +249,12 @@
                   inherit (pkgs.lua51Packages)
                     lgi
                     toml-edit
+                    middleclass
                     fidget-nvim
                     nvim-nio
                     fzy
                     ;
+                  inherit (inputs.lzn.packages."${system}") lz-n-luaPackage;
                 };
                 jit = builtins.attrValues { inherit (pkgs.luajitPackages) magick luarocks; };
               };
@@ -236,28 +273,30 @@
                 "typst"
               ];
               defaultPlugins = builtins.attrValues {
-                inherit (pkgs.vimPlugins)
-                  sqlite-lua
-                  mini-nvim
-                  markdown-preview-nvim
-                  plenary-nvim
-                  #rocks-nvim
-                  packer-nvim # TODO (Adjoint) :: Deprecate Packer, use nix and inhouse lazy-loading with C=>>
-                  ;
+                inherit (pkgs.vimPlugins) sqlite-lua mini-nvim plenary-nvim;
               };
               bins = builtins.attrValues {
                 inherit (pkgs)
                   selene
-                  nil
                   ripgrep
+                  #nil
                   fd
-                  stylua
                   lua-language-server
                   nix-doc
                   ;
                 inherit (pkgs.haskellPackages) fast-tags;
-                inherit (inputs.nixfmt-rfc.packages."${system}") default;
-                #inherit (pkgs.lua51Packages)  lua luarocks;
+                inherit (pkgs.luajitPackages) nlua;
+                inherit (inputs.nixfmt-rfc.packages."${system}") nixfmt;
+                inherit (inputs.nil_ls.packages."${system}") nil;
+                stylua = pkgs.stylua.overrideAttrs (_: {
+                  cargoBuildFeatures = [ "lua52" ];
+                });
+                #NOTE: (Hermit) Doesn't work
+                busted = pkgs.luajitPackages.busted.overrideAttrs (_: {
+                  knownRockspec = "${inputs.busted-fennel}/busted-scm-1.rockspec";
+                  src = inputs.busted-fennel;
+                });
+                #inherit (pkgs.lua51Packages) lua luarocks;
               };
             };
             devShells = {
@@ -265,7 +304,7 @@
                 name = "Hermit:: Dev";
                 #TODO: https://github.com/rktjmp/hotpot.nvim/issues/125 .hotpot.lua as shellhook
                 # shellHook = ''
-                #     ln - s 
+                #     ln - s
                 # '';
                 inputsFrom = with config; [
                   treefmt.build.devShell
@@ -278,6 +317,7 @@
                     faith
                     fennel-ls
                     fnlfmt
+                    just
                     fenneldoc
                     fennel-unstable-luajit
                     ;
@@ -379,6 +419,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixfmt-rfc.url = "github:NixOS/nixfmt";
+    nil_ls = {
+      url = "github:oxalica/nil";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     fnl-linter = {
       url = "github:dokutan/check.fnl";
       flake = false;
@@ -391,8 +435,15 @@
       url = "github:m15a/flake-fennel-tools";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    #NOTE: (Hermit) Make these npins
+    #VimPlugins::
     actions-preview = {
       url = "github:aznhe21/actions-preview.nvim";
+      flake = false;
+    };
+    animation = {
+      url = "github:anuvyklack/animation.nvim";
       flake = false;
     };
     alpha = {
@@ -413,6 +464,10 @@
     };
     crates = {
       url = "github:saecki/crates.nvim";
+      flake = false;
+    };
+    clangd_extensions = {
+      url = "github:p00f/clangd_extensions.nvim";
       flake = false;
     };
     nvim-cmp = {
@@ -475,8 +530,16 @@
       url = "github:rafamadriz/friendly-snippets";
       flake = false;
     };
+    comment = {
+      url = "github:numToStr/Comment.nvim";
+      flake = false;
+    };
     compiler = {
       url = "github:Zeioth/compiler.nvim";
+      flake = false;
+    };
+    conjure = {
+      url = "github:Olical/conjure";
       flake = false;
     };
     diffview = {
@@ -528,7 +591,7 @@
       flake = false;
     };
     gitsigns = {
-      url = "github:lewis6991/gitsigns.nvim/d96ef3bbff0bdbc3916a220f5c74a04c4db033f2";
+      url = "github:lewis6991/gitsigns.nvim";
       flake = false;
     };
     go-nvim = {
@@ -567,6 +630,11 @@
       url = "github:shellRaining/hlchunk.nvim";
       flake = false;
     };
+    hydra = {
+      url = "github:nvimtools/hydra.nvim";
+      flake = false;
+    };
+
     lazydev = {
       url = "github:folke/lazydev.nvim";
       flake = false;
@@ -592,16 +660,20 @@
       url = "github:mireq/luasnip-snippets";
       flake = false;
     };
-    # lsplines = {
-    #   url = "git+https://git.sr.ht/~whynothugo/lsp_lines.nvim";
-    #   flake = false;
-    # };
+    lsplines = {
+      url = "git+https://git.sr.ht/~whynothugo/lsp_lines.nvim";
+      flake = false;
+    };
     lspsaga = {
       url = "github:nvimdev/lspsaga.nvim";
       flake = false;
     };
     molten = {
       url = "github:benlubas/molten-nvim";
+      flake = false;
+    };
+    markview = {
+      url = "github:OXY2DEV/markview.nvim";
       flake = false;
     };
     multicursor = {
@@ -620,6 +692,10 @@
       url = "github:nvim-neotest/neotest";
       flake = false;
     };
+    neotest-busted = {
+      url = "gitlab:HiPhish/neotest-busted";
+      flake = false;
+    };
     neotest-zig = {
       url = "github:lawrence-laz/neotest-zig";
       flake = false;
@@ -628,16 +704,16 @@
       url = "github:mrcjkb/neotest-haskell";
       flake = false;
     };
-    neotest-rust = {
-      url = "github:rouge8/neotest-rust";
-      flake = false;
-    };
+    # neotest-rust = {
+    #   url = "github:rouge8/neotest-rust";
+    #   flake = false;
+    # };
     neotest-python = {
       url = "github:nvim-neotest/neotest-python";
       flake = false;
     };
     neogit = {
-      url = "github:NeogitOrg/neogit/perf/async-refreshing";
+      url = "github:NeogitOrg/neogit/";
       flake = false;
     };
     neorg = {
@@ -656,6 +732,10 @@
       url = "github:laher/neorg-exec";
       flake = false;
     };
+    neorg-interim-ls = {
+      url = "github:benlubas/neorg-interim-ls/";
+      flake = false;
+    };
     neorg-roam = {
       url = "github:Jarvismkennedy/neorg-roam.nvim";
       flake = false;
@@ -670,6 +750,10 @@
     };
     image-nvim = {
       url = "github:3rd/image.nvim";
+      flake = false;
+    };
+    quicknote = {
+      url = "github:RutaTang/quicknote.nvim";
       flake = false;
     };
     # nfnl = {
@@ -720,8 +804,12 @@
       url = "github:benlubas/otter.nvim/feat/remove_leading_whitespace/";
       flake = false;
     };
+    oil = {
+      url = "github:stevearc/oil.nvim/";
+      flake = false;
+    };
     overseer = {
-      url = "github:stevearc/overseer.nvim";
+      url = "github:stevearc/overseer.nvim/";
       flake = false;
     };
     oil-git-status = {
@@ -730,6 +818,10 @@
     };
     oqt = {
       url = "github:itsfrank/overseer-quick-tasks";
+      flake = false;
+    };
+    oxocarbon = {
+      url = "github:nyoom-engineering/oxocarbon.nvim";
       flake = false;
     };
     pathlib = {
@@ -810,6 +902,10 @@
       url = "github:DaikyXendo/nvim-material-icon";
       flake = false;
     };
+    nvim-parinfer = {
+      url = "github:gpanders/nvim-parinfer/";
+      flake = false;
+    };
     nvim-treesitter = {
       url = "github:nvim-treesitter/nvim-treesitter";
       flake = false;
@@ -858,12 +954,37 @@
       url = "github:kevinhwang91/nvim-ufo";
       flake = false;
     };
+    quickfix = {
+      url = "github:kevinhwang91/nvim-bqf";
+      flake = false;
+    };
+    nonels = {
+      url = "github:nvimtools/none-ls.nvim";
+      flake = false;
+    };
+    lspconfig = {
+      url = "github:neovim/nvim-lspconfig";
+      flake = false;
+    };
+    yanky = {
+      url = "github:gbprod/yanky.nvim";
+      flake = false;
+    };
     wrapping-paper = {
       url = "github:benlubas/wrapping-paper.nvim";
       flake = false;
     };
     psa = {
       url = "github:kevinhwang91/promise-async";
+      flake = false;
+    };
+    windows = {
+      url = "github:anuvyklack/windows.nvim";
+      flake = false;
+    };
+
+    which-key = {
+      url = "github:folke/which-key.nvim";
       flake = false;
     };
     yeet = {
@@ -874,14 +995,82 @@
       url = "github:tacogips/zig-tools.nvim";
       flake = false;
     };
+
     # Nightly Rocks/New Luarocks ::
-    middleclass = {
-      url = "github:anuvyklack/middleclass";
+    neorocks = {
+      url = "github:nvim-neorocks/neorocks";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        git-hooks.follows = "pch";
+        flake-parts.follows = "parts";
+      };
+    };
+    lzn.url = "github:nvim-neorocks/lz.n/";
+    busted-fennel = {
+      url = "github:HiPhish/busted/fennel-runner";
+      flake = false;
+    };
+
+    # Telescope Junk::
+    telescope = {
+      url = "github:nvim-lua/telescope.nvim";
+      flake = false;
+    };
+    telescope-ui-select = {
+      url = "github:nvim-telescope/telescope-ui-select.nvim";
+      flake = false;
+    };
+    telescope-file-browse = {
+      url = "github:nvim-telescope/telescope-file-browser.nvim";
+      flake = false;
+    };
+    telescope-project = {
+      url = "github:nvim-telescope/telescope-project.nvim";
+      flake = false;
+    };
+    telescope-tabs = {
+      url = "github:LukasPietzschmann/telescope-tabs";
+      flake = false;
+    };
+    telescope-zoxide = {
+      url = "github:jvgrootveld/telescope-zoxide";
+      flake = false;
+    };
+    telescope-egrepify = {
+      url = "github:fdschmidt93/telescope-egrepify.nvim";
+      flake = false;
+    };
+    tmpclone-nvim = {
+      url = "github:danielhp95/tmpclone-nvim";
+      flake = false;
+    };
+    folke_flash = {
+      url = "github:folke/flash.nvim";
+      flake = false;
+    };
+    text-case = {
+      url = "github:johmsalas/text-case.nvim";
+      flake = false;
+    };
+    matchparens = {
+      url = "github:monkoose/matchparen.nvim";
+      flake = false;
+    };
+    nvim-autopairs = {
+      url = "github:windwp/nvim-autopairs";
+      flake = false;
+    };
+    syntax-tree-surfer = {
+      url = "github:ziontee113/syntax-tree-surfer";
+      flake = false;
+    };
+    iswap = {
+      url = "github:mizlan/iswap.nvim";
       flake = false;
     };
 
     # Nightly TreeSitter Parsers::
-    ts-nightly.url = "github:r-ryantm/nixpkgs/auto-update/tree-sitter";
+    ts-nightly.url = "github:MangoIV/nixpkgs/mangoiv/update-tree-sitter";
     ts-src = {
       url = "github:tree-sitter/tree-sitter";
       flake = false;

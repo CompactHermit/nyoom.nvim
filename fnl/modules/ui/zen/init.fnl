@@ -1,3 +1,6 @@
-(import-macros {: nyoom-module!} :macros)
+(import-macros {: lzn!} :macros)
 
-(nyoom-module! ui.zen)
+(lzn! :truezen
+      {:nyoom-module ui.zen
+       :event "BufReadPre *.norg"
+       :cmd [:TZAtaraxis :TZNarrow :TZFocus :TZMinimalist :TZAtaraxis]})

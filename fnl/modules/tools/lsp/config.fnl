@@ -1,6 +1,7 @@
 (import-macros {: nyoom-module-p! : autocmd! : augroup! : packadd!} :macros)
-(local lsp (autoload :lspconfig))
+;(local lsp (autoload :lspconfig))
 (local lspUtil (autoload :util.lsp))
+(local {: deep-merge} (autoload :core.lib))
 (local lsp-servers {})
 ;;; Improve UI
 
@@ -142,8 +143,6 @@
                                    :fileMatch [:packer.json]
                                    :url "https://json.schemastore.org/packer"}]}))
 
-; (nyoom-module-p! typescript (tset lsp-servers :biome {:settings {:filetypes [:javascript :typescript :javascriptreact :typescript.tsx :typescriptreact :json]}}))
-
 (nyoom-module-p! latex (tset lsp-servers :texlab {}))
 
 ; (tset lsp-servers :fennel_ls {:root_dir #(. (vim.fs.find [:fnl :.git]
@@ -154,26 +153,30 @@
 ;                               :settings {:fennel-ls {:extra-globals :vim}}
 ;                               :macro-path :fnl/**/*macros.fnl
 ;                               :checks {}})
-
 (nyoom-module-p! lua
                  (do
                    (packadd! lazydev)
-                   (packadd! luvit)
-                   ;; HACK: Temp fix for packir, when we finalize a better RTP-setup we'll just search from there
-                   (let [tbl (: (vim.iter {:start [:nvim-nio
-                                                   :nui
-                                                   :rustaceanvim]
+                   (packadd! luvit-meta)
+                   (let [packdir (: (: (vim.iter (vim.api.nvim_list_runtime_paths))
+                                       :filter
+                                       (fn [paths]
+                                         (: paths :match
+                                            "/%w+/%w+/(.*)(%-vim%-pack%-dir)$")))
+                                    :fold {}
+                                    (fn [acc k]
+                                      k))
+                         tbl (: (vim.iter {:start [:nvim-nio :nui]
                                            :opt [:neorg
                                                  :image-nvim
+                                                 :rustaceanvim
                                                  :luvit-meta
                                                  :dap
                                                  :rustaceanvim]})
                                 :fold []
                                 (fn [acc k v]
                                   (each [_ plug (ipairs v)]
-                                    (let [path (string.format "%s/pack/myNeovimPackages/%s/%s"
-                                                              vim.g.PACKDIR k
-                                                              plug)]
+                                    (let [path (string.format "%s/pack/all/%s/%s"
+                                                              packdir k plug)]
                                       (match plug
                                         (where _nioP (= _nioP :nui)) (table.insert acc
                                                                                    {: path
@@ -201,11 +204,8 @@
                                                                      :packer_plugins :pending}}
                                              :telemetry {:enable false}
                                              :completion {:callSnippet :Replace}
-                                             :workspace {:library (vim.api.nvim_list_runtime_paths)
-                                                         :maxPreload 1000
-                                                         :ignoreDir [:.direnv]}}}}))))
-
-;; Stop Lua-ls from shitting itself
+                                             :workspace {:maxPreload 100
+                                                         :ignoreDir [:.direnv/]}}}}))))
 
 ;(nyoom-module-p! markdown (tset lsp-servers :marksman {}))
 
@@ -222,7 +222,11 @@
 ;; I'm fucking in love
 (nyoom-module-p! nix
                  (tset lsp-servers :nil_ls
-                       {:settings {:nix {:flake {:autoArchive true}}}}))
+                       {:settings {:nil {:formatting {:command [:nixfmt]}
+                                         :diagnostics {:excludedFiles [:Cargo.nix
+                                                                       :sources.nix]}
+                                         :nix {:autoEvalInouts true
+                                               :flake {:autoArchive true}}}}}))
 
 (nyoom-module-p! nickel
                  (tset lsp-servers :nickel_ls
@@ -251,8 +255,17 @@
 (nyoom-module-p! zig (tset lsp-servers :zls {}))
 
 ;; Load lsp
-(local {: deep-merge} (autoload :core.lib))
-(let [servers lsp-servers]
+; (let [servers lsp-servers]
+;   (each [server server_config (pairs servers)]
+;     ((. (. lsp server) :setup) (deep-merge defaults server_config))))
+;
+; (vim.api.nvim_create_autocmd [:BufRead :BufWinEnter :BufNewFile]
+;                              {:callback (fn []
+;                                           (packadd! lspconfig)
+;                                           (if (not= vim.fn.expand "%" "")
+;                                               (vim.defer_fn (fn []
+(let [servers lsp-servers
+      lsp (autoload :lspconfig)]
   (each [server server_config (pairs servers)]
     ((. (. lsp server) :setup) (deep-merge defaults server_config))))
 
@@ -260,8 +273,6 @@
 (augroup! UserLspConfig
           (autocmd! LspAttach "*"
                     (fn [args]
-                      (packadd! :lspsaga)
-                      ((->> :setup (. (require :lspsaga))) {:lightbulb {:enable false}})
                       (local client
                              (vim.lsp.get_client_by_id args.data.client_id))
                       (when client.server_capabilities.inlayHintProvider

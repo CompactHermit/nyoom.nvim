@@ -1,4 +1,5 @@
 ;; fennel-ls: macro-file
+;; fnlfmt:skip
 
 (local {: nil?
         : str?
@@ -422,7 +423,7 @@
                                         (string.format "require(\"core.lib.autoload\")[\"autoload\"](\"core.lib.setup\")[\"setup\"](\"%s\", {})"
                                                        (->str v)))
                     :nyoom-module (values :config
-                                          (string.format "require(\"modules.%s.config\")"
+                                          (string.format "function () require(\"modules.%s.config\") end"
                                                          (->str v)))
                     :defer (values :setup
                                    (let [package (->str v)]
@@ -432,17 +433,81 @@
                                                                       :BufNewFile]
                                                                      {:group (vim.api.nvim_create_augroup ,package
                                                                                                           {})
+                                                                      :once true
                                                                       :callback (fn []
                                                                                   (if (not= vim.fn.expand
                                                                                             "%"
                                                                                             "")
                                                                                       (vim.defer_fn (fn []
-                                                                                                      ((. (require :packer)
-                                                                                                          :loader) ,package)
+                                                                                                      "Lzn Compliant Defer, truthfully we no longer need this because of the `DeferredUIEnter` Feature"
+                                                                                                      ; ((. (require :packer)
+                                                                                                      ;     :loader) ,package)
+                                                                                                      ;(when k.after)
                                                                                                       (if (= ,package
                                                                                                              :nvim-lspconfig)
                                                                                                           (vim.cmd "silent! do FileType")))
                                                                                         0)))}))))
+                    _ (values k v)))]
+    (doto options
+      (tset 1 identifier))))
+
+;; TODO: Create custom nyoom-loader, essentially nmp! but for modules calls.
+;; TODO:: Add function `tblsOF` which just checks to see if tbl-name is enum of strings, and assert-compile it here.
+(lambda lazyp [identifier ?options]
+  " `pack` -> Ported to Lzn
+  :defer = Defer On UI
+  :display = Whether call a fidget timer, we hack this by placing a the loader in `before` and the completion in `after`.
+  :nyoom-module = Have the plugin use `module.name.path.config` for loading
+  :call-setup = Just fucking load the thing, who gives a shit about scripting.
+  the rest are lz.n's defaults, e.g::
+  {:keys [?keys] :events [?events] ...}
+  "
+  (assert-compile (str? identifier) "Retard! This expects a string" identifier)
+  (if (not (nil? ?options))
+      (assert-compile (table? ?options) "Table of options please, ya dolt"
+                      ?options))
+  (let [options (or ?options {})
+        require (sym :require)
+        options (collect [k v (pairs options)]
+                  (match k
+                    :wants (if options.deps
+                               (values :load
+                                       `(fn [name#]
+                                          (vim.cmd.packadd name#)
+                                          (: (vim.iter ,options.deps) :each
+                                             (fn [packs#]
+                                               (vim.cmd.packadd packs#)))
+                                          (: (vim.iter ,v) :each
+                                             (fn [module#]
+                                               ((. (autoload :lz.n)
+                                                   :trigger_load) module#)))))
+                               (values :load
+                                       `(fn [name#]
+                                          (: (vim.iter ,v) :each
+                                             (fn [module#]
+                                               ((. (autoload :lz.n)
+                                                   :trigger_load) module#)))
+                                          (vim.cmd.packadd name#))))
+                    :deps (if (not options.wants)
+                              (values :load
+                                      `(fn [name#]
+                                         (vim.cmd.packadd name#)
+                                         (: (vim.iter ,v) :each
+                                            (fn [plug#]
+                                              (vim.cmd.packadd plug#))))))
+                    :call-setup (values :after
+                                        (let [varp (->str v)]
+                                          `(fn []
+                                             ((. ((. (require :core.lib.autoload)
+                                                     :autoload) :core.lib.setup)
+                                                 :setup) ,varp
+                                                                                                                                                                                                                            {}))))
+                    :nyoom-module (values :after
+                                          (let [varp (->str v)
+                                                config-path (string.format "modules.%s.config"
+                                                                           varp)]
+                                            `(fn []
+                                               (require ,config-path))))
                     _ (values k v)))]
     (doto options
       (tset 1 identifier))))
@@ -469,6 +534,18 @@
       (assert-compile (table? ?options) "expected table for options" ?options))
   (table.insert _G.nyoom/pack (pack identifier ?options)))
 
+(lambda lzn! [identifier ?options]
+  " Lzn! ::
+    Carbon Copy of use-package!, but for lz.n.
+    Since lz.n doesn't resolve dependencies, and since I'm too lazy to properly define nix-plugins with
+        proper dependency trees, we let fennel/lua handle it. Mostly, we just use the lzn to check if a package has been loaded.
+  "
+  (assert-compile (str? identifier) "expected string for module-name"
+                  identifier)
+  (if (not (nil? ?options))
+      (assert-compile (table? ?options) "expected table for options" ?options))
+  (table.insert _G.nyoom/pack (lazyp identifier ?options)))
+
 (lambda rock! [identifier ?options]
   "Declares a rock with its options. This macro addssh it to the nyoom/rock
   global table to later be used in the `unpack!` macro.
@@ -492,6 +569,20 @@
                                                            &into rocks]
                                                   v))))))
 
+;;TODO:: (Hermit) would love to use `vim.iter here, hmmm`
+(lambda lzn-unpack! []
+  "Initializes The Lazyn Plugin System, essentially a carbon copy of `unpack!` but without the bullshit"
+  (let [packs (icollect [_ v (ipairs _G.nyoom/pack)]
+                `,v)] ; val (icollect [_ v (ipairs packs)] ;       v)]
+    `(: (vim.iter ,packs) :each
+        (fn [ctx#]
+          ((. (require :lz.n) :load) ctx#)))))
+
+; `(each [k# v# (ipairs ,packs)]
+;   ((. (require :lz.n) :load) v#))))
+; ,((. (require :lz.n) :load) ,(unpack (icollect [_ v (ipairs packs)
+;                                                   v]))))))
+
 (lambda packadd! [package]
   "Loads a package using the vim.api.nvim_cmd API.
   Accepts the following arguements:
@@ -504,118 +595,6 @@
                     (->str package)
                     package)]
     `(vim.api.nvim_cmd {:cmd :packadd :args [,package]} {})))
-
-(lambda pact-use-package! [identifier ?options]
-  "use-package inspired package manager for nyoom, using pact.nvim
-
-  Accepts the following arguments: 
-  identifier -> must be a string
-  options -> a table of options. Optional
-
-  Accepts the following options (pact):
-  :name -> only required for raw `git` calls (not forge shortcuts), which defines the name to use in the `pact` ui (e.g. :fugitive)
-  :branch -> branch to clone from. If no branch or additional versioning is specified, the default HEAD branch is cloned (e.g. :main)
-  :tag -> git release tag to clone (e.g \"v3.7\")
-  :commit -> full-length or shortened commit hash to clone (e.g. :ca82a6dff817ec66f44342007202690a93763949 or :ca82a6d)
-  :version -> a semvar constraint (e.g. \"> 0.0.0\")
-  :after -> either a string or function to run after a plugin is cloned or synced (e.g. \"sleep 2\")
-  :opt? -> installs a package into /opt instead of /start, requires you to manually load the package (default false)
-
-  Accepts the following additional options: 
-  :host -> which git forge to download from. Accepts git, github, gitlab, and srht. By default set to github
-  :cmd -> cmd(s) to lazy load on. Accepts a string or sequential table
-  :event -> vimscript event(s) to lazy load on. Accepts a string or sequential table
-  :ft -> filetype(s) to lazy load on. Accepts a string or sequential table
-  :bind -> shortcut to bind <leader> keymaps. Accepts a table with kv pairs
-  :init -> code to run before package is loaded
-  :config -> code to run after a package is loaded
-
-  TODO: 
-  :keys
-  :bind auto-lazy
-  "
-  (assert-compile (str? identifier) "expected string for identifier" identifier)
-  (if (not (nil? ?options))
-      (assert-compile (table? ?options) "expected table for options" ?options))
-  (lambda cmd-load [cmd loadname]
-    `(vim.api.nvim_create_user_command ,cmd
-                                       (fn []
-                                         (vim.api.nvim_del_user_command ,cmd)
-                                         (vim.api.nvim_cmd {:cmd :packadd
-                                                            :args [,loadname]}
-                                                           {})
-                                         (vim.cmd ,cmd))
-                                       {:bang true :range true :nargs "*"}))
-  (lambda event-load [event callback augroup]
-    `(vim.api.nvim_create_autocmd ,event
-                                  {:callback (,callback)
-                                   :once true
-                                   :group ,augroup}))
-  (lambda ft-load [ft callback augroup]
-    `(vim.api.nvim_create_autocmd :FileType
-                                  {:pattern ,ft
-                                   :callback (,callback)
-                                   :once true
-                                   :group ,augroup}))
-  (lambda defer-load [x callback augroup loadname]
-    (let [time (if (bool? x) 0 (if (num? x) x))
-          doft (if (= loadname :nvim-lspconfig)
-                   (vim.cmd "silent! do FileType"))]
-      `(vim.api.nvim_create_autocmd [:BufRead :BufWinEnter :BufNewFile]
-                                    {:group ,augroup
-                                     :callback (fn []
-                                                 (if (not= vim.fn.expand "%" "")
-                                                     (vim.defer_fn (fn []
-                                                                     (,callback)
-                                                                     ,doft)
-                                                       ,time)))})))
-  (let [callback-sym (sym :*callback*)
-        loadname (string.sub (string.match package "/.+") 2)
-        augroup (.. :nyoom-pact- loadname)
-        host :github
-        autocmds `(do)
-                    
-        callback `(do)
-                    
-        result `(do)
-                  
-        options (or ?options {})
-        options (collect [k v (pairs options)]
-                  (match k
-                    ;;                     :host (local host v)
-                    ;;                     :cmd (table.insert autocmds (cmd-load v loadname))
-                    ;;                     :event (table.insert autocmds
-                    ;;                                       (event-load v callback-sym augroup))
-                    ;;                     :ft (table.insert autocmds (ft-load v callback-sym augroup))
-                    ;;                     :defer (table.insert autocmds
-                    ;;                                          (defer-load v callback-sym augroup
-                    ;;                                                      loadname))
-                    ;;                     :bind (each [bind cmd (pairs v)]
-                    ;;                             (let [bind (.. :<leader> bind)
-                    ;;                                   cmd (.. :<cmd> cmd :<CR>)]
-                    ;;                               (table.insert result
-                    ;;                                             `(vim.keymap.set [:n] ,bind ,cmd))))
-                    :init
-                    (table.insert result `,v)
-                    :config
-                    (table.insert callback `,v)
-                    _
-                    (values k v)))]
-    (table.insert result `((. (autoload :pact) ,host) ,identifier ,options))
-    (if (. options :opt?)
-        (do
-          (table.insert result
-                        `(vim.api.nvim_create_augroup ,augroup {:clear true}))
-          (table.insert result `(fn ,callback-sym
-                                  []
-                                  (vim.api.nvim_del_augroup_by_name ,augroup)
-                                  (vim.api.nvim_cmd {:cmd :packadd
-                                                     :args [,loadname]}
-                                                    {})
-                                  ,callback))
-          (table.insert result `,autocmds))
-        (table.insert result `,callback))
-    result))
 
 (lambda map! [[modes] lhs rhs ?options]
   "Add a new mapping using the vim.keymap.set API.
@@ -833,8 +812,11 @@
       (init-module module-name module-def)))
 
   (let [inits (init-modules _G.nyoom/modules)]
-    (expand-exprs inits)))
+    inits))
 
+;(expand-exprs inits)))
+
+;; TODO:: Use vim.iter, we're just running a glorified `pcall` under the hood for hotpot to load.
 (lambda nyoom-compile-modules! []
   "Compiles and caches module files.
   ```fennel
@@ -851,6 +833,7 @@
   (let [source (compile-modules _G.nyoom/modules)]
     (expand-exprs [(unpack source)])))
 
+;; TODO: Rid of hash function
 (lambda nyoom-module! [name]
   "By default modules should be loaded through use-package!. Of course, not every
   modules needs a package. Sometimes we just want to load `config.fnl`. In this 
@@ -958,7 +941,9 @@
  : rock!
  : unpack!
  : packadd!
- : pact-use-package!
+ : lazyp
+ : lzn!
+ : lzn-unpack!
  : verify-dependencies!
  : nyoom!
  : nyoom-init-modules!

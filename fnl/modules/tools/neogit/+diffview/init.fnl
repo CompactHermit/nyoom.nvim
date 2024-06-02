@@ -1,3 +1,12 @@
-(import-macros {: nyoom-module!} :macros)
+(import-macros {: lzn!} :macros)
 
-(nyoom-module! tools.neogit.+diffview)
+; (use-package! :sindrets/diffview.nvim
+;               {:nyoom-module tools.neogit.+diffview
+;                :opt true
+(lzn! :diffview {:nyoom-module tools.neogit.+diffview
+                 :cmd [:DiffviewFileHistory
+                       :DiffviewOpen
+                       :DiffviewClose
+                       :DiffviewToggleFiles
+                       :DiffviewFocusFiles
+                       :DiffviewRefresh]})

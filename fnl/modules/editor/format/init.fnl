@@ -1,3 +1,3 @@
 (import-macros {: nyoom-module!} :macros)
 
-(nyoom-module! editor.format)
+;(nyoom-module! editor.format)

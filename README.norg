@@ -3,7 +3,7 @@ title: index
 id: 42589f53-46ed-411d-88db-116795432add
 workspace: default
 created: 2023-12-09T14:27:12-0500
-updated: 2024-06-07T16:24:15-0500
+updated: 2024-06-30T12:39:21-0500
 @end
 
 * TODOS::
@@ -20,10 +20,10 @@ updated: 2024-06-07T16:24:15-0500
    -- (x) Find way to force Hotpot to use A /tmp directory instead of XDG_DATA_DIR
    --- (x) Just have Neovim Run with {! https://github.com/konradmalik/neovim-flake/blob/main/packages/neovim-pde/default.nix}[XDG_CACHE_DIR] set to /tmp
 
-   - ( ) Hydra:: Add Rust Subhydra:: Rustacean + Crates
    -- (!) Hydra:: Add SubHydras
-   -- ( ) Haskell Hydra::
-   --- ( ) Add Telescope Hoogle to binds (why haven't I done this yet you fucking doofus)
+   --- ( ) Hydra:: Add Rust Subhydra:: Rustacean + Crates
+   --- ( ) Haskell Hydra::
+   ---- ( ) Add Telescope Hoogle to binds (why haven't I done this yet you fucking doofus)
 
 ** Next::
    #contexts GTD::Next
@@ -40,16 +40,16 @@ updated: 2024-06-07T16:24:15-0500
 ** Inbox
    #contexts GTD::Inbox
    - (-) Neovim/Fennel Things::
-   -- ( ) Nfnl Port::
-   --- ( ) The Actual Port::
+   -- (_) Nfnl Port::
+   --- (_) The Actual Port::
    -- ( ) Fennel Syntax Injections::
    --- ( ) Add custom TS-injection for docstrings.
    ---- ( ) DocStrings -> Neorg Conversion  [Perhaps write it in Haskell?]{Neorg Parser Combinator when bozo?}
    -- ( ) NUI-components:: {:$/Nui-Comp:}[Docs]
    --- ( ) Actually learn the framework
-   --- (x) Refactor Noice Module -> NUI Module
-   -- (-)  Nvim-Nio:: {:$/nio-async:}[Async Docs]
-   --- (-)  Learn it properly, try to make multi-module async work
+   --- (_) Refactor Noice Module -> NUI Module
+   -- (x)  Nvim-Nio:: {:$/nio-async:}[Async Docs]
+   --- (x)  Learn it properly, try to make multi-module async work
    -- (-) Doctor Rewrite::
    --- ( ) Proper LSP Healthcheck (display all config values + enabled/disabled LSP info <methods Supported by server, config for methods>)
    --- ( ) Healthcheck for tree-sitter API's/Queries
@@ -58,15 +58,17 @@ updated: 2024-06-07T16:24:15-0500
    -- (=) CI:: Fnl -> Lua -> /tmp/nyoom
    -- (=) Nix Aware Module Lookup:: (JSON Querying?) [On Hold for now]{Wait for module system refactor, and use doctor for config-checking}
 
-   - ( ) Deprecate Packer::
+   - (-) Lzn::
+   -- (-) Find way for module lookup::
+   --- E.g:: If Hydra `loads` telescope/which-key => Run Telescope loader + Which-key module (can be achieved via a `adder`, querying the lz.n.state tree and running the loader)
+   - (x) Deprecate Packer::
    -- (x) Learn how `packages.preload` Actually fking works, I mean wtf is it even?
-   -- (?) Packer -> Custom InHouse Package Loading (using nix for management and fennel to load)
+   -- (x) Packer -> Custom InHouse Package Loading (using nix for management and fennel to load)
    --- (x) Test `lazy-cmd!` custom Cmd's like seen with {https://lewis6991/pckr.nvim/blob/main/lua/pckr/loader/cmd.lua}[Pckr's Implementation]
-   --- (-) ReWrite (use-package!)::
-   ---- neo! Macro
+   --- (x) ReWrite (use-package!)::
+   ---- (x) lzn! Macro
 * inspiration::
   %Why doesn't neorg have tables??%
   - {!&gh konradmalik/neovim-flake}[Konradmalik]
   - {!&gh rktjmp/pact.nvim}[Pact]
   - {!&gh lewis6991/pckr.nvim}[Pckr-nvim]
-

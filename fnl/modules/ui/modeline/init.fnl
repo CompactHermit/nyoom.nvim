@@ -1,3 +1,3 @@
-(import-macros {: use-package! : nyoom-module!} :macros)
+(import-macros {: lzn! : nyoom-module!} :macros)
 
-(nyoom-module! ui.modeline)
+(lzn! :libmodal {:nyoom-module ui.modeline})

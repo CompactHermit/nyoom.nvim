@@ -6,18 +6,14 @@
                 : autocmd!} :macros)
 
 (local {: nightly?} (autoload :core.lib))
-;(local leap (autoload :leap))
-;;(local {: } util)
+
+((->> :setup (. (require :Comment))))
 
 ;; Set leader to space by default
-
 (let! mapleader " ")
-;(leap.add_default_mappings)
 
 ;; NOTE:: Want more Hydra Binds
 (map! [n] ";" ":" {:desc :vim-ex})
-
-;; * LSP symbols in project (telescope)
 
 (map! [n] "<leader>`" "<cmd>e#<CR>" {:desc "Switch to last buffer"})
 (nyoom-module-p! telescope
@@ -53,7 +49,7 @@
 ;; ~ Open messages
 (nyoom-module-p! telescope
                  (do
-                   (map! [n] :<leader><space> "<cmd>Telescope find_files<CR>"
+                   (map! [n] :<leader><leader> "<cmd>Telescope find_files<CR>"
                          {:desc "Find file in project"})
                    (map! [n] "<leader>'" "<cmd>Telescope resume<CR>"
                          {:desc "Resume last search"})

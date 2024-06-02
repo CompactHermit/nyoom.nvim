@@ -1,3 +1,13 @@
-(import-macros {: nyoom-module!} :macros)
+(import-macros {: lzn!} :macros)
 
-(nyoom-module! completion.cmp)
+;; TODO:; Load Friendly-luasnip seperately
+(lzn! :nvim-cmp {:nyoom-module completion.cmp
+                 :deps [:friendly-luasnip
+                        :luasnip
+                        :haskell-snippets
+                        :cmp-path
+                        :cmp-buffer
+                        :cmp-cmdline
+                        :cmp-luasnip
+                        :cmp-nvim-lsp]
+                 :event :InsertEnter})

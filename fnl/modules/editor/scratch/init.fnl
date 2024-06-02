@@ -1,5 +1,4 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: lzn!} :macros)
 
-;; (ab)using use-package! for lazy-loading
-(use-package! :editor.scratch {:nyoom-module editor.scratch
-                               :cmd :Scratch})
+;;NOTE:: (Hermit) Just a replacement for now, until I learn how to `trick` lz.n's loader
+(lzn! :actions-preview {:nyoom-module editor.scratch :cmd :Scratch})

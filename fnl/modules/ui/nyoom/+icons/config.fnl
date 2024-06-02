@@ -1,7 +1,6 @@
 (import-macros {: packadd!} :macros)
 
 ;(packadd! nvim-material-icons)
-(packadd! nvim-webdev-icons)
 ;; NOTE: (Hermit) <05/27> Developer is fucking with highlight groups, and since I'm too lazy to patch his bs, we just ignore this completely from now on
 ;; (local material-icons (autoload :nvim-material-icon))
 

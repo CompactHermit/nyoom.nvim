@@ -1,3 +1,3 @@
-(import-macros {: nyoom-module!} :macros)
+(import-macros {: lzn!} :macros)
 
-(nyoom-module! lang.zig)
+(lzn! :zigTools {:ft :zig :deps [:toggleterm] :cmd :Zig :nyoom-module lang.zig})

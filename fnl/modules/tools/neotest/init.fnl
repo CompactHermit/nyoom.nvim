@@ -1,3 +1,10 @@
-(import-macros {: nyoom-module!} :macros)
+(import-macros {: lzn!} :macros)
 
-(nyoom-module! tools.neotest)
+(lzn! :neotest {:nyoom-module tools.neotest
+                :wants [:telescope :toggleterm]
+                :deps [:neotest-haskell
+                       :neotest-zig
+                       :neotest-busted
+                       :overseer
+                       :rustaceanvim]
+                :cmd [:Neotest]})

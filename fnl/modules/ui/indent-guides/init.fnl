@@ -1,3 +1,4 @@
-(import-macros {: nyoom-module!} :macros)
+(import-macros {: lzn!} :macros)
 
-(nyoom-module! ui.indent-guides)
+(lzn! :ibl {:nyoom-module ui.indent-guides
+            :event [:BufReadPost :BufAdd :BufNewFile]})

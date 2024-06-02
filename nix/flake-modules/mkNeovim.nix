@@ -17,12 +17,13 @@ let
 
   stringSeps = concatStringsSep "\n" (
     map (file: "rm -rf $out/share/nvim/${file}") [
-      # "runtime/ftplugin.vim"
+      #"runtime/ftplugin.vim"
       "runtime/tutor"
-      # "runtime/indent.vim"
+      "runtime/indent.vim"
       "runtime/menu.vim"
       "runtime/mswin.vim"
       "runtime/plugin/gzip.vim"
+      "runtime/plugin/tohtml.lua"
       "runtime/plugin/man.lua"
       "runtime/plugin/matchit.vim"
       "runtime/plugin/matchparen.vim"
@@ -142,6 +143,10 @@ let
     version = versionFromSrc mkDeps.msgpack;
     src = mkDeps.msgpack;
   };
+  utf8proc = pkgs.utf8proc.overrideAttrs {
+    version = versionFromSrc mkDeps.utf8proc;
+    src = mkDeps.utf8proc;
+  };
 
   # Unibilium::
   unibilium = pkgs.unibilium.overrideAttrs (prev: {
@@ -170,7 +175,7 @@ in
   (oa: {
     src = cfg.src;
     version = cfg.src.shortRev or "dirty";
-    buildInputs = (oa.buildInputs or [ ]) ++ [ ];
+    buildInputs = (oa.buildInputs or [ ]) ++ [ utf8proc ];
     preConfigure = ''
       sed -i cmake.config/versiondef.h.in -e "s/@NVIM_VERSION_PRERELEASE@/-dev-$version/"
     '';

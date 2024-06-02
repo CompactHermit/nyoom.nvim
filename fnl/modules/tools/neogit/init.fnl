@@ -1,3 +1,3 @@
-(import-macros {: nyoom-module!} :macros)
+(import-macros {: lzn!} :macros)
 
-(nyoom-module! tools.neogit)
+(lzn! :neogit {:nyoom-module tools.neogit :wants [:gitsigns] :cmd :Neogit})

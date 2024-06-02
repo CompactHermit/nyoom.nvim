@@ -2,7 +2,8 @@
 (import-macros {: >==} :util.macros)
 
 (colorscheme oxocarbon)
-(set! background :dark)
+; (set! background :light)
+; (set! background :dark)
 ;;   ┌──────────────────────┐
 ;;   │    CUSTOM Opts       │
 ;;   └──────────────────────┘
@@ -19,7 +20,7 @@
 (set! relativenumber)
 
 (let! fennel_use_luajit true)
-(let! maplocalleader " m")
+(let! maplocalleader :m)
 (let! tex_conceal :abdgm)
 (let! vimtex_view_mode :zathura)
 (let! vimtex_view_general_viewer :zathura)
@@ -82,6 +83,25 @@
       :nix] #(set-shiftwidth $1 2))
 
 ;; Vim.g Options::
+; (let! clipboard {:name :xsel
+;                  :copy {:+ "xsel --nodetach -i -b" :* "xsel --nodetach -i -p"}
+;                  :paste {:+ "xsel --nodetach -i -b" :* "xsel --nodetach -i -p"}
+;                  :cache_enabled 1})
+
+(vim.cmd "   let g:clipboard = {
+             \\ 'name' : 'xsel',
+             \\ 'copy' : {
+             \\ '+': 'xsel --nodetach -i -b',
+             \\ '*': 'xsel --nodetach -i -p',
+             \\ },
+             \\ 'paste': {
+             \\ '+': 'xsel -o -b',
+             \\ '*': 'xsel -o -p',
+             \\ },
+             \\ 'cache_enabled' : 1,
+             \\ }
+")
+
 (let! typst_conceal_math 2)
 (let! direnv_silent_load 1)
 

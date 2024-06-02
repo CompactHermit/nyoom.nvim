@@ -36,8 +36,7 @@
 ;; └─────────────────────────┘
 
 (local _tsOpts
-       {;;:ensure_installed treesitter-filetypes
-        :highlight {:enable true :use_languagetree true}
+       {:highlight {:enable true :use_languagetree true}
         :indent {:enable true}
         :refactor {:enable true
                    ; :navigation {:enable true
@@ -82,82 +81,24 @@
                                                  "[]" "@class.outer"}}}})
 
 ;; fnlfmt: skip
-(fn __treesitterSetup []
-;; NOTE (Hermit) :: Remove after Adding Lazy! Macro and Proper buffer Autocmds
-  "
-        Treesitter Module::
-          This module uses the following extensions. We lazyload ev
+(let [fidget (require :fidget)
+      progress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :treesitter}})
+      rainbox (autoload :rainbow-delimiters)]
+  ;(packadd! rainbow-delimiters)
+  ;(packadd! ts-context)
 
-        "
-  (let [fidget (require :fidget)
-        progress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :treesitter}})
-        rainbox (autoload :rainbow-delimiters)]
-    ;(packadd! tsplayground)
-    ;(packadd! rainbow-delimiters)
-    ;(packadd! ts-context)
-    (packadd! ts-context-commentstring)
-    (packadd! ts-refactor)
-    (packadd! ts-textobjects)
-    (packadd! ts-node-action)
-    (progress:report {:message "Setting Up treesitter"
-                      :level vim.log.levels.ERROR
-                      :progress 0})
-    ;((->> :setup (. (require :treesitter-context))) {:enable true})
-    ((->> :setup (. (require :nvim-treesitter.configs))) _tsOpts) 
-    ((->> :setup (. (require :ts_context_commentstring))) {:enable_autocmd false});})
-    (let! skip_ts_context_commentstring_module true)
-    ; (let! rainbow_delimiters {:strategy {}
-    ;                           :query {}
-    ;                           :priority {}
-    ;                           :highlight {}})
-    (progress:report {:message "Setup Complete"
-                      :title :Completed!
-                      :progress 99})))
-
-(vim.api.nvim_create_autocmd [:BufRead]
-                             {:group (vim.api.nvim_create_augroup :ts.setup
-                                                                  {:clear true})
-                              :callback (fn []
-                                          (when (fn []
-                                                  (local file
-                                                         (vim.fn.expand "%"))
-                                                  (and (not= file :nvimTree_1)
-                                                       (not= file :HermitPack)
-                                                       (not= file "")))
-                                            ;(vim.api.nvim_del_augroup_by_name :ts.setup)
-                                            (__treesitterSetup)))
-                              :once true})
-
-(fn loader []
-  (vim.api.nvim_exec_autocmds :BufRead {:pattern :ts.setup}))
-
-;; fnlfmt: skip
-(let [commands [:TSBufToggle
-                :TSModuleInfo]]
-  (each [_ cmd (ipairs commands)]
-    (vim.api.nvim_create_user_command cmd
-                                      (fn [args]
-                                        (vim.api.nvim_del_user_command cmd)
-                                        (loader)
-                                        (vim.cmd (string.format "%s %s%s%s %s"
-                                                                (or args.mods
-                                                                    "")
-                                                                (or (and (= args.line1
-                                                                            args.line2)
-                                                                         "")
-                                                                    (.. args.line1
-                                                                        ","
-                                                                        args.line2))
-                                                                cmd
-                                                                (or (and args.bang
-                                                                         "!")
-                                                                    "")
-                                                                args.args)))
-                                      {:bang true
-                                       :complete (fn []
-                                                   (vim.api.nvim_del_user_command cmd)
-                                                   (loader)
-                                                   (vim.fn.getcompletion (.. cmd
-                                                                             " ")
-                                                                         :cmdline))
-                                       :nargs "*"})))
+  (progress:report {:message "Setting Up treesitter"
+                    :level vim.log.levels.ERROR
+                    :progress 0})
+  ;((->> :setup (. (require :treesitter-context))) {:enable true})
+  ((->> :setup (. (require :nvim-treesitter.configs))) _tsOpts) 
+  ((->> :setup (. (require :ts_context_commentstring))) {:enable_autocmd false});})
+  (let! skip_ts_context_commentstring_module true)
+  ; (let! rainbow_delimiters {:strategy {}
+  ;                           :query {}
+  ;                           :priority {}
+  ;                           :highlight {}})
+  (progress:report {:message "Setup Complete"
+                    :title :Completed!
+                    :progress 100})
+  (progress:finish))

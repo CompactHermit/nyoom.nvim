@@ -1,8 +1,11 @@
-(import-macros {: nyoom-module!} :macros)
+(import-macros {: lzn!} :macros)
 
-(nyoom-module! tools.overseer)
-; (use-package! :stevearc/overseer.nvim
-;               {:nyoom-module tools.overseer
-;                :commit :5e8498131867cd1b7c676ecdd1382ab2fd347dde
-;                :opt true
-;                :cmd [:OverseerRunCmd :OverseerRunCmd :OverseerToggle]})
+(lzn! :overseer {:nyoom-module tools.overseer
+                 :cmd [:OverseerRun
+                       :OverseerToggle
+                       :OverseerQuickAction
+                       :OverseerTaskAction
+                       :OverseerBuild
+                       :OverseerLoadBundle
+                       :OverseerRunCmd
+                       :OverseerTemplate]})

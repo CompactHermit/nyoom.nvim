@@ -1,23 +1,20 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: lzn!} :macros)
 
-(use-package! :ziontee113/syntax-tree-surfer
-              {:opt true
-               :nyoom-module editor.swap
-               :cmd ["STSSwapPrevVisual"
-                     "STSSelectChildNode"
-                     "STSSwapNextVisual"
-                     "STSSelectParentNode"
-                     "STSSelectPrevSiblingNode"
-                     "STSSelectNextSiblingNode"
-                     "STSSelectCurrentNode"
-                     "STSSelectMasterNode"]})
+(lzn! :syntax-tree-surfer
+      {:nyoom-module editor.swap
+       :cmd [:STSSwapPrevVisual
+             :STSSelectChildNode
+             :STSSwapNextVisual
+             :STSSelectParentNode
+             :STSSelectPrevSiblingNode
+             :STSSelectNextSiblingNode
+             :STSSelectCurrentNode
+             :STSSelectMasterNode]})
 
-(use-package! :mizlan/iswap.nvim
-              {:opt true
-               :cmd [:ISwapWith
-                     :ISwap
-                     :ISwapNodeWith
-                     :IMoveWith
-                     :IMoveNodeWith
-                     :IMove]
-               :call-setup iswap})
+(lzn! :iswap.nvim {:cmd [:ISwapWith
+                         :ISwap
+                         :ISwapNodeWith
+                         :IMoveWith
+                         :IMoveNodeWith
+                         :IMove]
+                   :call-setup iswap})

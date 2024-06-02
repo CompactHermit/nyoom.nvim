@@ -1,5 +1,4 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: lzn!} :macros)
 
 ; its a quickfix menu
-(use-package! :kevinhwang91/nvim-bqf {:nyoom-module tools.quickfix
-                                      :ft :qf})
+(lzn! :quickfix {:call-setup bqf :cmd :BqfAutoToggle :ft [:qf]})

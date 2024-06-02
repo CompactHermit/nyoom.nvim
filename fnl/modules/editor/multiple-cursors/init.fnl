@@ -1,3 +1,13 @@
-(import-macros {: nyoom-module!} :macros)
+(import-macros {: lzn!} :macros)
 
-(nyoom-module! editor.multiple-cursors)
+(lzn! :multicursor {:nyoom-module editor.multiple-cursors
+                    :keys [{1 :<M-c>
+                            2 #((. (require :multicursors) :start))
+                            :desc "Buffer:: MCursor"}]
+                    :wants [:hydra]
+                    :cmds [:MCstart
+                           :MCvisual
+                           :MCpattern
+                           :MCvisualPattern
+                           :MCunderCursor
+                           :MCclear]})

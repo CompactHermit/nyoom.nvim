@@ -1,5 +1,3 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: lzn!} :macros)
 
-; (use-package! :max397574/typst-tools.nvim 
-;               {:opt true
-;                :ft [:typ]})
+;(lzn! :typst-tools {:nyoom-module lang.typst :ft :typst})

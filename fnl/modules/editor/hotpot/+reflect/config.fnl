@@ -34,7 +34,7 @@
 
 (nyoom-module-p! default.+bindings
                  (do
-                   (map! [v] :<space>mhn `(new-or-attach-reflect)
+                   (map! [v] :mhn `(new-or-attach-reflect)
                          {:desc "New reflect session"})
-                   (map! [n] :<space>mhx `(swap-reflect-mode)
+                   (map! [n] :mhx `(swap-reflect-mode)
                          {:desc "Swap reflect mode"})))

@@ -1,11 +1,10 @@
-(import-macros {: use-package! : pack} :macros)
+(import-macros {: lzn! : lazyp} :macros)
 
 ; easy to use configurations for language servers
 
-(use-package! :neovim/nvim-lspconfig
-              {:nyoom-module tools.lsp :opt true :defer nvim-lspconfig})
+;; TODO:: Add proper `register_module` for custom defer
+(lzn! :lspconfig {:nyoom-module tools.lsp :event [:BufReadPre]})
 
-(use-package! :VidocqH/lsp-lens.nvim
-              {:opt true
-               :cmd [:LspLensOn :LspLensOff :LspLensToggle]
-               :call-setup lsp-lens})
+(lzn! :lspsaga
+      {:event :LspAttach
+       :after #((->> :setup (. (require :lspsaga))) {:lightbulb {:enable false}})})

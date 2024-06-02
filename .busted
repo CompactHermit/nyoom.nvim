@@ -1,0 +1,20 @@
+-- vim: ft=lua
+return {
+    _all = {
+        ROOT = { './lua/spec/' },
+        coverage = false,
+        lpath = "lua/?.lua;lua/?/init.lua",
+        verbose = true,
+        --pattern = "specs%.lua$"
+        --lua = "~/.luarocks/bin/nlua",
+    },
+    macros = {
+        ROOT =  {'./lua/specs/macros/'},
+    },
+    default = {
+        verbose = true
+    },
+    tests = {
+        verbose = true
+    },
+}

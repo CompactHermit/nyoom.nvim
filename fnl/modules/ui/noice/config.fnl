@@ -1,4 +1,4 @@
-(import-macros {: packadd! : command!} :macros)
+(import-macros {: packadd! : command! : map!} :macros)
 
 (local _opts {:health {:checker false}
               :cmdline {:format {:cmdline {:pattern "^:"
@@ -43,23 +43,17 @@
               :notify {:enabled false}
               :format {}})
 
-;; NOTE (Hermit) :: Remove after Adding Lazy! Macro and Proper buffer Autocmds
-(fn __noiceSetup []
-  " NoiceConfig::
-        "
-  (packadd! nvim-notify)
-  (packadd! folke_noice)
-  (let [fidget (require :fidget)
-        progress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :noice}})]
-    (progress:report {:message "Setting Up noice"
-                      :level vim.log.levels.ERROR
-                      :progress 0})
-    ((->> :setup (. (require :notify))) {:fps 60
-                                         :render :wrapped-compact
-                                         :stages :slide})
-    ((->> :setup (. (require :noice))) _opts)
-    (progress:report {:message "Setup Complete"
-                      :title :Completed!
-                      :progress 99})))
-
-(vim.api.nvim_create_autocmd :BufReadPre {:callback #(__noiceSetup) :once true})
+(packadd! nvim-notify)
+;(packadd! folke_noice)
+(map! [n] :mm :<cmd>NoiceDismiss<CR> {:desc "NOICE SHUTTHEFUCKUP"})
+(let [fidget (require :fidget)
+      progress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :noice}})]
+  (progress:report {:message "Setting Up noice"
+                    :level vim.log.levels.ERROR
+                    :progress 0})
+  ((->> :setup (. (require :notify))) {:fps 60
+                                       :render :wrapped-compact
+                                       :stages :slide})
+  ((->> :setup (. (require :noice))) _opts)
+  (progress:report {:message "Setup Complete" :title :Completed! :progress 100})
+  (progress:finish))

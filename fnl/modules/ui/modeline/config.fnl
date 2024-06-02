@@ -135,20 +135,3 @@
 
 (vim.api.nvim_create_autocmd :BufEnter
                              {:group __augroup :pattern "*" :callback (fn [])})
-
-;   vim.api.nvim_create_autocmd('User', {
-;                                        group = augroup,
-;                                        pattern = 'HarpoonSwitchedList',
-;                                        callback = function(event)
-;                                        H.data.list_name = event.data
-;                                        H.update()
-;                                        end,})
-;   
-;
-;   vim.api.nvim_create_autocmd({ 'BufEnter' }, {
-;                                                group = augroup,
-;                                                pattern = '*',
-;                                                callback = H.update,})
-;   
-; end
-;

@@ -1,6 +1,7 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: lzn!} :macros)
 
-(use-package! :gbprod/yanky.nvim
-              {:nyoom-module editor.cutlass
-               :after :telescope.nvim
-               :event :BufReadPost})
+(lzn! :yanky {:nyoom-module editor.cutlass
+              :cmd [:Yanky]
+              :wants [:telescope]
+              :event [:TextYankPost]
+              :keys [:Y :y :p :P :vey]})

@@ -196,102 +196,121 @@
                       :s :OilTypeSocket}
                      {:__index (fn [] :OilTypeFile)}))
 
-(setup :oil {:cleanup_delay_ms 0
-             :columns [{1 :type
-                        :highlight (fn [type-str] (. type-hlgroups type-str))
-                        :icons {:directory :d
-                                :fifo :p
-                                :file "-"
-                                :link :l
-                                :socket :s}}
-                       {1 :permissions
-                        :highlight (fn [permission-str]
-                                     (local hls {})
-                                     (for [i 1 (length permission-str)]
-                                       (local char (permission-str:sub i i))
-                                       (table.insert hls
-                                                     [(. permission-hlgroups
-                                                         char)
-                                                      (- i 1)
-                                                      i]))
-                                     hls)}
-                       {1 :size :highlight :Special}
-                       {1 :mtime :highlight :Number}
-                       {1 :icon :add_padding false}]
-             ;;:default_file icon-file
-             ;;:directory icon-dir}]
-             :delete_to_trash true
-             :float {:border :solid :win_options {:winblend 0}}
-             :keymaps {:+ :actions.select
-                       :- :actions.parent
-                       :<C-h> :actions.toggle_hidden
-                       :<C-i> {:buffer true
-                               :callback (fn []
-                                           (local jumplist (vim.fn.getjumplist))
-                                           (local newloc
-                                                  (. (. jumplist 1)
-                                                     (+ (. jumplist 2) 2)))
-                                           (or (and (and (and newloc
-                                                              (vim.api.nvim_buf_is_valid newloc.bufnr))
-                                                         (= (. (. vim.bo
-                                                                  newloc.bufnr)
-                                                               :ft)
-                                                            :oil))
-                                                    :<C-i>)
-                                               :<Ignore>))
-                               :desc "Jump to newer cursor position in oil buffer"
-                               :expr true
-                               :mode :n}
-                       :<C-k> preview-mapping
-                       :<C-o> {:buffer true
-                               :callback (fn []
-                                           (local jumplist (vim.fn.getjumplist))
-                                           (local prevloc
-                                                  (. (. jumplist 1)
-                                                     (. jumplist 2)))
-                                           (or (and (and (and prevloc
-                                                              (vim.api.nvim_buf_is_valid prevloc.bufnr))
-                                                         (= (. (. vim.bo
-                                                                  prevloc.bufnr)
-                                                               :ft)
-                                                            :oil))
-                                                    :<C-o>)
-                                               :<Ignore>))
-                               :desc "Jump to older cursor position in oil buffer"
-                               :expr true
-                               :mode :n}
-                       :<CR> :actions.select
-                       := :actions.select
-                       :K preview-mapping
-                       :g? :actions.show_help
-                       :gs :actions.change_sort
-                       :gx :actions.open_external
-                       :gy {:buffer true
-                            :callback (fn []
-                                        (local entry (oil.get_cursor_entry))
-                                        (local dir (oil.get_current_dir))
-                                        (when (or (not entry) (not dir))
-                                          (lua "return "))
-                                        (local entry-path (.. dir entry.name))
-                                        (vim.fn.setreg "\"" entry-path)
-                                        (vim.fn.setreg vim.v.register
-                                                       entry-path)
-                                        (vim.notify (string.format "[oil] yanked '%s' to register '%s'"
-                                                                   entry-path
-                                                                   vim.v.register)))
-                            :desc "Yank the filepath of the entry under the cursor to a register"
-                            :mode :n}}
-             :preview {:border :solid :win_options {:winblend 0}}
-             :progress {:border :solid :win_options {:winblend 0}}
-             :prompt_save_on_select_new_entry true
-             :skip_confirm_for_simple_edits true
-             :use_default_keymaps false
-             :view_options {:is_always_hidden (fn [name] (= name ".."))}
-             :win_options {:foldcolumn :0
-                           :number false
-                           :relativenumber false
-                           :signcolumn :no
-                           :statuscolumn ""}})
+((. (require :oil) :setup) {:cleanup_delay_ms 0
+                            :columns [{1 :type
+                                       :highlight (fn [type-str]
+                                                    (. type-hlgroups type-str))
+                                       :icons {:directory :d
+                                               :fifo :p
+                                               :file "-"
+                                               :link :l
+                                               :socket :s}}
+                                      {1 :permissions
+                                       :highlight (fn [permission-str]
+                                                    (local hls {})
+                                                    (for [i 1 (length permission-str)]
+                                                      (local char
+                                                             (permission-str:sub i
+                                                                                 i))
+                                                      (table.insert hls
+                                                                    [(. permission-hlgroups
+                                                                        char)
+                                                                     (- i 1)
+                                                                     i]))
+                                                    hls)}
+                                      {1 :size :highlight :Special}
+                                      {1 :mtime :highlight :Number}
+                                      {1 :icon :add_padding false}]
+                            ;;:default_file icon-file
+                            ;;:directory icon-dir}]
+                            :delete_to_trash true
+                            :float {:border :solid :win_options {:winblend 0}}
+                            :keymaps {:+ :actions.select
+                                      :- :actions.parent
+                                      :<C-h> :actions.toggle_hidden
+                                      :<C-i> {:buffer true
+                                              :callback (fn []
+                                                          (local jumplist
+                                                                 (vim.fn.getjumplist))
+                                                          (local newloc
+                                                                 (. (. jumplist
+                                                                       1)
+                                                                    (+ (. jumplist
+                                                                          2)
+                                                                       2)))
+                                                          (or (and (and (and newloc
+                                                                             (vim.api.nvim_buf_is_valid newloc.bufnr))
+                                                                        (= (. (. vim.bo
+                                                                                 newloc.bufnr)
+                                                                              :ft)
+                                                                           :oil))
+                                                                   :<C-i>)
+                                                              :<Ignore>))
+                                              :desc "Jump to newer cursor position in oil buffer"
+                                              :expr true
+                                              :mode :n}
+                                      :<C-k> preview-mapping
+                                      :<C-o> {:buffer true
+                                              :callback (fn []
+                                                          (local jumplist
+                                                                 (vim.fn.getjumplist))
+                                                          (local prevloc
+                                                                 (. (. jumplist
+                                                                       1)
+                                                                    (. jumplist
+                                                                       2)))
+                                                          (or (and (and (and prevloc
+                                                                             (vim.api.nvim_buf_is_valid prevloc.bufnr))
+                                                                        (= (. (. vim.bo
+                                                                                 prevloc.bufnr)
+                                                                              :ft)
+                                                                           :oil))
+                                                                   :<C-o>)
+                                                              :<Ignore>))
+                                              :desc "Jump to older cursor position in oil buffer"
+                                              :expr true
+                                              :mode :n}
+                                      :<CR> :actions.select
+                                      := :actions.select
+                                      :K preview-mapping
+                                      :g? :actions.show_help
+                                      :gs :actions.change_sort
+                                      :gx :actions.open_external
+                                      :gy {:buffer true
+                                           :callback (fn []
+                                                       (local entry
+                                                              (oil.get_cursor_entry))
+                                                       (local dir
+                                                              (oil.get_current_dir))
+                                                       (when (or (not entry)
+                                                                 (not dir))
+                                                         (lua "return "))
+                                                       (local entry-path
+                                                              (.. dir
+                                                                  entry.name))
+                                                       (vim.fn.setreg "\""
+                                                                      entry-path)
+                                                       (vim.fn.setreg vim.v.register
+                                                                      entry-path)
+                                                       (vim.notify (string.format "[oil] yanked '%s' to register '%s'"
+                                                                                  entry-path
+                                                                                  vim.v.register)))
+                                           :desc "Yank the filepath of the entry under the cursor to a register"
+                                           :mode :n}}
+                            :preview {:border :solid
+                                      :win_options {:winblend 0}}
+                            :progress {:border :solid
+                                       :win_options {:winblend 0}}
+                            :prompt_save_on_select_new_entry true
+                            :skip_confirm_for_simple_edits true
+                            :use_default_keymaps false
+                            :view_options {:is_always_hidden (fn [name]
+                                                               (= name ".."))}
+                            :win_options {:foldcolumn :0
+                                          :number false
+                                          :relativenumber false
+                                          :signcolumn :no
+                                          :statuscolumn ""}})
 
 (local groupid (vim.api.nvim_create_augroup :OilSyncCwd {}))
 (vim.api.nvim_create_autocmd [:BufEnter :TextChanged]
@@ -309,8 +328,6 @@
                               :desc "Set cwd to follow directory shown in oil buffers."
                               :group groupid
                               :pattern "oil:///*"})
-
-(map! [n] :<M-o> :<cmd>Oil<cr>)
 
 (vim.api.nvim_create_autocmd :DirChanged
                              {:callback (fn [info]

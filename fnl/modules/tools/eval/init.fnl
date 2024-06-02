@@ -1,13 +1,6 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: lzn!} :macros)
 
 ;; interactive lisp evaluation
-(use-package! :Olical/conjure
-              {:nyoom-module tools.eval :branch :develop :event :BufReadPost})
-
-; :ft [:clojure
-;      :lisp
-;      :janet
-;      :rust
-;      :lua
-;      :julia
-;      :python]})
+(lzn! :conjure
+      {:nyoom-module tools.eval
+       :ft [:clojure :lisp :janet :rust :lua :fennel :julia :python]})

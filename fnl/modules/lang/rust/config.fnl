@@ -17,24 +17,13 @@
                    :toggle))))
 
 ;; NOTE (Hermit) :: Remove after Adding Lazy! Macro and Proper buffer Autocmds
-(fn __cratesSetup []
-  " DocStrings::
-        "
-  (packadd! crates)
-  (let [fidget (autoload :fidget)
-        progress `,((. (autoload :fidget.progress) :handle :create) {:lsp_client {:name :crates}})]
-    (progress:report {:message "Setting Up crates"
-                      :level vim.log.levels.ERROR
-                      :progress 0})
-    ((->> :setup (. (require :crates))) {})
-    (progress:report {:message "Setup Complete"
-                      :title :Completed!
-                      :progress 99})))
-
-(vim.api.nvim_create_autocmd :BufReadPost
-                             {:pattern :Cargo.toml
-                              :callback #(__cratesSetup)
-                              :once true})
+(let [fidget (autoload :fidget)
+      progress `,((. (autoload :fidget.progress) :handle :create) {:lsp_client {:name :crates}})]
+  (progress:report {:message "Setting Up crates"
+                    :level vim.log.levels.ERROR
+                    :progress 0})
+  ((->> :setup (. (require :crates))) {})
+  (progress:report {:message "Setup Complete" :title :Completed! :progress 99}))
 
 ;; NOTE: (Hermit) Rustaceanvim Is inheritely lazy
 (tset vim.g :rustaceanvim

@@ -1,6 +1,5 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: lzn!} :macros)
 
-(use-package! :stevearc/oil.nvim {:nyoom-module tools.oil
-                                  :opt true
-                                  :keys [:<M-o>]
-                                  :cmd :Oil})
+(lzn! :oil {:nyoom-module tools.oil
+            :keys [{1 :<M-o> 2 #((. (require :oil) :open)) :desc "Oil::"}]
+            :cmd :Oil})

@@ -1,3 +1,3 @@
-(import-macros {: nyoom-module!} :macros)
+(import-macros {: lzn!} :macros)
 
-(nyoom-module! lang.nix)
+(lzn! :direnv {:nyoom-module lang.nix :ft :nix :wants [:toggleterm]})
