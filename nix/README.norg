@@ -3,7 +3,7 @@ title: README
 id: acd163a9-50a5-4655-9871-d47dfb6ff738
 workspace: default
 created: 2023-11-20T12:42:56-0500
-updated: 2023-12-01T11:24:38-0500
+updated: 2024-07-11T00:58:57-0500
 @end
 ** Ideals::
    Nyoom has been steamlining efforts for an alternative package manager, e.g:: {https://github.com/nyoom-engineering/alpacka}[alpacka], so in technicality nix is no longer needed. However, it would be stupid to rely so heavily on fetcher. As a result, adding a HM-module would be more than fitting. Additionally, there's also an `packages` %for 'nix build'% and `apps` %for 'nix run'%.
@@ -16,3 +16,7 @@ updated: 2023-12-01T11:24:38-0500
    - (?) Create Custom Module/Macro Snippets Using Luasnips
    - (-) Fix `nix run` issue
    -- Currently it fails to load sync if the `/tmp` directory doesn't exist. This Makes storing the luajit cache suboptimal, as before I was simply just going to pass the bytecompiled code into a DRV, and just run `nvim -u ${drv}/init.lua`.
+
+   @code rust
+
+   @end

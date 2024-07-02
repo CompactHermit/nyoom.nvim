@@ -7,6 +7,9 @@
                                        :color "#2563EB"
                                        :alt [:REF :REFCT :REFACT]}
                             :TEST {:icon "󰙨"}
+                            :BROKEN {:icon ""
+                                     :color "#FFFFF0"
+                                     :alt [:broke :broken :borked :brkn]}
                             :DOC {:icon ""
                                   :color "#a1eeff"
                                   :alt [:docs :doc :DOCS :dcx :dc]}

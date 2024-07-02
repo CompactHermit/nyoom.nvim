@@ -1,14 +1,13 @@
-(import-macros {: nyoom-module! : use-package!} :macros)
+(import-macros {: lzn!} :macros)
 
-; (use-package! :quarto-dev/quarto-nvim
-;               {:nyoom-module tools.quarto
-;                ;;:ft [:norg :md]
-;                :event :BufWritePost
-;                :cmd [:QuartoPreview]
-;                :requires [:neovim/nvim-lspconfig
-;                           :jmbuhr/otter.nvim
-;                           :benlubas/nvim-cmp
-;                           :neovim/nvim-lspconfig
-;                           :nvim-treesitter/nvim-treesitter]})
+(lzn! :quarto {:nyoom-module tools.quarto
+               :ft [:md]
+               :cmd [:QuartoPreview]
+               :wants [:lspconfig :otter :cmp :nvim-treesitter]})
 
-(nyoom-module! tools.quarto)
+(lzn! :otter
+      {:ft [:norg :md]
+       :on_require [:otter]
+       :after #((->> :setup (. (autoload :otter))) {:handle_leading_whitespace true
+                                                    :lsp {:hover {:border :none}}
+                                                    :buffers {:write_to_disk true}})})

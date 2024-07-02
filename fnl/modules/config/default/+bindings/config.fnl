@@ -13,7 +13,7 @@
 (let! mapleader " ")
 
 ;; NOTE:: Want more Hydra Binds
-(map! [n] ";" ":" {:desc :vim-ex})
+;;(map! [n] ";" ":" {:desc :vim-ex})
 
 (map! [n] "<leader>`" "<cmd>e#<CR>" {:desc "Switch to last buffer"})
 (nyoom-module-p! telescope

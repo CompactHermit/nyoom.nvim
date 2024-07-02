@@ -1,7 +1,6 @@
 (let [fidget (autoload :fidget)
       progress `,((. (autoload :fidget.progress) :handle :create) {:lsp_client {:name :__dap}})
-      dap (autoload :dap)
-      dap-rr (autoload :nvim-dap-rr)
+      dap (autoload :dap) ;dap-rr (autoload :nvim-dap-rr)
       find-exe (fn []
                  (let [opts {}
                        pickers (autoload :telescope.pickers)
@@ -86,9 +85,7 @@
          :timeout 2000
          :type :kotlin}])
   (set dap.configurations {:c _configs :cpp _configs :rust _configs})
-  (table.insert dap.configurations.cpp (dap-rr.get_config))
-  (table.insert dap.configurations.c (dap-rr.get_config))
-  (table.insert dap.configurations.rust (dap-rr.get_rust_config))
+  ;(table.insert dap.configurations.cpp (dap-rr.get_config)) ; (table.insert dap.configurations.c (dap-rr.get_config)) ; (table.insert dap.configurations.rust (dap-rr.get_rust_config))
   (set dap.adapters
        {:codelldb {:executable {:args [:--port "${port}"] :command :codelldb}
                    :port "${port}"
@@ -149,5 +146,6 @@
                                      (. (autoload :dap-python))) (vim.fn.exepath :debugpy))
       _ nil))
   ((->> :setup (. (autoload :nvim-dap-virtual-text))))
-  ((->> :setup (. (autoload :nvim-dap-rr))) {})
-  (progress:report {:message "Setup Complete" :title :Completed! :progress 100}))
+  ;((->> :setup (. (autoload :nvim-dap-rr))) {})
+  (progress:report {:message "Setup Complete" :title :Completed! :progress 100})
+  (progress:finish))

@@ -1,0 +1,628 @@
+[actions-preview]
+fetch.github = "aznhe21/actions-preview.nvim"
+src.git = "https://github.com/aznhe21/actions-preview.nvim"
+
+[animation]
+fetch.github = "anuvyklack/animation.nvim"
+src.git = "https://github.com/anuvyklack/animation.nvim"
+
+[alpha]
+fetch.github = "goolord/alpha-nvim"
+src.git = "https://github.com/goolord/alpha-nvim"
+
+[bmessage]
+fetch.github = "ariel-frischer/bmessages.nvim"
+src.git = "https://github.com/ariel-frischer/bmessages.nvim"
+
+[bufferline]
+fetch.github = "akinsho/bufferline.nvim"
+src.git = "https://github.com/akinsho/bufferline.nvim/"
+
+[csharp]
+fetch.github = "iabdelkareem/csharp.nvim"
+src.git = "https://github.com/iabdelkareem/csharp.nvim"
+
+[crates]
+fetch.github = "saecki/crates.nvim"
+src.git = "https://github.com/saecki/crates.nvim"
+
+[clangd_extensions]
+fetch.github = "p00f/clangd_extensions.nvim"
+src.git = "https://github.com/p00f/clangd_extensions.nvim"
+
+[nvim-cmp]
+fetch.github = "hrsh7th/nvim-cmp"
+src.git = "https://github.com/hrsh7th/nvim-cmp"
+
+[cmp-conjure]
+fetch.github = "PaterJason/cmp-conjure"
+src.git = "https://github.com/PaterJason/cmp-conjure"
+
+[cmp-lspkind]
+fetch.github = "onsails/lspkind.nvim"
+src.git = "https://github.com/onsails/lspkind.nvim"
+
+[cmp-luasnip]
+fetch.github = "saadparwaiz1/cmp_luasnip"
+src.git = "https://github.com/saadparwaiz1/cmp_luasnip"
+
+[cmp-path]
+fetch.github = "hrsh7th/cmp-path"
+src.git = "https://github.com/hrsh7th/cmp-path"
+
+[cmp-buffer]
+fetch.github = "hrsh7th/cmp-buffer"
+src.git = "https://github.com/hrsh7th/cmp-buffer"
+
+[cmp-cmdline]
+fetch.github = "hrsh7th/cmp-cmdline"
+src.git = "https://github.com/hrsh7th/cmp-cmdline"
+
+[cmp-nvim-lsp]
+fetch.github = "hrsh7th/cmp-nvim-lsp"
+src.git = "https://github.com/hrsh7th/cmp-nvim-lsp"
+
+[cmp-nvim-lua]
+fetch.github = "hrsh7th/cmp-nvim-lua"
+src.git = "https://github.com/hrsh7th/cmp-nvim-lua"
+
+[cmp-vimtex]
+fetch.github = "micangl/cmp-vimtex"
+src.git = "https://github.com/micangl/cmp-vimtex"
+
+[cmp-nvim-lsp-signature-help]
+fetch.github = "hrsh7th/cmp-nvim-lsp-signature-help"
+src.git = "https://github.com/hrsh7th/cmp-nvim-lsp-signature-help"
+
+[cmp-dap]
+fetch.github = "rcarriga/cmp-dap"
+src.git = "https://github.com/rcarriga/cmp-dap"
+
+[cmp-latexsym]
+fetch.github = "kdheepak/cmp-latex-symbols"
+src.git = "https://github.com/kdheepak/cmp-latex-symbols"
+
+[dashboard]
+fetch.github = "nvimdev/dashboard-nvim"
+src.git = "https://github.com/nvimdev/dashboard-nvim"
+
+[luasnip]
+fetch.github = "L3MON4D3/LuaSnip"
+src.git = "https://github.com/L3MON4D3/LuaSnip"
+
+[friendly-luasnip]
+fetch.github = "rafamadriz/friendly-snippets"
+src.git = "https://github.com/rafamadriz/friendly-snippets"
+
+[comment]
+fetch.github = "numToStr/Comment.nvim"
+src.git = "https://github.com/numToStr/Comment.nvim"
+
+[compiler]
+fetch.github = "Zeioth/compiler.nvim"
+src.git = "https://github.com/Zeioth/compiler.nvim"
+
+[conjure]
+fetch.github = "Olical/conjure"
+src.git = "https://github.com/Olical/conjure"
+
+[diffview]
+fetch.github = "sindrets/diffview.nvim"
+src.git = "https://github.com/sindrets/diffview.nvim"
+
+[dap]
+fetch.github = "mfussenegger/nvim-dap"
+src.git = "https://github.com/mfussenegger/nvim-dap"
+
+[dapui]
+fetch.github = "rcarriga/nvim-dap-ui"
+src.git = "https://github.com/rcarriga/nvim-dap-ui"
+
+[dap-lua]
+fetch.github = "jbyuki/one-small-step-for-vimkind"
+src.git = "https://github.com/jbyuki/one-small-step-for-vimkind"
+
+[dap-rr]
+fetch.github = "jonboh/nvim-dap-rr"
+src.git = "https://github.com/jonboh/nvim-dap-rr"
+
+[dap-python]
+fetch.github = "mfussenegger/nvim-dap-python"
+src.git = "https://github.com/mfussenegger/nvim-dap-python"
+
+[dynMacro]
+fetch.github = "tani/dmacro.nvim"
+src.git = "https://github.com/tani/dmacro.nvim"
+
+[direnv]
+fetch.github = "NotAShelf/direnv.nvim"
+src.git = "https://github.com/NotAShelf/direnv.nvim"
+
+[flutter-tools]
+fetch.github = "akinsho/flutter-tools.nvim"
+src.git = "https://github.com/akinsho/flutter-tools.nvim"
+
+[gitconflict]
+fetch.github = "akinsho/git-conflict.nvim"
+src.git = "https://github.com/akinsho/git-conflict.nvim"
+
+[gitignore]
+fetch.github = "wintermute-cell/gitignore.nvim"
+src.git = "https://github.com/wintermute-cell/gitignore.nvim"
+
+[galore]
+fetch.github = "dagle/galore"
+src.git = "https://github.com/dagle/galore"
+
+[gitsigns]
+fetch.github = "lewis6991/gitsigns.nvim"
+src.git = "https://github.com/lewis6991/gitsigns.nvim"
+
+[go-nvim]
+fetch.github = "ray-x/go.nvim"
+src.git = "https://github.com/ray-x/go.nvim"
+
+[grug]
+fetch.github = "MagicDuck/grug-far.nvim"
+src.git = "https://github.com/MagicDuck/grug-far.nvim/"
+
+[harpoon]
+fetch.github = "ThePrimeagen/harpoon"
+src.git = "https://github.com/ThePrimeagen/harpoon/"
+src.branch = "harpoon2"
+
+
+[haskellTools]
+fetch.github = "mrcjkb/haskell-tools.nvim"
+src.git = "https://github.com/mrcjkb/haskell-tools.nvim"
+
+[haskell-snippets]
+fetch.github = "mrcjkb/haskell-snippets.nvim"
+src.git = "https://github.com/mrcjkb/haskell-snippets.nvim"
+
+[hotpot-nvim]
+fetch.github = "rktjmp/hotpot.nvim"
+src.git = "https://github.com/rktjmp/hotpot.nvim"
+
+[hover-nvim]
+fetch.github = "lewis6991/hover.nvim"
+src.git = "https://github.com/lewis6991/hover.nvim"
+
+[ibl]
+fetch.github = "lukas-reineke/indent-blankline.nvim"
+src.git = "https://github.com/lukas-reineke/indent-blankline.nvim"
+
+[hlchunks]
+fetch.github = "shellRaining/hlchunk.nvim"
+src.git = "https://github.com/shellRaining/hlchunk.nvim"
+
+[hydra]
+fetch.github = "nvimtools/hydra.nvim"
+src.git = "https://github.com/nvimtools/hydra.nvim"
+
+[lazydev]
+fetch.github = "folke/lazydev.nvim"
+src.git = "https://github.com/folke/lazydev.nvim"
+
+[luvit-meta]
+fetch.github = "Bilal2453/luvit-meta"
+src.git = "https://github.com/Bilal2453/luvit-meta"
+
+[libmodal]
+fetch.github = "Iron-E/nvim-libmodal"
+src.git = "https://github.com/Iron-E/nvim-libmodal"
+
+[litee]
+fetch.github = "ldelossa/litee-calltree.nvim"
+src.git = "https://github.com/ldelossa/litee-calltree.nvim"
+
+[lua-utils]
+fetch.github = "nvim-neorg/lua-utils.nvim"
+src.git = "https://github.com/nvim-neorg/lua-utils.nvim"
+
+[luasnip_snippets]
+fetch.github = "mireq/luasnip-snippets"
+src.git = "https://github.com/mireq/luasnip-snippets"
+
+[lsp-better-diag]
+fetch.github = "sontungexpt/better-diagnostic-virtual-text"
+src.git = "https://github.com/sontungexpt/better-diagnostic-virtual-text"
+
+[lsplines]
+fetch.git = "https://git.sr.ht/~whynothugo/lsp_lines.nvim"
+src.git = "https://git.sr.ht/~whynothugo/lsp_lines.nvim"
+
+[lspsaga]
+fetch.github = "nvimdev/lspsaga.nvim"
+src.git = "https://github.com/nvimdev/lspsaga.nvim"
+
+[moonfly]
+fetch.github = "bluz71/vim-moonfly-colors"
+src.git = "https://github.com/bluz71/vim-moonfly-colors"
+
+[molten]
+fetch.github = "benlubas/molten-nvim"
+src.git = "https://github.com/benlubas/molten-nvim"
+
+[markview]
+fetch.github = "OXY2DEV/markview.nvim"
+src.git = "https://github.com/OXY2DEV/markview.nvim"
+
+[multicursor]
+fetch.github = "smoka7/multicursors.nvim"
+src.git = "https://github.com/smoka7/multicursors.nvim"
+
+[nightfox]
+fetch.github = "EdenEast/nightfox.nvim"
+src.git = "https://github.com/EdenEast/nightfox.nvim"
+
+[norgopolis-client-lua]
+fetch.github = "nvim-neorg/norgopolis-client.lua"
+src.git = "https://github.com/nvim-neorg/norgopolis-client.lua"
+
+[neotest]
+fetch.github = "nvim-neotest/neotest"
+src.git = "https://github.com/nvim-neotest/neotest"
+
+[neotest-busted]
+fetch.github = "HiPhish/neotest-busted"
+src.git = "https://github.com/HiPhish/neotest-busted"
+
+[neotest-zig]
+fetch.github = "lawrence-laz/neotest-zig"
+src.git = "https://github.com/lawrence-laz/neotest-zig"
+
+[neotest-haskell]
+fetch.github = "mrcjkb/neotest-haskell"
+src.git = "https://github.com/mrcjkb/neotest-haskell"
+
+[neotest-python]
+fetch.github = "nvim-neotest/neotest-python"
+src.git = "https://github.com/nvim-neotest/neotest-python"
+
+[neogit]
+fetch.github = "NeogitOrg/neogit"
+src.git = "https://github.com/NeogitOrg/neogit/"
+
+[neorg]
+fetch.github = "nvim-neorg/neorg"
+src.git = "https://github.com/nvim-neorg/neorg/"
+
+[neorg-lines]
+fetch.github = "benlubas/neorg-conceal-wrap"
+src.git = "https://github.com/benlubas/neorg-conceal-wrap"
+
+[neorg-telescope]
+fetch.github = "nvim-neorg/neorg-telescope"
+src.git = "https://github.com/nvim-neorg/neorg-telescope"
+
+[neorg-exec]
+fetch.github = "laher/neorg-exec"
+src.git = "https://github.com/laher/neorg-exec"
+
+[neorg-interim-ls]
+fetch.github = "benlubas/neorg-interim-ls"
+src.git = "https://github.com/benlubas/neorg-interim-ls"
+
+[norg-fmt]
+fetch.github = "nvim-neorg/norg-fmt"
+src.git = "https://github.com/nvim-neorg/norg-fmt"
+cargo_locks = ["Cargo.lock"]
+
+[neorg-se]
+fetch.github = "benlubas/neorg-se"
+src.git = "https://github.com/benlubas/neorg-se"
+cargo_locks = ["Cargo.lock"]
+
+[neorg-templates]
+fetch.github = "pysan3/neorg-templates"
+src.git = "https://github.com/pysan3/neorg-templates"
+
+[neorg-roam]
+fetch.github = "Jarvismkennedy/neorg-roam.nvim"
+src.git = "https://github.com/Jarvismkennedy/neorg-roam.nvim"
+
+[neorg-timelog]
+fetch.github = "phenax/neorg-timelog"
+src.git = "https://github.com/phenax/neorg-timelog"
+
+[neorg-hop-extras]
+fetch.github = "phenax/neorg-hop-extras"
+src.git = "https://github.com/phenax/neorg-hop-extras"
+
+[image-nvim]
+fetch.github = "3rd/image.nvim"
+src.git = "https://github.com/3rd/image.nvim"
+
+[quicknote]
+fetch.github = "RutaTang/quicknote.nvim"
+src.git = "https://github.com/RutaTang/quicknote.nvim"
+
+[nvim-nio]
+fetch.github = "nvim-neotest/nvim-nio"
+src.git = "https://github.com/nvim-neotest/nvim-nio"
+
+[nvim-scissors]
+fetch.github = "chrisgrieser/nvim-scissors"
+src.git = "https://github.com/chrisgrieser/nvim-scissors"
+
+[nvim-dap-virtual-text]
+fetch.github = "theHamsta/nvim-dap-virtual-text"
+src.git = "https://github.com/theHamsta/nvim-dap-virtual-text"
+
+[nvim-notify]
+fetch.github = "rcarriga/nvim-notify"
+src.git = "https://github.com/rcarriga/nvim-notify"
+
+[nvim-nu]
+fetch.github = "lhkipp/nvim-nu"
+src.git = "https://github.com/lhkipp/nvim-nu"
+
+[nu-syntax]
+fetch.github = "elkasztano/nushell-syntax-vim"
+src.git = "https://github.com/elkasztano/nushell-syntax-vim"
+
+[nui]
+fetch.github = "ofseed/nui.nvim"
+src.git = "https://github.com/ofseed/nui.nvim"
+
+[nui-components]
+fetch.github = "grapp-dev/nui-components.nvim"
+src.git = "https://github.com/grapp-dev/nui-components.nvim"
+
+[neorg-chronicle]
+fetch.github = "MartinEekGerhardsen/neorg-chronicle"
+src.git = "https://github.com/MartinEekGerhardsen/neorg-chronicle"
+
+[octo]
+fetch.github = "pwntester/octo.nvim"
+src.git = "https://github.com/pwntester/octo.nvim"
+
+[otter]
+fetch.github = "jmbuhr/otter.nvim"
+src.git = "https://github.com/jmbuhr/otter.nvim"
+
+[oil]
+fetch.github = "stevearc/oil.nvim"
+src.git = "https://github.com/stevearc/oil.nvim/"
+
+[oil-git-status]
+fetch.github = "mrcjkb/oil-git-status.nvim"
+src.git = "https://github.com/mrcjkb/oil-git-status.nvim/"
+
+[overseer]
+fetch.github = "stevearc/overseer.nvim"
+src.git = "https://github.com/stevearc/overseer.nvim/"
+
+[oqt]
+fetch.github = "itsfrank/overseer-quick-tasks"
+src.git = "https://github.com/itsfrank/overseer-quick-tasks"
+
+[oxocarbon]
+fetch.github = "nyoom-engineering/oxocarbon.nvim"
+src.git = "https://github.com/nyoom-engineering/oxocarbon.nvim"
+
+[pathlib]
+fetch.github = "pysan3/pathlib.nvim"
+src.git = "https://github.com/pysan3/pathlib.nvim"
+
+[profile]
+fetch.github = "stevearc/profile.nvim"
+src.git = "https://github.com/stevearc/profile.nvim"
+
+[quarto]
+fetch.github = "quarto-dev/quarto-nvim"
+src.git = "https://github.com/quarto-dev/quarto-nvim"
+
+[ratatoskr]
+fetch.github = "vigoux/ratatoskr.nvim"
+src.git = "https://github.com/vigoux/ratatoskr.nvim"
+
+[roslyn]
+fetch.github = "jmederosalvarado/roslyn.nvim"
+src.git = "https://github.com/jmederosalvarado/roslyn.nvim"
+
+[reactive]
+fetch.github = "rasulomaroff/reactive.nvim"
+src.git = "https://github.com/rasulomaroff/reactive.nvim"
+
+[resession]
+fetch.github = "stevearc/resession.nvim"
+src.git = "https://github.com/stevearc/resession.nvim"
+
+[rustaceanvim]
+fetch.github = "mrcjkb/rustaceanvim"
+src.git = "https://github.com/mrcjkb/rustaceanvim"
+
+[smuggler]
+fetch.github = "Klafyvel/nvim-smuggler"
+src.git = "https://github.com/Klafyvel/nvim-smuggler"
+
+[sweetie]
+fetch.github = "NTBBloodbath/sweetie.nvim"
+src.git = "https://github.com/NTBBloodbath/sweetie.nvim"
+
+[tailwind-tools]
+fetch.github = "luckasRanarison/tailwind-tools.nvim"
+src.git = "https://github.com/luckasRanarison/tailwind-tools.nvim"
+
+[telescope_hoogle]
+fetch.github = "luc-tielen/telescope_hoogle"
+src.git = "https://github.com/luc-tielen/telescope_hoogle"
+
+[folke_edgy]
+fetch.github = "folke/edgy.nvim"
+src.git = "https://github.com/folke/edgy.nvim"
+# fetch.github = "willothy/edgy.nvim"
+# src.git = "https://github.com/willothy/edgy.nvim"
+
+[folke_trouble]
+fetch.github = "folke/trouble.nvim"
+src.git = "https://github.com/folke/trouble.nvim"
+
+[folke_todo-comments]
+fetch.github = "LunarLambda/todo-comments.nvim"
+src.git = "https://github.com/LunarLambda/todo-comments.nvim/"
+src.branch = "enhanced-matching"
+#
+[folke_noice]
+fetch.github = "folke/noice.nvim"
+src.git = "https://github.com/folke/noice.nvim"
+
+[ts-error-translator]
+fetch.github = "dmmulroy/ts-error-translator.nvim"
+src.git = "https://github.com/dmmulroy/ts-error-translator.nvim"
+
+[mini-icons]
+fetch.github = "echasnovski/mini.icons"
+src.git = "https://github.com/echasnovski/mini.icons"
+
+[nvim-parinfer]
+fetch.github = "gpanders/nvim-parinfer"
+src.git = "https://github.com/gpanders/nvim-parinfer/"
+
+[nvim-treesitter]
+fetch.github = "nvim-treesitter/nvim-treesitter"
+src.git = "https://github.com/nvim-treesitter/nvim-treesitter"
+
+[tsplayground]
+fetch.github = "nvim-treesitter/playground"
+src.git = "https://github.com/nvim-treesitter/playground"
+
+# [rainbow-delimiters]
+# fetch  "gitlab:HiPhish/rainbow-delimiters.nvim"
+# url  "gitlab:HiPhish/rainbow-delimiters.nvim"
+
+[truezen]
+fetch.github = "Pocco81/true-zen.nvim"
+src.git = "https://github.com/Pocco81/true-zen.nvim"
+
+[ts-autotags]
+fetch.github = "windwp/nvim-ts-autotag"
+src.git = "https://github.com/windwp/nvim-ts-autotag"
+
+[ts-context]
+fetch.github = "nvim-treesitter/nvim-treesitter-context"
+src.git = "https://github.com/nvim-treesitter/nvim-treesitter-context"
+
+[ts-context-commentstring]
+fetch.github = "JoosepAlviste/nvim-ts-context-commentstring"
+src.git = "https://github.com/JoosepAlviste/nvim-ts-context-commentstring"
+
+[ts-refactor]
+fetch.github = "nvim-treesitter/nvim-treesitter-refactor"
+src.git = "https://github.com/nvim-treesitter/nvim-treesitter-refactor"
+
+[ts-textobjects]
+fetch.github = "nvim-treesitter/nvim-treesitter-textobjects"
+src.git = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects"
+
+[ts-node-action]
+fetch.github = "Ckolkey/ts-node-action"
+src.git = "https://github.com/Ckolkey/ts-node-action"
+
+[toggleterm]
+fetch.github = "akinsho/toggleterm.nvim"
+src.git = "https://github.com/akinsho/toggleterm.nvim"
+
+[ufold]
+fetch.github = "kevinhwang91/nvim-ufo"
+src.git = "https://github.com/kevinhwang91/nvim-ufo"
+
+[quickfix]
+fetch.github = "kevinhwang91/nvim-bqf"
+src.git = "https://github.com/kevinhwang91/nvim-bqf"
+
+[nonels]
+fetch.github = "nvimtools/none-ls.nvim"
+src.git = "https://github.com/nvimtools/none-ls.nvim"
+
+[lspconfig]
+fetch.github = "neovim/nvim-lspconfig"
+src.git = "https://github.com/neovim/nvim-lspconfig"
+
+[yanky]
+fetch.github = "gbprod/yanky.nvim"
+src.git = "https://github.com/gbprod/yanky.nvim"
+
+[wrapping-paper]
+fetch.github = "benlubas/wrapping-paper.nvim"
+src.git = "https://github.com/benlubas/wrapping-paper.nvim"
+
+[psa]
+fetch.github = "kevinhwang91/promise-async"
+src.git = "https://github.com/kevinhwang91/promise-async"
+
+[windows]
+fetch.github = "anuvyklack/windows.nvim"
+src.git = "https://github.com/anuvyklack/windows.nvim"
+
+#RANT:: <FOLKE> STOP FUCKING WITH AUTOCMD YOU BASTARD, STOP FUCKING WITH LOADSCRIPTS, JUST GET OUT THE KITCHEN, ETERNALLY
+[which-key]
+fetch.github = "folke/which-key.nvim"
+src.git = "https://github.com/folke/which-key.nvim"
+# src.manual = "af4ded85542d40e190014c732fa051bdbf88be3d"
+
+[yeet]
+fetch.github = "samharju/yeet.nvim"
+src.git = "https://github.com/samharju/yeet.nvim"
+
+[zigTools]
+fetch.github = "tacogips/zig-tools.nvim"
+src.git = "https://github.com/tacogips/zig-tools.nvim"
+
+[telescope]
+fetch.github = "nvim-lua/telescope.nvim"
+src.git = "https://github.com/nvim-lua/telescope.nvim"
+
+[telescope-ui-select]
+fetch.github = "nvim-telescope/telescope-ui-select.nvim"
+src.git = "https://github.com/nvim-telescope/telescope-ui-select.nvim"
+
+[telescope-file-browse]
+fetch.github = "nvim-telescope/telescope-file-browser.nvim"
+src.git = "https://github.com/nvim-telescope/telescope-file-browser.nvim"
+
+[telescope-project]
+fetch.github = "nvim-telescope/telescope-project.nvim"
+src.git = "https://github.com/nvim-telescope/telescope-project.nvim"
+
+[telescope-tabs]
+fetch.github = "LukasPietzschmann/telescope-tabs"
+src.git = "https://github.com/LukasPietzschmann/telescope-tabs"
+
+[telescope-zoxide]
+fetch.github = "jvgrootveld/telescope-zoxide"
+src.git = "https://github.com/jvgrootveld/telescope-zoxide"
+
+[telescope-egrepify]
+fetch.github = "fdschmidt93/telescope-egrepify.nvim"
+src.git = "https://github.com/fdschmidt93/telescope-egrepify.nvim"
+
+[tmpclone-nvim]
+fetch.github = "danielhp95/tmpclone-nvim"
+src.git = "https://github.com/danielhp95/tmpclone-nvim"
+
+[folke_flash]
+fetch.github = "folke/flash.nvim"
+src.git = "https://github.com/folke/flash.nvim"
+
+[text-case]
+fetch.github = "johmsalas/text-case.nvim"
+src.git = "https://github.com/johmsalas/text-case.nvim"
+
+[matchparens]
+fetch.github = "monkoose/matchparen.nvim"
+src.git = "https://github.com/monkoose/matchparen.nvim"
+
+[nvim-autopairs]
+fetch.github = "windwp/nvim-autopairs"
+src.git = "https://github.com/windwp/nvim-autopairs"
+
+[syntax-tree-surfer]
+fetch.github = "ziontee113/syntax-tree-surfer"
+src.git = "https://github.com/ziontee113/syntax-tree-surfer"
+
+[iswap]
+fetch.github = "mizlan/iswap.nvim"
+src.git = "https://github.com/mizlan/iswap.nvim"

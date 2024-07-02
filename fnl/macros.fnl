@@ -410,7 +410,7 @@
   See https://github.com/wbthomason/packer.nvim for information about the
   options.
   Additional to those options are some use-package-isms and custom keys:
-  :defer to defer loading a plugin until a file is loaded 
+  :defer to defer loading a plugin until a file is loaded
   :call-setup to call setup for a plugin using nyoom's setup wrapper
   nyoom-module to load the config for nyoom module"
   (assert-compile (str? identifier) "expected string for identifier" identifier)
@@ -573,7 +573,7 @@
 (lambda lzn-unpack! []
   "Initializes The Lazyn Plugin System, essentially a carbon copy of `unpack!` but without the bullshit"
   (let [packs (icollect [_ v (ipairs _G.nyoom/pack)]
-                `,v)] ; val (icollect [_ v (ipairs packs)] ;       v)]
+                `,v)]
     `(: (vim.iter ,packs) :each
         (fn [ctx#]
           ((. (require :lz.n) :load) ctx#)))))
@@ -824,7 +824,7 @@
   ```"
   (fn compile-module [module-name module-decl]
     (icollect [_ config-path (ipairs (or module-decl.config-paths []))]
-      `,(pcall require config-path)))
+      (pcall require config-path)))
 
   (fn compile-modules [registry]
     (icollect [module-name module-def (pairs registry)]
@@ -836,8 +836,8 @@
 ;; TODO: Rid of hash function
 (lambda nyoom-module! [name]
   "By default modules should be loaded through use-package!. Of course, not every
-  modules needs a package. Sometimes we just want to load `config.fnl`. In this 
-  case, we can hack onto packer.nvim, give it a fake package, and ask it to load a 
+  modules needs a package. Sometimes we just want to load `config.fnl`. In this
+  case, we can hack onto packer.nvim, give it a fake package, and ask it to load a
   config file.
   Example of use:
   ```fennel
@@ -849,7 +849,7 @@
     (table.insert _G.nyoom/pack (pack (.. :nyoom. hash) {:nyoom-module name}))))
 
 (lambda nyoom-module-p! [name ?config]
-  "Checks if a module is enabled. Return config if given, otherwise return 
+  "Checks if a module is enabled. Return config if given, otherwise return
   true or false based on the state of the module
   Accepts the following arguements:
   name -> a symbol.
@@ -900,20 +900,20 @@
 ;; (tset _G :nyoom/formatters [])
 ;; (tset _G :nyoom/parsers [])
 ;; (tset _G :nyoom/cmp [])
-;; 
+;;
 
 ;; (lambda nyoom-add-language-server! [server ?config]
 ;;   (assert-compile (sym? server) "expected symbol for server" server)
 ;;   (let [server (->str server)
 ;;         config (or ?config)]
 ;;     (tset _G :nyoom/servers server config)))
-;; 
-;; 
+;;
+;;
 ;; (lambda nyoom-load-language-servers! []
 ;;   (let [servers _G.nyoom/servers]
 ;;     (each [server server_config (pairs servers)]
 ;;       ((. (. lsp server) :setup) (deep-merge defaults server_config)))))
-;; 
+;;
 ;; (lambda nyoom-add-linter! [])
 ;; (lambda nyoom-add-formatter! [])
 ;; (lambda nyoom-add-parsers! [])

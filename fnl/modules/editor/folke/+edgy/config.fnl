@@ -21,6 +21,13 @@
                          :filter (fn [buf]
                                    (= (. (. vim.b buf) :neo_tree_source)
                                       :filesystem))}
+                        {:title :TOC
+                         :ft :norg
+                         :filter (fn [buf]
+                                   (match (vim.api.nvim_buf_get_name buf)
+                                     (where k1 (= k1 "neorg://toc-1")) true
+                                     _ false))}
+                        ;{:title "Neorg TOC"}
                         {:title "GIT Status"
                          :ft :neo-tree
                          :filter (fn [buf]
@@ -74,9 +81,9 @@
                            :open #(__toggle_noice)}
                           {:ft :dap-repl :title "Debug REPL"}
                           {:ft :help :size {:height 20}}
-                          {:ft :text :size {:height 20}}
-                          :Trouble
-                          {:ft [:qf] :title :QuickFix}]
+                          ; {:ft :text :filter (fn [buf]
+                          ;                      (buf.name ) :size {:height 20})}
+                          {:ft :qf :title :QuickFix}]
                  :right [{:ft :tsplayground :title (.. :TSPlayground "::")}
                          :dapui_scopes
                          :ClangdAST
@@ -111,7 +118,7 @@
                                    hk (Hydra {:name :Edgy
                                               :mode :n
                                               : hint
-                                              :config {:color :amaranth
+                                              :config {:color :pink
                                                        :hint {:type :window
                                                               :float_opts {:style :minimal
                                                                            :noautocmd true}

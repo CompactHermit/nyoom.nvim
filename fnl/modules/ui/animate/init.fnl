@@ -10,9 +10,6 @@
                                                             :duration 100
                                                             :fps 60}})})
 
-(lzn! :reactive {:nyoom-module ui.animate :event :BufWritePost})
-
-; :requires [(pack :anuvyklack/middleclass)
-;            (pack :anuvyklack/animation.nvim)]})
+;(lzn! :reactive {:nyoom-module ui.animate :event :BufWritePost})
 
 ;(lzn! :jbyuki/venn.nvim {:event [:BufWritePost]})

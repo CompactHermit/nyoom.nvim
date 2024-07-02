@@ -1,17 +1,21 @@
 (import-macros {: packadd!} :macros)
 
-;(packadd! nvim-material-icons)
-;; NOTE: (Hermit) <05/27> Developer is fucking with highlight groups, and since I'm too lazy to patch his bs, we just ignore this completely from now on
-;; (local material-icons (autoload :nvim-material-icon))
+; (local new-icons {:norg {:icon "" :color "#4878be" :name :neorg}
+;                   :ncl {:icons "" :color "#4878be" :name :nickel}
+;                   :py {:icon ""
+;                        :color "#ffbc03"
+;                        :cterm_color :214
+;                        :name :Py}})
 
-(local new-icons {:norg {:icon "" :color "#4878be" :name :neorg}
-                  :ncl {:icons "" :color "#4878be" :name :nickel}
-                  :py {:icon ""
-                       :color "#ffbc03"
-                       :cterm_color :214
-                       :name :Py}})
+;((->> :setup (. (autoload :nvim-web-devicons))) {:override new-icons})
 
-;(local patched_icons (vim.tbl_deep_extend :force (material-icons.get_icons)
-;                                          new-icons))
+;; fnlfmt: skip
+((->> :setup
+      (. (autoload :mini.icons))) {:style :glyph
+                                   :extension {:lua {:hl :MiniIconsBlue}
+                                               :justfile {:glyph "󰖷" :hl :MiniIconsGrey}
+                                               :lock {:glyph "" :hl :MiniIconsYellow}
+                                               :norg {:glyph ""
+                                                      :hl :MiniIconsBlue}}})
 
-((->> :setup (. (require :nvim-web-devicons))) {:override new-icons})
+((->> :mock_nvim_web_devicons (. (autoload :mini.icons))))

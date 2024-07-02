@@ -1,9 +1,23 @@
 (require-macros :macros)
 (import-macros {: >==} :util.macros)
 
-(colorscheme oxocarbon)
-; (set! background :light)
-; (set! background :dark)
+((->> :setup (. (autoload :nightfox))) {:options {:dim_inactive true
+                                                  :transparent false
+                                                  :terminal_colors true
+                                                  :styles {:comments :NONE
+                                                           :conditionals :NONE
+                                                           :constants :NONE
+                                                           :functions :NONE
+                                                           :keywords :NONE
+                                                           :numbers :NONE
+                                                           :operators :NONE
+                                                           :strings :NONE
+                                                           :types :NONE
+                                                           :variables :NONE}}})
+
+(colorscheme carbonfox)
+;(set! background :light)
+;(set! background :dark)
 ;;   ┌──────────────────────┐
 ;;   │    CUSTOM Opts       │
 ;;   └──────────────────────┘
@@ -12,11 +26,11 @@
 
 (set! guifont "Cascadia Code PL:w10, Symbols Nerd Font, Noto Color Emoji")
 
-(set! gcr ["i-c-ci-ve:blinkoff500-blinkon500-block-TermCursor"
-           "n-v:block-Curosr/lCursor"
-           "o:hor50-Curosr/lCursor"
-           "r-cr:hor20-Curosr/lCursor"])
-
+; (set! gcr ["i-c-ci-ve:blinkoff500-blinkon500-block-TermCursor"
+;            "n-v:block-Curosr/lCursor"
+;            "o:hor50-Curosr/lCursor"
+;            "r-cr:hor20-Curosr/lCursor"])
+;
 (set! relativenumber)
 
 (let! fennel_use_luajit true)
@@ -44,7 +58,7 @@
 (map! [n] :p "<Plug>(YankyPutAfter)")
 (map! [n] :P "<Plug>(YankyPutBefore)")
 (map! [n] :gp "<Plug>(YankyGPutAfter)")
-(map! [n] :<space>ct "<cmd>lua require('lsp_lines').toggle()<cr>")
+; (map! [n] :<space>ct "<cmd>lua require('lsp_lines').toggle()<cr>")
 
 (autocmd! :RecordingEnter "*"
           #(vim.notify (.. "Recording Macro: (" (vim.fn.reg_recording) ")")))
@@ -114,3 +128,8 @@
                               :telescope true}
                :cursor_color true
                :terminal_colors true})
+
+(local fox ((. (autoload :nightfox.palette) :load) :carbonfox))
+(vim.api.nvim_set_hl 0 "@markup.italic" {:italic true})
+(vim.api.nvim_set_hl 0 :CodeCell {:bg fox.bg0})
+(vim.api.nvim_set_hl 0 :Whitespace {:ctermfg 104 :fg "#6767d0"})

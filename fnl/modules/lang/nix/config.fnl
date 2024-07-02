@@ -18,7 +18,11 @@
 
 ; (tterm.exec "")))
 
-(let! direnv_auto 1)
-(let! direnv_silent_load 0)
+; (let! direnv_auto 1)
+; (let! direnv_silent_load 0)
+((->> :setup (. (autoload :direnv))) {:autoload_direnv false
+                                      :keybindings {:allow :<M-d>a
+                                                    :deny :<M-d>d
+                                                    :reload :<M-d>r}})
 
 (map! [n] :<space>cr `(__generate-repl) {:desc "<Nix>::[R]epl"})

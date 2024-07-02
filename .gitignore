@@ -1,23 +1,22 @@
 # neovim::
-lua/packer_compiled.lua
-lua/
-profile.json
 snippets/
-inbox.norg
 start.txt
-.session.vim
 startup.txt
+profile.json
+.session.vim
 
 # Notes::
 .quicknote/
+inbox.norg
 
 # cli/NIX shizzle::
-result
 target/
-packages.json
+result
 tags
-TAGS
+changelog.txt
+scripts.nu
 
 # Tests/Hooks/Checks::
 .direnv/
-/.pre-commit-config.yaml
+.pre-commit-config.yaml
+deps/*/*.lua

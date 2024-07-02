@@ -1,3 +1,6 @@
-(import-macros {: nyoom-module!} :macros)
+(import-macros {: lzn!} :macros)
 
-(nyoom-module! tools.harpoon)
+(lzn! :harpoon {:nyoom-module tools.harpoon
+                :cmd [:Harp]
+                :deps [:oqt :yeet]
+                :wants [:overseer]})

@@ -1,0 +1,1 @@
+ vim.bo.comments = vim.bo.comments:gsub("n:>,?", "") return nil

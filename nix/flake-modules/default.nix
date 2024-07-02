@@ -3,6 +3,7 @@
   inputs,
   flake-parts-lib,
   lib,
+  self,
   ...
 }:
 let
@@ -57,6 +58,26 @@ in
                     description = "TempDir for XDG_CACHE_HOME";
                     default = "/tmp/nyoom";
                   };
+                  parsers = mkOption {
+                    type = lazyAttrsOf (submodule {
+                      options =
+                        let
+                          plugOpts = {
+                            patches = listOf (either path str);
+                            postPatch = str;
+                            postInstall = str;
+                          };
+                        in
+                        genAttrs (__attrNames plugOpts) (
+                          x:
+                          mkOption {
+                            type = nullOr plugOpts."${x}";
+                            description = "${x}";
+                            default = null;
+                          }
+                        );
+                    });
+                  };
                   plugins = mkOption {
                     /**
                       HACK: Very, very bad way of handling submodules.
@@ -100,6 +121,11 @@ in
                     description = "Extra Lua Packages";
                     default = [ ];
                   };
+                  extraCLibs = mkOption {
+                    type = listOf package;
+                    description = "Shared Object Libs for Neovim to use";
+                    default = [ ];
+                  };
                 };
                 /**
                   NOTE: (Hermit)
@@ -131,13 +157,6 @@ in
                     Strings of Plugins::
                         name:: Of form ::input.<String::name>
                         lazy:: Of form ::<True|False>
-                  '';
-                  default = [ ];
-                };
-                extraParsers = mkOption {
-                  type = listOf str;
-                  description = ''
-                    Treesitter Parsers to build:: Will default to the flake's inputs
                   '';
                   default = [ ];
                 };
@@ -176,26 +195,16 @@ in
           getExe
           makeBinPath
           escapeShellArgs
-          concatStringsSep
           concatMapStringsSep
-          concatLists
+          concatStringsSep
           ;
-        inherit (pkgs.neovimUtils) makeNeovimConfig grammarToPlugin;
+        inherit (pkgs.neovimUtils) makeNeovimConfig;
         cfg = config.neohermit;
         #TODO: (Hermit) Add all this into pkgs.lib or just pkgs.*, this is not how one should handle pkgs.
         __lib = import ./mklib.nix { inherit inputs lib pkgs; };
         #TODO: (Hermit) Add this as an overlay, and expose it.
         neovimPatched = pkgs.callPackage ./mkNeovim.nix { inherit config inputs; };
         __wrapper = import ./mkWrapper.nix { inherit config; };
-        __plugins = import ./mkPlugin.nix {
-          inherit
-            pkgs
-            inputs
-            lib
-            config
-            ;
-        };
-
         /*
           NOTE: (Hermit)
           For the direction I'm heading with this build, we really don't need `makeNeovimConfig`
@@ -208,44 +217,15 @@ in
           This would imply completely revamping the module system, as well as removing packer.
           Additionally, the `monkey-patched` `packadd` nonsense needs to be removed. Its seems we can't source plugins without triggering textlock, so we're either forced to use source/packadd. Both are C functions which grab a uv-handled dir and recursively searches them, but there might be a better method.
         */
-        # TODO: (Hermit) Get Rid of this bullshizzt, Teto needs to get out of the kitchen.
-        NeovimConfig = makeNeovimConfig { customRC = import ../default.nix; };
 
-        # TODO: (Hermit) Rewrite this completely, we don't need the `optional` args and can simply construct our own packDir
-        plugins =
-          with pkgs;
-          [
-            #(pkgs.vimUtils.builVimPlugin (pname = "hermit"; version = "adjoint-rev"; src = "${self}/plugins"; )) 
-            {
-              plugin = symlinkJoin {
-                name = "nvim-treesitter";
-                paths = [
-                  vimPlugins.nvim-treesitter.withAllGrammars
-                  (map grammarToPlugin ((__attrValues (__lib.mkTreesitter cfg.extraParsers))))
-                  (__attrValues (builtins.removeAttrs vimPlugins.nvim-treesitter.grammarPlugins cfg.extraParsers))
-                ];
-              };
-              optional = true; # NOTE:: (Hermit) If DeferredUIEnter doesn't work, fml
-            }
-          ]
-          ++ (lib.trivial.pipe cfg.plugins [
-            __plugins
-            __attrValues
-            concatLists
-          ])
-          ++ (map (x: {
-            plugin = x;
-            optional = false;
-          }) cfg.defaultPlugins);
-        hermitPackdir.all =
-          let
-            parted = lib.partition (x: x.optional == true) plugins;
-          in
-          {
-            start = map (x: x.plugin) parted.wrong;
-            opt = map (x: x.plugin) parted.right;
-          };
-        packdir = pkgs.vimUtils.packDir hermitPackdir;
+        # TODO: (Hermit) Get Rid of this bullshizzt, Teto needs to get out of the kitchen.
+        # NeovimConfig = makeNeovimConfig { customRC = import ../default.nix; };
+        NeovimConfig = makeNeovimConfig { };
+        packdir =
+          (pkgs.callPackage ../../deps/plugins/default.nix {
+            config = cfg;
+            inherit self;
+          }).customPackdir;
         wrapperArgs =
           let
             binpath = makeBinPath cfg.bins;
@@ -265,35 +245,40 @@ in
             wrapRC = false;
             luaRcContent = # lua
               ''
-                                -- HACK: (Hermit) Temporary hack for all the`wrapperArg` hell. Simply expose rtp here, all package paths here.
-                                --      Once We remove the wrapper, we can simply make this a luafile with::
-                                --       ```lua
-                                --              <wrapperArgsHere>, set rtp + $\{custom-packdir}/start, and set preload here::
-                                --               "vim.opt.rtp:prepend($\{packDir-start})" 
-                                --              vim.loader.enable()
-                                --                  ...........
-                                --       ```
+                -- HACK: (Hermit) Temporary hack for all the`wrapperArg` hell. Simply expose rtp here, all package paths here.
+                --      Once We remove the wrapper, we can simply make this a luafile with::
+                --       ```lua
+                --              <wrapperArgsHere>, set rtp + $\{custom-packdir}/start, and set preload here::
+                --               "vim.opt.rtp:prepend($\{packDir-start})" 
+                --              vim.loader.enable()
+                --                  ...........
+                --       ```
 
-                                vim.loader.enable()
-                                vim.opt.rtp:prepend("${packdir}")
-                                vim.opt.packpath:prepend("${packdir}")
-                                vim.g.sqlite_clib_path = require('luv').os_getenv('LIBSQLITE')
-                                -- local default_plugins = {"2html_plugin", "getscript", "getscriptPlugin", "gzip", "logipat", "netrw", "netrwPlugin", "netrwSettings", "netrwFileHandlers", "matchit", "tar", "tarPlugin", "rrhelper", "spellfile_plugin", "vimball", "vimballPlugin", "zip", "zipPlugin", "tutor", "rplugin", "syntax", "synmenu", "optwin", "compiler", "bugreport"}
-                                --
-                                -- for _, plugin in pairs(default_plugins) do vim.g[("loaded_" .. plugin)] = 1 end
+                vim.loader.enable()
+                vim.opt.rtp:prepend("${packdir}")
+                vim.opt.packpath:prepend("${packdir}")
+                -- EITHER:: (NVIM-APPNAME) or this, appname is safer
+                -- vim.opt.runtimepath:remove(vim.fn.stdpath('config'))              -- ~/.config/nvim
+                -- vim.opt.runtimepath:remove(vim.fn.stdpath('config') .. "/after")  -- ~/.config/nvim/after
+                -- vim.opt.runtimepath:remove(vim.fn.stdpath('data') .. "/site")     -- ~/.local/share/nvim/site
 
-                                -- Setup lua/luaCPATH, would've loved this in fennel but we cant, fml
-                                package.cpath = package.cpath .. ";" .. "${
-                                  (concatMapStringsSep ";" pkgs.lua51Packages.getLuaCPath (cfg.lua.extraPacks ++ cfg.lua.jit))
-                                }" 
-                                package.path = package.path .. ";" .. "${
-                                  (concatMapStringsSep ";" pkgs.lua51Packages.getLuaPath (cfg.lua.extraPacks ++ cfg.lua.jit))
-                                }"
+                vim.g.sqlite_clib_path = require('luv').os_getenv('LIBSQLITE')
+                -- local default_plugins = {"2html_plugin", "getscript", "getscriptPlugin", "gzip", "logipat", "netrw", "netrwPlugin", "netrwSettings", "netrwFileHandlers", "matchit", "tar", "tarPlugin", "rrhelper", "spellfile_plugin", "vimball", "vimballPlugin", "zip", "zipPlugin", "tutor", "rplugin", "syntax", "synmenu", "optwin", "compiler", "bugreport"}
+                --
+                -- for _, plugin in pairs(default_plugins) do vim.g[("loaded_" .. plugin)] = 1 end
 
-                                require("hotpot").setup({enable_hotpot_diagnostics = true, provide_require_fennel = true, compiler = {macros = {allowGlobals = true, compilerEnv = _G, env = "_COMPILER"}, modules = {correlate = true, useBitLib = true}}})
-                                -- We can also call stdlib here
-                                local stdlib = require("core.lib")
-                		for k, v in pairs(stdlib) do rawset(_G, k, v) end
+                -- Setup lua/luaCPATH, would've loved this in fennel but we cant, fml
+                package.cpath = package.cpath .. ";" .. "${
+                  (concatMapStringsSep ";" pkgs.lua51Packages.getLuaCPath (cfg.lua.extraPacks ++ cfg.lua.jit))
+                }"
+                package.path = package.path .. ";" .. "${
+                  (concatMapStringsSep ";" pkgs.lua51Packages.getLuaPath (cfg.lua.extraPacks ++ cfg.lua.jit))
+                }"
+
+                require("hotpot").setup({enable_hotpot_diagnostics = true, provide_require_fennel = true, compiler = {macros = {allowGlobals = true, compilerEnv = _G, env = "_COMPILER"}, modules = {correlate = true, useBitLib = true}}})
+                -- We can also call stdlib here
+                local stdlib = require("core.lib")
+                for k, v in pairs(stdlib) do rawset(_G, k, v) end
               '';
           }
         );

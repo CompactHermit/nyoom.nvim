@@ -8,7 +8,12 @@
         src = self;
         name = "Nyoom-Test-Suite";
         neovim = self'.packages.faker;
-        luaPackages = ps: with ps; [ plenary-nvim ];
+        luaPackages =
+          ps: with ps; [
+            plenary-nvim
+            nvim-nio
+            nlua
+          ];
       };
     };
 }

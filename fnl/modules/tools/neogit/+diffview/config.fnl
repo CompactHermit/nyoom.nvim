@@ -1,13 +1,11 @@
-(import-macros {: packadd!} :macros)
-
 ;; NOTE (Hermit) :: Remove after Adding Lazy! Macro and Proper buffer Autocmds
-(let [fidget (require :fidget)
-      progress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :diffview}})
+(let [fidget (autoload :fidget)
+      progress `,((. (autoload :fidget.progress) :handle :create) {:lsp_client {:name :diffview}})
       actions (autoload :diffview.actions)]
-   (progress:report {:message "Setting Up diffview"
-                     :level vim.log.levels.ERROR
-                     :progress 0})
-   ((->> :setup (. (require :diffview))) {:diff_binaries false
+  (progress:report {:message "Setting Up diffview"
+                    :level vim.log.levels.ERROR
+                    :progress 0})
+  ((->> :setup (. (autoload :diffview))) {:diff_binaries false
                                           :enhanced_diff_hl true
                                           :git_cmd [:git]
                                           :use_icons true
@@ -38,7 +36,5 @@
                                                     :file_history_panel {:<cr> actions.focus_entry
                                                                          :gf actions.goto_file_edit
                                                                          :? "<Cmd>h diffview-maps-file-history-panel<CR>"}}})
-   (progress:report {:message "Setup Complete"
-                     :title :Completed!
-                     :progress 100}))
-
+  (progress:report {:message "Setup Complete" :title :Completed! :progress 100})
+  (progress:finish))

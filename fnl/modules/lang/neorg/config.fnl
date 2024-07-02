@@ -1,11 +1,9 @@
 (import-macros {: packadd! : nyoom-module-p! : autocmd! : nyoom-module-ensure!}
                :macros)
 
-(fn neorg_leader [key]
-  (.. :<leader>n key))
-
 (local neorg-modules
        {:core.defaults {}
+        :core.text-objects {}
         :core.esupports.indent {:config {:dedent_excess true
                                          :format_on_escape true
                                          :format_on_enter true}}
@@ -13,11 +11,24 @@
         :core.todo-introspector {}
         :core.integrations.telescope {}
         :external.exec {}
+        :core.qol.toc {:config {:enter true
+                                :fixed_width 26
+                                :auto_toc {:open true :close true}}}
         :external.conceal-wrap {}
-        :external.interim-ls {}
-        ;:external.timelog {}
+        :external.interim-ls {:config {:completion_provider {:enable true
+                                                             :categories true}}}
+        :external.search {:config {:index_on_launch true}}
+        :external.templates {:config {:templates_dir (.. vim.env.HOME
+                                                         :/neorg/templates)
+                                      :snippets_overwrite {}
+                                      :default_subcommand :load
+                                      :keywords {:TODAY_TITLE #(print :hello)
+                                                 :YESTERDAY_PATH #(print :hello)
+                                                 :TOMORROW_PATH #(print :hello)}}}
+        ;:CARRY_OVER_TODOS #(print :hello)}}}
         ;; NOTE:: (Hemrit) Only until janet has been added
-        :external.hop-extras {:config {:aliases {:gh "https://github.com/{}"}}}
+        ; :external.hop-extras {:config {:aliases {:gh "https://github.com/{}"}}} #Keybind issue
+        ; :external.timelog {}
         ; :external.chronicle {:config {:workspace :main
         ;                               :directory :chronicle
         ;                               :modes {:daily {:path_format ["%Y"
@@ -42,47 +53,11 @@
         ;                                                        :yearly.norg]}}}
         :core.summary {:config {:strategy :default}}
         :core.tempus {}
-        :core.ui.calendar {}
+        ;; NOTE:: Broken Bcs Vhyrro hates us all, jk the calendar keybinds are broken
+        ; :core.ui.calendar {}
         :core.integrations.image {}
         :core.latex.renderer {}
-        :core.keybinds {:config {:default_keybinds true
-                                 :neorg_leader :<leader>n
-                                 :hook (fn [keybinds]
-                                         ;; Wezterm things
-                                         (keybinds.remap :norg :i :<M-CR>
-                                                         :<S-CR>)
-                                         (keybinds.map_event_to_mode :norg
-                                                                     {:n [[(neorg_leader :lt)
-                                                                           :core.integrations.telescope.find_aof_tasks]
-                                                                          [(neorg_leader :lc)
-                                                                           :core.integrations.telescope.find_context_tasks]
-                                                                          [(neorg_leader :lh)
-                                                                           :core.integrations.telescope.find_header_backlinks]
-                                                                          [(neorg_leader :lb)
-                                                                           :core.integrations.telescope.find_backlinks]
-                                                                          [(neorg_leader :in)
-                                                                           :core.itero.next-iteration]
-                                                                          [(neorg_leader :ip)
-                                                                           :core.itero.next-iteration]
-                                                                          [:gk
-                                                                           :core.manoeuvre.item_up]
-                                                                          [:gk
-                                                                           :core.manoeuvre.item_down]
-                                                                          [:<Tab>
-                                                                           :core.integrations.treesitter.next.link]
-                                                                          [:<S-Tab>
-                                                                           :core.integrations.treesitter.previous.link]
-                                                                          ["]]"
-                                                                           :core.integrations.treesitter.next.heading]
-                                                                          ["[["
-                                                                           :core.integrations.treesitter.previous.heading]]}
-                                                                     {:noremap true
-                                                                      :silent true})
-                                         (keybinds.map_to_mode :norg
-                                                               {:n [[(neorg_leader :li)
-                                                                     "<cmd>Neorg timelog insert *<cr>"]]}
-                                                               {:noremap true
-                                                                :silent true}))}}
+        :core.keybinds {:config {:default_keybinds true}}
         :core.dirman {:config {:workspaces {:main "~/neorg"
                                             :Math "~/neorg/Papers/Math"
                                             :NixOS "~/neorg/nixDocs"
@@ -94,9 +69,18 @@
                                :default_workspace :main}}})
 
 ;; add conditional modules
-(tset neorg-modules :core.completion {:config {:engine :nvim-cmp}})
+(tset neorg-modules :core.completion
+      {:config {:engine {:module_name :external.lsp-completion}}})
 
-;(nyoom-module-p! quarto (tset neorg-modules :core.integrations.otter {}))
+(nyoom-module-p! quarto
+                 (tset neorg-modules :core.integrations.otter
+                       {:config {:auto_start false
+                                 :languages [:python
+                                             :lua
+                                             :nix
+                                             :haskell
+                                             :rust
+                                             :julia]}}))
 
 ;; add flaged modules
 (tset neorg-modules :core.concealer
@@ -107,40 +91,97 @@
                                :pending {:icon ""}
                                :urgent {:icon ""}}}}})
 
-(do
-  (tset neorg-modules :core.integrations.roam
-        {:config {:keymaps {:select_prompt :<c-space>
-                            :insert_link :<leader>ncl
-                            :find_note :<leader>ncf
-                            :capture_note :<leader>ncn
-                            :capture_index :<leader>nci
-                            ; :get_backlinks :<leader>ncb
-                            ; :db_sync :<leader>ncd
-                            ; :db_sync_wksp :<leader>ncw
-                            :capture_cancel :<C-q>
-                            :capture_save :<C-w>}
-                  :theme :ivy
-                  ;:workspaces [:main :NixOS :Programming]
-                  :capture_templates [{:name :default
-                                       :title "${title}"
-                                       :lines [""]}
-                                      {:name "Math notes:: Theorem/Lemma"
-                                       :title "${title}"
-                                       :file "Math/${title}"
-                                       :lines ["*.${heading1}::"
-                                               "$.${Latex_Symbol}$"]}
-                                      {:name "Capture Def"
-                                       :title :$title
-                                       :lines ["$$ ${def1}" "${def1}::" "$$"]}
-                                      {:name "Nix notes"
-                                       :file "nixDocs/${title}"
-                                       :title "${title}"
-                                       :lines ["* ${heading1}::"
-                                               "* ${heading2}"]}]
-                  :substitution {:title (fn [metadata]
-                                          metadata.title)
-                                 :date (fn [metadata]
-                                         (os.date "%Y-%m-%d"))}}}))
+; (fn neorg_leader [key]
+;   (.. :<leader>n key))
+
+;; https://github.com/nvim-neorg/neorg/wiki/Default-Keybinds
+;; REFACTOR:: NEW KEYBINDS, which use plug and laziness
+;; TODO:: (hermit) make `neorg-leader` macro, of form `(fn [modname mode opts])` and set keybinds that way
+(vim.api.nvim_create_autocmd :BufEnter
+                             {:pattern :*.norg
+                              :callback (fn [ctx]
+                                          (doto :i
+                                            (vim.keymap.set :<S-CR>
+                                                            "<Plug>(neorg.essuports.hop.hop-link)"
+                                                            {:buffer true}))
+                                          (doto :n
+                                            (vim.keymap.set :<leader>nlt
+                                                            "<Plug>(neorg.core.integrations.telescope.find_aof_tasks)"
+                                                            {:buffer true})
+                                            (vim.keymap.set :<leader>nlc
+                                                            "<Plug>(neorg.core.integrations.telescope.find_context_tasks)"
+                                                            {:buffer true})
+                                            (vim.keymap.set :<leader>nlh
+                                                            "<Plug>(neorg.core.integrations.telescope.find_header_backlinks)"
+                                                            {:buffer true})))})
+
+;                                  :core.integrations.telescope.find_aof_tasks]
+;                                 [(neorg_leader :lc)
+;                                  :core.integrations.telescope.find_context_tasks]
+;                                 [(neorg_leader :lh)
+;                                  :core.integrations.telescope.find_header_backlinks]
+;                                 [(neorg_leader :lb)
+;                                  :core.integrations.telescope.find_backlinks]
+;                                 [(neorg_leader :in)
+;                                  :core.itero.next-iteration]
+;                                 [(neorg_leader :ip)
+;                                  :core.itero.next-iteration]
+;                                 [:gk
+;                                  :core.manoeuvre.item_up]
+;                                 [:gk
+;                                  :core.manoeuvre.item_down]
+;                                 [:<Tab>
+;                                  :core.integrations.treesitter.next.link]
+;                                 [:<S-Tab>
+;                                  :core.integrations.treesitter.previous.link]
+;                                 ["]]"
+;                                  :core.integrations.treesitter.next.heading]
+;                                 ["[["
+;                                  :core.integrations.treesitter.previous.heading]]}
+;                            {:noremap true
+;                             :silent true}
+; (keybinds.map_to_mode :norg
+;                       {:n [[(neorg_leader :li)
+;                             "<cmd>Neorg timelog insert *<cr>"]]}
+;                       {:noremap true
+;                        :silent true}))
+;
+;
+
+; (do
+;   (tset neorg-modules :core.integrations.roam
+;         {:config {:keymaps {:select_prompt :<c-space>
+;                             :insert_link :<leader>ncl
+;                             :find_note :<leader>ncf
+;                             :capture_note :<leader>ncn
+;                             :capture_index :<leader>nci
+;                             ; :get_backlinks :<leader>ncb
+;                             ; :db_sync :<leader>ncd
+;                             ; :db_sync_wksp :<leader>ncw
+;                             :capture_cancel :<C-q>
+;                             :capture_save :<C-w>}
+;                   :theme :ivy
+;                   ;:workspaces [:main :NixOS :Programming]
+;                   :capture_templates [{:name :default
+;                                        :title "${title}"
+;                                        :lines [""]}
+;                                       {:name "Math notes:: Theorem/Lemma"
+;                                        :title "${title}"
+;                                        :file "Math/${title}"
+;                                        :lines ["*.${heading1}::"
+;                                                "$.${Latex_Symbol}$"]}
+;                                       {:name "Capture Def"
+;                                        :title :$title
+;                                        :lines ["$$ ${def1}" "${def1}::" "$$"]}
+;                                       {:name "Nix notes"
+;                                        :file "nixDocs/${title}"
+;                                        :title "${title}"
+;                                        :lines ["* ${heading1}::"
+;                                                "* ${heading2}"]}]
+;                   :substitution {:title (fn [metadata]
+;                                           metadata.title)
+;                                  :date (fn [metadata]
+;                                          (os.date "%Y-%m-%d"))}}}))
 
 (nyoom-module-p! zen (tset neorg-modules :core.presenter
                            {:config {:zen_mode :truezen}}))
@@ -160,20 +201,6 @@
    (progress:report {:message "PackStrapping <Neorg-Deps>"
                      :level vim.log.levels.ERROR
                      :progress 0})
-   (progress:report {:message "Initializing Image-nvim"
-                         :level vim.log.levels.ERROR
-                         :progress 10})
-   ((->> :setup (. (require :image))) {:backend :kitty
-                                       :integrations {:markdown {:enabled true
-                                                                 :download_remote_images true
-                                                                 :filetypes [:markdown
-                                                                             :quarto
-                                                                             :vimwiki]}
-                                                      :neorg {:enabled true
-                                                              :download_remote_images true
-                                                              :clear_in_insert_mode false
-                                                              :only_render_image_at_cursor false
-                                                              :filetypes [:norg]}}})
    (progress:report {:message "Initializing Neorg"
                          :level vim.log.levels.ERROR
                          :progress 20})

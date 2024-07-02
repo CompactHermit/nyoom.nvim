@@ -17,7 +17,9 @@
        contents))
 
 (set vim.lsp.handlers.textDocument/signatureHelp
-     (vim.lsp.with vim.lsp.handlers.signature_help {:border :solid}))
+     (vim.lsp.with vim.lsp.handlers.signature_help
+       {:border :rounded
+        :close_events [:CursorMoved :BufHidden :InsertCharPre]}))
 
 ;; NOTE: GodBless Ben, saviour of empty refs
 (tset vim.lsp.handlers :textDocument/definition
@@ -33,13 +35,14 @@
                                           (. (. results 1) :filename))]
               (each [_ val (pairs results)]
                 (when (or (not= val.lnum lnum) (not= val.filename filename))
-                  ((. (require :telescope.builtin) :lsp_definitions))))
+                  ((. (autoload :telescope.builtin) :lsp_definitions))))
               (vim.lsp.util.jump_to_location (. result 1)
                                              client.offset_encoding false))
             (vim.lsp.util.jump_to_location result client.offset_encoding false))))
 
 (tset vim.lsp.handlers :textDocument/hover
-      (vim.lsp.with vim.lsp.handlers.hover {:border :solid}))
+      (vim.lsp.with vim.lsp.handlers.hover
+        {:border :rounded :close_events [:BufHidden :CursorMoved]}))
 
 (fn format! [bufnr ?async?]
   (vim.lsp.buf.format {: bufnr
@@ -77,7 +80,10 @@
 
 ;; LSP Documents Types::
 
-(local capabilities (vim.lsp.protocol.make_client_capabilities))
+(local capabilities
+       (vim.tbl_deep_extend :force (vim.lsp.protocol.make_client_capabilities)
+                            ((. (require :cmp_nvim_lsp) :default_capabilities))))
+
 (set capabilities.textDocument.completion.completionItem
      {:documentationFormat [:markdown :plaintext]
       :snippetSupport true
@@ -125,8 +131,6 @@
 (nyoom-module-p! java (do
                         (tset lsp-servers :kotlin_language_server {})
                         (tset lsp-servers :jdtls {})))
-
-(nyoom-module-p! sh (tset lsp-servers :bashls {}))
 
 (nyoom-module-p! julia (tset lsp-servers :julials {}))
 
@@ -189,8 +193,8 @@
                                                                                                :words ["vim%.uv"]})
                                         _ (table.insert acc path))))
                                   acc))]
-                     ((->> :setup (. (require :lazydev))) {:library tbl
-                                                           :enabled true})
+                     ((->> :setup (. (autoload :lazydev))) {:library tbl
+                                                            :enabled true})
                      ; (fn [root] ;   "Dont Load When ./luarcs.json is present. Typically if we've already set it with a nix-shell"
                      ;   (not (= (vim.uv.fs_stat (.. root "/.luarc.json")) nil))))
                      (tset lsp-servers :lua_ls
@@ -208,6 +212,8 @@
                                                          :ignoreDir [:.direnv/]}}}}))))
 
 ;(nyoom-module-p! markdown (tset lsp-servers :marksman {}))
+
+(tset lsp-servers :nushell {:config {:cmd [:nu :--lsp]}})
 
 (nyoom-module-p! svelte
                  (tset lsp-servers :svelte
@@ -272,10 +278,13 @@
 ;; Autocmds FOR Inlay hints
 (augroup! UserLspConfig
           (autocmd! LspAttach "*"
-                    (fn [args]
+                    (fn [ev]
                       (local client
-                             (vim.lsp.get_client_by_id args.data.client_id))
+                             (vim.lsp.get_client_by_id ev.data.client_id))
                       (when client.server_capabilities.inlayHintProvider
                         (vim.lsp.inlay_hint.enable)))))
+
+; (vim.lsp.completion.enable true ev.data.client_id ev.buf
+;                            {:autotrigger false}))))
 
 {: on-attach}

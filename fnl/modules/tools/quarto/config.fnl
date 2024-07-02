@@ -1,27 +1,18 @@
 (import-macros {: packadd! : map! : autocmd! : command!} :macros)
-
-(do
-  (vim.api.nvim_create_augroup :otterSetup {:clear true})
-  (autocmd! BufReadPost :*.norg
-            (fn []
-              (packadd! otter)
-              ((->> :setup (. (require :otter))) {:handle_leading_whitespace true
-                                                  :lsp {:hover {:border :none}}
-                                                  :buffers {:write_to_disk true}}))
-            {:group :otterSetup :desc "Otter Setup"}))
-
-;; Note::(Hermit) Formatter has an aneurysm formating this
-
-;; fnlfmt: skip
-(do
-  (vim.api.nvim_create_augroup :quartoSetup {:clear true})
-  (autocmd! BufWritePost :*.norg (fn []
-                                   (packadd! quarto)
-                                   ((. (require :quarto) :setup) {:lspFeatures {:lang [:r :python :rust :lua :nix :go :c :cpp :typ :hs]
-                                                                                :chunks :all
-                                                                                :diagnostics {:enabled true
-                                                                                              :triggers :BufWritePost}
-                                                                                :completions {:enabled true}}}))) {:group "quartoSetup" :desc "Quarto Setup"})
+((. (require :quarto) :setup) {:lspFeatures {:lang [:r
+                                                    :python
+                                                    :rust
+                                                    :lua
+                                                    :nix
+                                                    :go
+                                                    :c
+                                                    :cpp
+                                                    :typ
+                                                    :hs]
+                                             :chunks :all
+                                             :diagnostics {:enabled true
+                                                           :triggers :BufWritePost}
+                                             :completions {:enabled true}}})
 
 (command! NeorgOtter
           (fn []

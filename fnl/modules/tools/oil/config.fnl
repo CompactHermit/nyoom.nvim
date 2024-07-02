@@ -1,5 +1,5 @@
-(import-macros {: autocmd! : map!} :macros)
-(local oil (require :oil))
+(import-macros {: let!} :macros)
+(local oil (autoload :oil))
 (local preview-wins {})
 (local preview-bufs {})
 (local preview-max-fsize 1000000)
@@ -119,6 +119,9 @@
     (local ft (vim.filetype.match {:buf preview-buf :filename fpath}))
     (when (and ft (not (pcall vim.treesitter.start preview-buf ft)))
       (tset (. vim.bo preview-buf) :syntax ft))))
+
+;; Oil-git-Status Junk::
+(let! oil_git_status {:show_ignored true :win_options {:signcolumn "yes:1"}})
 
 ; for _, hl_group in pairs(require("oil-git-status").highlight_groups) do
 ;   if hl_group.index then

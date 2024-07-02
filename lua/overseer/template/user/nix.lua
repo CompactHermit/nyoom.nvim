@@ -23,7 +23,7 @@ return {
             {
                 name = "Nix:: Build Flake",
                 tskname = "Nix Build",
-                cmd = "nix build .#default",
+                cmd = "nix build .#default -Lvv --show-trace",
                 condition = {
                     callback = isInProject,
                 },
@@ -50,7 +50,7 @@ return {
             {
                 name = "Nix:: Run Test",
                 tskName = "Nix Unit Test",
-                cmd = "nix-unit .#default",
+                cmd = "nix flake check -Lvv",
                 condition = {
                     callback = isInProject,
                 },
@@ -128,4 +128,3 @@ return {
         cb(ret)
     end,
 }
-

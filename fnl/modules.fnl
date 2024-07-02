@@ -22,8 +22,11 @@
         dmacro
         multiple-cursors
         parinfer
+        profiler
         scratch
+        word-wrap            ; language-aware smart soft and hard wrapping
         debug
+        swap
         (folke
           +edgy
           +trouble)
@@ -52,17 +55,20 @@
            ;+quicknote
            ;+nabla
            +roam)
+        (sh +nu) ;+fish)     ; she sells {ba,z,fi}sh shells on the C xor
         zig
 
         :tools
         tree-sitter
         overseer
+        quarto
+        harpoon
         quickfix
         lsp
         neotest
-
         (neogit
           +diffview)
+        octo
         oil
         eval
 
@@ -70,7 +76,7 @@
         :config
         (default             ; Reasonable defaults for reasonable people
           +bindings
-          +which-key
+           +which-key
           +smartparens
           +flash))
 
@@ -99,12 +105,11 @@
 ;         debug             ; stepping through code, to help you add bugs
 ;         multiple-cursors   ;  learn macros you dingus
 ;         parinfer           ; turn lisp into python, sort of
-;         (hotpot +reflect)    ;NOTE: essential module (for now), don't disable
+;         (hotpot +reflect)    ; NOTE: essential module (for now), don't disable
 ;         scratch              ;emacs-like scratch buffer functionality
-;         ;mini                 ;Nice, micro features with 10K LOC you got there
+;         ;mini                ; Nice, micro features with 10K LOC you got there
 ;         ;firenvim
 ;         resession            ; Sessionize neovim, bcs you're not schizo enough
-;         word-wrap            ; language-aware smart soft and hard wrapping
 ;         windows              ; Fancy animations, for that extra bloated Config
 ;         swap                 ; And you're not using macros why?
 ;         (cutlass);+plunder   ; Make yourself better at stealing code from others

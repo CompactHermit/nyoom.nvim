@@ -4,14 +4,9 @@
 
 (autoload :core.shared)
 
-;
-;; NOTE:: (Hermit) Deprecating this, we don't need mason anymore
-; (set vim.env.PATH (.. vim.env.PATH ":" (vim.fn.stdpath :data) :/mason/bin))
-; (set vim.env.PATH (.. vim.env.PATH ":" (vim.fn.stdpath :config) :/bin))
-
-(let! python3_host_prog (if (executable? :python) (vim.fn.exepath :python)
-                            (executable? :python3) (vim.fn.exepath :python3)
-                            nil))
+; (let! python3_host_prog (if (executable? :python) (vim.fn.exepath :python)
+;                             (executable? :python3) (vim.fn.exepath :python3)
+;                             nil))
 
 ;; check for cli
 
@@ -84,8 +79,5 @@
       (let! neovide_padding_right 38)
       (let! neovide_padding_bottom 20)
       ;; load userconfig
-      ;(require :packages)
       (require :packages)
       (require :config)))
-
-;(require :packer_compiled)))

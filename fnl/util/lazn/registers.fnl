@@ -6,15 +6,15 @@
                     :spec_field :is_loaded}})
 
 (fn M.get_all_plugins []
-  (let [result (vim.deepcopy (. (require :lz.n.state) :plugins))]
+  (let [result (vim.deepcopy (. (autoload :lz.n.state) :plugins))]
     (each [_ name (pairs states)]
       (when (not= (. result name) nil) (tset (. result name) :is_loaded true)))
     result))
 
 (fn M.get_a_plugin [name]
-  (let [result (vim.deepcopy (. (. (require :lz.n.state) :plugins) name))]
+  (let [result (vim.deepcopy (. (. (autoload :lz.n.state) :plugins) name))]
     (when (and (not= result nil) (not= (. states name) nil))
       (set result.is_loaded true))
     result))
 
-M
+(values M)

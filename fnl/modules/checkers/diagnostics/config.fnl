@@ -14,8 +14,10 @@
   (vim.diagnostic.config {:underline {:severity {:min vim.diagnostic.severity.INFO}}
                           :signs {:severity {:min vim.diagnostic.severity.HINT}}
                           :virtual_text false
-                          :float {:show_header false :source true}
-                          :update_in_insert false
+                          :float {:show_header false
+                                  :source :always
+                                  :border :rounded}
+                          :update_in_insert true
                           :severity_sort true})
   (nyoom-module-p! format
                    (do
@@ -86,7 +88,10 @@
                            {:desc "Goto next diagnostics"})))
   (progress:report {:message "Setup Complete" :title :Completed! :progress 100}))
 
+(vim.api.nvim_create_autocmd :CursorHold
+                             {:callback #(vim.diagnostic.open_float (vim.api.nvim_get_current_buf))})
+
 ;; fnlfmt: skip
 ;(null-ls.setup)
-(packadd! lsplines)
-((->> :setup (. (autoload :lsp_lines))))
+; (packadd! lsplines)
+; ((->> :setup (. (autoload :lsp_lines))))

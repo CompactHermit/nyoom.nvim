@@ -27,8 +27,6 @@ in
       };
     in
     functor;
-  mkWrapper = { };
-  mkNeovim = { };
   mkRock =
     src: deps:
     pkgs.luajitPackages.callPackage (
@@ -51,14 +49,17 @@ in
     ) { };
 
   mkTreesitter =
-    __parsers:
+    __parsers: __patches:
     genAttrs __parsers (
       x:
-      (buildGrammar {
-        language = x;
-        src = inputs."tree-sitter-${x}";
-        version = "${inputs."tree-sitter-${x}".shortRev}";
-      })
+      (
+        buildGrammar {
+          language = x;
+          src = inputs."tree-sitter-${x}";
+          version = "${inputs."tree-sitter-${x}".shortRev}";
+        }
+        // __patches.${x} or { }
+      )
     );
   _file = "./mklib.nix";
 }

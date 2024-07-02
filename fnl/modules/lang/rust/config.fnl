@@ -16,15 +16,6 @@
                                   :auto_scroll true})
                    :toggle))))
 
-;; NOTE (Hermit) :: Remove after Adding Lazy! Macro and Proper buffer Autocmds
-(let [fidget (autoload :fidget)
-      progress `,((. (autoload :fidget.progress) :handle :create) {:lsp_client {:name :crates}})]
-  (progress:report {:message "Setting Up crates"
-                    :level vim.log.levels.ERROR
-                    :progress 0})
-  ((->> :setup (. (require :crates))) {})
-  (progress:report {:message "Setup Complete" :title :Completed! :progress 99}))
-
 ;; NOTE: (Hermit) Rustaceanvim Is inheritely lazy
 (tset vim.g :rustaceanvim
       {:server {:on_attach (fn [client bufnr] "Default Rust LSP Attach"

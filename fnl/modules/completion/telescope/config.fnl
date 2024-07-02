@@ -1,29 +1,94 @@
-(import-macros {: packadd! : map! : nyoom-module-p! : autocmd!} :macros)
+(import-macros {: custom-set-face! : map! : nyoom-module-p!} :macros)
 
-;(local {: executable?} (autoload :core.lib))
+; (custom-set-face! :TelescopeBorder [] {:fg oxocarbon.blend :bg oxocarbon.blend})
+; (custom-set-face! :TelescopePromptBorder [] {:fg oxocarbon.base02 :bg oxocarbon.base02})
+; (custom-set-face! :TelescopePromptNormal [] {:fg oxocarbon.base05 :bg oxocarbon.base02})
+; (custom-set-face! :TelescopePromptPrefix [] {:fg oxocarbon.base08 :bg oxocarbon.base02})
+; (custom-set-face! :TelescopeNormal [] {:fg oxocarbon.none :bg oxocarbon.blend})
+; (custom-set-face! :TelescopePreviewTitle [] {:fg oxocarbon.base02 :bg oxocarbon.base12})
+; (custom-set-face! :TelescopePromptTitle [] {:fg oxocarbon.base02 :bg oxocarbon.base11})
+; (custom-set-face! :TelescopeResultsTitle [] {:fg oxocarbon.blend :bg oxocarbon.blend})
+; (custom-set-face! :TelescopeSelection [] {:fg oxocarbon.none :bg oxocarbon.base02})
+; (custom-set-face! :TelescopePreviewLine [] {:fg oxocarbon.none :bg oxocarbon.base01})
+; (custom-set-face! :TelescopeMatching [:bold :italic] {:fg oxocarbon.base08 :bg oxocarbon.none})
+;;TODO::(Hermit) <07/10> MACRO AWAY THIS JUNK
 
-;; TODO:: Theres probably a better way to do this all with a macro import.
-;; Since all we're doing is importing a table within a table, hmmmm.
-;; Note:: The downside to this is an insane telescope load time. nearly 300ms+
+(local theme (. (autoload :util.color) :carbonfox))
+(local tel-theme theme.telescope)
+(local main tel-theme.main)
+(local prompt tel-theme.prompt)
+(local highlights {:TelescopeBorder {:bg theme.background :fg main}
+                   :TelescopeMatching {:link :Special}
+                   :TelescopeMultiIcon {:link :Identifier}
+                   :TelescopeMultiSelection {:link :Type}
+                   :TelescopeNormal {:bg main}
+                   :TelescopePreviewBlock tel-theme.block
+                   :TelescopePreviewCharDev tel-theme.charDev
+                   :TelescopePreviewDate {:link :Directory}
+                   :TelescopePreviewDirectory {:link :Directory}
+                   :TelescopePreviewExecute {:link :String}
+                   :TelescopePreviewGroup tel-theme.group
+                   :TelescopePreviewHyphen {:link :NonText}
+                   :TelescopePreviewLine {:link :Visual}
+                   :TelescopePreviewLink {:link :Special}
+                   :TelescopePreviewMatch {:link :Search}
+                   :TelescopePreviewMessage {:link :TelescopePreviewNormal}
+                   :TelescopePreviewMessageFillchar {:link :TelescopePreviewMessage}
+                   :TelescopePreviewPipe tel-theme.pipe
+                   :TelescopePreviewRead tel-theme.read
+                   :TelescopePreviewSize {:link :String}
+                   :TelescopePreviewSocket {:link :Statement}
+                   :TelescopePreviewSticky {:link :Keyword}
+                   :TelescopePreviewTitle {:link :TelescopeTitle}
+                   :TelescopePreviewUser tel-theme.user
+                   :TelescopePreviewWrite {:link :Statement}
+                   :TelescopePromptBorder {:bg theme.background :fg prompt}
+                   :TelescopePromptCounter {:link :NonText}
+                   :TelescopePromptNormal {:bg prompt}
+                   :TelescopePromptPrefix tel-theme.promptPrefix
+                   :TelescopePromptTitle {:link :TelescopeTitle}
+                   :TelescopeResultsClass {:link :Function}
+                   :TelescopeResultsComment {:link :Comment}
+                   :TelescopeResultsConstant tel-theme.constant
+                   :TelescopeResultsDiffAdd {:link :DiffAdd}
+                   :TelescopeResultsDiffChange {:link :DiffChange}
+                   :TelescopeResultsDiffDelete {:link :DiffDelete}
+                   :TelescopeResultsDiffUntracked {:link :NonText}
+                   :TelescopeResultsField {:link :Function}
+                   :TelescopeResultsFunction {:link :Function}
+                   :TelescopeResultsIdentifier {:link :Identifier}
+                   :TelescopeResultsLineNr {:link :LineNr}
+                   :TelescopeResultsMethod {:link :Method}
+                   :TelescopeResultsNumber tel-theme.number
+                   :TelescopeResultsOperator {:link :Operator}
+                   :TelescopeResultsSpecialComment {:link :SpecialComment}
+                   :TelescopeResultsStruct {:link :Struct}
+                   :TelescopeResultsTitle {:link :TelescopeTitle}
+                   :TelescopeResultsVariable {:link :SpecialChar}
+                   :TelescopeSelection {:link :Visual}
+                   :TelescopeSelectionCaret {:link :TelescopeSelection}
+                   :TelescopeTitle tel-theme.title})
+
+(each [k v (pairs highlights)] (vim.api.nvim_set_hl 0 k v))
 
 (let [fidget (autoload :fidget)
       actions-layout (autoload :telescope.actions.layout)
       flash (fn [prompt_bufnr]
-              ((->> :jump (. (require :flash))) {:action (fn [matched]
-                                                           (local picker
-                                                                  ((. (require :telescope.actions.state)
-                                                                      :get_current_picker) prompt_bufnr))
-                                                           (picker:set_selection (- (. matched.pos
-                                                                                       1)
-                                                                                    1)))
-                                                 :label {:after [0 0]}
-                                                 :pattern "^"
-                                                 :search {:exclude [(fn [win]
-                                                                      (not= (. (. vim.bo
-                                                                                  (vim.api.nvim_win_get_buf win))
-                                                                               :filetype)
-                                                                            :TelescopeResults))]
-                                                          :mode :search}}))
+              ((->> :jump (. (autoload :flash))) {:action (fn [matched]
+                                                            (local picker
+                                                                   ((. (autoload :telescope.actions.state)
+                                                                       :get_current_picker) prompt_bufnr))
+                                                            (picker:set_selection (- (. matched.pos
+                                                                                        1)
+                                                                                     1)))
+                                                  :label {:after [0 0]}
+                                                  :pattern "^"
+                                                  :search {:exclude [(fn [win]
+                                                                       (not= (. (. vim.bo
+                                                                                   (vim.api.nvim_win_get_buf win))
+                                                                                :filetype)
+                                                                             :TelescopeResults))]
+                                                           :mode :search}}))
       state (autoload :telescope.state)
       actions (autoload :telescope.actions)
       action-set (autoload :telescope.actions.set)

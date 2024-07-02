@@ -1,5 +1,6 @@
-(import-macros {: packadd! : command! : map!} :macros)
+(import-macros {: command! : map!} :macros)
 
+;(local theme (. (autoload :util.color) :carbonfox))
 (local _opts {:health {:checker false}
               :cmdline {:format {:cmdline {:pattern "^:"
                                            :icon " "
@@ -43,9 +44,8 @@
               :notify {:enabled false}
               :format {}})
 
-(packadd! nvim-notify)
-;(packadd! folke_noice)
 (map! [n] :mm :<cmd>NoiceDismiss<CR> {:desc "NOICE SHUTTHEFUCKUP"})
+(map! [n] :mf "<cmd>Fidget clear<CR>" {:desc "FIDGET SHUTTHEFUCKUP"})
 (let [fidget (require :fidget)
       progress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :noice}})]
   (progress:report {:message "Setting Up noice"

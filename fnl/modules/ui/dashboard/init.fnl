@@ -4,4 +4,8 @@
 
 (lzn! :alpha {:nyoom-module ui.dashboard
               :cmd [:Alpha :AlphaRedraw]
-              :event :VimEnter})
+              :event :UIEnter})
+
+; (lzn! :dashboard {:nyoom-module ui.dashboard
+;                   :cmd [:Dashboard]
+;                   :event :VimEnter})

@@ -2,8 +2,13 @@
 title: index
 id: 42589f53-46ed-411d-88db-116795432add
 workspace: default
+categories: [
+    Fennel
+    HermitAge
+    Neovim
+]
 created: 2023-12-09T14:27:12-0500
-updated: 2024-06-30T12:39:21-0500
+updated: 2024-07-17T17:45:42-0500
 @end
 
 * TODOS::
@@ -13,21 +18,27 @@ updated: 2024-06-30T12:39:21-0500
    -- (x) [null-ls] You required a deprecated builtin (formatting/clang_format.lua), which will be removed in March.
    -- (x) Move Ruff-ls -> Rufflsp
 
-
 ** Someday
    #contexts Someday
    - (x) Fixup AppName using nix instead of the script.
    -- (x) Find way to force Hotpot to use A /tmp directory instead of XDG_DATA_DIR
    --- (x) Just have Neovim Run with {! https://github.com/konradmalik/neovim-flake/blob/main/packages/neovim-pde/default.nix}[XDG_CACHE_DIR] set to /tmp
 
-   -- (!) Hydra:: Add SubHydras
+   -- (-) Hydra:: Add SubHydras
    --- ( ) Hydra:: Add Rust Subhydra:: Rustacean + Crates
-   --- ( ) Haskell Hydra::
-   ---- ( ) Add Telescope Hoogle to binds (why haven't I done this yet you fucking doofus)
+   --- (x) Haskell Hydra::
+   ---- (x) Add Telescope Hoogle to binds (why haven't I done this yet you fucking doofus)
+
+   - (-) Complete Rewrite Of the module System::
+   -- (-) Find Non-hacky way to handle loading packages.
+   --- The old Module System Was based around `compling` and tricking `neovim` to use a packer-lockfile. The way shausingh `avoided` empty preload errors was by running `(include :module-path)`, so when neovim requires them directory, it won't hard-error. This dynamic load is the /essence/ of nyoom's compiling.
+   --- We can work around this /*hacky*/ method by only requiring a `fake-loader` file, calling all modules in place, and creating a seperate file which handles the `lz.n` loader script. Essentially, a `lzn-compiled.lua` file wwhich we can natively call. Because `lz.n` can hold state. The only downside is the losey nature of this, for `enable` functions, fennel would return the function's callback number on the stack, not the whole function.
+   ---- However, we can just `cheat` this with a macro, and simply return the lua-function constructed by this method. Which is a pain, since it'd involve parsing the fennel-AST, which I don't think hotpot can even do properly.
+   --- Alternatively, we can just have a `justfile` command, and add an /User Autocmd/ `FennelCompile`, which just runs a fake `require` based on the contents of `modules.fnl`
 
 ** Next::
    #contexts GTD::Next
-   - ( ) CI:: Fnl -> Busted Tests?
+   - (-) CI:: Fnl -> Busted Tests?
    -- (-) Write Busted Tests for macros and inbuilt functions (e.g:: coogler search?)
 
    - (-) CI:: FMT::
@@ -35,38 +46,38 @@ updated: 2024-06-30T12:39:21-0500
    -- (-) fnl-linter bug:: certain options are ignored, will need to manually patch em %(maybe use C-ffi's or RIIR?)%
    -- (?) Norg-fmt:: Wait for {!&gh nvim-neorg/norg-fmt}[Update]
 
-   - ( ) Port Treesitter completely to nix
+   - (x) Port Treesitter completely to nix
 
-** Inbox
-   #contexts GTD::Inbox
-   - (-) Neovim/Fennel Things::
-   -- (_) Nfnl Port::
-   --- (_) The Actual Port::
-   -- ( ) Fennel Syntax Injections::
-   --- ( ) Add custom TS-injection for docstrings.
-   ---- ( ) DocStrings -> Neorg Conversion  [Perhaps write it in Haskell?]{Neorg Parser Combinator when bozo?}
-   -- ( ) NUI-components:: {:$/Nui-Comp:}[Docs]
-   --- ( ) Actually learn the framework
-   --- (_) Refactor Noice Module -> NUI Module
-   -- (x)  Nvim-Nio:: {:$/nio-async:}[Async Docs]
-   --- (x)  Learn it properly, try to make multi-module async work
-   -- (-) Doctor Rewrite::
-   --- ( ) Proper LSP Healthcheck (display all config values + enabled/disabled LSP info <methods Supported by server, config for methods>)
-   --- ( ) Healthcheck for tree-sitter API's/Queries
+* Inbox
+  #contexts GTD::Inbox
+  - (-) Neovim/Fennel Things::
+  -- (_) Nfnl Port::
+  --- (_) The Actual Port::
+  -- ( ) Fennel Syntax Injections::
+  --- ( ) Add custom TS-injection for docstrings.
+  ---- ( ) DocStrings -> Neorg Conversion  [Perhaps write it in Haskell?]{Neorg Parser Combinator when bozo?}
+  -- ( ) NUI-components:: {:$/Nui-Comp:}[Docs]
+  --- ( ) Actually learn the framework
+  --- (_) Refactor Noice Module -> NUI Module
+  -- (-)  Nvim-Nio:: {:$/nio-async:}[Async Docs]
+  --- (_)  Learn it properly, try to make multi-module async work
+  -- (-) Doctor Rewrite::
+  --- ( ) Proper LSP Healthcheck (display all config values + enabled/disabled LSP info <methods Supported by server, config for methods>)
+  --- ( ) Healthcheck for tree-sitter API's/Queries
 
-   - (=) Nix Things::
-   -- (=) CI:: Fnl -> Lua -> /tmp/nyoom
-   -- (=) Nix Aware Module Lookup:: (JSON Querying?) [On Hold for now]{Wait for module system refactor, and use doctor for config-checking}
+  - (=) Nix Things::
+  -- (=) CI:: Fnl -> Lua -> /tmp/nyoom
+  -- (=) Nix Aware Module Lookup:: (JSON Querying?) [On Hold for now]{Wait for module system refactor, and use doctor for config-checking}
 
-   - (-) Lzn::
-   -- (-) Find way for module lookup::
-   --- E.g:: If Hydra `loads` telescope/which-key => Run Telescope loader + Which-key module (can be achieved via a `adder`, querying the lz.n.state tree and running the loader)
-   - (x) Deprecate Packer::
-   -- (x) Learn how `packages.preload` Actually fking works, I mean wtf is it even?
-   -- (x) Packer -> Custom InHouse Package Loading (using nix for management and fennel to load)
-   --- (x) Test `lazy-cmd!` custom Cmd's like seen with {https://lewis6991/pckr.nvim/blob/main/lua/pckr/loader/cmd.lua}[Pckr's Implementation]
-   --- (x) ReWrite (use-package!)::
-   ---- (x) lzn! Macro
+  - (x) Lzn::
+  -- (x) Find way for module lookup::
+  --- (x) E.g:: If Hydra `loads` telescope/which-key => Run Telescope loader + Which-key module (can be achieved via a `adder`, querying the lz.n.state tree and running the loader)
+  - (x) Deprecate Packer::
+  -- (x) Learn how `packages.preload` Actually fking works, I mean wtf is it even?
+  -- (x) Packer -> Custom InHouse Package Loading (using nix for management and fennel to load)
+  --- (x) Test `lazy-cmd!` custom Cmd's like seen with {https://lewis6991/pckr.nvim/blob/main/lua/pckr/loader/cmd.lua}[Pckr's Implementation]
+  --- (x) ReWrite (use-package!)::
+  ---- (x) lzn! Macro
 * inspiration::
   %Why doesn't neorg have tables??%
   - {!&gh konradmalik/neovim-flake}[Konradmalik]

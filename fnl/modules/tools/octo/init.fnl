@@ -1,3 +1,3 @@
-(import-macros {: use-package! : nyoom-module!} :macros)
+(import-macros {: lzn!} :macros)
 
-(nyoom-module! tools.octo)
+(lzn! :octo {:nyoom-module tools.octo :wants [:telescope] :cmd [:Octo]})

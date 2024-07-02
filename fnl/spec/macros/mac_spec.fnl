@@ -1,5 +1,5 @@
-(local {: describe : it} (require :plenary.busted))
-(local assert (require :luassert.assert))
+; (local {: describe : it} (require :plenary.busted))
+; (local assert (require :luassert.assert))
 
 (import-macros {: lazyp} :macros)
 

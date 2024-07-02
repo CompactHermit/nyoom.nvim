@@ -37,6 +37,7 @@
                        :cmp_buffer
                        :cmp_cmdline
                        :cmp_luasnip
+                       :cmp_conjure
                        :cmp_nvim_lsp])
 
 ; (: (vim.iter (vim.list_extend soft-deps source_plugins)) :each
@@ -70,17 +71,6 @@
                   :level vim.log.levels.ERROR
                   :progress 20})
 
-;; NOTE:: (Hermit) Fuck Harshit, retarded fucker
-; (cmp.register_source :buffer (autoload :cmp_buffer))
-; (cmp.register_source :cmdline ((->> :new (. (autoload :cmp_cmdline)))))
-; (cmp.register_source :path ((->> :new (. (autoload :cmp_path)))))
-; (cmp.register_source :luasnip ((. (autoload :cmp_luasnip) :new)))
-; ;(cmp.register_source :nvim_lsp_document_symbol ((. (autoload :cmp_nvim_lsp_document_symbol) :new)))
-; (cmp.register_source :nvim_lua ((. (autoload :cmp_nvim_lua) :new)))
-; ((->> :setup (. (autoload :cmp_nvim_lsp))))
-; (cmp.register_source :nvim_lsp_signature_help
-;                      ((. (autoload :cmp_nvim_lsp_signature_help) :new)))
-
 ((->> :setup (. (require :cmp))) {:experimental {:ghost_text false}
                                   :window {:documentation {:border :solid}
                                            :completion {:col_offset (- 3)
@@ -97,13 +87,14 @@
                                                  true
                                                  (and (not (context.in_treesitter_capture :comment))
                                                       (not (context.in_syntax_group :Comment)))))
-                                  :sources [{:name :luasnip}
-                                            {:name :nvim_lsp}
+                                  :sources [{:name :luasnip :group_index 2}
+                                            {:name :nvim_lsp :group_index 1}
                                             {:name :lazydev :group_index 0}
                                             {:name :neorg :group_index 1}
                                             {:name :crates :group_index 2}
-                                            {:name :buffer}
-                                            {:name :path}]
+                                            {:name :buffer :group_index 1}
+                                            ;{:name :conjure}
+                                            {:name :path :group_index 0}]
                                   :preselect cmp.PreselectMode.None
                                   :snippet {:expand (fn [args]
                                                       (luasnip.lsp_expand args.body))}
@@ -169,17 +160,17 @@
                     :sources [{:name :path :group_index 2}
                               {:name :cmdline :group_index 1}]})
 
-((->> :setup
-      (. (require :scissors))) {:snipperDir "~/.config/nvim"})
+; ((->> :setup
+;       (. (require :scissors))) {:snipperDir "~/.config/nvim"})
 
 ((. (require :luasnip.loaders.from_vscode) :lazy_load) {:paths ["~/.config/nvim/snippets/"]})
-(map! [n] :<leader>cse `((->> :editSnippet
-                              (. (require :scissors))))
-      {:desc "Edit Snippet"})
+; (map! [n] :<leader>cse `((->> :editSnippet
+;                               (. (require :scissors))))
+;       {:desc "Edit Snippet"})
 
-(map! [n] :<leader>csc `((->> :addNewSnippet
-                              (. (require :scissors))))
-      {:desc "create Snippet"})
+; (map! [n] :<leader>csc `((->> :addNewSnippet
+;                               (. (require :scissors))))
+;       {:desc "create Snippet"})
 
 (luasnip.add_snippets :haskell haskell_snippets {:key :haskell})
 ((. (autoload :luasnip.loaders.from_lua) :load) {:paths ["~/.config/nvim/snippets/"]})

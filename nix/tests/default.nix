@@ -43,7 +43,9 @@
           excludes = [
             "flake.lock"
             "index.norg"
+            "generated.nix"
             "r.'+.yml$'"
+            "r.'+.json$'"
           ];
         }
         // _args;
@@ -77,8 +79,8 @@
       treefmt = {
         projectRootFile = "flake.nix";
         programs = {
-          nixfmt-rfc-style = {
-            package = inputs.nixfmt-rfc.packages."${system}".default;
+          nixfmt = {
+            package = inputs.nixfmt-rfc.packages."${system}".nixfmt;
             enable = true;
           };
           fnlfmt.enable = true;
@@ -94,15 +96,6 @@
       #       echo "TODO:: Setup Busted Checks Here"
       #     '';
       #   };
-      #
-      #   macro = pkgs.stdenv.mkDerivation {
-      #     name = "Run Macro Tests";
-      #     buildInputs = [];
-      #     buildPhase = ''
-      #       echo "Find a way for us to interface with hotpot's fennel-luajit compiler without neovim"
-      #     '';
-      #   };
-      # };
       #
     };
 }

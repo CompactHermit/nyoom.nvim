@@ -51,7 +51,7 @@
         lines (or ?num 4)
         opts (or ?opts {})
         {:prefix ?prefix & opts} opts
-        prefix (or ?prefix "")
+        prefix (or ?prefix nil)
         {:hydra hydra? :name name? :config config? & keymaps} keymaps
         is-valid-cmd (fn [rhs]
                        (vim.tbl_contains [:string :function] (type rhs)))
@@ -60,8 +60,7 @@
                                (is-valid-cmd rhs)
                                {:cmd rhs :final true}
                                ;; Documented rhs
-                               (and (vim.islist rhs)
-                                    (is-valid-cmd (. rhs 1)))
+                               (and (vim.islist rhs) (is-valid-cmd (. rhs 1)))
                                {:cmd (. rhs 1)
                                 :desc (. rhs 2)
                                 :exit (or false (. rhs 3))
@@ -91,17 +90,19 @@
         keymap-opts (vim.tbl_extend :force base-keymap-opts opts)]
     ;; NOTE:: (Hermit) Just use a Match, wtf are you doing??
     (if (= hydra? true)
-        ;; DEBUG::
-        ;; (print (autogen-hint keymaps name? num)
-        (hydra {:name name?
-                :hint (autogen-hint keymaps name? lines)
-                :config config?
-                : mode
-                :body prefix
-                :heads (icollect [lhs rhs (pairs keymaps)]
-                         (if rhs.final
-                             [lhs rhs.cmd {:desc rhs.desc :exit rhs.exit}]))})
-        ;; else
+        (do
+          (local v
+                 (hydra {:name name?
+                         :hint (autogen-hint keymaps name? lines)
+                         :config config?
+                         : mode
+                         :body prefix
+                         :heads (icollect [lhs rhs (pairs keymaps)]
+                                  (if rhs.final
+                                      [lhs
+                                       rhs.cmd
+                                       {:desc rhs.desc :exit rhs.exit}]))}))
+          (values v))
         (each [lhs rhs (pairs keymaps)]
           (let [lhs (.. prefix lhs)]
             (if rhs.final

@@ -1,3 +1,3 @@
-(import-macros {: nyoom-module!} :macros)
+(import-macros {: lzn!} :macros)
 
-(nyoom-module! editor.word-wrap)
+(lzn! :wrapping-paper {:nyoom-module editor.word-wrap :keys [:gw]})

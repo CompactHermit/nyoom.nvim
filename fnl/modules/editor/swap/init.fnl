@@ -11,10 +11,10 @@
              :STSSelectCurrentNode
              :STSSelectMasterNode]})
 
-(lzn! :iswap.nvim {:cmd [:ISwapWith
-                         :ISwap
-                         :ISwapNodeWith
-                         :IMoveWith
-                         :IMoveNodeWith
-                         :IMove]
-                   :call-setup iswap})
+(lzn! :iswap {:cmd [:ISwapWith
+                    :ISwap
+                    :ISwapNodeWith
+                    :IMoveWith
+                    :IMoveNodeWith
+                    :IMove]
+              :call-setup iswap})

@@ -1,4 +1,7 @@
 (import-macros {: lzn!} :macros)
 
-(lzn! :ratatoskr {:nyoom-module editor.hotpot.+reflect
-                  :event [:DeferredUIEnter]})
+(lzn! :HotPot-Reflect-API
+      {:nyoom-module editor.hotpot.+reflect
+       :load (fn [])
+       :keys [{1 :mhn :mode :v :desc "[N]ew [Re]flect [Se]ssion"}
+              {1 :mhx :desc "[Sw]ap [Re]flect [M]ode"}]})

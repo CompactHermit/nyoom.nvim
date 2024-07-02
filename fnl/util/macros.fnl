@@ -1,4 +1,5 @@
-;; fennel-ls: macro-file
+; fennel-ls: macro-file
+;; fnlfmt:skip
 
 (fn assert-tbl [tbl]
   "A simple sanity check"

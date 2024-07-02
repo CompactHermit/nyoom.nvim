@@ -19,11 +19,6 @@
 (custom-set-face! :TSRainbowViolet [] {:fg "#ada8a8" :bg :NONE})
 (custom-set-face! :TSRainbowCyan [] {:fg "#878d96" :bg :NONE})
 (custom-set-face! :Macro-call [] {:fg "#ff7eb6" :bg :NONE})
-
-;; ┌─────────────────────────┬
-;; │  Treesitter Autocmds::  │
-;; └─────────────────────────┘
-
 (nyoom-module-p! nix
                  (do
                    (custom-set-face! "@lsp.mod.builtin.nix" []
@@ -31,8 +26,11 @@
                    (custom-set-face! "@lsp.type.parameter.nix" []
                                      {:fg "#ec9df4" :bg :NONE})))
 
+;; Set Octo == Markdown
+(vim.treesitter.language.register :markdown :octo)
+
 ;; ┌─────────────────────────┬
-;; │  Treesitter Setup:   :  │
+;; │  Treesitter Setup:      │
 ;; └─────────────────────────┘
 
 (local _tsOpts
@@ -49,7 +47,7 @@
                    :highlight_definitions {:enable true
                                            :clear_on_cursor_move true}
                    :smart_rename {:enable true
-                                  :keymaps {:smart_rename :<localleader>rn}}}
+                                  :keymaps {:smart_rename :<space>rn}}}
         :query_linter {:enable true
                        :use_virtual_text true
                        :lint_events [:BufWrite :CursorHold]}
@@ -84,20 +82,13 @@
 (let [fidget (require :fidget)
       progress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :treesitter}})
       rainbox (autoload :rainbow-delimiters)]
-  ;(packadd! rainbow-delimiters)
-  ;(packadd! ts-context)
 
   (progress:report {:message "Setting Up treesitter"
                     :level vim.log.levels.ERROR
                     :progress 0})
-  ;((->> :setup (. (require :treesitter-context))) {:enable true})
   ((->> :setup (. (require :nvim-treesitter.configs))) _tsOpts) 
   ((->> :setup (. (require :ts_context_commentstring))) {:enable_autocmd false});})
   (let! skip_ts_context_commentstring_module true)
-  ; (let! rainbow_delimiters {:strategy {}
-  ;                           :query {}
-  ;                           :priority {}
-  ;                           :highlight {}})
   (progress:report {:message "Setup Complete"
                     :title :Completed!
                     :progress 100})

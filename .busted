@@ -10,9 +10,7 @@ return {
     },
     macros = {
         ROOT =  {'./lua/specs/macros/'},
-    },
-    default = {
-        verbose = true
+        verbose = true,
     },
     tests = {
         verbose = true

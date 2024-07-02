@@ -5,4 +5,4 @@
 ;               :opt true
 ;               :ft [:nu]
 ;               :call-setup nu})
-(nyoom-module! lang.sh.+nu)
+;(nyoom-module! lang.sh.+nu)

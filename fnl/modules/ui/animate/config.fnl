@@ -19,33 +19,33 @@
 ;                   :blend "#FAFAFA"
 ;                   :none :NONE})
 ;
-(local oxo (. (autoload :oxocarbon) :oxocarbon))
-(local modes
-       {:i {:hl {:MyCursor {:bg oxo.base08}}
-            :winhl {:CursorLine {:fg oxo.base08}
-                    :CursorLineNr {:fg oxo.base08}}}
-        :n {:winhl {:CursorLine {:fg oxo.base08}
-                    :CursorLineNr {:fg oxo.base12}}}
-        :no {:hl {}
-             :operators {:d {:hl {:MyCursor {:fg oxo.base15}}
-                             :winhl {:CursorLine {:fg oxo.base14}}}
-                         :y {:hl {:MyCursor {:fg oxo.base10}}
-                             :winhl {:CursorLine {:fg oxo.base12}}}}
-             :winhl {}}
-        [:v :V "\022"] {:winhl {:CursorLineNr {:fg oxo.base04}}}})
-
-(local __mode {:init (fn [] (vim.opt.guicursor:append "a:MyCursor")
-                       (set vim.opt.cursorline true)
-                       (vim.cmd "hi! ColorColumn guifg=Red guibg='#380000'
-                                hi! CursorLine guibg=#021020
-                                hi! CursorLineNr gui=bold"))
-               :lazy false
-               : modes
-               :name :default
-               :priority 100})
+; (local oxo (. (autoload :oxocarbon) :oxocarbon))
+; (local modes
+;        {:i {:hl {:MyCursor {:bg oxo.base08}}
+;             :winhl {:CursorLine {:fg oxo.base08}
+;                     :CursorLineNr {:fg oxo.base08}}}
+;         :n {:winhl {:CursorLine {:fg oxo.base08}
+;                     :CursorLineNr {:fg oxo.base12}}}
+;         :no {:hl {}
+;              :operators {:d {:hl {:MyCursor {:fg oxo.base15}}
+;                              :winhl {:CursorLine {:fg oxo.base14}}}
+;                          :y {:hl {:MyCursor {:fg oxo.base10}}
+;                              :winhl {:CursorLine {:fg oxo.base12}}}}
+;              :winhl {}}
+;         [:v :V "\022"] {:winhl {:CursorLineNr {:fg oxo.base04}}}})
+;
+; (local __mode {:init (fn [] (vim.opt.guicursor:append "a:MyCursor")
+;                        (set vim.opt.cursorline true)
+;                        (vim.cmd "hi! ColorColumn guifg=Red guibg='#380000'
+;                                 hi! CursorLine guibg=#021020
+;                                 hi! CursorLineNr gui=bold"))
+;                :lazy false
+;                : modes
+;                :name :default
+;                :priority 100})
 
 ((->> :setup (. (autoload :reactive))) {:builtin {:cursorline true
                                                   :cursor true
                                                   :modemsg true}})
 
-((->> :add_preset (. (autoload :reactive))) __mode)
+; ((->> :add_preset (. (autoload :reactive))) __mode)

@@ -7,13 +7,32 @@
   stdenvNoCC,
   pkgs,
   autoreconfHook,
+  applyPatches,
+  fetchpatch,
   ...
 }:
 let
 
-  inherit (lib) concatStringsSep;
+  inherit (lib) concatStringsSep mkIf;
 
   cfg = config.neohermit;
+
+  patches = [
+    #FIX:: Remove MSG-PACK
+    # (fetchpatch {
+    #   url = "https://patch-diff.githubusercontent.com/raw/neovim/neovim/pull/29540.patch";
+    #   hash = "sha256-GbrSV1pBUKl6R8d0ZHY/ysjZj+Blcd88x8BMccxH03s=";
+    # })
+  ];
+  patched-src = applyPatches {
+    name = "neovim-source";
+    src = cfg.src;
+    inherit patches;
+    patchFlags = [
+      "-p1"
+      "--no-backup-if-mismatch"
+    ];
+  };
 
   stringSeps = concatStringsSep "\n" (
     map (file: "rm -rf $out/share/nvim/${file}") [
@@ -52,9 +71,7 @@ let
     builtins.readFile
     (lib.splitString "\n")
     (map (builtins.match "([[:alnum:]_]+)_(URL|SHA256)[[:blank:]]+([^[:blank:]]+)[[:blank:]]*"))
-    #(map (builtins.match "([(?!TREESITTER)[:alnum:]_]+)_(URL|SHA256)[[:blank:]]+([^[:blank:]]+)[[:blank:]]*")) 
     (lib.remove null)
-    #(__filter (x: __match "(TREESITTER).*" (__head x) == null)) # TODO: To stupid for a proper regex-lookbehinds, will try to understand how nix implements them fml
     (builtins.foldl' (
       acc: elem:
       let
@@ -95,27 +112,34 @@ let
       (prev.luaLib.overrideLuarocks prev.luv rec {
         version = versionFromSrc mkDeps.luv;
         src = mkDeps.luv;
-        # Update version in rockspec file
         knownRockspec = rockspecUpdateVersion prev.luv.knownRockspec "luv" version;
       }).overrideAttrs
-        (prevAttrs: {
-          buildInputs = replaceInput prevAttrs.buildInputs libuv;
+        (oa: {
+          buildInputs = replaceInput oa.buildInputs libuv;
         });
-    libluv = prev.libluv.overrideAttrs (prevAttrs: {
+    libluv = prev.libluv.overrideAttrs (oa: {
       inherit (final.luv) version src;
-      buildInputs = replaceInput prevAttrs.buildInputs libuv;
+      buildInputs = replaceInput oa.buildInputs libuv;
     });
+    #BROKEN:: SEEMS THE BOOSTRAPPER FAILS HARD
     lpeg = prev.luaLib.overrideLuarocks prev.lpeg rec {
       version = versionFromSrc mkDeps.lpeg;
       src = mkDeps.lpeg;
       knownRockspec = rockspecUpdateVersion prev.lpeg.knownRockspec "lpeg" version;
     };
   };
+
   # libuv::
-  libuv = pkgs.libuv.overrideAttrs {
-    version = versionFromSrc mkDeps.libuv;
-    src = mkDeps.libuv;
-  };
+  #NOTE: (Hermit) https://github.com/nix-community/neovim-nightly-overlay/pull/541
+  libuv =
+    if (pkgs.stdenv.isLinux) then
+      pkgs.libuv.overrideAttrs {
+        version = versionFromSrc mkDeps.libuv;
+        src = mkDeps.libuv;
+      }
+    else
+      pkgs.libuv;
+
   # LuaJIT::
   lua = pkgs.luajit.override rec {
     version =
@@ -135,9 +159,9 @@ let
     src = mkDeps.luajit;
     packageOverrides = luaPackageOverrides;
     #enable52Compat = true;
-    self = lua;
   };
 
+  #TODO:: This is all boilerplate we could abstract away.
   # msgPack ::
   msgpack-c = pkgs.msgpack-c.overrideAttrs {
     version = versionFromSrc mkDeps.msgpack;
@@ -161,6 +185,14 @@ let
     version = versionFromSrc mkDeps.libvterm;
     src = mkDeps.libvterm;
   };
+  gettext = pkgs.gettext.overrideAttrs {
+    src = mkDeps.gettext;
+    version = versionFromSrc mkDeps.gettext;
+  };
+  libiconv = pkgs.libiconv.overrideAttrs {
+    src = mkDeps.libiconv;
+    version = versionFromSrc mkDeps.libiconv;
+  };
 
 in
 (cfg.package.override {
@@ -170,15 +202,22 @@ in
     msgpack-c
     unibilium
     libvterm-neovim
+    gettext
+    libiconv
     ;
 }).overrideAttrs
   (oa: {
-    src = cfg.src;
+    src = patched-src;
     version = cfg.src.shortRev or "dirty";
     buildInputs = (oa.buildInputs or [ ]) ++ [ utf8proc ];
     preConfigure = ''
       sed -i cmake.config/versiondef.h.in -e "s/@NVIM_VERSION_PRERELEASE@/-dev-$version/"
     '';
+    cmakeFlagsArray = oa.cmakeFlagsArray ++ [
+      "-DLUACHECK_PRG=${pkgs.luajit.pkgs.luacheck}/bin/luacheck"
+      "-DENABLE_LTO=OFF"
+      #"-DENABLE_ASAN_UBSAN=ON"
+    ];
     postInstall = ''
       #${if oa ? postInstall then oa.postInstall else ""}
       ${stringSeps}
