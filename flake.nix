@@ -19,26 +19,15 @@
           "x86_64-darwin"
         ];
         imports = [
-          ./nix/tests
           flakeModule
+          ./nix/tests
+          ./nix/templates
+          ./nix/hermitM.nix
+          # ./nix/packages
         ];
         debug = true;
         flake = {
           inherit flakeModule;
-          templates =
-            let
-              inherit (inputs.nixpkgs) lib;
-            in
-            (lib.attrsets.genAttrs
-              (lib.attrNames (lib.filterAttrs (_: v: v != "regular") (builtins.readDir ./nix/templates)))
-              (name: {
-                path = ./nix/templates/${name};
-                description = "${name}-Template";
-                welcomeText = ''
-                  Welcome ya bloated fuck, ur building a devshell for ${name}, enjoy it .
-                '';
-              })
-            );
         };
         perSystem =
           {
@@ -46,294 +35,92 @@
             lib,
             pkgs,
             config,
+            fetches,
             system,
             ...
           }:
           {
-            _module.args.pkgs = import self.inputs.nixpkgs {
-              inherit system;
-              overlays =
-                with inputs;
-                [
+            _module.args = {
+              pkgs = import self.inputs.nixpkgs {
+                inherit system;
+                overlays = with inputs; [
+                  vimcats.overlays.default
                   fnl-tools.overlays.default
                   neorocks.overlays.default
-                ]
-                ++ [
-                  (_: super: {
-                    tree-sitter = inputs.ts-nightly.legacyPackages."${system}".tree-sitter;
-                    /*
-                      NOTE: at this point, it'd be better to define our own TS Submodule and hard-link all ts-plugins together.
-                       Though, we might as well as pass the parsers properly through this. But I want to avoid overlays as much as possible.
-                       Hmph
-                    */
-                    # vimPlugins = super.vimPlugins.extend (
-                    #   (self: super: {
-                    #     nvim-treesitter = super.nvim-treesitter.overrideAttrs (_: {
-                    #       src = inputs.nvim-treesitter;
-                    #     });
-                    #   })
-                    # );
+                  (self: super: {
+                    tree-sitter-nightly = super.rustPlatform.buildRustPackage ({
+                      inherit (fetches.tree-sitter) src version pname;
+                      inherit (super.tree-sitter)
+                        buildInputs
+                        nativeBuildInputs
+                        patches
+                        postInstall
+                        passthru
+                        ;
+                      cargoLock = {
+                        inherit (fetches.tree-sitter.cargoLock."Cargo.lock") lockFile;
+                        #allowBuiltinFetchGit = true;
+                      };
+
+                      doCheck = false;
+                    });
+                    luajit = super.luajit.override {
+                      packageOverrides = luafinal: luaprev: {
+                        # https://github.com/NixOS/nixpkgs/issues/333761
+                        rtp-nvim = luaprev.rtp-nvim.overrideAttrs {
+                          inherit (fetches.rtp-nvim) src;
+                        };
+                        pathlib-nvim = luaprev.pathlib-nvim.overrideAttrs {
+                          inherit (fetches.pathlib) src;
+                        };
+                        lz-n = luaprev.lz-n.overrideAttrs {
+                          inherit (fetches.lz-n) src;
+                        };
+                        # dkjson = luaprev.dkjson.overrideAttrs (oa: {
+                        #   src = self.fetchurl {
+                        #     inherit (oa.src) url;
+                        #     hash = "sha256-JOjNO+uRwchh63uz+8m9QYu/+a1KpdBHGBYlgjajFTI=";
+                        #   };
+                        # });
+                        busted = luaprev.busted.overrideAttrs (
+                          oa:
+                          let
+                            luaPacks = builtins.attrValues {
+                              inherit (luafinal)
+                                nlua
+                                plenary-nvim
+                                nvim-nio
+                                pathlib-nvim
+                                ;
+                            };
+                          in
+                          {
+                            #src = inputs.busted-fennel;
+                            #knownRockspec = "${inputs.busted-fennel}/busted-scm-1.rockspec";
+                            propagatedBuildInputs = oa.propagatedBuildInputs ++ luaPacks;
+                            nativeBuildInputs = oa.nativeBuildInputs ++ [ super.makeWrapper ];
+                            postInstall =
+                              oa.postInstall
+                              # bash
+                              + ''
+                                wrapProgram $out/bin/busted --add-flags "--lua=nlua"
+                              '';
+                          }
+                        );
+                        nvim-nio = luaprev.nvim-nio.overrideAttrs (_: {
+                          inherit (fetches.nvim-nio) src;
+                          version = "1.10.0-1";
+                        });
+                      };
+                    };
+                    luajitPackages = self.luajit.pkgs;
+                    lua51Packages = self.lua5_1.pkgs;
                   })
                 ];
+              };
+              fetches = pkgs.callPackage ./deps/plugins/_sources/generated.nix { };
             };
             # TODO: (Hermit) <05/14> cfg.lua.extraRocks be a set of lazy-attrs, and make `extraRocks` build with luajit by-default!
-            neohermit = {
-              src = inputs.nvim-git;
-              plugins = {
-                lazy = [
-                  "animation"
-                  "actions-preview"
-                  "alpha"
-                  "bufferline"
-                  #"bmessages" #Conjure is Better
-                  "crates"
-                  "clangd_extensions"
-                  "nvim-scissors"
-                  "nvim-cmp"
-                  "colors"
-                  "comment"
-                  "cmp-nvim-lua"
-                  "cmp-dap"
-                  "cmp-conjure"
-                  "cmp-lspkind"
-                  "cmp-luasnip"
-                  "cmp-path"
-                  "cmp-buffer"
-                  "cmp-cmdline"
-                  "cmp-nvim-lsp"
-                  "cmp-vimtex"
-                  "cmp-nvim-lsp-signature-help"
-                  "cmp-dap"
-                  "cmp-latexsym"
-                  "luasnip"
-                  "haskell-snippets"
-                  "luasnip_snippets"
-                  "friendly-luasnip"
-                  "cmp-latexsym"
-                  "compiler"
-                  "conjure"
-                  "diffview"
-                  "direnv"
-                  "dynMacro" # Based
-                  "folke_edgy"
-                  "folke_trouble"
-                  "folke_todo-comments"
-                  "folke_noice"
-                  "galore"
-                  "gitconflict"
-                  "gitignore"
-                  "grug"
-                  "ibl"
-                  "iswap"
-                  "image-nvim"
-                  # "quicknote"
-                  "markview"
-                  "multicursor"
-                  "neogit"
-                  "neotest"
-                  "neotest-haskell"
-                  "neotest-busted"
-                  "neotest-python"
-                  "neotest-zig"
-                  "neorg"
-                  "neorg-telescope"
-                  "neorg-lines"
-                  "neorg-exec"
-                  "neorg-interim-ls"
-                  "neorg-templates"
-                  #"neorg-se"
-                  # "neorg-roam"
-                  # "neorg-chronicle"
-                  # "neorg-timelog"
-                  # "neorg-hop-extras"
-                  "mini-icons"
-                  "nvim-parinfer"
-                  "nui-components"
-                  "dap"
-                  "dapui"
-                  "dap-lua"
-                  "dap-rr"
-                  "dap-python"
-                  "nvim-dap-virtual-text"
-                  "smuggler"
-                  "gitsigns"
-                  "go-nvim"
-                  "harpoon"
-                  "lazydev"
-                  "lspconfig"
-                  "nonels"
-                  "luvit-meta"
-                  "libmodal"
-                  "lua-utils"
-                  "lsp-better-diag"
-                  "lsplines"
-                  "lspsaga"
-                  "resession"
-                  "rustaceanvim"
-                  "truezen"
-                  "ts-error-translator"
-                  "tsplayground"
-                  "hydra"
-                  "hlchunks"
-                  "haskellTools"
-                  "rainbow-delimiters"
-                  "syntax-tree-surfer"
-                  "ts-context"
-                  "ts-context-commentstring"
-                  "ts-refactor"
-                  "ts-textobjects"
-                  "ts-node-action"
-                  "telescope"
-                  "telescope_hoogle"
-                  "telescope-ui-select"
-                  "telescope-file-browse"
-                  "telescope-project"
-                  "telescope-tabs"
-                  "telescope-zoxide"
-                  "telescope-egrepify"
-                  "tmpclone-nvim"
-                  "toggleterm"
-                  "ufold"
-                  "psa"
-                  "octo"
-                  "otter"
-                  "oqt"
-                  "overseer"
-                  "oil"
-                  "oil-git-status"
-                  "pathlib"
-                  "profile"
-                  "quarto"
-                  "quickfix"
-                  "reactive"
-                  "ratatoskr"
-                  "tailwind-tools"
-                  "windows"
-                  "which-key"
-                  "yanky"
-                  "yeet"
-                  "folke_flash"
-                  "matchparens"
-                  "nvim-autopairs"
-                  "text-case"
-                  "zigTools"
-                ];
-                eager = [
-                  "hotpot-nvim"
-                  "cyberdream"
-                  "moonfly"
-                  "nightfox"
-                  "nvim-nio" # Needed for Docs, will just igrnore for now
-                  "nvim-notify"
-                  "nui"
-                  "oxocarbon"
-                  "sweetie"
-                  "wrapping-paper"
-                ];
-              };
-              settings = {
-                strip = true;
-                bytecompile = true;
-                plugins = {
-                  neorg = {
-                    patches = [
-                      (pkgs.fetchpatch {
-                        url = "https://github.com/nvim-neorg/neorg/pull/1390.diff";
-                        hash = "sha256-F9aZFdFEPiG2NLmwnHrZaiYO6jLF0b8xu9mn8zLf7G8=";
-                      })
-                      (pkgs.fetchpatch {
-                        url = "https://github.com/nvim-neorg/neorg/pull/1528.diff";
-                        hash = "sha256-3TfsuZHZlbNM35o6M6bmL5o8pMhlNnXZYmBjBplITm8=";
-                      })
-                    ];
-                  };
-                  # bufferline = {
-                  #   postInstall = ''
-                  #     echo "hello"
-                  #   '';
-                  # };
-                  # neorg = {
-                  #   postInstall = ''
-                  #     rm -rf $out/queries/norg
-                  #     cp -r "${inputs.tree-sitter-norg}"/queries/norg $out/queries
-                  #   '';
-                  # };
-                };
-                parsers = {
-                  # vala.postPatch = ''
-                  #   mv queries/vala/* queries/
-                  #   rmdir queries/vala
-                  # '';
-                  typst.postPatch = # bash
-                    ''
-                      mv queries/typst/* queries/
-                      rmdir queries/typst
-                    '';
-                  nu.postPatch = # nu
-                    ''
-                      mv queries/nu/* queries/
-                      rmdir queries/nu
-                    '';
-                };
-              };
-              lua = {
-                extraPacks = builtins.attrValues {
-                  inherit (pkgs.lua51Packages)
-                    # lgi
-                    # toml-edit
-                    fidget-nvim
-                    fzy
-                    ;
-                  inherit (inputs.lzn.packages."${system}") lz-n-luaPackage;
-                  inherit (self'.packages) neorg-se;
-                };
-                jit = builtins.attrValues {
-                  inherit (pkgs.luajitPackages)
-                    magick
-                    luarocks
-                    nvim-nio
-                    middleclass
-                    ;
-                };
-                extraCLibs = builtins.attrValues { inherit (self'.packages) neorg-se; };
-              };
-              #TODO:: Add Proper Queries
-              defaultPlugins = builtins.attrValues { inherit (pkgs.vimPlugins) sqlite-lua plenary-nvim; };
-              bins = builtins.attrValues {
-                inherit (pkgs)
-                  selene
-                  ripgrep
-                  nvfetcher
-                  fd
-                  lua-language-server
-                  nix-doc
-                  ;
-                inherit (pkgs.haskellPackages) fast-tags;
-                inherit (pkgs.luajitPackages) nlua busted;
-                inherit (inputs.nixfmt-rfc.packages."${system}") nixfmt;
-                inherit (inputs.nil_ls.packages."${system}") nil;
-                stylua = pkgs.stylua.overrideAttrs (_: {
-                  cargoBuildFeatures = [ "lua52" ];
-                });
-                #NOTE: (Hermit) Doesn't work, we can just use the compiled fennel code for Testing
-                # busted = pkgs.luajitPackages.busted.overrideAttrs (oa: {
-                #   src = inputs.busted-fennel;
-                #   knownRockspec = "${inputs.busted-fennel}/busted-scm-1.rockspec";
-                #   propagatedBuildInputs =
-                #     oa.propagatedBuildInputs
-                #     ++ builtins.attrValues { inherit (pkgs.luajitPackages) nlua plenary-nvim; };
-                #   nativeBuildInputs = oa.nativeBuildInputs ++ [ pkgs.makeWrapper ];
-                #   postInstall =
-                #     #oa.postInstall
-                #     # bash
-                #     ''
-                #       wrapProgram $out/bin/busted --add-flags "--lua=nlua"
-                #       # --add-flags "--lpath=${pkgs.luajitPackages.plenary-nvim}/lua/?.lua;${pkgs.luajitPackages.plenary-nvim}/lua/?/init.lua"
-                #     '';
-                # });
-                #inherit (pkgs.lua51Packages) lua luarocks;
-              };
-            };
             devShells = {
               default = pkgs.mkShell {
                 name = "Hermit:: Dev";
@@ -346,14 +133,13 @@
                     lua-language-server
                     selene
                     faith
-                    fennel-ls
                     fnlfmt
                     nvfetcher
                     just
                     fenneldoc
                     fennel-unstable-luajit
                     ;
-                  #inherit (pkgs.texlive.combined) scheme-full;
+                  #inherit (self'.packages) fennel-language-server;
                 };
                 DIRENV_LOG_FORMAT = ""; # NOTE:: Makes direnv shutup
                 FENNEL_PATH = "${pkgs.faith}/bin/?;./src/?.fnl;./src/?/init.fnl";
@@ -361,9 +147,7 @@
               };
             };
             packages =
-              let
-                fetches = pkgs.callPackage ./deps/plugins/_sources/generated.nix { };
-              in
+              #TODO:: Unshittify this mess
               {
                 fnl-linter = pkgs.stdenv.mkDerivation {
                   name = "Fnl-linter";
@@ -401,20 +185,56 @@
                     cp fenneldoc $out/bin
                   '';
                 };
-                #TODO:: move ~> ./nix/packages/*
+                lzn-auto-require = pkgs.luajitPackages.callPackage (
+                  {
+                    buildLuarocksPackage,
+                    luaOlder,
+                    lz-n,
+                    fetchurl,
+                  }:
+                  (buildLuarocksPackage {
+                    pname = "lzn-auto-require";
+                    src = fetches.lzn-auto-require.src;
+                    version = "0.1.0-1";
+                    knownRockspec =
+                      (fetchurl {
+                        url = "https://luarocks.org/manifests/horriblename/lzn-auto-require-0.1.0-1.rockspec";
+                        sha256 = "sha256-o7UoO8zqHem8CBuD7BSOt8E7Yl17SM8EgboauT0g3Qc=";
+                      }).outPath;
+                    disabled = luaOlder "5.1";
+                    propagatedBuildInputs = [
+                      lz-n
+                    ];
+                  })
+                ) { };
+                luarocks-build-fennel = pkgs.lua51Packages.callPackage (
+                  { buildLuarocksPackage, luaOlder }:
+                  buildLuarocksPackage {
+                    inherit (fetches.luarocks-build-fennel) pname src;
+                    version = "scm-1";
+                    knownRockspec = "${fetches.luarocks-build-fennel.src}/rockspecs/luarocks-build-fennel-scm-1.rockspec";
+                    disabled = luaOlder "5.1";
+                  }
+                ) { };
+                fennel-language-server = pkgs.rustPlatform.buildRustPackage {
+                  inherit (fetches.fennel-language-server) src pname version;
+                  cargoLock = {
+                    inherit (fetches.fennel-language-server.cargoLock."Cargo.lock") lockFile;
+                    allowBuiltinFetchGit = true;
+                  };
+                };
                 norg-fmt = pkgs.rustPlatform.buildRustPackage {
                   inherit (fetches.norg-fmt) pname src version;
                   cargoLock = {
                     lockFile = fetches.norg-fmt.cargoLock."Cargo.lock".lockFile;
+                    allowBuiltinFetchGit = true;
                   };
                 };
-                neorg-se = pkgs.lua51Packages.callPackage (
+                neorg-se = pkgs.luajitPackages.callPackage (
                   {
                     buildLuarocksPackage,
-                    fetchFromGitHub,
                     luaOlder,
                     luarocks-build-rust-mlua,
-                    telescope-nvim,
                     rustPlatform,
                     cargo,
                   }:
@@ -425,7 +245,6 @@
                     knownRockspec = "${fetches.neorg-se.src}/neorg-se-scm-1.rockspec";
                     disabled = luaOlder "5.1";
                     propagatedBuildInputs = [
-                      telescope-nvim
                       cargo
                       luarocks-build-rust-mlua
                       rustPlatform.cargoSetupHook
@@ -437,7 +256,8 @@
                     postConfigure = ''
                       cat ''${rockspecFilename}
                       substituteInPlace ''${rockspecFilename} \
-                          --replace-fail '"neorg ~> 8",' ""
+                          --replace-fail '"neorg ~> 8",' ""\
+                          --replace-fail '"telescope.nvim",' ""
                     '';
                     meta = {
                       homepage = "https://github.com/benluas/neorg-se";
@@ -446,21 +266,12 @@
                     };
                   })
                 ) { };
-                #     norgopolis-client-lua = pkgs.rustPlatform.buildRustPackage {
-                #       pname = "norgopolis-lua";
-                #       src = inputs.norgopolis-client-lua;
-                #       version = "0.2.0";
-                #       buildFeatures = [ "luajit" ];
-                #       nativeBuildInputs = [ pkgs.protobuf ];
-                #       cargoLock = {
-                #         lockFileContents = builtins.readFile ("${inputs.norgopolis-client-lua}" + "/Cargo.lock");
-                #         allowBuiltinFetchGit = true;
-                #       };
-                #       postInstall = ''
-                #         mkdir -p $out/share/lib/lua/5.1
-                #         cp $out/lib/libnorgopolis.so $out/lib/lua/5.1
-                #       '';
-                #     };
+                harper-ls = pkgs.rustPlatform.buildRustPackage {
+                  inherit (fetches.harper-ls) pname src version;
+                  cargoLock = {
+                    lockFile = fetches.harper-ls.cargoLock."Cargo.lock".lockFile;
+                  };
+                };
               };
           };
       }
@@ -477,7 +288,9 @@
       url = "github:hercules-ci/hercules-ci-effects";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    #Fucking Christ Zimbatm:: Nix Congressional Member not fking things up and yapping BS <challenge impossible>
     treefmt-nix = {
+      #url = "github:numtide/treefmt-nix/fix-214";
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -486,11 +299,23 @@
       url = "github:oxalica/nil";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    #TODO:: TO Fetcher
-    nvim-git = {
-      url = "github:neovim/neovim";
-      flake = false;
+    vimcats = {
+      url = "github:mrcjkb/vimcats";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        git-hooks.follows = "pch";
+        flake-parts.follows = "parts";
+      };
     };
+    neorocks = {
+      url = "github:nvim-neorocks/neorocks";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        git-hooks.follows = "pch";
+        flake-parts.follows = "parts";
+      };
+    };
+    #TODO:: TO Fetcher
     fnl-linter = {
       url = "github:dokutan/check.fnl";
       flake = false;
@@ -504,19 +329,5 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # Nightly Rocks/New Luarocks ::
-    neorocks = {
-      url = "github:nvim-neorocks/neorocks";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        git-hooks.follows = "pch";
-        flake-parts.follows = "parts";
-      };
-    };
-    lzn.url = "github:nvim-neorocks/lz.n/";
-    busted-fennel = {
-      url = "github:HiPhish/busted/fennel-runner";
-      flake = false;
-    };
-    ts-nightly.url = "github:MangoIV/nixpkgs/mangoiv/update-tree-sitter";
   };
 }

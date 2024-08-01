@@ -29,7 +29,7 @@
 (tset stdlib :crypt (autoload.autoload :core.lib.crypt))
 (tset stdlib :colorutils (autoload.autoload :core.lib.color))
 (tset stdlib :profile (autoload.autoload :core.lib.profile))
-(tset stdlib :alpaca (autoload.autoload :core.lib.alpaca))
+;(tset stdlib :alpaca (autoload.autoload :core.lib.alpaca))
 
 (fn stdlib.nil? [x]
   "Returns true if the given value is nil, false otherwise.

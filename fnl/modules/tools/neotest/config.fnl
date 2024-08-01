@@ -19,8 +19,10 @@
       progress ((. (require :fidget.progress) :handle :create) {:lsp_client {:name :neotest}})
       opts {:adapters [;((autoload :neotest-python) {:dap {:justMyCode false}})
                        (require :rustaceanvim.neotest)
-                       (require :neotest-zig)
+                       ((. (require :neotest-zig) :setup) {:dap {:adapter :lldb}})
+                       ;; Fennel Has a weird way of loading functions, the return actually fucks with neotest-busted's loader. Odd.
                        (require :neotest-busted)
+                       ;(require :neotest-plenary)
                        ((require :neotest-haskell) {:build_tools [:cabal]
                                                     :framework [:tasty :hspec]})]
             :build {:enabled true}
@@ -48,17 +50,16 @@
             :strategies {:integrated {:height 40 :width 120}}
             :overseer {:enabled true :force_default true}
             :discovery {:enabled true
-                        :filter_dir (fn [dir]
-                                      (match dir
-                                        (where _haskell
-                                               (vim.startswith _haskell
-                                                               :dist-newstyle))
-                                        false
-                                        (where _node
-                                               (vim.startswith _node
-                                                               :node-modules))
-                                        false
-                                        _ (values true)))}
+                        :filter_dir #(match $1
+                                       (where _haskell
+                                              (vim.startswith _haskell
+                                                              :dist-newstyle))
+                                       false
+                                       (where _node
+                                              (vim.startswith _node
+                                                              :node-modules))
+                                       false
+                                       _ (values true))}
             :quickfix {:enabled true}
             :summary {:enabled true
                       :expand_errors true

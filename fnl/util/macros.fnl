@@ -26,6 +26,7 @@
                      (set ,res# (: ,res# ,f ,(unpack args))))))
   res)
 
+;; TODO:: (Hermit) Use Vim.Iter
 (fn -d> [mod ...]
   "Threads a module and calls a chain of requires, e.g:: 
     (-d> mod val1 val2) => ((. (. (require :mod) val1) val2 ...))

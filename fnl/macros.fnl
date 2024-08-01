@@ -455,11 +455,11 @@
 ;; TODO:: Add function `tblsOF` which just checks to see if tbl-name is enum of strings, and assert-compile it here.
 (lambda lazyp [identifier ?options]
   " `pack` -> Ported to Lzn
-  :defer = Defer On UI
-  :display = Whether call a fidget timer, we hack this by placing a the loader in `before` and the completion in `after`.
-  :nyoom-module = Have the plugin use `module.name.path.config` for loading
-  :call-setup = Just fucking load the thing, who gives a shit about scripting.
-  the rest are lz.n's defaults, e.g::
+      :defer = Defer On UI
+      :display = Whether call a fidget timer, we hack this by placing a the loader in `before` and the completion in `after`.
+      :nyoom-module = Have the plugin use `module.name.path.config` for loading
+      :call-setup = Just fucking load the thing, who gives a shit about scripting.
+      the rest are lz.n's defaults, e.g::
   {:keys [?keys] :events [?events] ...}
   "
   (assert-compile (str? identifier) "Retard! This expects a string" identifier)
@@ -470,45 +470,50 @@
         require (sym :require)
         options (collect [k v (pairs options)]
                   (match k
-                    :wants (if options.deps
-                               (values :load
-                                       `(fn [name#]
-                                          (vim.cmd.packadd name#)
-                                          (: (vim.iter ,options.deps) :each
-                                             (fn [packs#]
-                                               (vim.cmd.packadd packs#)))
-                                          (: (vim.iter ,v) :each
-                                             (fn [module#]
-                                               ((. (autoload :lz.n)
-                                                   :trigger_load) module#)))))
-                               (values :load
-                                       `(fn [name#]
-                                          (: (vim.iter ,v) :each
-                                             (fn [module#]
-                                               ((. (autoload :lz.n)
-                                                   :trigger_load) module#)))
-                                          (vim.cmd.packadd name#))))
-                    :deps (if (not options.wants)
-                              (values :load
-                                      `(fn [name#]
-                                         (vim.cmd.packadd name#)
-                                         (: (vim.iter ,v) :each
-                                            (fn [plug#]
-                                              (vim.cmd.packadd plug#))))))
-                    :call-setup (values :after
-                                        (let [varp (->str v)]
-                                          `(fn []
-                                             ((. ((. (require :core.lib.autoload)
-                                                     :autoload) :core.lib.setup)
-                                                 :setup) ,varp
-                                                                                                                                                                                                                            {}))))
-                    :nyoom-module (values :after
-                                          (let [varp (->str v)
-                                                config-path (string.format "modules.%s.config"
-                                                                           varp)]
-                                            `(fn []
-                                               (require ,config-path))))
-                    _ (values k v)))]
+                    ;; NOTE: Bcs Fennel compiles down to lua, we can remove overhead  ;;STAGE1;;
+                    :wants
+                    (if options.deps
+                        ;; NOTE::
+                        (values :load
+                                `(fn [name#]
+                                   (vim.cmd.packadd name#)
+                                   (: (vim.iter ,options.deps) :each
+                                      (fn [packs#]
+                                        (vim.cmd.packadd packs#)))
+                                   (: (vim.iter ,v) :each
+                                      (fn [module#]
+                                        (if ((. (autoload :lz.n) :lookup) module#)
+                                            ((. (autoload :lz.n) :trigger_load) module#))))))
+                        (values :load
+                                `(fn [name#]
+                                   (: (vim.iter ,v) :each
+                                      (fn [module#]
+                                        ((. (autoload :lz.n) :trigger_load) module#)))
+                                   (vim.cmd.packadd name#))))
+                    :deps
+                    (if (not options.wants)
+                        (values :load
+                                `(fn [name#]
+                                   (vim.cmd.packadd name#)
+                                   (: (vim.iter ,v) :each
+                                      (fn [plug#]
+                                        (vim.cmd.packadd plug#))))))
+                    :call-setup
+                    (values :after
+                            (let [varp (->str v)]
+                              `(fn []
+                                 ((. ((. (require :core.lib.autoload) :autoload) :core.lib.setup)
+                                     :setup) ,varp
+                                                                                                                                               {}))))
+                    :nyoom-module
+                    (values :after
+                            (let [varp (->str v)
+                                  config-path (string.format "modules.%s.config"
+                                                             varp)]
+                              `(fn []
+                                 (require ,config-path))))
+                    _
+                    (values k v)))]
     (doto options
       (tset 1 identifier))))
 

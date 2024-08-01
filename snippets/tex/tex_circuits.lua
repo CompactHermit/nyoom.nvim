@@ -14,58 +14,58 @@ local types = require("luasnip.util.types")
 local util = require("luasnip.util.util")
 
 ls.add_snippets("tex", {
-    s("circuit", {
-        t({ [[\begin{circuitikz}]], "" }),
-        i(1),
-        t({ "", [[\end{circuitikz}]] }),
-    }),
+	s("circuit", {
+		t({ [[\begin{circuitikz}]], "" }),
+		i(1),
+		t({ "", [[\end{circuitikz}]] }),
+	}),
 
-    s("gate", {
-        t([=[\node[]=]),
-        c(1, {
-            t("not"),
-            t("and"),
-            t("nand"),
-            t("xor"),
-            t("nor"),
-            t("or"),
-        }),
-        t([[ port]]),
-        c(2, {
-            t(""),
-            sn(nil, {
-                t(", number inputs="),
-                i(1),
-            }),
-        }),
-        t([=[] (]=]),
-        i(3, "name"),
-        t([[) at (]]),
-        i(4, "position"),
-        t({ ") {};" }),
-        i(0),
-    }),
+	s("gate", {
+		t([=[\node[]=]),
+		c(1, {
+			t("not"),
+			t("and"),
+			t("nand"),
+			t("xor"),
+			t("nor"),
+			t("or"),
+		}),
+		t([[ port]]),
+		c(2, {
+			t(""),
+			sn(nil, {
+				t(", number inputs="),
+				i(1),
+			}),
+		}),
+		t([=[] (]=]),
+		i(3, "name"),
+		t([[) at (]]),
+		i(4, "position"),
+		t({ ") {};" }),
+		i(0),
+	}),
 
-    s("label", {
-        t([=[\node[]=]),
-        c(1, {
-            t("left"),
-            t("right"),
-            t("above"),
-            t("below"),
-        }),
-        t([=[]]=]),
-        t([[ at (]]),
-        i(2, "position"),
-        t({ [=[) {\(]=] }),
-        i(3, "label"),
-        t({ [=[\)};]=] }),
-        i(0),
-    }),
-    s("crossing", {
-        t([[\node at (]]),
-        i(1, "location"),
-        t(") [ocirc,fill=black] {};"),
-        i(0),
-    }),
+	s("label", {
+		t([=[\node[]=]),
+		c(1, {
+			t("left"),
+			t("right"),
+			t("above"),
+			t("below"),
+		}),
+		t([=[]]=]),
+		t([[ at (]]),
+		i(2, "position"),
+		t({ [=[) {\(]=] }),
+		i(3, "label"),
+		t({ [=[\)};]=] }),
+		i(0),
+	}),
+	s("crossing", {
+		t([[\node at (]]),
+		i(1, "location"),
+		t(") [ocirc,fill=black] {};"),
+		i(0),
+	}),
 })

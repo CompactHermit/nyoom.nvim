@@ -2,7 +2,7 @@
 
 (lzn! :quarto {:nyoom-module tools.quarto
                :ft [:md]
-               :cmd [:QuartoPreview]
+               ;:cmd [:QuartoPreview]
                :wants [:lspconfig :otter :cmp :nvim-treesitter]})
 
 (lzn! :otter

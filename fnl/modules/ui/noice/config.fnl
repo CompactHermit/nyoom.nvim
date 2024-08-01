@@ -40,7 +40,7 @@
               :views {:cmdline_popup {:position {:row 0 :col "50%"}
                                       :size {:width "98%"}}}
               :presets {:long_message_to_split true :lsp_doc_border true}
-              :popupmenu {:enabled true :backend :cmp}
+              :popupmenu {:enabled true :backend :nui}
               :notify {:enabled false}
               :format {}})
 

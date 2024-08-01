@@ -18,6 +18,14 @@ src.git = "https://github.com/ariel-frischer/bmessages.nvim"
 fetch.github = "akinsho/bufferline.nvim"
 src.git = "https://github.com/akinsho/bufferline.nvim/"
 
+[care]
+fetch.github = "max397574/care.nvim"
+src.git = "https://github.com/max397574/care.nvim"
+
+[care-cmp]
+fetch.github = "max397574/care-cmp"
+src.git = "https://github.com/max397574/care-cmp"
+
 [csharp]
 fetch.github = "iabdelkareem/csharp.nvim"
 src.git = "https://github.com/iabdelkareem/csharp.nvim"
@@ -134,6 +142,10 @@ src.git = "https://github.com/mfussenegger/nvim-dap-python"
 fetch.github = "tani/dmacro.nvim"
 src.git = "https://github.com/tani/dmacro.nvim"
 
+[diagram-nvim]
+fetch.github = "3rd/diagram.nvim"
+src.git = "https://github.com/3rd/diagram.nvim"
+
 [direnv]
 fetch.github = "NotAShelf/direnv.nvim"
 src.git = "https://github.com/NotAShelf/direnv.nvim"
@@ -180,6 +192,10 @@ src.git = "https://github.com/mrcjkb/haskell-tools.nvim"
 fetch.github = "mrcjkb/haskell-snippets.nvim"
 src.git = "https://github.com/mrcjkb/haskell-snippets.nvim"
 
+[helpview-nvim]
+fetch.github = "OXY2DEV/helpview.nvim"
+src.git = "https://github.com/OXY2DEV/helpview.nvim"
+
 [hotpot-nvim]
 fetch.github = "rktjmp/hotpot.nvim"
 src.git = "https://github.com/rktjmp/hotpot.nvim"
@@ -197,16 +213,14 @@ fetch.github = "shellRaining/hlchunk.nvim"
 src.git = "https://github.com/shellRaining/hlchunk.nvim"
 
 [hydra]
+# fetch.github = "httpsCathyprime/hydra.nvim"
+# src.git = "https://github.com/Cathyprime/hydra.nvim"
 fetch.github = "nvimtools/hydra.nvim"
 src.git = "https://github.com/nvimtools/hydra.nvim"
 
 [lazydev]
 fetch.github = "folke/lazydev.nvim"
 src.git = "https://github.com/folke/lazydev.nvim"
-
-[luvit-meta]
-fetch.github = "Bilal2453/luvit-meta"
-src.git = "https://github.com/Bilal2453/luvit-meta"
 
 [libmodal]
 fetch.github = "Iron-E/nvim-libmodal"
@@ -235,6 +249,10 @@ src.git = "https://git.sr.ht/~whynothugo/lsp_lines.nvim"
 [lspsaga]
 fetch.github = "nvimdev/lspsaga.nvim"
 src.git = "https://github.com/nvimdev/lspsaga.nvim"
+
+[live-rename]
+fetch.github = "saecki/live-rename.nvim"
+src.git = "https://github.com/saecki/live-rename.nvim"
 
 [moonfly]
 fetch.github = "bluz71/vim-moonfly-colors"
@@ -291,6 +309,11 @@ src.git = "https://github.com/nvim-neorg/neorg/"
 [neorg-lines]
 fetch.github = "benlubas/neorg-conceal-wrap"
 src.git = "https://github.com/benlubas/neorg-conceal-wrap"
+
+[neorg-extras]
+fetch.github = "juniorsundar/neorg_extras"
+src.git = "https://github.com/juniorsundar/neorg_extras"
+#src.branch = "devel"
 
 [neorg-telescope]
 fetch.github = "nvim-neorg/neorg-telescope"
@@ -354,9 +377,14 @@ src.git = "https://github.com/theHamsta/nvim-dap-virtual-text"
 fetch.github = "rcarriga/nvim-notify"
 src.git = "https://github.com/rcarriga/nvim-notify"
 
+[nvim-various-textobjs]
+fetch.github = "chrisgrieser/nvim-various-textobjs"
+src.git = "https://github.com/chrisgrieser/nvim-various-textobjs"
+
 [nvim-nu]
 fetch.github = "lhkipp/nvim-nu"
 src.git = "https://github.com/lhkipp/nvim-nu"
+
 
 [nu-syntax]
 fetch.github = "elkasztano/nushell-syntax-vim"
@@ -418,9 +446,9 @@ src.git = "https://github.com/quarto-dev/quarto-nvim"
 fetch.github = "vigoux/ratatoskr.nvim"
 src.git = "https://github.com/vigoux/ratatoskr.nvim"
 
-[roslyn]
-fetch.github = "jmederosalvarado/roslyn.nvim"
-src.git = "https://github.com/jmederosalvarado/roslyn.nvim"
+[rest-nvim]
+fetch.github = "rest-nvim/rest.nvim"
+src.git = "https://github.com/rest-nvim/rest.nvim"
 
 [reactive]
 fetch.github = "rasulomaroff/reactive.nvim"
@@ -430,9 +458,17 @@ src.git = "https://github.com/rasulomaroff/reactive.nvim"
 fetch.github = "stevearc/resession.nvim"
 src.git = "https://github.com/stevearc/resession.nvim"
 
+[roslyn]
+fetch.github = "seblj/roslyn.nvim"
+src.git = "https://github.com/seblj/roslyn.nvim"
+
 [rustaceanvim]
 fetch.github = "mrcjkb/rustaceanvim"
 src.git = "https://github.com/mrcjkb/rustaceanvim"
+
+[rtp-nvim]
+fetch.github = "nvim-neorocks/rtp.nvim"
+src.git = "https://github.com/nvim-neorocks/rtp.nvim"
 
 [smuggler]
 fetch.github = "Klafyvel/nvim-smuggler"
@@ -469,6 +505,10 @@ src.branch = "enhanced-matching"
 fetch.github = "folke/noice.nvim"
 src.git = "https://github.com/folke/noice.nvim"
 
+# [kulala]
+# fetch.github = "mistweaverco/kulala.nvim"
+# src.git = "https://github.com/mistweaverco/kulala.nvim"
+
 [ts-error-translator]
 fetch.github = "dmmulroy/ts-error-translator.nvim"
 src.git = "https://github.com/dmmulroy/ts-error-translator.nvim"
@@ -477,17 +517,13 @@ src.git = "https://github.com/dmmulroy/ts-error-translator.nvim"
 fetch.github = "echasnovski/mini.icons"
 src.git = "https://github.com/echasnovski/mini.icons"
 
+[music-controler]
+fetch.github = "AntonVanAssche/music-controls.nvim"
+src.git = "https://github.com/AntonVanAssche/music-controls.nvim"
+
 [nvim-parinfer]
 fetch.github = "gpanders/nvim-parinfer"
 src.git = "https://github.com/gpanders/nvim-parinfer/"
-
-[nvim-treesitter]
-fetch.github = "nvim-treesitter/nvim-treesitter"
-src.git = "https://github.com/nvim-treesitter/nvim-treesitter"
-
-[tsplayground]
-fetch.github = "nvim-treesitter/playground"
-src.git = "https://github.com/nvim-treesitter/playground"
 
 # [rainbow-delimiters]
 # fetch  "gitlab:HiPhish/rainbow-delimiters.nvim"
@@ -533,6 +569,10 @@ src.git = "https://github.com/kevinhwang91/nvim-ufo"
 fetch.github = "kevinhwang91/nvim-bqf"
 src.git = "https://github.com/kevinhwang91/nvim-bqf"
 
+[quicker-nvim]
+fetch.github = "stevearc/quicker.nvim"
+src.git = "https://github.com/stevearc/quicker.nvim"
+
 [nonels]
 fetch.github = "nvimtools/none-ls.nvim"
 src.git = "https://github.com/nvimtools/none-ls.nvim"
@@ -561,7 +601,7 @@ src.git = "https://github.com/anuvyklack/windows.nvim"
 [which-key]
 fetch.github = "folke/which-key.nvim"
 src.git = "https://github.com/folke/which-key.nvim"
-# src.manual = "af4ded85542d40e190014c732fa051bdbf88be3d"
+#src.manual = "v3.11.0"
 
 [yeet]
 fetch.github = "samharju/yeet.nvim"
@@ -603,6 +643,10 @@ src.git = "https://github.com/fdschmidt93/telescope-egrepify.nvim"
 fetch.github = "danielhp95/tmpclone-nvim"
 src.git = "https://github.com/danielhp95/tmpclone-nvim"
 
+[foldtext]
+fetch.github = "OXY2DEV/foldtext.nvim"
+src.git = "https://github.com/OXY2DEV/foldtext.nvim"
+
 [folke_flash]
 fetch.github = "folke/flash.nvim"
 src.git = "https://github.com/folke/flash.nvim"
@@ -626,3 +670,75 @@ src.git = "https://github.com/ziontee113/syntax-tree-surfer"
 [iswap]
 fetch.github = "mizlan/iswap.nvim"
 src.git = "https://github.com/mizlan/iswap.nvim"
+
+#=========
+#LUAROCKS::
+#========
+[fzy-lua-native]
+fetch.github = "romgrk/fzy-lua-native"
+src.git = "https://github.com/romgrk/fzy-lua-native"
+
+[luarocks-build-fennel]
+fetch.git = "https://git.sr.ht/~xerool/luarocks-build-fennel"
+src.git = "https://git.sr.ht/~xerool/luarocks-build-fennel"
+
+[busted-fennel]
+fetch.github = "HiPhish/busted"
+src.git = "https://github.com/HiPhish/busted"
+src.branch = "fennel-runner"
+
+[lz-n]
+fetch.github = "nvim-neorocks/lz.n"
+src.git = "https://github.com/nvim-neorocks/lz.n"
+
+[lzn-auto-require]
+fetch.github = "horriblename/lzn-auto-require"
+src.git = "https://github.com/horriblename/lzn-auto-require"
+
+
+#========================
+#= LUACATS DOCGEN LIBS  =
+#========================
+[busted-meta]
+fetch.github = "LuaCATS/busted"
+src.git = "https://github.com/LuaCATS/busted"
+
+[luvit-meta]
+fetch.github = "Bilal2453/luvit-meta"
+src.git = "https://github.com/Bilal2453/luvit-meta"
+
+[lpeg-meta]
+fetch.github = "LuaCATS/lpeg"
+src.git = "https://github.com/LuaCATS/lpeg"
+
+[luassert-meta]
+fetch.github = "LuaCATS/luassert"
+src.git = "https://github.com/LuaCATS/luassert"
+
+[ffi-reflect]
+fetch.github = "LuaCATS/ffi-reflect"
+src.git = "https://github.com/LuaCATS/ffi-reflect"
+
+#====================
+#===   Binaries   ===
+#====================
+[tree-sitter]
+fetch.github = "tree-sitter/tree-sitter"
+src.git = "https://github.com/tree-sitter/tree-sitter"
+cargo_locks = ["Cargo.lock"]
+
+[nvim-git]
+#NOTE::https://github.com/neovim/neovim/commit/3a881132460430d23f2fdc87822c87d47f721cfc
+fetch.github = "neovim/neovim"
+# src.git = "https://github.com/neovim/neovim"
+src.manual = "08153ddd1c149c867948f4681846531d53ba7759"
+
+[harper-ls]
+fetch.github = "elijah-potter/harper"
+src.git = "https://github.com/elijah-potter/harper"
+cargo_locks = ["Cargo.lock"]
+
+# [fennel-language-server]
+# fetch.github = "rydesun/fennel-language-server"
+# src.git = "https://github.com/rydesun/fennel-language-server"
+# cargo_locks = ["Cargo.lock"]

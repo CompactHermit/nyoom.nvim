@@ -26,28 +26,36 @@
                after-paths)
   (length after-paths))
 
-;(fn __cmpSetup []
-;(packadd! nvim-cmp)
 (local cmp (autoload :cmp))
-;(local soft-deps [:friendly-luasnip :luasnip :haskell-snippets])
 
 (. (require :cmp_nvim_lsp) :default_capabilities)
 
-(local source_plugins [:cmp_path
-                       :cmp_buffer
-                       :cmp_cmdline
-                       :cmp_luasnip
-                       :cmp_conjure
-                       :cmp_nvim_lsp])
 
-; (: (vim.iter (vim.list_extend soft-deps source_plugins)) :each
-;    (fn [p] (vim.cmd.packadd p)))
 
-(local after_sourced (load_after_plugin :cmp*.lua))
-(when (not= after_sourced (length source_plugins))
-  (vim.notify (.. "expected " (length source_plugins)
-                  " cmp source after/plugin sources, but got " after_sourced)
-              vim.log.levels.WARN))
+(local source-plugins [:cmp-path
+                       :cmp-buffer
+                       :cmp-cmdline
+                       :cmp-luasnip
+                       ;:cmp-conjure
+                       :cmp-nvim-lsp])
+
+;;https://github.com/nvim-neorocks/lz.n/wiki/lazy%E2%80%90loading-nvim%E2%80%90cmp-and-its-extensions
+(-> (vim.iter source-plugins)
+    (: :each
+       #(each [_ dir (ipairs (vim.opt.packpath:get))]
+          (let [glob (vim.fs.joinpath :pack "*" :opt $1)
+                plugdir (vim.fn.globpath dir glob nil true true)]
+            (when (not (vim.tbl_isempty plugdir))
+              (do
+                ;(print (. plugdir 1))
+                ;((. (require :lz.n) :trigger_load) $1) ;; we already packadd deps
+                ((. (require :rtp_nvim) :source_after_plugin_dir) (. plugdir 1))))))))
+
+; (local after_sourced (load_after_plugin :cmp*.lua))
+; (when (not= after_sourced (length source_plugins))
+;   (vim.notify (.. "expected " (length source_plugins)
+;                   " cmp source after/plugin sources, but got " after_sourced)
+;               vim.log.levels.WARN))
 
 (local fidget (autoload :fidget))
 (local luasnip (autoload :luasnip))
@@ -102,7 +110,7 @@
                                             :<C-f> (cmp.mapping.scroll_docs 4)
                                             :<C-Space> (cmp.mapping.complete)
                                             :<C-p> (cmp.mapping.select_prev_item)
-                                            :<C-n> (cmp.mapping.select_next_item)
+                                            ;:<C-n> (cmp.mapping.select_next_item)
                                             :<CR> (cmp.mapping.confirm {:behavior cmp.ConfirmBehavior.Insert
                                                                         :select false})
                                             :<C-e> (fn [fallback]

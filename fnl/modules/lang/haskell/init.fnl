@@ -3,4 +3,4 @@
 (lzn! :haskellTools {:ft [:haskell :cabal]
                      :nyoom-module lang.haskell
                      :deps [:telescope_hoogle]
-                     :wants [:toggleterm :telescope]})
+                     :wants [:toggleterm :telescope :dap]})

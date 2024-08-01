@@ -6,7 +6,8 @@
               :on_require [:neorg :neorg.core]
               :wants [:truezen :telescope :otter :image-nvim :nvim-cmp]
               :deps [:lua-utils
-                     :pathlib
+                     ;; TODO:: (Hermit) Add this to package.path, since this isn't too heavy as a dependency
+                     :neorg-extras
                      :neorg-lines
                      :neorg-exec
                      :neorg-templates
@@ -17,10 +18,18 @@
 ; :neorg-timelog
 ; :neorg-hop-extras
 ; :neorg-roam
+;(lzn! :neorg-extras {:cmd :NeorgExtras :call-setup neorg-extras})
+
+(lzn! :diagram-nvim
+      {:ft [:markdown :norg]
+       :wants [:image-nvim]
+       :enable #(vim.fn.executable :mmdc)
+       :after #((->> :setup (. (require :diagram))) {:renderer_options {:mermaid {:background :transparent
+                                                                                  :theme :neutral
+                                                                                  :scale 1}}})})
 
 (lzn! :image-nvim
-      {:ft [:md :norg]
-       :on_require [:image]
+      {:ft [:markdown :norg]
        :enable #(not= vim.env.ZELLIJ 0)
        ;; Disable when zellij is on
        :after #((->> :setup (. (require :image))) {:backend :kitty

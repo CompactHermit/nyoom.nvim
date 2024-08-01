@@ -18,7 +18,6 @@
       ...
     }:
     let
-      l = lib // builtins;
       __fnl-config = pkgs.writeTextFile {
         name = "config.fnl";
         text =
@@ -81,6 +80,9 @@
         programs = {
           nixfmt = {
             package = inputs.nixfmt-rfc.packages."${system}".nixfmt;
+            enable = true;
+          };
+          stylua = {
             enable = true;
           };
           fnlfmt.enable = true;

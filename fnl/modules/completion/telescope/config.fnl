@@ -202,9 +202,10 @@
   (load_extension :ui-select)
   (load_extension :file_browser)
   (load_extension :project)
+  (load_extension :zoxide)
   (load_extension :egrepify)
   (progress:report {:message "Setup Complete" :title :Completed! :progress 99})
-  ((->> :setup (. (require :telescope))) _opts)
+  ;((->> :setup (. (require :telescope))) _opts)
   (nyoom-module-p! default.+bindings
                    (do
                      (nyoom-module-p! lsp

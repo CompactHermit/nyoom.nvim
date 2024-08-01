@@ -2,7 +2,8 @@
 
 ;; fnlfmt: skip
 (nyoom! :completion
-        cmp
+        ;cmp
+        care
         telescope
 
         :ui
@@ -15,7 +16,7 @@
         tabs
         zen
         noice
-        animate
+        ;;animate
 
         :editor
         fold
@@ -44,11 +45,15 @@
         lua
         nix
         cc
+        csharp
         rust
         haskell
         markdown
+        vimdoc
+        http
         ;typst
         (neorg
+          +agenda
            +pretty
            +present
            +export
@@ -62,6 +67,7 @@
         tree-sitter
         overseer
         quarto
+        ;tmux
         harpoon
         quickfix
         lsp
@@ -78,7 +84,10 @@
           +bindings
            +which-key
           +smartparens
-          +flash))
+          +flash)
+
+        :app
+        spotify)
 
 ; (nyoom! :completion
 ;         ;cmp                  ; the ultimate code completion backend

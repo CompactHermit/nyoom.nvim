@@ -1,32 +1,30 @@
 (import-macros {: lzn! : let!} :macros)
 
 ;
-(lzn! :nvim-parinfer 
-      {:nyoom-module editor.parinfer
-                 :ft [:clojure
-                       :carp
-                       :scheme
-                       :lisp
-                       :racket
-                       :hy
-                       :fennel
-                       :janet
-                       :carp
-                       :wast
-                       :yuck]
-                 :before (fn []
-                          (tset vim.g :parinfer_enabled true)
-                          (tset vim.g :parinfer_bi_maps true)
-                          (tset vim.g :parinfer_filetypes
-                                [:clojure
-                                 :carp
-                                 :scheme
-                                 :lisp
-                                 :racket
-                                 :hy
-                                 :fennel
-                                 :janet
-                                 :carp
-                                 :wast
-                                 :yuck])
-                          )})
+(lzn! :nvim-parinfer {:nyoom-module editor.parinfer
+                      :ft [:clojure
+                           :carp
+                           :scheme
+                           :lisp
+                           :racket
+                           :hy
+                           :fennel
+                           :janet
+                           :carp
+                           :wast
+                           :yuck]
+                      :before #(doto vim.g
+                                 (tset :parinfer_enabled true)
+                                 (tset :parinfer_no_maps true)
+                                 (tset :parinfer_filetypes
+                                       [:clojure
+                                        :carp
+                                        :scheme
+                                        :lisp
+                                        :racket
+                                        :hy
+                                        :fennel
+                                        :janet
+                                        :carp
+                                        :wast
+                                        :yuck]))})

@@ -2,6 +2,7 @@
 ;; uses fennel provided from hotpot
 ;; uses fennel macro to execute shell code
 
+;; TODO:: (Hermit) ReWrite Fennel Repl::
 (local fennel (require :fennel))
 (var sh-out false)
 (var output [])
@@ -31,7 +32,8 @@
                           d# (fd#:read :*a)]
                       (fd#:close)
                       (string.sub d# 1 (- (length d#) 1)))) (sh "
-                    input ")") input)]
+                    input ")")
+                input)]
     ;; set the output
     (if (not paren?) (set sh-out true))
     (set output [])
@@ -58,6 +60,7 @@
 
 ;; add neovim's global utilities to repl's env
 
+;; NOTE:: (Hermit) xpcall directly from ffi
 (fn xpcall* [f err ...]
   (let [res (vim.F.pack_len (pcall f))]
     (when (not (. res 1))

@@ -52,7 +52,8 @@
     mode-color))
 
 (fn get-fileinfo []
-  (var filename (or (and (= (vim.fn.expand "%") "") " nyoom-nvim v0.FAKER-dev")
+  (var filename (or (and (= (vim.fn.expand "%") "")
+                         " nyoom-nvim v0.HermitAge<n>")
                     (vim.fn.expand "%:t")))
   (when (not= filename " nyoom-nvim ")
     (set filename (.. " " filename " ")))

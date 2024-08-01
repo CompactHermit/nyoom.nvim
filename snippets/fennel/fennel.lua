@@ -15,4 +15,3 @@ local p = require("luasnip.extras").partial
 -- local n = require("luasnip.extras").nonempty
 local dl = require("luasnip.extras").dynamic_lambda
 local fmt = require("luasnip.extras.fmt").fmt
-

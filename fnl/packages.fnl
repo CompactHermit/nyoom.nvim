@@ -16,14 +16,7 @@
 (include :fnl.modules)
 (nyoom-init-modules!)
 
-((->> :register_handler (. (autoload :lz.n))) (. (autoload :util.lazn.registers)
-                                                 :handler))
-
-((->> :register_handler (. (autoload :lz.n))) (. (autoload :util.lazn.on_req)))
-
 (lzn-unpack!)
-
-;; Compile modules
 
 ;(echo! "Compiling Nyoom Modules")
 (nyoom-compile-modules!)

@@ -35,8 +35,8 @@
 
 (local _tsOpts
        {:highlight {:enable true :use_languagetree true}
-        :indent {:enable true}
-        :refactor {:enable true
+        :indent {:enable false}
+        :refactor {:enable false
                    ; :navigation {:enable true
                    ;              :keymap {:goto_definition :gnd
                    ;                       :list_definitions :gnD
@@ -44,11 +44,11 @@
                    ;                       :goto_next_usage :<a-*>
                    ;                       :goto_previous_usage "<a-#>"}}
                    :highlight_current_scope {:enable false}
-                   :highlight_definitions {:enable true
+                   :highlight_definitions {:enable false
                                            :clear_on_cursor_move true}
-                   :smart_rename {:enable true
+                   :smart_rename {:enable false
                                   :keymaps {:smart_rename :<space>rn}}}
-        :query_linter {:enable true
+        :query_linter {:enable false
                        :use_virtual_text true
                        :lint_events [:BufWrite :CursorHold]}
         :incremental_selection {:enable true
@@ -56,12 +56,12 @@
                                           :node_incremental :gnn
                                           :scope_incremental :gnc
                                           :node_decremental :gnm}}
-        :textobjects {:select {:enable false}
-                      :lookahead true
-                      :keymaps {:af "@function.outer"
-                                :if "@function.inner"
-                                :ac "@class.outer"
-                                :ic "@class.inner"}
+        :textobjects {:select {:enable true
+                               :lookahead true
+                               :keymaps {:af "@function.outer"
+                                         :if "@function.inner"
+                                         :ac "@class.outer"
+                                         :ic "@class.inner"}}
                       :move {:enable true
                              :set_jumps true
                              ;; Whether to add to jumplist, IDK y u'd disable this

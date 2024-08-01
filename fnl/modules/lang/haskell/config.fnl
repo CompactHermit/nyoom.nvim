@@ -36,8 +36,13 @@
                :repl {:handler :toggleterm :prefer :cabal :auto_focus true}
                :definition {:hoogle_signature_fallback true}}
        :hls {:capabilities lsp-capabilities
-             :on_attach (fn [_client _bufnr]
-                          ((->> :load_extension (. (autoload :telescope))) :ht))
+             :auto_attach #(let [bufnr (vim.api.nvim_get_current_buf)
+                                 filename (vim.api.nvim_buf_get_name bufnr)]
+                             (not (filename:match "%.hsc$")))
+             :on_attach #(do
+                           ((->> :load_extension (. (autoload :telescope))) :ht)
+                           (ht.dap.discover_configurations $2))
+
                           ; (local _opts
                           ;        {:s :save
                           ;         :a :display

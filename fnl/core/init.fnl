@@ -12,6 +12,7 @@
 
 (local cli (os.getenv :NYOOM_CLI))
 
+;; fnlfmt: skip
 (if cli
     (require :packages)
     (do
@@ -45,7 +46,12 @@
       (set! noswapfile)
       ;; external config files
       (set! exrc)
-      (set! shell :nu)
+      (set! sh :bash)
+      (set! shell :bash)
+      ; (set! shellpipe
+      ;       "| complete | update stderr { ansi strip } | tee { get stderr | save --force --raw %s } | into record")
+      ; (set! shellredir "out+err> %s")
+      ; (set! shellcmdflag "--stdin --no-newline -c")
       ;; search and replace
       (set! ignorecase)
       (set! smartcase)
@@ -66,7 +72,7 @@
                        :diff "╱"
                        :foldclose ""
                        :foldopen ""
-                       :fold " "
+                       :fold "~"
                        :msgsep "─"})
       (set! listchars {:tab " ──"
                        :trail "·"
@@ -79,5 +85,5 @@
       (let! neovide_padding_right 38)
       (let! neovide_padding_bottom 20)
       ;; load userconfig
-      (require :packages)
-      (require :config)))
+      (require :config)
+      (require :packages)))

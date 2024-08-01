@@ -12,12 +12,18 @@ let
   deps = callPackage ./_sources/generated.nix { };
   nvim-treesitter = callPackage ../parsers/default.nix { config = cfg; };
   plugins = builtins.removeAttrs deps [
-    "norg-fmt"
+    # "neorg-se" #NOTE: we never call any of the bins anyway, we should leave this exposed, so we can just overlay this to pkgs.
+    # "norg-fmt"
     "override"
     "overrideDerivation"
   ];
 
-  #HACK: (Hermit) This needs a serious fix, this actually is a perf hit without a cache
+  /*
+    HACK: (Hermit)
+    We don't really need `buildVimPlugin` since we directly append PackPath
+    Instead, we should be linkfarming `deps.src` and construct packpath,
+    calling `buildVImPlugin ...` 200 times is really fucking stupid
+  */
   reqPlugs = lib.flip lib.pipe [
     (builtins.attrValues)
     (lib.flatten)
@@ -27,9 +33,11 @@ let
       e:
       (buildVimPlugin { inherit (e) pname src version; }).overrideAttrs (oa: {
         patches = cfg.settings.plugins."${e.pname}".patches or [ ];
+        postInstall = oa.postInstall + (cfg.settings.plugins.${e.pname}.postInstall or "");
       })
     ))
   ] cfg.plugins;
+  #TODO: (Hermit) Remove this bullshit, and not rely on Teto's dogshit `packdir` function.
   partition =
     let
       pluginsPartitioned = lib.partition (x: builtins.elem x.pname cfg.plugins.lazy or false) reqPlugs;

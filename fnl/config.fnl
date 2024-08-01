@@ -47,7 +47,6 @@
 ;;   │        KEYBINDS           │
 ;;   └───────────────────────────┘
 
-;; TODO:
 (map! [n] :<esc> :<esc><cmd>noh<cr> {:desc "No highlight escape"})
 (map! [n] :<C-n> :<cmd>Neotree<cr>)
 (map! [n] :<A-i> "<cmd>ToggleTerm direction=float<cr>")

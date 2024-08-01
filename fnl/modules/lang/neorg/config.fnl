@@ -4,6 +4,7 @@
 (local neorg-modules
        {:core.defaults {}
         :core.text-objects {}
+        :core.esupports.metagen {:config {:type :false}}
         :core.esupports.indent {:config {:dedent_excess true
                                          :format_on_escape true
                                          :format_on_enter true}}
@@ -13,7 +14,7 @@
         :external.exec {}
         :core.qol.toc {:config {:enter true
                                 :fixed_width 26
-                                :auto_toc {:open true :close true}}}
+                                :auto_toc {:open false :close true}}}
         :external.conceal-wrap {}
         :external.interim-ls {:config {:completion_provider {:enable true
                                                              :categories true}}}
@@ -54,7 +55,7 @@
         :core.summary {:config {:strategy :default}}
         :core.tempus {}
         ;; NOTE:: Broken Bcs Vhyrro hates us all, jk the calendar keybinds are broken
-        ; :core.ui.calendar {}
+        :core.ui.calendar {}
         :core.integrations.image {}
         :core.latex.renderer {}
         :core.keybinds {:config {:default_keybinds true}}
@@ -82,6 +83,13 @@
                                              :rust
                                              :julia]}}))
 
+(nyoom-module-p! neorg.+agenda
+                 (do
+                   (-> (vim.iter [:external.agenda :external.roam])
+                       (: :each #(tset neorg-modules $1 {}))))
+                 (tset neorg-modules :external.many-mans.meta-man
+                       {:config {:treesitter_fold false}}))
+
 ;; add flaged modules
 (tset neorg-modules :core.concealer
       {:config {:folds true
@@ -91,28 +99,39 @@
                                :pending {:icon ""}
                                :urgent {:icon ""}}}}})
 
-; (fn neorg_leader [key]
-;   (.. :<leader>n key))
-
 ;; https://github.com/nvim-neorg/neorg/wiki/Default-Keybinds
 ;; REFACTOR:: NEW KEYBINDS, which use plug and laziness
 ;; TODO:: (hermit) make `neorg-leader` macro, of form `(fn [modname mode opts])` and set keybinds that way
 (vim.api.nvim_create_autocmd :BufEnter
                              {:pattern :*.norg
+                              :once true
                               :callback (fn [ctx]
                                           (doto :i
                                             (vim.keymap.set :<S-CR>
-                                                            "<Plug>(neorg.essuports.hop.hop-link)"
+                                                            "<Plug>(neorg.esupports.hop.hop-link)"
                                                             {:buffer true}))
                                           (doto :n
+                                            ;; Neorg-se Keymaps
+                                            (vim.keymap.set :<leader>nsf
+                                                            "<Plug>(neorg.search.fulltext)")
+                                            (vim.keymap.set :<leader>nsc
+                                                            "<Plug>(neorg.search.categories)")
+                                            (vim.keymap.set :<leader>nsu
+                                                            "<Plug>(neorg.search.index_update)")
                                             (vim.keymap.set :<leader>nlt
-                                                            "<Plug>(neorg.core.integrations.telescope.find_aof_tasks)"
+                                                            "<Plug>(neorg.telescope.find_linkable)"
                                                             {:buffer true})
-                                            (vim.keymap.set :<leader>nlc
-                                                            "<Plug>(neorg.core.integrations.telescope.find_context_tasks)"
+                                            (vim.keymap.set :<leader>nlt
+                                                            "<Plug>(neorg.telescope.find_linkable)"
+                                                            {:buffer true})
+                                            (vim.keymap.set :<leader>nlw
+                                                            "<Plug>(neorg.telescope.switch_workspace)"
                                                             {:buffer true})
                                             (vim.keymap.set :<leader>nlh
-                                                            "<Plug>(neorg.core.integrations.telescope.find_header_backlinks)"
+                                                            "<Plug>(neorg.telescope.search_heading)"
+                                                            {:buffer true})
+                                            (vim.keymap.set :<leader>nlb
+                                                            "<Plug>(neorg.telescope.find_header_backlinks)"
                                                             {:buffer true})))})
 
 ;                                  :core.integrations.telescope.find_aof_tasks]

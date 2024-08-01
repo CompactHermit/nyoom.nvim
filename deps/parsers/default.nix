@@ -2,11 +2,12 @@
   config,
   callPackage,
   lib,
-  tree-sitter,
+  tree-sitter-nightly,
   neovimUtils,
   symlinkJoin,
-
-  grammars ? [ ],
+  importNpmLock,
+  nodejs,
+#grammars ? [ ],
 }:
 let
   inherit (neovimUtils) grammarToPlugin;
@@ -17,20 +18,40 @@ let
     "nvim-treesitter"
     "overrideDerivation"
   ];
-  grammars_name = lib.pipe grammars [
+  grammars_name = lib.flip lib.pipe [
     (builtins.attrNames)
     (map (name: lib.removePrefix "treesitter-grammar-" name))
-  ];
+  ] grammars;
   #TODO: Unshittify this garbage
   parsers = builtins.map (
     n:
     let
       grammarT = deps."treesitter-grammar-${n}";
+      #Thank you AYAT, VERY COOL::
+      npmDeps = builtins.pathExists ./_sources/treesitter-grammar-${n}-${grammarT.version};
       builder =
         p:
-        tree-sitter.buildGrammar (
+        #TODO:: Rewrite the `buildGrammar` dogshit, Teto should not be in the kitchen
+        tree-sitter-nightly.buildGrammar.override ({ tree-sitter = tree-sitter-nightly; }) (
           {
             inherit (grammarT) src version;
+            # nativeBuildInputs = [
+            #   nodejs
+            #   tree-sitter-nightly
+            # ];
+            # buildInputs = (
+            #   lib.optional npmDeps [
+            #     importNpmLock.npmConfigHook
+            #   ]
+            # );
+            # useNpm = if npmDeps then true else null;
+            # npmDeps =
+            #   if npmDeps then
+            #     importNpmLock {
+            #       npmRoot = ./_sources/treesitter-grammar-${n}-${grammarT.version};
+            #     }
+            #   else
+            #     null;
             language = n;
             generate = lib.hasAttr "generate" grammarT;
             location = grammarT.location or null;

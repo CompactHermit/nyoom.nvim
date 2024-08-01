@@ -128,6 +128,31 @@
 
 (nyoom-module-p! clojure (tset lsp-servers :clojure_lsp {}))
 
+(tset lsp-servers :harper_ls
+      {:autostart false
+       :filetypes [:markdown
+                   :rust
+                   :typescript
+                   :typescriptreact
+                   :javascript
+                   :python
+                   :go
+                   :c
+                   :cpp
+                   :ruby
+                   :swift
+                   :csharp
+                   :toml
+                   :lua
+                   :latex
+                   :gitcommit
+                   :java
+                   :html
+                   :norg]
+       :settings {:harper-ls {:codeActions {:forceStable true}
+                              :diagnosticSeverity :hint
+                              :linters {:spell_check true}}}})
+
 (nyoom-module-p! java (do
                         (tset lsp-servers :kotlin_language_server {})
                         (tset lsp-servers :jdtls {})))
@@ -149,67 +174,65 @@
 
 (nyoom-module-p! latex (tset lsp-servers :texlab {}))
 
-; (tset lsp-servers :fennel_ls {:root_dir #(. (vim.fs.find [:fnl :.git]
-;                                                          {:upward true
-;                                                           :type :directory
-;                                                           :path $})
-;                                             1)
-;                               :settings {:fennel-ls {:extra-globals :vim}}
-;                               :macro-path :fnl/**/*macros.fnl
-;                               :checks {}})
+; (tset lsp-servers :fennel_language_server
+;       {:root_dir ((. (require :lspconfig) :util :root_pattern) :fnl)
+;        :settings {:fennel {:diagnostics {:globals [:vim]}
+;                            :workspace {:library (vim.api.nvim_list_runtime_paths)}}}})
+
+;; fnlfmt: skip
 (nyoom-module-p! lua
-                 (do
-                   (packadd! lazydev)
-                   (packadd! luvit-meta)
-                   (let [packdir (: (: (vim.iter (vim.api.nvim_list_runtime_paths))
-                                       :filter
-                                       (fn [paths]
-                                         (: paths :match
-                                            "/%w+/%w+/(.*)(%-vim%-pack%-dir)$")))
-                                    :fold {}
-                                    (fn [acc k]
-                                      k))
-                         tbl (: (vim.iter {:start [:nvim-nio :nui]
-                                           :opt [:neorg
-                                                 :image-nvim
-                                                 :rustaceanvim
-                                                 :luvit-meta
-                                                 :dap
-                                                 :rustaceanvim]})
-                                :fold []
-                                (fn [acc k v]
-                                  (each [_ plug (ipairs v)]
-                                    (let [path (string.format "%s/pack/all/%s/%s"
-                                                              packdir k plug)]
-                                      (match plug
-                                        (where _nioP (= _nioP :nui)) (table.insert acc
-                                                                                   {: path
-                                                                                    :words [:nui]})
-                                        (where _nioP (= _nioP :nvim-nio)) (table.insert acc
-                                                                                        {: path
-                                                                                         :words [:nio]})
-                                        (where _luvitP (= _luvitP :luvit-meta)) (table.insert acc
-                                                                                              {: path
-                                                                                               :words ["vim%.uv"]})
-                                        _ (table.insert acc path))))
-                                  acc))]
-                     ((->> :setup (. (autoload :lazydev))) {:library tbl
-                                                            :enabled true})
-                     ; (fn [root] ;   "Dont Load When ./luarcs.json is present. Typically if we've already set it with a nix-shell"
-                     ;   (not (= (vim.uv.fs_stat (.. root "/.luarc.json")) nil))))
-                     (tset lsp-servers :lua_ls
-                           {:settings {:Lua {:IntelliSense {:traceLocalSet true}
-                                             :codeLens {:enable true}
-                                             :hint {:enable true}
-                                             :format {:enable false}
-                                             :diagnostics {:globals {:vim :P
-                                                                     :describe :it
-                                                                     :before_each :after_each
-                                                                     :packer_plugins :pending}}
-                                             :telemetry {:enable false}
-                                             :completion {:callSnippet :Replace}
-                                             :workspace {:maxPreload 100
-                                                         :ignoreDir [:.direnv/]}}}}))))
+       (do
+         (packadd! lazydev)
+         (packadd! luvit-meta)
+         (let [packdir (: (: (vim.iter (vim.api.nvim_list_runtime_paths))
+                             :filter
+                             (fn [paths]
+                               (: paths :match
+                                  "/%w+/%w+/(.*)(%-vim%-pack%-dir)$")))
+                          :fold {}
+                          (fn [acc k]
+                            k))
+               tbl (: (vim.iter {:start [:nvim-nio :nui]
+                                 :opt [:neorg
+                                       :image-nvim
+                                       :rustaceanvim
+                                       :ffi-reflect
+                                       :luvit-meta
+                                       :lpeg
+                                       :dap
+                                       :rustaceanvim]})
+                      :fold []
+                      (fn [acc k v]
+                        (each [_ plug (ipairs v)]
+                          (let [path (string.format "%s/pack/all/%s/%s"
+                                                    packdir k plug)]
+                            (match plug
+                              (where _nioP (= _nioP :nui)) (table.insert acc
+                                                                         {: path :words [:nui]})
+                              (where _lpeg (= _lpeg :lpeg)) (table.insert acc
+                                                                          {: path :words ["vim%.uv"]})
+                              _ (table.insert acc path))))
+                        acc))]
+           ((->> :setup (. (autoload :lazydev))) {:library tbl :enabled true})
+           ; (fn [root] ;   "Dont Load When ./luarcs.json is present. Typically if we've already set it with a nix-shell"
+           ;   (not (= (vim.uv.fs_stat (.. root "/.luarc.json")) nil))))
+           (tset lsp-servers :lua_ls
+                 {:settings {:Lua {:IntelliSense {:traceLocalSet true}
+                                   :codeLens {:enable true}
+                                   :hint {:enable true}
+                                   :format {:enable false}
+                                   :diagnostics {:globals [:vim
+                                                           :P
+                                                           :describe
+                                                           :it
+                                                           :before_each
+                                                           :after_each
+                                                           :packer_plugins
+                                                           :pending]}
+                                   :telemetry {:enable false}
+                                   :completion {:callSnippet :Replace}
+                                   :workspace {:maxPreload 100
+                                                           :ignoreDir [:.direnv/]}}}}))))
 
 ;(nyoom-module-p! markdown (tset lsp-servers :marksman {}))
 
@@ -284,7 +307,5 @@
                       (when client.server_capabilities.inlayHintProvider
                         (vim.lsp.inlay_hint.enable)))))
 
-; (vim.lsp.completion.enable true ev.data.client_id ev.buf
-;                            {:autotrigger false}))))
-
+;; LspRename;;
 {: on-attach}

@@ -17,6 +17,10 @@
 
 (map! [n] "<leader>`" "<cmd>e#<CR>" {:desc "Switch to last buffer"})
 (nyoom-module-p! telescope
+                 (map! [n] "."
+                       #((. (autoload :telescope.builtin) :help_tags) ((. (autoload :telescope.themes)
+                                                                          :get_ivy)))
+                       {:desc "[Te]lescope [T]ags"})
                  (map! [n] "<leader>," "<cmd>Telescope buffers<CR>"
                        {:desc "Switch buffer"}))
 
@@ -55,7 +59,10 @@
                          {:desc "Resume last search"})
                    (map! [n] :<leader>. "<cmd>Telescope find_files<CR>"
                          {:desc "Find file"})
-                   (map! [n] "," "<cmd>Telescope tags<CR>" {:desc "Jump Tags"})
+                   (map! [n] ","
+                         #((. (require :telescope.builtin) :tags) ((. (require :telescope.themes)
+                                                                      :get_ivy)))
+                         {:desc "Jump Tags"})
                    (map! [n] :<leader>/ "<cmd>Telescope live_grep<CR>"
                          {:desc "Search project"})
                    (map! [n] "<leader>:" "<cmd>Telescope commands<CR>"
@@ -169,6 +176,10 @@
 
 (nyoom-module-p! lsp
                  (do
+                   (map! [n] :<leader>ct #((. (autoload :lsp_lines) :toggle))
+                          {:desc "[D]iag [T]oggle"})
+                   (map! [n] :<leader>ca `(vim.lsp.buf.code_action)
+                          {:desc "LSP Code actions"})
                    (map! [n] :<leader>cd `(vim.lsp.buf.definition)
                          {:desc "LSP Jump to definition"})
                    (map! [n] :<leader>cD `(vim.lsp.buf.references)

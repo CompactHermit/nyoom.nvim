@@ -2,11 +2,11 @@
 
 (lzn! :telescope {:nyoom-module completion.telescope
                   :cmd :Telescope
-                  :on_require [:telescope :telescope.action :telescope.state]
+                  ;:on_require [:telescope :telescope.action :telescope.state]
                   :deps [:telescope-ui-select
                          :telescope-file-browse
-                         :folke_flash
                          :telescope-project
+                         :telescope-zoxide
                          :telescope-tabs
                          :telescope-egrepify]
-                  :event [:BufRead]})
+                  :wants [:folke_flash]})

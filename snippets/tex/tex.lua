@@ -89,42 +89,42 @@ local tex_begin = [[
 
 local rec_ls
 rec_ls = function()
-    return sn(nil, {
-        c(1, {
-            -- important!! Having the sn(...) as the first choice will cause infinite recursion.
-            t({ "" }),
-            -- The same dynamicNode as in the snippet (also note: self reference).
-            sn(nil, { t({ "", "\t\\item " }), i(1), d(2, rec_ls, {}) }),
-        }),
-    })
+	return sn(nil, {
+		c(1, {
+			-- important!! Having the sn(...) as the first choice will cause infinite recursion.
+			t({ "" }),
+			-- The same dynamicNode as in the snippet (also note: self reference).
+			sn(nil, { t({ "", "\t\\item " }), i(1), d(2, rec_ls, {}) }),
+		}),
+	})
 end
 ls.add_snippets("tex", {
-    s("ls", {
-        t({ "\\begin{itemize}", "\t\\item " }),
-        i(1),
-        d(2, rec_ls, {}),
-        t({ "", "\\end{itemize}" }),
-        i(0),
-    }),
-    parse({ trig = "beg" }, tex_begin),
-    parse({ trig = "item" }, tex_itemize),
-    parse({ trig = "table" }, tex_table),
-    parse({ trig = "bd" }, tex_bold),
-    parse({ trig = "it" }, tex_item),
-    parse({ trig = "sec" }, tex_section),
-    parse({ trig = "italic" }, tex_italic),
-    parse({ trig = "enum" }, tex_enumerate),
-    parse({ trig = "desc" }, tex_description),
-    parse({ trig = "ssec" }, tex_subsection),
-    parse({ trig = "sssec" }, tex_subsubsection),
-    parse({ trig = "para" }, tex_paragraph),
-    parse({ trig = "->" }, tex_arrow),
-    parse({ trig = "template" }, tex_template),
-    s("ls", {
-        t({ "\\begin{itemize}", "\t\\item " }),
-        i(1),
-        d(2, rec_ls, {}),
-        t({ "", "\\end{itemize}" }),
-        i(0),
-    }),
+	s("ls", {
+		t({ "\\begin{itemize}", "\t\\item " }),
+		i(1),
+		d(2, rec_ls, {}),
+		t({ "", "\\end{itemize}" }),
+		i(0),
+	}),
+	parse({ trig = "beg" }, tex_begin),
+	parse({ trig = "item" }, tex_itemize),
+	parse({ trig = "table" }, tex_table),
+	parse({ trig = "bd" }, tex_bold),
+	parse({ trig = "it" }, tex_item),
+	parse({ trig = "sec" }, tex_section),
+	parse({ trig = "italic" }, tex_italic),
+	parse({ trig = "enum" }, tex_enumerate),
+	parse({ trig = "desc" }, tex_description),
+	parse({ trig = "ssec" }, tex_subsection),
+	parse({ trig = "sssec" }, tex_subsubsection),
+	parse({ trig = "para" }, tex_paragraph),
+	parse({ trig = "->" }, tex_arrow),
+	parse({ trig = "template" }, tex_template),
+	s("ls", {
+		t({ "\\begin{itemize}", "\t\\item " }),
+		i(1),
+		d(2, rec_ls, {}),
+		t({ "", "\\end{itemize}" }),
+		i(0),
+	}),
 })

@@ -1,3 +1,5 @@
+
+;; fnlfmt: skip
 (import-macros {: set!
                 : colorscheme
                 : nyoom-module-p!
@@ -20,7 +22,6 @@
 (vim.api.nvim_set_hl 0 :HydraTitle theme.fancy_float.title)
 (vim.api.nvim_set_hl 0 :HydraFooter theme.fancy_float.title)
 
-;; fnlfmt: skip
 ;; NOTE:: The formatter will butcher this file, donnot, under any circumstance, remove this!
 
 ;; TO METATABLE, with `__index` taking a `name` and opts.
@@ -31,13 +32,15 @@
 ▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
     _d_ [D]AP^^
     _r_ [Re]pl^^
-    _t_ [Tel]escope ^^
+    _a_ [Ha]rpoon ^^
     _u_ [Neo]Test ^^
     _o_ [O]verseer ^^
     _<C-o>_ [O]cto ^^
     _g_ [G]it ^^
     _l_ [L]sp ^^
+    _f_ [Qu]ickFix
     _v_: [O]ption ^^
+    _<space>_ [Tel]escope ^^
     _q_/_;_: Leave
 
 ▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
@@ -55,15 +58,20 @@
                       [:o
                        #(: hIndex.overseer :activate)
                        {:desc "[Ov]erseer" :nowait true}]
-                      [:t
+                      [:<space>
                        #(: hIndex.telescope :activate)
                        {:desc "[Te]le" :nowait true}]
-                      [:u #(: hIndex.neotest :activate)]
+                      [:a #(: hIndex.harpoon :activate) {:nowait true}]
+                      [:u #(: (Hydra hIndex.neotest) :activate)]
                       [:v #(: hIndex.options :activate) {:nowait true}]
                       [:<C-o> #(: hIndex.octo :activate) {:nowait true}]
+                      [:f #(: hIndex.qf :activate) {:nowait true}]
                       [:r #(print :hello) {:desc "[R]epl"}]
-                      [:d #(print :hello) {:desc "[R]epl"}]
-                      [:l #(print :hello) {:desc "[R]epl"}]
+                      [:d
+                       #((: (Hydra hIndex.debug) :activate) {:desc "[D]ebug"})]
+                      [:l
+                       #(: hIndex.lsp :activate)
+                       {:desc "[L]sp" :nowait true}]
                       [";" nil {:exit true :nowait true}]
                       [:q nil {:exit true}]]}))
 
@@ -411,55 +419,47 @@
 
 ;; Neotest ;;
 
-;; fnlfmt: skip
+;; fnlfmt : skip
 (nyoom-module-p! neotest
-            (hydra-key! :n
-                        {:u {:hydra true
-                             :name :+Neotest
-                             :config {:color :pink
-                                      :invoke_on_body true
-                                      :on_enter #(trigger_load :neotest)
-                                      :hint {:type :window
-                                             :float_opts {:style :minimal}
-                                             :show_name true
-                                             :position :bottom-middle}}
-                             :<CR> [#((->> :run
-                                           (. (require :neotest)
-                                              :run)) (vim.fn.expand "%"))
-                                    "[R]un Current File"]
-                             :c [#((->> :run
-                                        (. (require :neotest) :run)) (vim.fn.expand "%"))
-                                 "[R]un File"]
-                             :o [#((->> :open
-                                        (. (require :neotest) :output)) {:enter true})
-                                 "[O]utput Open"]
-                             :s [#((->> :toggle
-                                        (. (require :neotest) :summary)))
-                                 "[T]oggle Summary"]
-                             :S [(fn [arg]
-                                   (let [options [:dap :integrated]]
-                                        (match (vim.tbl_contains options
-                                                                 arg.arg)
-                                          (where k1 (= k1 true)) ((->> :run
-                                                                       (. (require :neotest)
-                                                                          :run)) {:strategy arg.arg})
-                                          (where k2 (= k2 false)) ((->> :run
-                                                                        (. (require :neotest)
-                                                                           :run)) {:strategy :integrated}))))
-                                 "[T]est integrated"]
-                             :D [#((->> :stop
-                                        (. (require :neotest) :run)))
-                                 "[S]top Runner"]
-                             :a [#((->> :attach
-                                        (. (require :neotest) :run)))
-                                 "[R]un Attach"]
-                             :C [#(when (= vim.bo.filetype :python)
-                                    ((. (require :dap-python) :test_class))) "[Py] [T]est Class"]
-                             :m [#(when (= vim.bo.filetype :python)
-                                   ((. (require :dap-python) :test_method))) "[Py] [T]est Method"]
-                             :d [#(when (= vim.bo.filetype :python)
-                                    ((. (require :dap-python) :debug_selection))) "[Py] [D]ebug Visual"]}}
-                        {:prefix :<leader>} 1))
+                 (tset hIndex :neotest
+                       (hydra-key! :n
+                                   {:hydra true
+                                    :name :+Neotest
+                                    :config {:color :pink
+                                             :invoke_on_body true
+                                             :on_enter #(trigger_load :neotest)
+                                             :hint {:type :window
+                                                    :float_opts {:style :minimal}
+                                                    :show_name true
+                                                    :position :bottom-middle}}
+                                    ";" [#(: hIndex.HermitAge :activate)
+                                         :Exit
+                                         true]
+                                    :<CR> [#((->> :run
+                                                  (. (require :neotest) :run)) (vim.fn.expand "%"))
+                                           "[R]un [Cur]rent File"]
+                                    :r [#(vim.cmd "Neotest run last")
+                                        "[R]un [L]ast"]
+                                    :o [#(vim.cmd.Neotest :output-panel)
+                                        "[O]utput Open"]
+                                    :s [#((->> :toggle
+                                               (. (require :neotest) :summary)))
+                                        "[T]oggle Summary"]
+                                    :S [(fn [arg]
+                                          (let [options [:dap :integrated]]
+                                            (match (vim.tbl_contains options
+                                                                     arg.arg)
+                                              (where k1 (= k1 true)) ((->> :run
+                                                                           (. (require :neotest
+                                                                                       :run))) {:strategy :integrated}))))
+                                        "[T]est integrated"]
+                                    :D [#((->> :stop
+                                               (. (require :neotest) :run)))
+                                        "[S]top Runner"]
+                                    :a [#((->> :attach
+                                               (. (require :neotest) :run)))
+                                        "[R]un Attach"]}
+                                   {:prefix ";u"} 3)))
 
 ;;Overseer ;;
 (nyoom-module-p! overseer
@@ -513,13 +513,13 @@ _;_: [He]rmitage
                                             (vim.cmd :OverseerRunCmd))]
                                          [:t
                                           (fn []
-                                            (let [overseer (require :overseer)]
-                                              command
-                                              (.. "Run "
-                                                  (vim.bo.filetype:gsub "^%l"
-                                                                        string.upper)
-                                                  " file ("
-                                                  (vim.fn.expand "%:t") ")")
+                                            (let [overseer (require :overseer)
+                                                  command (.. "Run "
+                                                              (vim.bo.filetype:gsub "^%l"
+                                                                                    string.upper)
+                                                              " file ("
+                                                              (vim.fn.expand "%:t")
+                                                              ")")]
                                               (vim.notify command)
                                               (overseer.run_template {:name command}
                                                                      (fn [task]
@@ -609,31 +609,32 @@ _;_: [He]rmitage
                                                     (.. "WorkSpace:: " item))}
                                     (fn [choice]
                                       (vim.cmd (.. "Neorg workspace " choice)))))
-                   (hydra-key! :n
-                               {:ne {:hydra true
-                                     :name "[Hy]dra [Ne]org"
-                                     :config {:color :pink
-                                              :invoke_on_body true
-                                              :hint {:type :window
-                                                     :float_opts {:style :minimal
-                                                                  :noautocmd true}
-                                                     :show_name true
-                                                     :position :middle}}
-                                     :t [#(vim.cmd "Neorg journal today")
-                                         "Journal Today"]
-                                     :m [#(vim.cmd "Neorg journal tomorrow")
-                                         "Journal Tomorrow"]
-                                     :y [#(vim.cmd "Neorg journal yesterday")
-                                         "Journal Yesterday"]
-                                     :l [#(vim.cmd "Neorg toc right")
-                                         "TOC Right"]
-                                     :M [#(choose_workspace)
-                                         "Workspace Choice"]
-                                     :e [#(vim.cmd "Neorg inject-metadata")
-                                         :inject-metadata]
-                                     :i [#(vim.cmd "Neorg journal toc open")
-                                         "Journal TOC Open"]}}
-                               {:prefix :<leader>} 4)))
+                   (tset hIndex :neorg
+                         (Hydra (hydra-key! :n
+                                            {:hydra true
+                                             :name "[Hy]dra [Ne]org"
+                                             :config {:color :pink
+                                                      :invoke_on_body true
+                                                      :hint {:type :window
+                                                             :float_opts {:style :minimal
+                                                                          :noautocmd true}
+                                                             :show_name true
+                                                             :position :middle}}
+                                             :t [#(vim.cmd "Neorg journal today")
+                                                 "Journal Today"]
+                                             :m [#(vim.cmd "Neorg journal tomorrow")
+                                                 "Journal Tomorrow"]
+                                             :y [#(vim.cmd "Neorg journal yesterday")
+                                                 "Journal Yesterday"]
+                                             :l [#(vim.cmd "Neorg toc right")
+                                                 "TOC Right"]
+                                             :M [#(choose_workspace)
+                                                 "Workspace Choice"]
+                                             :e [#(vim.cmd "Neorg inject-metadata")
+                                                 :inject-metadata]
+                                             :i [#(vim.cmd "Neorg journal toc open")
+                                                 "Journal TOC Open"]}
+                                            {:prefix :<leader>ne} 4)))))
 
 ;; fnlfmt: skip
 (nyoom-module-p! telescope
@@ -646,6 +647,7 @@ _;_: [He]rmitage
            _h_: vim help    _c_: execute command^^
            _k_: keymaps     _C_: commands history^^
            _O_: options     _?_: search history^^
+                      _z_: [Zo]xide^^
 
            _<Esc>_: exit  _<leader>_: [O]il^^
                     _;_: HermitAge^^
@@ -671,28 +673,23 @@ _;_: [He]rmitage
                                                                      :egrepify :egrepify) ((->> :get_ivy
                                                                                             (. (autoload :telescope.themes))) {})))]
                                                               [:o
-                                                               (fn []
-                                                                 (vim.cmd.Telescope :oldfiles))
+                                                                 #(vim.cmd.Telescope :oldfiles)
                                                                {:desc "recently opened files"}]
                                                               [:h
-                                                               (fn []
-                                                                 ((. (autoload :telescope.builtin) :help_tags) ((. (autoload :telescope.themes) :get_ivy))))
+                                                                 #((. (autoload :telescope.builtin) :help_tags) ((. (autoload :telescope.themes) :get_ivy)))
                                                                {:desc "vim help"}]
+                                                              [:z #(vim.cmd "Telescope zoxide list")]
                                                               [:k
-                                                               (fn []
-                                                                 (vim.cmd.Telescope :keymaps))]
+                                                                 #(vim.cmd.Telescope :keymaps)]
                                                               [:O
-                                                               (fn []
-                                                                 (vim.cmd.Telescope :vim_options))]
+                                                                 #(vim.cmd.Telescope :vim_options)]
                                                               [:r
-                                                               (fn []
-                                                                 (vim.cmd.Telescope :resume))]
+                                                                 #(vim.cmd.Telescope :resume)]
                                                               [:p
-                                                               (fn []
-                                                                 ((. (. (. (autoload :telescope)
-                                                                           :extensions)
-                                                                        :project)
-                                                                     :project) {:display_type :full}))
+                                                                 #((. (. (. (autoload :telescope)
+                                                                            :extensions)
+                                                                         :project)
+                                                                      :project) {:display_type :full})
                                                                {:desc :projects}]
                                                               ["/"
                                                                  #(vim.cmd.Telescope :current_buffer_fuzzy_find)
@@ -717,54 +714,71 @@ _;_: [He]rmitage
                  (do
                    (let [dap (autoload :dap)
                          ui (autoload :dapui)]
-                     (hydra-key! :n
-                                 {:d {:hydra true
-                                      :name " Debug"
-                                      :config {:color :pink
-                                               :invoke_on_body true
-                                               :on_enter #(trigger_load :dap)
-                                               :hint {:type :window
-                                                      :offset 1
-                                                      :float_opts {:style :minimal
-                                                                   :noautocmd false}
-                                                      :position :bottom-middle}}
-                                      :H [#(dap.step_out) "[s]out"]
-                                      :J [#(dap.step_over) "[s]over"]
-                                      :K [#(dap.step_back) "[s]back"]
-                                      :L [#(dap.step_into) "[s]into"]
-                                      :t [#(dap.toggle_breakpoint)
-                                          "[Tog]BreakPt"]
-                                      :T [#(dap.clear_breakpoints)
-                                          "[Clr]BreakPt"]
-                                      :c [#(dap.continue) "[D]Continue"]
-                                      :x [#(dap.terminate) "[D]Stop"]
-                                      :r [#(dap.repl) "[D]Repl"]
-                                      :<Enter> [#(ui.toggle) "[UI] Toggle"]}}
-                                 {:prefix :<leader>} 4))))
+                     (tset hIndex :debug
+                           (hydra-key! :n
+                                       {:hydra true
+                                        :name " Debug"
+                                        :config {:color :pink
+                                                 :invoke_on_body true
+                                                 :on_enter #(trigger_load :dap)
+                                                 :hint {:type :window
+                                                        :offset 1
+                                                        :float_opts {:style :minimal
+                                                                     :noautocmd false}
+                                                        :position :bottom-middle}}
+                                        :H [#(dap.step_out) "[s]out"]
+                                        :J [#(dap.step_over) "[s]over"]
+                                        :K [#(dap.step_back) "[s]back"]
+                                        :L [#(dap.step_into) "[s]into"]
+                                        ";" [#(: hIndex.HermitAge :activate)
+                                             "[He]rmitAge"]
+                                        :t [#(dap.toggle_breakpoint)
+                                            "[Tog]BreakPt"]
+                                        :T [#(dap.clear_breakpoints)
+                                            "[Clr]BreakPt"]
+                                        :c [#(dap.continue) "[D]Continue"]
+                                        :x [#(dap.terminate) "[D]Stop"]
+                                        :r [#(dap.repl) "[D]Repl"]
+                                        :<Enter> [#(ui.toggle) "[UI] Toggle"]}
+                                       {:prefix :<leader>d} 6)))))
 
 ;; LSP Utilities ;;
-(nyoom-module-p! lsp (do
-                       (hydra-key! :n
-                                   {:cl {:hydra true
-                                         :name :+LSP
-                                         :config {:on_enter #(trigger_load :lspsaga)
-                                                  :color :pink
-                                                  :hint {:border :solid
-                                                         :position :bottom-middle}
-                                                  :invoke_on_body true}
-                                         :s [#(vim.cmd "Lspsaga hover_doc")
-                                             "+ HoverDocs"]
-                                         :S [#(vim.cmd "Lspsaga peek_definition")
-                                             "+ PeekDefinition"]
-                                         :m [#(vim.cmd "Lspsaga peek_type_definition")
-                                             "+ PeekTypeDefinition"]
-                                         :t [#(vim.cmd "Lspsaga outline")
-                                             "+ Outline"]
-                                         :L [#(vim.cmd :LspLensOn) "+ LspLens"]}}
-                                   {:prefix :<leader>} 4)))
+
+;; fnlfmt: skip
+(nyoom-module-p! lsp
+                 (do
+                   (tset hIndex :lsp
+                         (Hydra (hydra-key! :n
+                                            {:hydra true
+                                             :name :+LSP
+                                             :config {:on_enter #(trigger_load :lspsaga)
+                                                      :color :pink
+                                                      :hint {:border :solid
+                                                             :position :bottom-middle}
+                                                      :invoke_on_body true}
+                                             :s [#(vim.cmd "Lspsaga hover_doc")
+                                                 "[H]over [D]ocs"]
+                                             :S [#(vim.cmd "Lspsaga peek_definition")
+                                                 "[P]eek [D]ef"]
+                                             :m [#(vim.cmd "Lspsaga peek_type_definition")
+                                                 "[P]eek [Ty]peDef"]
+                                             :t [#(vim.cmd "Lspsaga outline")
+                                                 "[O]utline"]
+                                             :L [#(vim.cmd :LspLensOn)
+                                                 "[L]ens"]
+                                             :a [#((. vim.lsp.buf.hover)) "[H]over"]
+                                             :R [#((->> :rename
+                                                        (. (require :live-rename)))) "[R]ename"]
+                                             :r [#((. (require :live-rename) :map) {:text "" "insert" true})
+                                                 "[R]ename [M]ap"]
+                                             ";" [#(: hIndex.HermitAge
+                                                      :activate)
+                                                  "[He]rmitAge"]}
+                                            {:prefix :<leader>cl} 4)))))
 
 ;; Rusty tools for rusty mans ;;
 
+;; fnlfmt: skip
 (tset hIndex :Crates (Hydra {:name "[Cr]ates [Hy]dra"
                              :config {:color :pink
                                       :hint {:type :window
@@ -784,7 +798,6 @@ _;_: [He]rmitage
                                       {:exit true
                                        :nowait true
                                        :desc "[He]rmitAge"}]]}))
-                                     
 
 (nyoom-module-p! rust (hydra-key! :n
                                   {:cm {:hydra true
@@ -863,35 +876,43 @@ _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
                  (let [ht (autoload :haskell-tools)
                        project (autoload :haskell-tools.project)
                        hoogle (autoload :haskell-tools.hoogle)]
-                   (hydra-key! :n
-                               {:h {:hydra true
-                                    :name "+Hydra::Haskell"
-                                    :config {:color :pink
-                                             :hint {:type :window
-                                                    :offset 1
-                                                    :float_opts {:style :minimal
-                                                                 :noautocmd false}
-                                                    :position :bottom-middle}
-                                             :invoke_on_body true}
-                                    :f [#(vim.cmd :HSProjectFile)
-                                        "[O]pen *.project"]
-                                    :S [#(vim.cmd :HsPackageYaml)
-                                        "[O]pen [Y]aml"]
-                                    :h [#(vim.cmd "Telescope hoogle")
-                                        "[T]ele [H]oogle"]
-                                    :m [#(vim.cmd :HsPackageCabal)
-                                        "[O]pen [C]abal"]
-                                    :M [#((. project :telescope_package_grep))
-                                        "[T]ele [P]ack"]
-                                    :w [#(ht.repl.cword_type)
-                                        "[R]epl [P] <Cword>"]
-                                    :r [#(ht.repl.toggle) "[R]epl [T]oggle"]
-                                    :s [#(ht.repl.reload) "[R]epl [R]eload"]
-                                    :t [#(ht.repl.paste_type) "[R]epl [P]aste"]
-                                    :u [#(ht.repl.toggle (vim.api.nvim_buf_get_name (vim.api.nvim_get_current_buf)))
-                                        "[R]epl [P] Buffer"]
-                                    :q [#(ht.repl.quit) "[R]epl [Q]uit"]}}
-                               {:prefix ";"} 4)))
+                   (tset hIndex :haskell
+                         (Hydra (hydra-key! :n
+                                            {:hydra true
+                                             :name "+Hydra::Haskell"
+                                             :config {:color :pink
+                                                      :hint {:type :window
+                                                             :offset 1
+                                                             :float_opts {:style :minimal
+                                                                          :noautocmd false}
+                                                             :position :bottom-middle}
+                                                      :invoke_on_body true}
+                                             :f [#(vim.cmd.Haskell :projectFile)
+                                                 "[O]pen *.project"]
+                                             :h [#(vim.cmd.Telescope :hoogle)
+                                                 "[T]ele [H]oogle"]
+                                             :m [#(vim.cmd.Haskell :packageCabal)
+                                                 "[O]pen [C]abal"]
+                                             :M [#((. project
+                                                      :telescope_package_grep))
+                                                 "[T]ele [P]ack"]
+                                             :w [#(ht.repl.cword_type)
+                                                 "[R]epl [P] <Cword>"]
+                                             ";" [#(: hIndex.HermitAge
+                                                      :activate)
+                                                  :Exit
+                                                  true]
+                                             :r [#(ht.repl.toggle)
+                                                 "[R]epl [T]oggle"]
+                                             :s [#(ht.repl.reload)
+                                                 "[R]epl [R]eload"]
+                                             :t [#(ht.repl.paste_type)
+                                                 "[R]epl [P]aste"]
+                                             :u [#(ht.repl.toggle (vim.api.nvim_buf_get_name (vim.api.nvim_get_current_buf)))
+                                                 "[R]epl [P] Buffer"]
+                                             :q [#(ht.repl.quit)
+                                                 "[R]epl [Q]uit"]}
+                                            {:prefix ";h"} 4)))))
 
 ;; fnlfmt: skip
 (nyoom-module-p! harpoon
@@ -905,27 +926,29 @@ _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
                                     (vim.api.nvim_buf_clear_namespace 0 (_harpNS) 0 -1)
                                     (_harpSign (vim.fn.line "."))
                                     (: (: harpoon :list) :add))]
-                    (hydra-key! :n
-                                {:a {:hydra true
-                                     :name "+Hydra::Harpoon"
-                                     :config {:color :pink
-                                              :hint {:border :solid
-                                                     :position :bottom-middle}
-                                              :on_enter #(do
-                                                           (vim.api.nvim_set_hl 0 "HarpSgn" {:fg "#8aadf4" :bold true})
-                                                           (trigger_load :harpoon))
-                                              :invoke_on_body true}
-                                     :A [#(_harpAdd) "[A]dd [F]tag"]
-                                     :p [#(-> harpoon (: :list) (: :prev)) :Prev]
-                                     :n [#(-> harpoon (: :list) (: :next)) :Next]
-                                     :a [#(-> harpoon (: :list) (: :add))
-                                         "[A]dd [F]ile"]
-                                     :s [#(: (. harpoon :ui) :toggle_quick_menu (: harpoon :list "oqt"))
-                                          "[OS] [L]task"]
-                                     :S [#((. (require "oqt") :prompt_new_task))
-                                         "[OS] [N]task"]
-                                     :<CR> [#(: (. harpoon :ui) :toggle_quick_menu (: harpoon :list)) "[Q]uick [M]enu"]}}
-                                {:prefix :<leader>} 4))))
+                    (tset hIndex :harpoon (Hydra (hydra-key! :n
+                                                             {:hydra true
+                                                               :name "+Hydra::Harpoon"
+                                                               :config {:color :pink
+                                                                        :hint {:border :solid
+                                                                               :position :bottom-middle}
+                                                                        :on_enter #(do
+                                                                                     (vim.api.nvim_set_hl 0 "HarpSgn" {:fg "#8aadf4" :bold true})
+                                                                                     (trigger_load :harpoon))
+                                                                        :invoke_on_body true}
+                                                               "<Esc>" [nil :Exit true]
+                                                               ";" [#(: hIndex.HermitAge :activate) :Exit true]
+                                                               :A [#(_harpAdd) "[A]dd [F]tag"]
+                                                               :p [#(-> harpoon (: :list) (: :prev)) :Prev]
+                                                               :n [#(-> harpoon (: :list) (: :next)) :Next]
+                                                               :a [#(-> harpoon (: :list) (: :add))
+                                                                   "[A]dd [F]ile"]
+                                                               :s [#(: (. harpoon :ui) :toggle_quick_menu (: harpoon :list "oqt"))
+                                                                    "[OS] [L]task"]
+                                                               :S [#((. (require "oqt") :prompt_new_task))
+                                                                   "[OS] [N]task"]
+                                                               :<CR> [#(: (. harpoon :ui) :toggle_quick_menu (: harpoon :list)) "[Q]uick [M]enu"]}
+                                                             {:prefix :<leader>a} 4))))))
 
 ;; TODO:: Make SubHydras For Swapping and Node Selection
 
@@ -976,6 +999,34 @@ _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
                                            "STS::[P]Swap"]
                                        :<Esc> [#(print :Exiting) :Exit true]}}
                                   {:prefix ";"} 4))
+
+(nyoom-module-p! folke
+                 (tset hIndex :qf
+                       (Hydra (hydra-key! :n
+                                          {:name "[Hy]dra [Tro]uble [Q]f"
+                                           :hydra true
+                                           :config {:color :pink
+                                                    :on_enter #(trigger_load :quicker-nvim)
+                                                    :hint {:border :solid
+                                                           :position :bottom-middle}
+                                                    :invoke_on_body true}
+                                           ";" [#(: hIndex.HermitAge :activate)
+                                                :Exit
+                                                true]
+                                           :l [#(vim.cmd.Trouble :loclist)
+                                               "[TL]oclist"]
+                                           :t [#(vim.cmd.Trouble :todo)
+                                               "[TT]odo"]
+                                           :f [#(vim.cmd.Trouble :quickfix)
+                                               "[TQ]uickFix"]
+                                           :d [#(vim.cmd.TodoQuickFix)
+                                               "[TDQ]uickFix"]
+                                           :<space> [#(vim.cmd.TodoTelescope)
+                                                     "[TDT]elescope"]
+                                           :<Esc> [#(print :exiting)
+                                                   :Exit
+                                                   true]}
+                                          {:prefix :<leader>t} 3))))
 
 ; Go faster, wagie! ;;
 ; (nyoom-module-p! go

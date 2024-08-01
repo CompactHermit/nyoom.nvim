@@ -1,7 +1,7 @@
 {
   inputs,
-  lib,
   pkgs,
+  config,
   ...
 }:
 let
@@ -12,7 +12,11 @@ let
         Since our neovim dotfiles is created as a plugin, we just load it after sourcing the init.lua.
   */
 
+  packdir =
+    let
+      vimFarm = { };
+    in
+    { };
   mkWrapperUnshittified = { };
 in
-#lua
-''''
+{ }

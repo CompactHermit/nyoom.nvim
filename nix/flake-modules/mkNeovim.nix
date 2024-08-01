@@ -1,5 +1,4 @@
 {
-  inputs,
   lib,
   config,
   runCommand,
@@ -8,20 +7,27 @@
   pkgs,
   autoreconfHook,
   applyPatches,
+  stdenv,
+  fetches,
+  tree-sitter-nightly,
   fetchpatch,
-  ...
 }:
 let
 
-  inherit (lib) concatStringsSep mkIf;
+  inherit (lib) concatStringsSep;
 
   cfg = config.neohermit;
 
   patches = [
-    #FIX:: Remove MSG-PACK
+    #feat(func): allow manual cache invalidation for _memoize
     # (fetchpatch {
-    #   url = "https://patch-diff.githubusercontent.com/raw/neovim/neovim/pull/29540.patch";
-    #   hash = "sha256-GbrSV1pBUKl6R8d0ZHY/ysjZj+Blcd88x8BMccxH03s=";
+    #   url = "https://github.com/neovim/neovim/pull/30227.patch";
+    #   sha256 = "sha256-IMd3xb7VLWZG6iDHapavRDt4B2lN84yhjXcSBlQ7BPo=";
+    # })
+    #perf(treesitter): cache the parser check in foldexpr
+    # (fetchpatch {
+    #   url = "https://github.com/neovim/neovim/pull/30164.patch";
+    #   sha256 = "sha256-HjEWsqMwi8G7eoBYWxJrhRM4RJSYj9YqSbqvzDHfoTA=";
     # })
   ];
   patched-src = applyPatches {
@@ -67,7 +73,7 @@ let
             {depname = {url = ...; hash = ...;}}
         We then promptly pass that onto `fetchurl` and make the source from there
   */
-  mkDeps = lib.pipe "${inputs.nvim-git}/cmake.deps/deps.txt" [
+  mkDeps = lib.pipe "${fetches.nvim-git.src}/cmake.deps/deps.txt" [
     builtins.readFile
     (lib.splitString "\n")
     (map (builtins.match "([[:alnum:]_]+)_(URL|SHA256)[[:blank:]]+([^[:blank:]]+)[[:blank:]]*"))
@@ -121,7 +127,6 @@ let
       inherit (final.luv) version src;
       buildInputs = replaceInput oa.buildInputs libuv;
     });
-    #BROKEN:: SEEMS THE BOOSTRAPPER FAILS HARD
     lpeg = prev.luaLib.overrideLuarocks prev.lpeg rec {
       version = versionFromSrc mkDeps.lpeg;
       src = mkDeps.lpeg;
@@ -161,12 +166,6 @@ let
     #enable52Compat = true;
   };
 
-  #TODO:: This is all boilerplate we could abstract away.
-  # msgPack ::
-  msgpack-c = pkgs.msgpack-c.overrideAttrs {
-    version = versionFromSrc mkDeps.msgpack;
-    src = mkDeps.msgpack;
-  };
   utf8proc = pkgs.utf8proc.overrideAttrs {
     version = versionFromSrc mkDeps.utf8proc;
     src = mkDeps.utf8proc;
@@ -181,10 +180,10 @@ let
   });
 
   # libvterm neovim fork
-  libvterm-neovim = pkgs.libvterm-neovim.overrideAttrs {
-    version = versionFromSrc mkDeps.libvterm;
-    src = mkDeps.libvterm;
-  };
+  # libvterm-neovim = pkgs.libvterm-neovim.overrideAttrs {
+  #   version = versionFromSrc mkDeps.libvterm;
+  #   src = mkDeps.libvterm;
+  # };
   gettext = pkgs.gettext.overrideAttrs {
     src = mkDeps.gettext;
     version = versionFromSrc mkDeps.gettext;
@@ -199,23 +198,29 @@ in
   inherit
     libuv
     lua
-    msgpack-c
+    # msgpack-c
     unibilium
-    libvterm-neovim
+    #libvterm-neovim
     gettext
     libiconv
     ;
+  tree-sitter = tree-sitter-nightly;
 }).overrideAttrs
   (oa: {
     src = patched-src;
     version = cfg.src.shortRev or "dirty";
     buildInputs = (oa.buildInputs or [ ]) ++ [ utf8proc ];
+    __structuredAttrs = true;
+    outputChecks.out.disallowedRequisites = [
+      stdenv.cc
+    ];
     preConfigure = ''
       sed -i cmake.config/versiondef.h.in -e "s/@NVIM_VERSION_PRERELEASE@/-dev-$version/"
     '';
-    cmakeFlagsArray = oa.cmakeFlagsArray ++ [
+    cmakeFlag = oa.cmakeFlags ++ [
       "-DLUACHECK_PRG=${pkgs.luajit.pkgs.luacheck}/bin/luacheck"
       "-DENABLE_LTO=OFF"
+      # "-DENABLE_WASMTIME=ON"
       #"-DENABLE_ASAN_UBSAN=ON"
     ];
     postInstall = ''

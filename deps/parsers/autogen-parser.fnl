@@ -14,6 +14,7 @@
 ; (local {: trigger_load} (autoload :lz.n))
 ; (trigger_load :nvim-treesitter)
 
+;; fnlfmt: skip
 (let [nio (autoload :nio)
       on_exit (nio.wrap #(vim.cmd :qa) 0)]
   (nio.run (fn []
@@ -29,15 +30,22 @@
                    nvim-ts-tbl ["#THIS FILE IS AUTOGEN USING `autogen-parsers.fnl`:: DONNOT MODIFY THIS"
                                 "[nvim-treesitter]"
                                 "fetch.git = \"https://github.com/nvim-treesitter/nvim-treesitter\""
-                                "src.git = \"https://github.com/nvim-treesitter/nvim-treesitter\"
-
-"]
+                                "src.git = \"https://github.com/nvim-treesitter/nvim-treesitter\" \n"]
+                                ; "src.branch = \"update-lockfile-pr\"\n"]
                    parsers (. (require :nvim-treesitter.parsers) :list)
-                   keys []]
+                   keys []
+                   needsNPM {:tsx true :typescript true :qmljs true}]
                (doto parsers
+                 (tset :vhs
+                       {:install_info {:url "https://github.com/charmbracelet/tree-sitter-vhs"
+                                       :files [:src/parsers.c]
+                                       :branch :alt}})
+                 (tset :spade
+                       {:install_info {:url "https://gitlab.com/spade-lang/tree-sitter-spade"
+                                       :files [:src/parsers.c]}})
                  (tset :nu
                        {:install_info {:url "https://github.com/nushell/tree-sitter-nu"
-                                       :files [:src/parsers.c]}})
+                                       :files [:src/parsers.c :src/scanner.c]}})
                  (tset :blade
                        {:install_info {:url "https://github.com/EmranMR/tree-sitter-blade"
                                        :files [:src/parsers.c]}})
@@ -54,28 +62,28 @@
                (table.sort keys)
                (file.write (table.concat nvim-ts-tbl "\n"))
                (: (vim.iter keys) :each
-                  (fn [v]
-                    ;(print (.. "Setting PARSER<" v ">\n\n"))
-                    (let [info (. parsers v :install_info)]
-                      (file.write (.. "[treesitter-grammar-" v "]" "\n"))
-                      (file.write (.. "fetch.git = \"" info.url "\"" "\n"))
-                      (file.write (.. "src.git = \"" info.url "\"" "\n"))
-                      ;; In Case we have seperate branches
-                      (if info.branch
-                          (file.write (.. "src.branch = \"" info.branch "\""
-                                          "\n")))
-                      ;; Adding Passthrough for Locations/Generate from grammar, needed for nix;
-                      (when (or info.location
-                                info.requires_generate_from_grammar)
-                        (file.write (.. "[treesitter-grammar-" v ".passthru]\n"))
-                        (if info.requires_generate_from_grammar
-                            (file.write (.. "generate = \"true\"\n")))
-                        (if info.location
-                            (file.write (.. "location = \"" info.location "\""
-                                            "\n"))))
-                      (file.write "\n"))))
+                  #(let [info (. parsers $1 :install_info)]
+                     (file.write (.. "[treesitter-grammar-" $1 "]" "\n"))
+                     (file.write (.. "fetch.git = \"" info.url "\"" "\n"))
+                     (file.write (.. "src.git = \"" info.url "\"" "\n"))
+                     (if (not= (. needsNPM $1) nil)
+                         (file.write (.. "extract = [\"package.json\", \"package-lock.json\"]"
+                                         "\n")))
+                     ; In Case we ha$1e seperate branches
+                     (if info.branch
+                         (file.write (.. "src.branch = \"" info.branch "\""
+                                         "\n")))
+                     ;; Adding Passthrough for Locations/Generate from grammar, needed for nix;
+                     (when (or info.location
+                               info.requires_generate_from_grammar)
+                       (file.write (.. "[treesitter-grammar-" $1 ".passthru]\n"))
+                       ;; TODO:: Unshittify this logic
+                       (if info.requires_generate_from_grammar
+                           (file.write (.. "generate = \"true\"\n")))
+                       (if info.location
+                           (file.write (.. "location = \"" info.location "\""
+                                           "\n"))))
+                     (file.write "\n")))
                (file.close))
-             ;; Weirdly enough, the file is `leaky?` and cant be closed, and hence nio has an error on CB.
-             ;; Thus, we can hack on a scheduler to handle the `on_exit`
              (nio.scheduler)
              (on_exit))))

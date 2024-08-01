@@ -18,5 +18,10 @@ scripts.nu
 
 # Tests/Hooks/Checks::
 .direnv/
-.pre-commit-config.yaml
+test.lua
+#TEMP:
+ftplugin/*.lua
+#TEMP:
+lua/spec/*.lua
 deps/*/*.lua
+.pre-commit-config.yaml

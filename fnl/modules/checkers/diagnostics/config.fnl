@@ -12,7 +12,11 @@
                     :level vim.log.levels.ERROR
                     :progress 0})
   (vim.diagnostic.config {:underline {:severity {:min vim.diagnostic.severity.INFO}}
-                          :signs {:severity {:min vim.diagnostic.severity.HINT}}
+                          :signs {:severity {:min vim.diagnostic.severity.HINT}
+                                  :text {vim.diagnostic.severity.ERROR shared.icons.error
+                                         vim.diagnostic.severity.WARN shared.icons.warn
+                                         vim.diagnostic.severity.INFO shared.icons.info
+                                         vim.diagnostic.severity.HINT shared.icons.hint}}
                           :virtual_text false
                           :float {:show_header false
                                   :source :always
@@ -35,7 +39,9 @@
                      (nyoom-module-p! kotlin
                                       (table.insert null-ls-sources
                                                     null-ls.builtins.formatting.ktlint))
-                     ; (nyoom-module-p! lua ;                  (table.insert null-ls-sources ;                                null-ls.builtins.formatting.stylua))
+                     (nyoom-module-p! lua
+                                      (table.insert null-ls-sources
+                                                    null-ls.builtins.formatting.stylua))
                      (nyoom-module-p! markdown
                                       (table.insert null-ls-sources
                                                     null-ls.builtins.formatting.markdownlint))
@@ -65,16 +71,7 @@
                                          :diagnostics_format "[#{c}] #{m} (#{s})"
                                          :debug true
                                          :on_attach on-attach})
-  ;;TODO:: (Hermit) Deprecate `vim.fn.sign_define` for `vim.diagnostic.config` API
-  (vim.fn.sign_define :DiagnosticSignError
-                      {:text shared.icons.error :texthl :DiagnosticSignError})
-  (vim.fn.sign_define :DiagnosticSignWarn
-                      {:text shared.icons.warn :texthl :DiagnosticSignWarn})
-  (vim.fn.sign_define :DiagnosticSignInfo
-                      {:text shared.icons.info :texthl :DiagnosticSignInfo})
-  (vim.fn.sign_define :DiagnosticSignHint
-                      {:text shared.icons.hint :texthl :DiagnosticSignHint})
-  (nyoom-module-p! config.+bindings
+  (nyoom-module-p! config
                    (do
                      (local {:open_float open-line-diag-float!
                              :goto_prev goto-diag-prev!
@@ -88,10 +85,5 @@
                            {:desc "Goto next diagnostics"})))
   (progress:report {:message "Setup Complete" :title :Completed! :progress 100}))
 
-(vim.api.nvim_create_autocmd :CursorHold
-                             {:callback #(vim.diagnostic.open_float (vim.api.nvim_get_current_buf))})
 
-;; fnlfmt: skip
-;(null-ls.setup)
-; (packadd! lsplines)
-; ((->> :setup (. (autoload :lsp_lines))))
+((->> :setup (. (autoload :lsp_lines))))

@@ -46,8 +46,9 @@
 
       A group of keymaps can be 'hydrated' using `:hydra true` and its friends
    "
+  (var ret {})
   (let [hydra (require :hydra)
-        which-key (require :which-key)
+        which-key (autoload :which-key)
         lines (or ?num 4)
         opts (or ?opts {})
         {:prefix ?prefix & opts} opts
@@ -64,6 +65,7 @@
                                {:cmd (. rhs 1)
                                 :desc (. rhs 2)
                                 :exit (or false (. rhs 3))
+                                ;:nowait (or false (. rhs 4))
                                 :final true}
                                ;; Nested table, leave be
                                (not (vim.islist rhs))
@@ -90,19 +92,17 @@
         keymap-opts (vim.tbl_extend :force base-keymap-opts opts)]
     ;; NOTE:: (Hermit) Just use a Match, wtf are you doing??
     (if (= hydra? true)
-        (do
-          (local v
-                 (hydra {:name name?
-                         :hint (autogen-hint keymaps name? lines)
-                         :config config?
-                         : mode
-                         :body prefix
-                         :heads (icollect [lhs rhs (pairs keymaps)]
-                                  (if rhs.final
-                                      [lhs
-                                       rhs.cmd
-                                       {:desc rhs.desc :exit rhs.exit}]))}))
-          (values v))
+        (table.insert ret
+                      {:name name?
+                       :hint (autogen-hint keymaps name? lines)
+                       :config config?
+                       : mode
+                       :body prefix
+                       :heads (icollect [lhs rhs (pairs keymaps)]
+                                (if rhs.final
+                                    [lhs
+                                     rhs.cmd
+                                     {:desc rhs.desc :exit rhs.exit}]))})
         (each [lhs rhs (pairs keymaps)]
           (let [lhs (.. prefix lhs)]
             (if rhs.final
@@ -115,7 +115,8 @@
                     ;; Add name for group
                     (which-key.register {lhs {:name rhs.name}}))
                   (hydra-key! mode rhs
-                              (vim.tbl_extend :force opts {:prefix lhs})))))))))
+                              (vim.tbl_extend :force opts {:prefix lhs})))))))
+    (unpack ret)))
 
 ; (lambda sub-hydra! []
 ;   "

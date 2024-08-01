@@ -40,7 +40,7 @@
       oqt (require :oqt)
       titles {:ADD :added :REMOVE :removed}
       get_width vim.api.nvim_win_get_width
-      Path (require :plenary.path)
+      Path (require :plenary.path) ;; TODO::(REWRITE) USE PATHLIB INSTEAD
       genKeymap (lambda [?mode _key ?type _cb]
                   (vim.keymap.set ?mode _key
                                   #(: (. harpn :ui) :select_menu_item

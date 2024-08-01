@@ -1,5 +1,6 @@
 (import-macros {: map! : let!} :macros)
 
+;; TODO:: (Hermit) Async Termsend, using nio
 (fn __generate-repl []
   "
     __generate-repl:: [] -> ToggleTerm::Shell
@@ -14,7 +15,10 @@
                                             :auto_scroll true})]
     (: __nixTerminalHandler :toggle)
     (: __nixTerminalHandler :send
-       "pkgs = debug.flake.allSystems.x86_64-linux.allModuleArgs.pkgs")))
+       "pkgs = debug.flake.allSystems.x86_64-linux.allModuleArgs.pkgs")
+    (: __nixTerminalHandler :send "lib = pkgs.lib")))
+
+;(nio.scheduler)
 
 ; (tterm.exec "")))
 

@@ -1,9 +1,7 @@
-(import-macros {: use-package! : nyoom-module!} :macros)
+(import-macros {: lzn!} :macros)
 
-;; Just trying to break tmux, yeeeh noooooo
-; (use-package! :aserowy/tmux.nvim {:nyoom-module tools.tmux
-;                                   :opt true
-;                                   :event :BufRead})
-
-(nyoom-module! tools.tmux)
-
+;; Fakes a load, since this plugin is in the user dir, we just load the script
+(lzn! :tmux {:nyoom-module tools.tmux
+             :enable #(not= vim.env.TMUX nil)
+             :cmd [:Tmux :TMSession :TMPaneSelect]
+             :load (fn [])})

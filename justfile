@@ -2,17 +2,24 @@
 
 #List Defaults::
 default:
-    @just --list
+    @just --choose
 
 # Clean Caches + Sources
 clean:
-   @echo "Cleaning tmpdir"
-   rm -rf /tmp/nyoom
-   @echo "Cleaning TestDir"
-   rm -rf ./lua/spec
+   # @echo "Cleaning TestDir"
    @echo "Cleaning Cargo.locks"
+   #TODO:: Add dep removal, or maybe nvfetcher has a util for that?
    rm -rf ./deps/plugins/_sources/neorg-se-*
    rm -rf ./deps/plugins/_sources/norg-fmt-*
+   rm -rf ./deps/plugins/_sources/harper-ls-*
+   rm -rf ./deps/plugins/_sources/tree-sitter-*
+   rm -rf ./deps/parsers/_sources/treesitter-grammar-*
+   @echo "Adding git"
+   git add .
+
+compile:
+   @echo "Cleaning tmpdir"
+   rm -rf /tmp/nyoom
    NYOOM_CLI=true nvim --headless -c "doautocmd VimEnter" +qa
 
 # Build pkg + Update Bin
@@ -23,8 +30,8 @@ _1buildFennel:
     nvim --headless +"Fnlfile deps/parsers/autogen-parser.fnl"
 
 _Fetcher:
-    cd deps/parsers/ && nvfetcher -t -j 8 -l ./changelog.txt
-    cd deps/plugins/ && nvfetcher -t -j 8 -l ./changelog.txt
+    cd deps/parsers/ && nvfetcher -t  -l ./changelog.txt
+    cd deps/plugins/ && nvfetcher -t  -l ./changelog.txt
 
 _fup:
     nix flake update -Lv

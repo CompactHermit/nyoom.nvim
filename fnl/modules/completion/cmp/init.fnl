@@ -11,7 +11,7 @@
                         :cmp-cmdline
                         :cmp-luasnip
                         :nvim-scissors
-                        :cmp-conjure
+                        ;:cmp-conjure
                         :cmp-nvim-lsp]
                  :wants [:nvim-scissors :conjure]
                  :event :InsertEnter})
@@ -23,5 +23,6 @@
               {1 :<space>csc
                2 #((. (require :scissors) :addNewSnippet))
                :desc "Edit Snippets"}]
+       ;;TODO:: Use `datadir`, we don't to edit packdir
        :after #((. (require :scissors) :setup) {:snippetDir "~/.config/nvim/snippets"})
        :cmd [:ScissorsEditSnippet :ScissorsAddNewSnippet]})

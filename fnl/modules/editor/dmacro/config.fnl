@@ -6,5 +6,5 @@
   (progress:report {:message "Setting Up DMacro"
                     :level vim.log.levels.ERROR
                     :progress 0})
-  ((->> :setup (. (require :dmacro))) {:dmacro_key :<M-q>})
+  ;((->> :setup (. (require :dmacro))) {:dmacro_key :<M-q>})
   (progress:report {:message "Setup Complete" :title :Completed! :progress 100}))

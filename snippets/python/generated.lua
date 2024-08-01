@@ -5,13 +5,13 @@ local s = ls.snippet
 local i = ls.insert_node
 
 local snippets = {
-    s(
-        "pr",
-        fmt([[print({})]], {
-            i(1, "msg"),
-        })
-    ),
-    ------------------------------------------------------ Snippets goes here
+	s(
+		"pr",
+		fmt([[print({})]], {
+			i(1, "msg"),
+		})
+	),
+	------------------------------------------------------ Snippets goes here
 }
 
 local autosnippets = {}

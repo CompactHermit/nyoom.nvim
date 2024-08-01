@@ -1,14 +1,15 @@
 @document.meta
-title: index
-id: 42589f53-46ed-411d-88db-116795432add
-workspace: default
+title: HermitAge
+description: HermitAge:: Wisdom cannot be found in the abode of a hermit
+authors: CompactHermit
 categories: [
     Fennel
     HermitAge
-    Neovim
+    neovim
 ]
-created: 2023-12-09T14:27:12-0500
-updated: 2024-07-17T17:45:42-0500
+created: 2024-07-29T00:39:35-0500
+updated: 2024-08-27T23:16:00-0500
+version: 1.1.1
 @end
 
 * TODOS::
@@ -24,8 +25,8 @@ updated: 2024-07-17T17:45:42-0500
    -- (x) Find way to force Hotpot to use A /tmp directory instead of XDG_DATA_DIR
    --- (x) Just have Neovim Run with {! https://github.com/konradmalik/neovim-flake/blob/main/packages/neovim-pde/default.nix}[XDG_CACHE_DIR] set to /tmp
 
-   -- (-) Hydra:: Add SubHydras
-   --- ( ) Hydra:: Add Rust Subhydra:: Rustacean + Crates
+   -- (x) Hydra:: Add SubHydras
+   --- (x) Hydra:: Add Rust Subhydra:: Rustacean + Crates
    --- (x) Haskell Hydra::
    ---- (x) Add Telescope Hoogle to binds (why haven't I done this yet you fucking doofus)
 
@@ -41,14 +42,20 @@ updated: 2024-07-17T17:45:42-0500
    - (-) CI:: Fnl -> Busted Tests?
    -- (-) Write Busted Tests for macros and inbuilt functions (e.g:: coogler search?)
 
-   - (-) CI:: FMT::
-   -- (-) Fix nixfmt bug:: `/*<lang>*/` -> `#<lang>` should not be done (maybe a potential PR?)
-   -- (-) fnl-linter bug:: certain options are ignored, will need to manually patch em %(maybe use C-ffi's or RIIR?)%
-   -- (?) Norg-fmt:: Wait for {!&gh nvim-neorg/norg-fmt}[Update]
+   - (x) CI:: FMT::
+   -- (_) Fix nixfmt bug:: `/*<lang>*/` -> `#<lang>` should not be done (maybe a potential PR?)
+   -- (x) fnl-linter bug:: certain options are ignored, will need to manually patch em %(maybe use C-ffi's or RIIR?)%
+   -- (_) Norg-fmt:: Wait for {!&gh nvim-neorg/norg-fmt}[Update]
 
    - (x) Port Treesitter completely to nix
 
 * Inbox
+  #contexts GTD::Docsets
+  - ( ) Proper DocGen for `lua-libs`::
+  -- ( ) Specifically, for `rtp`,`pathlib`, `lzn` ,`nvim-nio`, `fidget`, `fzy`, etc
+  --- Should Just Autogen
+  -- ( ) Additionally, for non-lua libs to be converted to vimdoc via `panvimdoc`
+
   #contexts GTD::Inbox
   - (-) Neovim/Fennel Things::
   -- (_) Nfnl Port::
@@ -56,22 +63,38 @@ updated: 2024-07-17T17:45:42-0500
   -- ( ) Fennel Syntax Injections::
   --- ( ) Add custom TS-injection for docstrings.
   ---- ( ) DocStrings -> Neorg Conversion  [Perhaps write it in Haskell?]{Neorg Parser Combinator when bozo?}
+  -- ( ) Use `care-nvim` over cmp::
+  -- ( ) Start Using `rtp-nvim` over inhouse weirdness
+  --- ( ) rtp-nvim seems to not work with symlinks, wtf?
   -- ( ) NUI-components:: {:$/Nui-Comp:}[Docs]
   --- ( ) Actually learn the framework
   --- (_) Refactor Noice Module -> NUI Module
-  -- (-)  Nvim-Nio:: {:$/nio-async:}[Async Docs]
+  -- (x)  Nvim-Nio:: {:$/nio-async:}[Async Docs]
   --- (_)  Learn it properly, try to make multi-module async work
   -- (-) Doctor Rewrite::
   --- ( ) Proper LSP Healthcheck (display all config values + enabled/disabled LSP info <methods Supported by server, config for methods>)
   --- ( ) Healthcheck for tree-sitter API's/Queries
 
-  - (=) Nix Things::
-  -- (=) CI:: Fnl -> Lua -> /tmp/nyoom
-  -- (=) Nix Aware Module Lookup:: (JSON Querying?) [On Hold for now]{Wait for module system refactor, and use doctor for config-checking}
+  - (-) Nix Things::
+  -- (-) CI:: Fnl -> Lua -> /tmp/nyoom
+  -- (-) Nix Aware Module Lookup:: (JSON Querying?) [On Hold for now]{Wait for module system refactor, and use doctor for config-checking}
+  -- (-) Busted
 
   - (x) Lzn::
   -- (x) Find way for module lookup::
   --- (x) E.g:: If Hydra `loads` telescope/which-key => Run Telescope loader + Which-key module (can be achieved via a `adder`, querying the lz.n.state tree and running the loader)
+  -- (_) Complete Rewrite of the `lazyp` macro without the *double trigger_load*
+         hackery.
+  > The original _hacky_ way was to wontonly calling `trigger_load` and pray `lzn`
+    would not execute the loader since it would be loaded by itself or some other
+    state.
+  >> NOTE:: mrcjkbs rewrote it all, now we can exec trigger_load any times, with no
+     cost. Based mf.
+  --- (_) Now, we need to manage this state ourselves. Namely, we can no longer
+          naively call `:wants [:packadd-me-please]`, we actually need to 
+  --- (_) The other option is the `lzn.lookup` api, but calling `lookup` and then
+          `trigger_load` for *every* plugin seems like it'll impact startuptime by
+          alot
   - (x) Deprecate Packer::
   -- (x) Learn how `packages.preload` Actually fking works, I mean wtf is it even?
   -- (x) Packer -> Custom InHouse Package Loading (using nix for management and fennel to load)
