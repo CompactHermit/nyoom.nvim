@@ -13,7 +13,7 @@
     To neovim-defaults like below. Specifically, set `vim.env.BIN` to the output of `mkBinPath`
   */
   # ++ [
-  #   #lua 
+  #   #lua
   #   ''
   #     package.path = package.path .. ';' .. ${lua.luaPaths};
   #     package.cpath = package.cpath  .. ';' .. ${lua.luaCPaths}

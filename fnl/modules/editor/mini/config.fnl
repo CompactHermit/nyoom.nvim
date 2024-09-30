@@ -1,4 +1,4 @@
 (import-macros {: set!} :macros)
 
-((->> :setup 
+((->> :setup
       (. (require :mini.surround))))

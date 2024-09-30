@@ -3,7 +3,7 @@
     - Notify:: If the LSP works/attaches
     - Inlay Hint Handler:: If the LSP's metatable contains inlay hints,
     "
-  (vim.notify "BloatWare(TM) has been started" :info {:title client.name})
+  ;(vim.notify "BloatWare(TM) has been started" :info {:title client.name})
   (when client.server_capabilities.inlayHintProvider
     (vim.lsp.inlay_hint.enable)))
 

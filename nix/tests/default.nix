@@ -85,7 +85,9 @@
           stylua = {
             enable = true;
           };
-          fnlfmt.enable = true;
+          fnlfmt = {
+            enable = true;
+          };
         };
       };
       # checks = {

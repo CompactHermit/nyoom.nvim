@@ -1,1 +1,2 @@
- --[[ "Testing Nio Async Tests" ]] return nil
+--[[ "Testing Nio Async Tests" ]]
+return nil

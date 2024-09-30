@@ -30,8 +30,6 @@
 
 (. (require :cmp_nvim_lsp) :default_capabilities)
 
-
-
 (local source-plugins [:cmp-path
                        :cmp-buffer
                        :cmp-cmdline

@@ -6,6 +6,7 @@
                   :deps [:telescope-ui-select
                          :telescope-file-browse
                          :telescope-project
+                         :telescope-zf-native
                          :telescope-zoxide
                          :telescope-tabs
                          :telescope-egrepify]

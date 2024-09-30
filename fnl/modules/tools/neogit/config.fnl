@@ -1,3 +1,5 @@
+(import-macros {: nyoom-module-ensure!} :macros)
+(nyoom-module-ensure! vc-gutter)
 (let [neogit (autoload :neogit)
       gitsigns (autoload :gitsigns)
       fidget (require :fidget)
@@ -10,6 +12,7 @@
   (neogit.setup {:disable_signs true
                  :disable_hint true
                  :disable_context_highlighting false
+                 :graph_style :kitty
                  :integrations {:diffview true :telescope true}
                  :sections {:recent {:folded true}}})
   (progress:report {:message "Setup Complete" :title :Completed! :progress 100})

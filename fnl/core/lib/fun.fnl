@@ -41,8 +41,7 @@
 
 (local iterator-mt {:__call (fn [self param state]
                               (self.gen param state))
-                    :__tostring (fn [self]
-                                  :<generator>)
+                    :__tostring (fn [self] :<generator>)
                     :__index methods})
 
 (fn wrap [gen param state]

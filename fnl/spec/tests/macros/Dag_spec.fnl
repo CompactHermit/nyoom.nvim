@@ -8,11 +8,11 @@
 ; (local {: describe : it} (require :plenary.busted))
 ; (local assert (require :luassert.assert))
 
-(lua "describe (\"Directed Acyclic Graph in fennel\" ,
-                    function()
-                        it (\"ooga\",
-                            function()")
-
-(assert.are.same 1 1)
-
-(lua "end); end);")
+; (lua "describe (\"Directed Acyclic Graph in fennel\" ,
+;                     function()
+;                         it (\"ooga\",
+;                             function()")
+;
+; (assert.are.same 1 1)
+;
+; (lua "end); end);")

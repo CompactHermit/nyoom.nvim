@@ -1,4 +1,5 @@
-(import-macros {: set! : local-set! : augroup! : clear! : autocmd! : map!} :macros)
+(import-macros {: set! : local-set! : augroup! : clear! : autocmd! : map!}
+               :macros)
 
 (set! linebreak)
 (set! breakindent)
@@ -12,5 +13,6 @@
 ((->> :setup
       (. (require :wrapping-paper))))
 
-(map! [n] :gw `((->> :wrap_line 
-                    (. (require :wrapping-paper)))) {:desc "Fake Wrap Line"})
+(map! [n] :gw `((->> :wrap_line
+                     (. (require :wrapping-paper))))
+      {:desc "Fake Wrap Line"})

@@ -67,16 +67,14 @@
 (fn get_nodes [win pos end_pos]
   (local nodes
          ((->> :get_nodes
-               (. (require :flash.plugins.treesitter))) win
-                                                                                  pos)))
+               (. (require :flash.plugins.treesitter))) win pos)))
 
 (fn remote_ts [win state opts]
   (when (= state.pattern.pattern " ")
     (set state.opts.search.max_length 1)
     (local matches
            ((->> :matcher
-                 (. (require :flash.plugins.treesitter))) win
-                                                                                    state))
+                 (. (require :flash.plugins.treesitter))) win state))
     (each [_ m (ipairs matches)] (set m.highlight false))
     (lua "return matches"))
   (local Search (require :flash.search))

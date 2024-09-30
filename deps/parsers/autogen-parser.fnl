@@ -32,10 +32,18 @@
                                 "fetch.git = \"https://github.com/nvim-treesitter/nvim-treesitter\""
                                 "src.git = \"https://github.com/nvim-treesitter/nvim-treesitter\" \n"]
                                 ; "src.branch = \"update-lockfile-pr\"\n"]
-                   parsers (. (require :nvim-treesitter.parsers) :list)
+                   parsers_ (. (require :nvim-treesitter.parsers) :list)
+                   ;; TODO:: We need to just use 1 iterator, not 3+. Will Condense them when I get time
+                   parsers (-> (vim.iter parsers_) 
+                             (: :filter #(not= $1 :djot))
+                             (: :fold {} #(do (tset $1 $2 $3)
+                                            $1)))
                    keys []
                    needsNPM {:tsx true :typescript true :qmljs true}]
                (doto parsers
+                 (tset :c3
+                       {:install_info {:url "https://github.com/c3lang/tree-sitter-c3"
+                                       :files [:src/parsers.c :src/scanner.c]}})
                  (tset :vhs
                        {:install_info {:url "https://github.com/charmbracelet/tree-sitter-vhs"
                                        :files [:src/parsers.c]

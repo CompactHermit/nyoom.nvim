@@ -4,7 +4,6 @@
 ;  (print (.. "Anchor Literal " (string.gsub out ".*[%d]:[%d.*].:" "" 1)))
 ;  (print (.. "Link Literal " (string.gsub out ":%d[%d.*]:%s.*" ""))))
 
-
 (fn scratch []
   ;; create buffer
   (local bufnr (vim.api.nvim_create_buf true true))

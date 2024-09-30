@@ -19,10 +19,12 @@
             "actions-preview"
             "alpha"
             "bufferline"
+            #"bufferlist"
             #"bmessages" #Conjure is Better
             "crates"
             "clangd_extensions"
-            "colors"
+            #"colors"
+            "conform" # Needed for feed.nvim: Will try to quickhack this with none-null-ls using package.preload
             "comment"
             "care"
             "care-cmp"
@@ -50,11 +52,11 @@
             "diffview"
             "direnv"
             "dynMacro" # Based
+            "feed-nvim"
             "foldtext"
             "folke_edgy"
             "folke_trouble"
             "folke_todo-comments"
-            "folke_noice"
             "folke_flash"
             "galore"
             "gitconflict"
@@ -65,7 +67,10 @@
             "image-nvim"
             # "quicknote"
             "markview"
+            "minty"
+            "mini-icons"
             "multicursor"
+            "music-controler"
             "neogit"
             "neotest"
             "neotest-haskell"
@@ -84,11 +89,9 @@
             # "neorg-chronicle"
             # "neorg-timelog"
             # "neorg-hop-extras"
-            "mini-icons"
-            "music-controler"
             "nvim-notify"
             "nvim-scissors"
-            "nvim-cmp"
+            #"nvim-cmp"
             "nvim-parinfer"
             "nvim-various-textobjs"
             "nui-components"
@@ -100,6 +103,7 @@
             "nvim-dap-virtual-text"
             "smuggler"
             "gitsigns"
+            "gitgraph"
             "go-nvim"
             "harpoon"
             "lazydev"
@@ -125,20 +129,25 @@
             "helpview-nvim"
             "rainbow-delimiters"
             "syntax-tree-surfer"
+            "substitute"
             "ts-context"
             "ts-context-commentstring"
             "ts-refactor"
             "ts-textobjects"
             "ts-node-action"
-            "typst-vim"
+            "typescriptTools"
+            "typst-preview"
+            "timerly"
             "telescope"
             "telescope_hoogle"
             "telescope-ui-select"
             "telescope-file-browse"
+            "telescope-zf-native"
             "telescope-project"
             "telescope-tabs"
             "telescope-zoxide"
             "telescope-egrepify"
+            "treedoc"
             "tmpclone-nvim"
             "toggleterm"
             "ufold"
@@ -158,6 +167,7 @@
             "ratatoskr"
             "rosalyn"
             "tailwind-tools"
+            "volt" # Needed for minty
             "windows"
             "which-key"
             "wrapping-paper"
@@ -184,6 +194,18 @@
           strip = true;
           bytecompile = true;
           plugins = {
+            # telescope-zf-native = {
+            #   nativeBuildInputs = [
+            #     pkgs.installShellFiles
+            #     pkgs.zig_0_13.hook
+            #   ];
+            #   postPatch = ''
+            #     cp -a ${pkgs.callPackage ./deps.nix { }}/. $ZIG_GLOBAL_CACHE_DIR/p
+            #   '';
+            #   postInstall = ''
+            #     rm -rf lib/*
+            #   '';
+            # };
             fzy-lua-native = {
               postInstall = ''
                 rm -rf static/*
@@ -245,6 +267,8 @@
               xml2lua
               mimetypes
               nvim-nio
+              neturl
+              sha1
               ;
           };
           extraCLibs = builtins.attrValues { inherit (self'.packages) neorg-se; };
@@ -263,13 +287,15 @@
             ripgrep
             nvfetcher
             fd
+            zf
             lua-language-server
+            universal-ctags
             nix-tree
             vimcats
             ;
           inherit (pkgs.haskellPackages) fast-tags;
           inherit (pkgs.luajitPackages) nlua busted;
-          inherit (self'.packages) harper-ls norg-fmt;
+          inherit (self'.packages) harper-ls norg-fmt ztags;
           inherit (inputs.nixfmt-rfc.packages."${system}") nixfmt;
           inherit (inputs.nil_ls.packages."${system}") nil;
           nix-doc = pkgs.nix-doc.overrideAttrs (_: {

@@ -4,7 +4,7 @@
 (lzn! :nvim-treesitter
       {:nyoom-module tools.tree-sitter
        :deps [:ts-context-commentstring
-              :ts-refactor
+              ;:ts-refactor
               :ts-textobjects
               :ts-node-action]
        :event [:DeferredUIEnter]

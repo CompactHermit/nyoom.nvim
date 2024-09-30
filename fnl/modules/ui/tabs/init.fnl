@@ -9,3 +9,6 @@
                      2 #((. (require :grug-far) :grug_far))
                      :desc "[Gr]ug [F]ar"}]
              :call-setup grug-far})
+
+;; Faux Buffer Control, with better defaults
+(lzn! :bufferControl {:cmd [:BufferControl] :load (fn []) :after (fn [])})

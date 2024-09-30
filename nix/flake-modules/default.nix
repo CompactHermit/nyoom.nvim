@@ -277,7 +277,7 @@ in
               done
 
               #HACK: Cursed DocGen VimDoc::
-              for ppath in ./share/lua/5.1/!(rtp_nvim.*|telescope|fidget|nio|pathlib|plenary|tests|say|lz); do
+              for ppath in ./share/lua/5.1/!(rtp_nvim.*|telescope|fidget|nio|pathlib|plenary|tests|say|lz|feed-nvim); do
                   stp="''${ppath#*/*/*/*/}";
                   if [ ! -f $out/doc/$stp-generated.txt ]; then
                     if [ -d ./share/lua/5.1/$stp ]; then
@@ -311,6 +311,7 @@ in
           NeovimConfig
           // {
             inherit wrapperArgs;
+            #withPython3 = true; # cfg.settings.python
             wrapRC = false;
             luaRcContent = # lua
               ''
@@ -327,7 +328,9 @@ in
                 vim.opt.rtp:prepend("${packdir}")
                 vim.opt.packpath:prepend("${packdir}")
                 vim.opt.rtp:prepend("${docs2Append2Runtime}")
-
+                package.cpath = package.cpath .. ";" .. "${(pkgs.luajitPackages.luaLib.genLuaCPathAbsStr luaLibs)}"
+                package.path = package.path .. ";" .. "${(pkgs.luajitPackages.luaLib.genLuaPathAbsStr luaLibs)}"
+                vim.deprecate = function() end -- Disable Deprecation Warnings, really don't need em
                 -- NOTE:: EITHER:: (NVIM-APPNAME) or this, but since we're modifying
                 -- config, we need hotpot to use config. In the feature, to
                 -- desugar RTP, we can add this to not double call
@@ -340,8 +343,6 @@ in
                 --for _, plugin in pairs(default_plugins) do vim.g[("loaded_" .. plugin)] = 1 end
 
                 -- Setup lua/luaCPATH, would've loved this in fennel but we cant, fml
-                package.cpath = package.cpath .. ";" .. "${(pkgs.luajitPackages.luaLib.genLuaCPathAbsStr luaLibs)}"
-                package.path = package.path .. ";" .. "${(pkgs.luajitPackages.luaLib.genLuaPathAbsStr luaLibs)}"
 
                 require("hotpot").setup({enable_hotpot_diagnostics = true, provide_require_fennel = true, compiler = {macros = {allowGlobals = true, compilerEnv = _G, env = "_COMPILER"}, modules = {correlate = true, useBitLib = true}}})
                 -- We can also call stdlib here

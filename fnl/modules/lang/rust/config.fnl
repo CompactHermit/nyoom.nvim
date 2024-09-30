@@ -18,7 +18,13 @@
 
 ;; NOTE: (Hermit) Rustaceanvim Is inheritely lazy
 (tset vim.g :rustaceanvim
-      {:server {:on_attach (fn [client bufnr] "Default Rust LSP Attach"
+      {:server {:on_attach (fn [client bufnr]
+                             "Default Rust LSP Attach"
+                             (vim.keymap.set :n :<space>ch
+                                             :<Plug>RustHoverAction
+                                             {:noremap true
+                                              :silent true
+                                              :desc "[Rust] [Ho]ver"})
                              (lsp_init client bufnr))
                 :settings (fn [__Proot]
                             "Server Settings"

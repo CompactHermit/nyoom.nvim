@@ -1,7 +1,5 @@
-(import-macros {: use-package!} :macros)
+(import-macros {: lzn!} :macros)
 
 ; show hex codes as virtualtext
-(use-package! :uga-rosa/ccc.nvim {:nyoom-module tools.rgb
-                                  :cmd [:CccPick
-                                        :CccHighlighterEnable
-                                        :CccHighlighterToggle]})
+;; TODO:: Fake Keymaps
+(lzn! :minty {:nyoom-module tools.rgb :deps [:volt] :cmd [:Shades :Huefy]})

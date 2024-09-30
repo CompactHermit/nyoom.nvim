@@ -3,6 +3,7 @@
 ;; Updating Owner
 (lzn! :hydra {:nyoom-module ui.hydra
               :wants [:gitsigns :dap]
+              :after #(require :modules.ui.hydra.config)
               :keys [{1 :<space>a :desc "[Hy]dra [H]arpoon"}
                      {1 :<space>cl :desc "[Hy]dra [L]SP"}
                      {1 ";h" :desc "[Hy]dra [H]askell"}

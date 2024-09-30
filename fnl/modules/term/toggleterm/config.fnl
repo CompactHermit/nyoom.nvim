@@ -4,6 +4,10 @@
                     :level vim.log.levels.ERROR
                     :progress 0})
   (vim.keymap.set :t :<Esc><Esc> "<C-\\><C-n>" {:desc "exit terminal mode"})
-  ((->> :setup (. (require :toggleterm))) {:shell :nu})
+  ((->> :setup (. (require :toggleterm))) {:autochdir true
+                                           :shell (or (. (vim.fn.environ)
+                                                         :SHELL)
+                                                      vim.o.shell)
+                                           :open_mapping "<C-\\><C-\\>"})
   (progress:report {:message "Setup Complete" :title :Completed! :progress 100})
   (progress:finish))

@@ -3,6 +3,4 @@
 (use-package! :RaafatTurki/hex.nvim
               {:nyoom-module tools.hex
                :opt true
-               :cmd [:HexDump
-                     :HexAssemble
-                     :HexToggle]})
+               :cmd [:HexDump :HexAssemble :HexToggle]})

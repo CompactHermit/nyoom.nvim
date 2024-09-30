@@ -18,6 +18,11 @@ src.git = "https://github.com/ariel-frischer/bmessages.nvim"
 fetch.github = "akinsho/bufferline.nvim"
 src.git = "https://github.com/akinsho/bufferline.nvim/"
 
+
+[bufferlist]
+fetch.github = "EL-MASTOR/bufferlist.nvim"
+src.git = "https://github.com/EL-MASTOR/bufferlist.nvim"
+
 [care]
 fetch.github = "max397574/care.nvim"
 src.git = "https://github.com/max397574/care.nvim"
@@ -98,13 +103,17 @@ src.git = "https://github.com/nvimdev/dashboard-nvim"
 fetch.github = "L3MON4D3/LuaSnip"
 src.git = "https://github.com/L3MON4D3/LuaSnip"
 
-[friendly-luasnip]
-fetch.github = "rafamadriz/friendly-snippets"
-src.git = "https://github.com/rafamadriz/friendly-snippets"
-
 [comment]
 fetch.github = "numToStr/Comment.nvim"
 src.git = "https://github.com/numToStr/Comment.nvim"
+
+[conform]
+fetch.github = "stevearc/conform.nvim"
+src.git = "https://github.com/stevearc/conform.nvim"
+
+[coerce]
+fetch.github = "gregorias/coerce.nvim"
+src.git = "https://github.com/gregorias/coerce.nvim"
 
 [compiler]
 fetch.github = "Zeioth/compiler.nvim"
@@ -150,9 +159,40 @@ src.git = "https://github.com/3rd/diagram.nvim"
 fetch.github = "NotAShelf/direnv.nvim"
 src.git = "https://github.com/NotAShelf/direnv.nvim"
 
+[feed-nvim]
+fetch.github = "neo451/feed.nvim"
+src.git = "https://github.com/neo451/feed.nvim"
+
 [flutter-tools]
 fetch.github = "akinsho/flutter-tools.nvim"
 src.git = "https://github.com/akinsho/flutter-tools.nvim"
+
+[friendly-luasnip]
+fetch.github = "rafamadriz/friendly-snippets"
+src.git = "https://github.com/rafamadriz/friendly-snippets"
+
+[foldtext]
+fetch.github = "OXY2DEV/foldtext.nvim"
+src.git = "https://github.com/OXY2DEV/foldtext.nvim"
+
+[folke_edgy]
+fetch.github = "folke/edgy.nvim"
+src.git = "https://github.com/folke/edgy.nvim"
+# fetch.github = "willothy/edgy.nvim"
+# src.git = "https://github.com/willothy/edgy.nvim"
+
+[folke_trouble]
+fetch.github = "folke/trouble.nvim"
+src.git = "https://github.com/folke/trouble.nvim"
+
+[folke_todo-comments]
+fetch.github = "LunarLambda/todo-comments.nvim"
+src.git = "https://github.com/LunarLambda/todo-comments.nvim/"
+src.branch = "enhanced-matching"
+
+[folke_flash]
+fetch.github = "folke/flash.nvim"
+src.git = "https://github.com/folke/flash.nvim"
 
 [gitconflict]
 fetch.github = "akinsho/git-conflict.nvim"
@@ -169,6 +209,10 @@ src.git = "https://github.com/dagle/galore"
 [gitsigns]
 fetch.github = "lewis6991/gitsigns.nvim"
 src.git = "https://github.com/lewis6991/gitsigns.nvim"
+
+[gitgraph]
+fetch.github = "isakbm/gitgraph.nvim"
+src.git = "https://github.com/isakbm/gitgraph.nvim"
 
 [go-nvim]
 fetch.github = "ray-x/go.nvim"
@@ -213,10 +257,10 @@ fetch.github = "shellRaining/hlchunk.nvim"
 src.git = "https://github.com/shellRaining/hlchunk.nvim"
 
 [hydra]
-# fetch.github = "httpsCathyprime/hydra.nvim"
-# src.git = "https://github.com/Cathyprime/hydra.nvim"
+# src.git = "https://github.com/nvimtools/hydra.nvim"
+src.git = "https://github.com/Cathyprime/hydra.nvim"
 fetch.github = "nvimtools/hydra.nvim"
-src.git = "https://github.com/nvimtools/hydra.nvim"
+src.branch = "main"
 
 [lazydev]
 fetch.github = "folke/lazydev.nvim"
@@ -254,6 +298,14 @@ src.git = "https://github.com/nvimdev/lspsaga.nvim"
 fetch.github = "saecki/live-rename.nvim"
 src.git = "https://github.com/saecki/live-rename.nvim"
 
+[markview]
+fetch.github = "OXY2DEV/markview.nvim"
+src.git = "https://github.com/OXY2DEV/markview.nvim"
+
+[minty]
+fetch.github = "NvChad/minty"
+src.git = "https://github.com/NvChad/minty"
+
 [moonfly]
 fetch.github = "bluz71/vim-moonfly-colors"
 src.git = "https://github.com/bluz71/vim-moonfly-colors"
@@ -262,9 +314,6 @@ src.git = "https://github.com/bluz71/vim-moonfly-colors"
 fetch.github = "benlubas/molten-nvim"
 src.git = "https://github.com/benlubas/molten-nvim"
 
-[markview]
-fetch.github = "OXY2DEV/markview.nvim"
-src.git = "https://github.com/OXY2DEV/markview.nvim"
 
 [multicursor]
 fetch.github = "smoka7/multicursors.nvim"
@@ -285,6 +334,9 @@ src.git = "https://github.com/nvim-neotest/neotest"
 [neotest-busted]
 fetch.github = "HiPhish/neotest-busted"
 src.git = "https://github.com/HiPhish/neotest-busted"
+
+# fetch.github = "neo451/neotest-busted"
+# src.git = "https://github.com/neo451/neotest-busted"
 
 [neotest-zig]
 fetch.github = "lawrence-laz/neotest-zig"
@@ -482,28 +534,13 @@ src.git = "https://github.com/NTBBloodbath/sweetie.nvim"
 fetch.github = "luckasRanarison/tailwind-tools.nvim"
 src.git = "https://github.com/luckasRanarison/tailwind-tools.nvim"
 
-[telescope_hoogle]
-fetch.github = "luc-tielen/telescope_hoogle"
-src.git = "https://github.com/luc-tielen/telescope_hoogle"
+[typescriptTools]
+fetch.github = "pmizio/typescript-tools.nvim"
+src.git = "https://github.com/pmizio/typescript-tools.nvim"
 
-[folke_edgy]
-fetch.github = "folke/edgy.nvim"
-src.git = "https://github.com/folke/edgy.nvim"
-# fetch.github = "willothy/edgy.nvim"
-# src.git = "https://github.com/willothy/edgy.nvim"
-
-[folke_trouble]
-fetch.github = "folke/trouble.nvim"
-src.git = "https://github.com/folke/trouble.nvim"
-
-[folke_todo-comments]
-fetch.github = "LunarLambda/todo-comments.nvim"
-src.git = "https://github.com/LunarLambda/todo-comments.nvim/"
-src.branch = "enhanced-matching"
-#
-[folke_noice]
-fetch.github = "folke/noice.nvim"
-src.git = "https://github.com/folke/noice.nvim"
+[typst-preview]
+fetch.github = "chomosuke/typst-preview.nvim"
+src.git = "https://github.com/chomosuke/typst-preview.nvim"
 
 # [kulala]
 # fetch.github = "mistweaverco/kulala.nvim"
@@ -524,10 +561,6 @@ src.git = "https://github.com/AntonVanAssche/music-controls.nvim"
 [nvim-parinfer]
 fetch.github = "gpanders/nvim-parinfer"
 src.git = "https://github.com/gpanders/nvim-parinfer/"
-
-# [rainbow-delimiters]
-# fetch  "gitlab:HiPhish/rainbow-delimiters.nvim"
-# url  "gitlab:HiPhish/rainbow-delimiters.nvim"
 
 [truezen]
 fetch.github = "Pocco81/true-zen.nvim"
@@ -557,6 +590,10 @@ src.git = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects"
 fetch.github = "Ckolkey/ts-node-action"
 src.git = "https://github.com/Ckolkey/ts-node-action"
 
+[treedoc]
+fetch.github = "neo451/treedoc.nvim"
+src.git = "https://github.com/neo451/treedoc.nvim"
+
 [toggleterm]
 fetch.github = "akinsho/toggleterm.nvim"
 src.git = "https://github.com/akinsho/toggleterm.nvim"
@@ -584,6 +621,10 @@ src.git = "https://github.com/neovim/nvim-lspconfig"
 [yanky]
 fetch.github = "gbprod/yanky.nvim"
 src.git = "https://github.com/gbprod/yanky.nvim"
+
+[substitute]
+fetch.github  = "gbprod/substitute.nvim"
+src.git = "https://github.com/gbprod/substitute.nvim"
 
 [wrapping-paper]
 fetch.github = "benlubas/wrapping-paper.nvim"
@@ -639,17 +680,25 @@ src.git = "https://github.com/jvgrootveld/telescope-zoxide"
 fetch.github = "fdschmidt93/telescope-egrepify.nvim"
 src.git = "https://github.com/fdschmidt93/telescope-egrepify.nvim"
 
+[telescope_hoogle]
+fetch.github = "luc-tielen/telescope_hoogle"
+src.git = "https://github.com/luc-tielen/telescope_hoogle"
+
+[telescope-zf-native]
+fetch.github = "natecraddock/telescope-zf-native.nvim"
+src.git = "https://github.com/natecraddock/telescope-zf-native.nvim"
+
+[timerly]
+fetch.github = "NvChad/timerly"
+src.git = "https://github.com/NvChad/timerly"
+
 [tmpclone-nvim]
 fetch.github = "danielhp95/tmpclone-nvim"
 src.git = "https://github.com/danielhp95/tmpclone-nvim"
 
-[foldtext]
-fetch.github = "OXY2DEV/foldtext.nvim"
-src.git = "https://github.com/OXY2DEV/foldtext.nvim"
-
-[folke_flash]
-fetch.github = "folke/flash.nvim"
-src.git = "https://github.com/folke/flash.nvim"
+[volt]
+fetch.github = "NvChad/volt"
+src.git = "https://github.com/NvChad/volt"
 
 [text-case]
 fetch.github = "johmsalas/text-case.nvim"
@@ -682,10 +731,9 @@ src.git = "https://github.com/romgrk/fzy-lua-native"
 fetch.git = "https://git.sr.ht/~xerool/luarocks-build-fennel"
 src.git = "https://git.sr.ht/~xerool/luarocks-build-fennel"
 
-[busted-fennel]
-fetch.github = "HiPhish/busted"
-src.git = "https://github.com/HiPhish/busted"
-src.branch = "fennel-runner"
+[busted]
+fetch.github = "lunarmodules/busted"
+src.git = "https://github.com/lunarmodules/busted"
 
 [lz-n]
 fetch.github = "nvim-neorocks/lz.n"
@@ -695,6 +743,13 @@ src.git = "https://github.com/nvim-neorocks/lz.n"
 fetch.github = "horriblename/lzn-auto-require"
 src.git = "https://github.com/horriblename/lzn-auto-require"
 
+[neturl]
+fetch.github = "golgote/neturl"
+src.git = "https://github.com/golgote/neturl"
+
+[sha1]
+fetch.github = "mpeterv/sha1"
+src.git = "https://github.com/mpeterv/sha1"
 
 #========================
 #= LUACATS DOCGEN LIBS  =
@@ -728,15 +783,29 @@ src.git = "https://github.com/tree-sitter/tree-sitter"
 cargo_locks = ["Cargo.lock"]
 
 [nvim-git]
-#NOTE::https://github.com/neovim/neovim/commit/3a881132460430d23f2fdc87822c87d47f721cfc
 fetch.github = "neovim/neovim"
-# src.git = "https://github.com/neovim/neovim"
-src.manual = "08153ddd1c149c867948f4681846531d53ba7759"
+src.git = "https://github.com/neovim/neovim"
+#NOTE::https://github.com/neovim/neovim/commit/3a881132460430d23f2fdc87822c87d47f721cfc
+# src.manual = "08153ddd1c149c867948f4681846531d53ba7759"
 
 [harper-ls]
 fetch.github = "elijah-potter/harper"
 src.git = "https://github.com/elijah-potter/harper"
 cargo_locks = ["Cargo.lock"]
+
+[ztags]
+fetch.github = "gpanders/ztags"
+src.git = "https://github.com/gpanders/ztags"
+
+[zf]
+fetch.github = "natecraddock/zf"
+src.git = "https://github.com/natecraddock/zf"
+# fetch.github = "dokutan/check.fnl"
+# src.git = "https://github/dokutan/check.fnl"
+
+# [fenneldoc]
+# fetch.url = "https://gitlab/andreyorst/fenneldoc"
+# src.git = "https://gitlab/andreyorst/fenneldoc"
 
 # [fennel-language-server]
 # fetch.github = "rydesun/fennel-language-server"

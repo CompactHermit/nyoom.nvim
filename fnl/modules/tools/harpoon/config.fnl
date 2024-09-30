@@ -32,7 +32,32 @@
                       (lua "return ")))
                   (vim.api.nvim_set_current_buf list-item.context.bufnr))})
 
-;; CMDS:: 'HarpoonTerm', 'HarpoonSend', 'HarpoonSendLine'
+(local tmux {:automated true
+             :encode false
+             :prepopulate (fn [cb]
+                            (vim.system [:tmux :list-sessions] {:text true}
+                                        (fn [out]
+                                          (when (not= out.code 0)
+                                            (let [___antifnl_rtn_1___ {}]
+                                              (lua "return ___antifnl_rtn_1___")))
+                                          (local sessions (or out.stdout ""))
+                                          (local lines {})
+                                          (each [s (sessions:gmatch "[^\r\n]+")]
+                                            (table.insert lines
+                                                          {:context {:col 1
+                                                                     :row 1}
+                                                           :value s}))
+                                          (cb lines))))
+             :remove (fn [list-item list]
+                       (local session-name
+                              (string.match list-item.value "([^:]+)"))
+                       (vim.system [:tmux :kill-session :-t session-name] {}
+                                   (fn [] (list:remove))))
+             :select (fn [list-item _list _option]
+                       (local session-name
+                              (string.match list-item.value "([^:]+)"))
+                       (vim.system [:tmux :switch-client :-t session-name] {}
+                                   (fn [])))})
 
 (let [fidget (require :fidget)
       progress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :harpoon}})
@@ -40,7 +65,7 @@
       oqt (require :oqt)
       titles {:ADD :added :REMOVE :removed}
       get_width vim.api.nvim_win_get_width
-      Path (require :plenary.path) ;; TODO::(REWRITE) USE PATHLIB INSTEAD
+      Path (require :plenary.path) ;; TODO::( USE PATHLIB INSTEAD
       genKeymap (lambda [?mode _key ?type _cb]
                   (vim.keymap.set ?mode _key
                                   #(: (. harpn :ui) :select_menu_item
@@ -65,10 +90,12 @@
   (harpn:setup {:menu {:width (- (get_width 0) 4)}
                 :settings {:save_on_toggle true}
                 :oqt oqt.harppon_list_config
+                : tmux
                 : terminals
                 :yeet {:select (fn [__listI _ _]
                                  ((->> :execute (. (require :yeet))) __listI.value))}})
-  (progress:report {:message "Setup Complete" :title :Completed! :progress 99})
+  (progress:report {:message "Setup Complete" :title :Completed! :progress 100})
+  (progress:finish)
   (harpn:extend {:LIST_READ (fn [list])
                  :ADD (__handler :ADD)
                  :REMOVE (__handler :REMOVE)

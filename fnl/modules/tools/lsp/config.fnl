@@ -124,7 +124,8 @@
                                                                      :format
                                                                      __val))
                      _ nil)
-                   (tset lsp-servers :clangd {:cmd clangd_commands})))
+                   (tset lsp-servers :clangd
+                         {:autostart false :cmd clangd_commands})))
 
 (nyoom-module-p! clojure (tset lsp-servers :clojure_lsp {}))
 
@@ -154,6 +155,7 @@
                               :linters {:spell_check true}}}})
 
 (nyoom-module-p! java (do
+                        (tset lsp-servers :elmls {})
                         (tset lsp-servers :kotlin_language_server {})
                         (tset lsp-servers :jdtls {})))
 

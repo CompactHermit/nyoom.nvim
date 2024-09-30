@@ -125,11 +125,11 @@
                            (vim.cmd :stopinsert))
                          (if (= open-cmd :vsplit) (file_vsplit prompt-bufnr)
                              (= open-cmd :split) (file_split prompt-bufnr)
-                             (= open-cmd :tabe) (file_tab prompt-bufnr)
+                             (= open-cmd :tab) (file_tab prompt-bufnr)
                              (file_edit prompt-bufnr)))))
-      custom-actions {:multi_selection_open_tab (fn [prompt-bufnr]
-                                                  (_multiopen prompt-bufnr
-                                                              :split))}
+      custom-actions {:multi_selection_open_tab #(_multiopen $1 :tab)
+                      :multi_selection_open_split #(_multiopen $1 :split)
+                      :multi_selection_open_vsplit #(_multiopen $1 :vsplit)}
       _mappings {:i {:<C-a> (+ send_to_qflist open_qflist)
                      :<C-d> :preview_scrolling_down
                      :<C-h> :which_key
@@ -172,13 +172,15 @@
                      ;;:<C-l> actions-layout.toggle_preview
                      :<C-o> :select_vertical
                      :<C-u> :preview_scrolling_up
-                     :<c-S> custom-actions.multi_selection_open_split
-                     :<c-t> custom-actions.multi_selection_open_tab
+                     :<C-S> custom-actions.multi_selection_open_split
+                     :<C-t> custom-actions.multi_selection_open_tab
                      :<c-v> custom-actions.multi_selection_open_vsplit
                      :<cr> custom-actions.multi_selection_open
                      :q close}}
-      progress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :telescope}})
-      _opts {:defaults {:prompt_prefix "   "
+      progress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :telescope-plugins}})
+      _opts {:extensions {:zf-native {:file {:enable true
+                                             :highlight_results true}}}
+             :defaults {:prompt_prefix "   "
                         :selection_caret "  "
                         :entry_prefix "  "
                         :sorting_strategy :ascending
@@ -194,13 +196,14 @@
                         :mappings _mappings
                         :pickers {:oldfiles {:prompt_title "Recent files"}
                                   :help_tags {:theme :ivy}}}}]
-  (progress:report {:message "Setting Up telescope"
+  (progress:report {:message "Setting Up telescope-plugins"
                     :level vim.log.levels.ERROR
                     :progress 0})
   ((->> :setup (. (require :telescope))) _opts)
   ((->> :setup (. (require :telescope-tabs))))
   (load_extension :ui-select)
   (load_extension :file_browser)
+  (load_extension :zf-native)
   (load_extension :project)
   (load_extension :zoxide)
   (load_extension :egrepify)
@@ -239,8 +242,3 @@
                                               {:desc "Project diagnostics"})))))
   (progress:report {:message "Setup Complete" :title :Completed! :progress 100})
   (progress:finish))
-
-; (nyoom-module-p! telescope.+native
-;                  (do
-;                    (packadd! telescope-fzf-native.nvim)
-;                    (load_extension :fzf)))

@@ -1,15 +1,11 @@
-(local fidget (autoload :fidget))
-(local progress
-       `,((. (autoload :fidget.progress) :handle :create) {:lsp_client {:name :__dap}}))
-
 (local dap (autoload :dap))
 
 ;dap-rr (autoload :nvim-dap-rr)
 (local find-exe #(let [opts {}
-                       pickers (autoload :telescope.pickers)
-                       finders (autoload :telescope.finders)
-                       conf (. (autoload :telescope.config) :values)
-                       actions (autoload :telescope.actions)
+                       pickers (require :telescope.pickers)
+                       finders (require :telescope.finders)
+                       conf (. (require :telescope.config) :values)
+                       actions (require :telescope.actions)
                        action-state (autoload :telescope.actions.state)]
                    (coroutine.create (fn [coro]
                                        (: (pickers.new opts
@@ -21,8 +17,6 @@
                                                                                                                                    1))))
                                                                            true)
                                                         :finder (finders.new_oneshot_job [:fd
-                                                                                          ; :--exclude
-                                                                                          ; :.git
                                                                                           :--no-ignore
                                                                                           :--type
                                                                                           :x]
@@ -35,9 +29,8 @@
        {:name :netcoredbg
         :type :coreclr
         :request :launch
-        :program (fn []
-                   (vim.fn.input "Path to executable: "
-                                 (.. (vim.fn.getcwd) :/bin/Debug/ :file)))})
+        :program #(vim.fn.input "Path to executable: "
+                                (.. (vim.fn.getcwd) :/bin/Debug/ :file))})
 
 (local lldb {:name "lldb: Launch (console)"
              :type :lldb
@@ -73,7 +66,7 @@
       :gdb {:args [:-i :dap] :command :gdb :type :executable}
       :lldb {:command :lldb-vscode :type :executable}})
 
-(set dap.configurations.zig [lldb])
+;(set dap.configurations.zig [lldb])
 (set dap.configurations.cs [coreclr-configs])
 (set dap.adapters.coreclr
      {:type :executable :command :netcoredbg :args [:--interpreter=vscode]})
@@ -108,9 +101,6 @@
 
 ;
 ;(table.insert dap.configurations.cpp dap.configurations.c)
-(progress:report {:message "Setting Up dap"
-                  :level vim.log.levels.ERROR
-                  :progress 0})
 
 ((->> :setup (. (require :dapui))))
 
@@ -133,8 +123,5 @@
 ;     (where k1 (not= k1 nil)) ((->> :setup
 ;                               (. (autoload :dap-python))) (vim.fn.exepath :debugpy))
 ;     _ nil)) 
-((->> :setup (. (autoload :nvim-dap-virtual-text))))
+;((->> :setup (. (autoload :nvim-dap-virtual-text))))
 ;((->> :setup (. (autoload :nvim-dap-rr))) {})
-(progress:report {:message "Setup Complete" :title :Completed! :progress 100})
-
-(progress:finish)

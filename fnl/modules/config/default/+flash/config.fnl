@@ -39,8 +39,8 @@
                    :modes {:char {:autohide true
                                   :config (fn [opts]
                                             (set opts.autohide
-                                                 (and (: (vim.fn.mode true) :find
-                                                         :no)
+                                                 (and (: (vim.fn.mode true)
+                                                         :find :no)
                                                       (= vim.v.operator :y)))
                                             (set opts.jump_labels
                                                  (and opts.jump_labels
@@ -75,7 +75,8 @@
                                    :search {:mode :fuzzy}}
                            :leap {:search {:max_length 2}}
                            :references {}
-                           :remote {:jump {:autojump true} :search {:mode :fuzzy}}
+                           :remote {:jump {:autojump true}
+                                    :search {:mode :fuzzy}}
                            :search {:enabled true
                                     :highlight {:backdrop false}
                                     :jump {:history true
@@ -84,11 +85,13 @@
                                     :search {}}
                            :search_diagnostics {:action (lib.there_and_back lsp-utils.diag_line)
                                                 :search {:mode :fuzzy}}
-                           :select {:highlight {:label {:after true :before true}}
+                           :select {:highlight {:label {:after true
+                                                        :before true}}
                                     :jump {:pos :range}
                                     :search {:mode :fuzzy}}
                            :textcase {:search {:mode lib.mode_textcase}}
-                           :treesitter {:highlight {:backdrop true :matches true}
+                           :treesitter {:highlight {:backdrop true
+                                                    :matches true}
                                         :jump {:pos :range}
                                         :label {:after true
                                                 :before true
@@ -119,7 +122,7 @@
                             :multi_window true
                             :wrap true}})
 
-( (. (require :flash) :setup) flash_opts)
+((. (require :flash) :setup) flash_opts)
 ; ╭────────────────────────────────────────────────────────────────────╮
 ; │         Remote Jumps  and treesitter bindings                      │
 ; ╰────────────────────────────────────────────────────────────────────╯

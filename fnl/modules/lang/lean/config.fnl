@@ -1,5 +1,1 @@
-(setup :lean {:abbreviations {:builtins true}
-              :lsp {}
-              :mappings false})
-
-
+(setup :lean {:abbreviations {:builtins true} :lsp {} :mappings false})

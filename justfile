@@ -4,6 +4,10 @@
 default:
     @just --choose
 
+#Nice Litte JJ Hotkey
+js:
+    jj squash
+
 # Clean Caches + Sources
 clean:
    # @echo "Cleaning TestDir"
@@ -29,9 +33,12 @@ profile-update:
 _1buildFennel:
     nvim --headless +"Fnlfile deps/parsers/autogen-parser.fnl"
 
+_2zon2nix:
+    zon2nix ./deps/plugins/_sources/zf-*/build.zig.zon > ./deps/plugins/_sources/zig_deps/zfDeps.zig
+
 _Fetcher:
-    cd deps/parsers/ && nvfetcher -t  -l ./changelog.txt
-    cd deps/plugins/ && nvfetcher -t  -l ./changelog.txt
+    cd deps/parsers/ && nvfetcher -t
+    cd deps/plugins/ && nvfetcher -t
 
 _fup:
     nix flake update -Lv
@@ -47,7 +54,7 @@ startuptime:
 configeval:
     hyperfine --warmup 10 "nix eval .#faker.outPath --no-eval-cache"
 
-#Rust Test Suite
+#Run Nyoom-Test Suite
 test:
     nvim --headless "Fnlfile ./fnl/spec/init.fnl" +qa!
     nix flake check -Lvv

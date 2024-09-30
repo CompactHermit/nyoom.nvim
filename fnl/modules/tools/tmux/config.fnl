@@ -24,9 +24,9 @@
 (lambda break-panes [?entry-choice]
   "")
 
-(local switch-panes #(nio.fn.system (: "tmux select-pane -s" :format $1 $2)))
+(local switch-panes #(nio.fn.system (: "tmux switch-client -t %%s" :format $1)))
 
-(local pane-rename (let [panes-names (nio.fn.system "tmux list-panes -F \"#{pane_index}.#{pane_title}\"")
+(local pane-rename (let [panes-names (nio.fn.system "tmux list-panes -aF '#D #{p30:#{session_name}:#I} #{p5:pane_current_command} #{pane_current_path} #{?#{==:#{window_panes},1},, -- #{?pane_at_top,top,#{?pane_at_bottom,bottom,}}#{?pane_at_left,left,#{?pane_at_right,right,}} #{?pane_active,(active),}}'")
                          tbl (-> (vim.iter (: panes-names :gmatch "(.-)\n"))
                                  (: :filter #(not= $1 ""))
                                  (: :fold {}
@@ -48,8 +48,9 @@
                                                                  #(actions.close $1)))
                                                            #($2 :n :<M-L>
                                                                 #(let [entry (actions_state.get_selected_entry)]
-                                                                   (switch-panes)
-                                                                   (actions.close $1))))})
+                                                                   (print entry))))})
+                         ;(switch-panes)
+                         ;(actions.close $1))))})
                          :find)))
 
-{: pane-rename}
+(pane-rename)

@@ -6,5 +6,5 @@
                      :wants [:quickfix]
                      :keys [{1 ";q"
                              2 #((. (require :quicker) :toggle))
-                             :desc "[Q]f [To]ggle"}]})
-
+                             :desc "[Q]f [To]ggle"}
+                            ]})

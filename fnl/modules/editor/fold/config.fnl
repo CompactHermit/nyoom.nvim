@@ -70,7 +70,8 @@
   ((->> :setup (. (autoload :ufo))) _opts)
   ;(map! [n] :zR `(openAllFolds) {:desc "Open all folds"})
   ;(map! [n] :zM `(closeAllFolds) {:desc "Close all folds"})
-  (progress:report {:message "Setup Complete" :title :Completed! :progress 99}))
+  (progress:report {:message "Setup Complete" :title :Completed! :progress 100})
+  (progress:finish))
 
 (set! foldcolumn :1)
 (set! foldlevel 99)

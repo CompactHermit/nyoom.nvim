@@ -1,21 +1,9 @@
-(import-macros {: custom-set-face! : packadd!} :macros)
-
-((->> :setup (. (autoload :fidget))))
+(import-macros {: custom-set-face! : set!} :macros)
 
 ;; NOTE (Hermit) :: Remove after Adding Lazy! Macro and Proper buffer Autocmds
 
 (let [fidget (require :fidget)
       _eprogress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :edgy}})
-      __toggle_noice (fn []
-                       (let [oldbufnr (vim.api.nvim_get_current_buf)]
-                         (each [_ winr (ipairs (vim.api.nvim_tabpage_list_wins 0))]
-                           (when (vim.api.nvim_win_is_valid winr)
-                             (local bufnr (vim.api.nvim_win_get_buf winr))
-                             (when (= (. vim.bo bufnr :filetype) :NoiceHistory)
-                               (vim.api.nvim_win_close winr true))))
-                         ((. (autoload :noice) :cmd) :history)
-                         (when (not= oldbufnr (vim.api.nvim_get_current_buf))
-                           (set vim.bo.filetype :NoiceHistory))))
       _edgyOpts {:left [{:title :NeoTree
                          :ft :neo-tree
                          :filter (fn [buf]
@@ -76,9 +64,9 @@
                           {:ft :OverseerPanelTask
                            :title " Task"
                            :open "OverseerQuickAction open"}
-                          {:ft :NoiceHistory
-                           :title " Log"
-                           :open #(__toggle_noice)}
+                          ; {:ft :NoiceHistory
+                          ;  :title " Log"
+                          ;  :open #(__toggle_noice)}
                           {:ft :dap-repl :title "Debug REPL"}
                           {:ft :help :size {:height 20}}
                           ; {:ft :text :filter (fn [buf]
@@ -91,8 +79,11 @@
                          :sagaoutline
                          :neotest-output-panel
                          :neotest-summary]
-                 :animate {:enabled true :fps 30}
-                 :keys {:w (fn [win]
+                 :animate {:enabled true
+                           :fps 100
+                           :on_begin #(set! cmdheight 0)}
+                 :exit_when_last true
+                 :keys {:W (fn [win]
                              (let [Hydra (autoload :hydra)
                                    hint "
 ^^ _l_: increase width ^^

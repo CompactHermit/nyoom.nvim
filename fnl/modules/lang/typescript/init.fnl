@@ -7,4 +7,5 @@
 
 (lzn! :typescriptTools
       {:nyoom-module :lang.typescript
+       :wants [:lspconfig]
        :ft [:ts :tsc :typescript :typescriptreact]})

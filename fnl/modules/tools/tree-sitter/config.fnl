@@ -19,12 +19,12 @@
 (custom-set-face! :TSRainbowViolet [] {:fg "#ada8a8" :bg :NONE})
 (custom-set-face! :TSRainbowCyan [] {:fg "#878d96" :bg :NONE})
 (custom-set-face! :Macro-call [] {:fg "#ff7eb6" :bg :NONE})
-(nyoom-module-p! nix
-                 (do
-                   (custom-set-face! "@lsp.mod.builtin.nix" []
-                                     {:fg "#3ddbd9" :bg :NONE})
-                   (custom-set-face! "@lsp.type.parameter.nix" []
-                                     {:fg "#ec9df4" :bg :NONE})))
+; (nyoom-module-p! nix
+;                  (do
+;                    (custom-set-face! "@lsp.mod.builtin.nix" []
+;                                      {:fg "#3ddbd9" :bg :NONE})
+;                    (custom-set-face! "@lsp.type.parameter.nix" []
+;                                      {:fg "#ec9df4" :bg :NONE})))
 
 ;; Set Octo == Markdown
 (vim.treesitter.language.register :markdown :octo)
@@ -45,10 +45,10 @@
                    ;                       :goto_previous_usage "<a-#>"}}
                    :highlight_current_scope {:enable false}
                    :highlight_definitions {:enable false
-                                           :clear_on_cursor_move true}
+                                           :clear_on_cursor_move false}
                    :smart_rename {:enable false
                                   :keymaps {:smart_rename :<space>rn}}}
-        :query_linter {:enable false
+        :query_linter {:enable true
                        :use_virtual_text true
                        :lint_events [:BufWrite :CursorHold]}
         :incremental_selection {:enable true

@@ -5,7 +5,13 @@
                     :progress 0})
   ((->> :setup (. (require :markview))) {:hybrid_modes [:i]
                                          :callback {:on_enable #(do
-                                                                  (tset vim.wo $2 :conceallevel 2)
-                                                                  (tset vim.wo $2 :concealcursor "nc"))}})
+                                                                  (tset vim.wo
+                                                                        $2
+                                                                        :conceallevel
+                                                                        2)
+                                                                  (tset vim.wo
+                                                                        $2
+                                                                        :concealcursor
+                                                                        :nc))}})
   (progress:report {:message "Setup Complete" :title :Completed! :progress 100})
   (progress:finish))

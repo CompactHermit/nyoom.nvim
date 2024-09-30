@@ -26,8 +26,9 @@ return {
 		{
 			"fnl/ftplugin/*.fnl",
 			function(path)
-				return path:gsub("fnl/ftplugin", "ftplugin")
+				return path:gsub("fnl/ftplugin", "lua/ftplugin")
 			end,
+			true,
 		},
 		-- { "deps/**/*.fnl", true},
 		-- { "init.fnl",           true },

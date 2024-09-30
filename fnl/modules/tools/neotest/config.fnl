@@ -76,4 +76,5 @@
                     :level vim.log.levels.ERROR
                     :progress 0})
   ((->> :setup (. (require :neotest))) opts)
-  (progress:report {:message "Setup Complete" :title :Completed! :progress 100}))
+  (progress:report {:message "Setup Complete" :title :Completed! :progress 100})
+  (progress:finish))

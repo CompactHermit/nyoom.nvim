@@ -2,17 +2,17 @@
 
 (lzn! :care {:nyoom-module completion.care
              :event [:InsertEnter]
-             :deps [:care-cmp
-                    :friendly-luasnip
+             :wants [:mini-icons]
+             :deps [:friendly-luasnip
                     :luasnip
                     :luasnip_snippets
                     :haskell-snippets
+                    :care-cmp
                     :cmp-path
                     :cmp-buffer
-                    :cmp-cmdline
+                    ;:cmp-cmdline
                     :cmp-luasnip
                     :nvim-scissors
-                    ;:cmp-conjure
                     :cmp-nvim-lsp]})
 
 (lzn! :nvim-scissors

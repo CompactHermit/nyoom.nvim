@@ -1,13 +1,13 @@
 (local userconfigs {})
 
 ;;NOTE: explore what this even is
-(local databases-folder (.. (vim.fn.stdpath "data") "/databases"))
+(local databases-folder (.. (vim.fn.stdpath :data) :/databases))
 
 (local icons {:error "󰅚 "
-              :warn  " "
-              :info  "󰋽 "
-              :hint  "󰌶 "
-              :ok    "󰄬 "})
+              :warn " "
+              :info "󰋽 "
+              :hint "󰌶 "
+              :ok "󰄬 "})
 
 (local codicons {:Text "  "
                  :Method "  "
@@ -34,13 +34,10 @@
                  :Event "  "
                  :Operator "  "
                  :Copilot "  "
-                 :Specifier  "󰦪 "
+                 :Specifier "󰦪 "
                  :TypeParameter "  "
-                 :Ellipsis  "… "
+                 :Ellipsis "… "
                  :Namespace "󰅩 "
                  :Type " "})
 
-(tset _G :shared {: userconfigs
-                  : databases-folder
-                  : icons
-                  : codicons})
+(tset _G :shared {: userconfigs : databases-folder : icons : codicons})

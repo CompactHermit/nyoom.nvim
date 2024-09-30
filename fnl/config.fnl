@@ -1,6 +1,10 @@
 (require-macros :macros)
 (import-macros {: >==} :util.macros)
 
+((->> :setup (. (autoload :fidget))) {:progress {:suppress_on_insert true}
+                                      :notification {:override_vim_notify true
+                                                     :redirect #(values nil)}})
+
 ((->> :setup (. (autoload :nightfox))) {:options {:dim_inactive true
                                                   :transparent false
                                                   :terminal_colors true
@@ -16,11 +20,11 @@
                                                            :variables :NONE}}})
 
 (colorscheme carbonfox)
-;(set! background :light)
-;(set! background :dark)
-;;   ┌──────────────────────┐
-;;   │    CUSTOM Opts       │
-;;   └──────────────────────┘
+(set! background :dark)
+
+;; ┌──────────────────────┐
+;; │    CUSTOM Opts       │
+;; └──────────────────────┘
 
 ;;(vim.opt.guifont "Cascadia Code PL:w10, Symbols Nerd Font, Noto Color Emoji")
 
@@ -34,7 +38,6 @@
 (set! relativenumber)
 
 (let! fennel_use_luajit true)
-(let! maplocalleader :m)
 (let! tex_conceal :abdgm)
 (let! vimtex_view_mode :zathura)
 (let! vimtex_view_general_viewer :zathura)
@@ -48,7 +51,6 @@
 ;;   └───────────────────────────┘
 
 (map! [n] :<esc> :<esc><cmd>noh<cr> {:desc "No highlight escape"})
-(map! [n] :<C-n> :<cmd>Neotree<cr>)
 (map! [n] :<A-i> "<cmd>ToggleTerm direction=float<cr>")
 
 ;;Yanky Killring stuff
@@ -57,19 +59,18 @@
 (map! [n] :p "<Plug>(YankyPutAfter)")
 (map! [n] :P "<Plug>(YankyPutBefore)")
 (map! [n] :gp "<Plug>(YankyGPutAfter)")
-; (map! [n] :<space>ct "<cmd>lua require('lsp_lines').toggle()<cr>")
 
+;; ┌──────────────────────┐
+;; │    Custom Ft         │
+;; └──────────────────────┘
+(ft-add! {:c3 :c3 :c3i :c3 :c3t :c3})
+;;   ┌──────────────────────┐
+;;   │    CUSTOM AUTOCMDS   │
+;;   └──────────────────────┘
 (autocmd! :RecordingEnter "*"
           #(vim.notify (.. "Recording Macro: (" (vim.fn.reg_recording) ")")))
 
 (autocmd! :RecordingLeave "*" #(vim.notify "Finished recording Macro"))
-
-;;   ┌──────────────────────┐
-;;   │    CUSTOM AUTOCMDS   │
-;;   └──────────────────────┘
-
-(autocmd! :FileType :*.norg #(vim.opt.conceallevel 2))
-
 (fn set-shiftwidth [filetype shiftwidth]
   (autocmd! :BufRead filetype
             #(vim.cmd (string.format " setlocal expandtab tabstop=%d shiftwidth=%d softtabstop=%d "
@@ -77,7 +78,6 @@
                       {:nested true})))
 
 (>== [:haskell
-      :norg
       :xml
       :xslt
       :xsd
@@ -95,12 +95,6 @@
       :scheme
       :nix] #(set-shiftwidth $1 2))
 
-;; Vim.g Options::
-; (let! clipboard {:name :xsel
-;                  :copy {:+ "xsel --nodetach -i -b" :* "xsel --nodetach -i -p"}
-;                  :paste {:+ "xsel --nodetach -i -b" :* "xsel --nodetach -i -p"}
-;                  :cache_enabled 1})
-
 (vim.cmd "   let g:clipboard = {
              \\ 'name' : 'xsel',
              \\ 'copy' : {
@@ -115,7 +109,6 @@
              \\ }
 ")
 
-(let! typst_conceal_math 2)
 (let! direnv_silent_load 1)
 
 ;; NOTE: (Hermit) Don't unset this fking idiot
@@ -128,7 +121,8 @@
                :cursor_color true
                :terminal_colors true})
 
-(local fox ((. (autoload :nightfox.palette) :load) :carbonfox))
-(vim.api.nvim_set_hl 0 "@markup.italic" {:italic true})
-(vim.api.nvim_set_hl 0 :CodeCell {:bg fox.bg0})
-(vim.api.nvim_set_hl 0 :Whitespace {:ctermfg 104 :fg "#6767d0"})
+(let [fox ((. (autoload :nightfox.palette) :load) :terafox)]
+  (do
+    (vim.api.nvim_set_hl 0 "@markup.italic" {:italic true})
+    (vim.api.nvim_set_hl 0 :CodeCell {:bg fox.bg0})
+    (vim.api.nvim_set_hl 0 :Whitespace {:ctermfg 104 :fg "#6767d0"})))

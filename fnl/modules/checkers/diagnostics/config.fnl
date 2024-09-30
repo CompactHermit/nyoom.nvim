@@ -85,5 +85,4 @@
                            {:desc "Goto next diagnostics"})))
   (progress:report {:message "Setup Complete" :title :Completed! :progress 100}))
 
-
 ((->> :setup (. (autoload :lsp_lines))))

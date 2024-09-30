@@ -2,6 +2,7 @@
   config,
   callPackage,
   lib,
+  tree-sitter,
   tree-sitter-nightly,
   neovimUtils,
   symlinkJoin,
@@ -28,11 +29,11 @@ let
     let
       grammarT = deps."treesitter-grammar-${n}";
       #Thank you AYAT, VERY COOL::
-      npmDeps = builtins.pathExists ./_sources/treesitter-grammar-${n}-${grammarT.version};
+      #npmDeps = builtins.pathExists ./_sources/treesitter-grammar-${n}-${grammarT.version};
       builder =
         p:
         #TODO:: Rewrite the `buildGrammar` dogshit, Teto should not be in the kitchen
-        tree-sitter-nightly.buildGrammar.override ({ tree-sitter = tree-sitter-nightly; }) (
+        tree-sitter.buildGrammar.override ({ tree-sitter = tree-sitter-nightly; }) (
           {
             inherit (grammarT) src version;
             # nativeBuildInputs = [

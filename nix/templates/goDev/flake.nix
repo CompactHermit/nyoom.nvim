@@ -3,7 +3,6 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    gomod2nix.url = "github:nix-community/gomod2nix";
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -21,20 +20,16 @@
       perSystem =
         {
           self',
-          inputs',
+          pkgs,
           system,
           config,
           ...
         }:
-        let
-          pkgs = import inputs.nixpkgs {
-            inherit system;
-            overlays = [ inputs.gomod2nix.overlays.default ];
-          };
-          goVersion = 20;
-          goEnv = pkgs.mkGoEnv { pwd = ./.; };
-        in
+
         {
+          _module.args.pkgs = import inputs.nixpkgs {
+            inherit system;
+          };
           treefmt = {
             projectRootFile = "flake.nix";
             programs = {
@@ -45,10 +40,7 @@
           };
           devShells.default = pkgs.mkShell {
             name = "goDev Devshells";
-            nativeBuildInputs = [
-              goEnv
-              pkgs.gomod2nix
-            ];
+            packages = [ ];
             shellHook = ''
               export XDG_CACHE_HOME=$(mktemp -d)
               #export XDG_DATA_HOME=$(mktemp -d)
@@ -58,8 +50,6 @@
           packages.default = pkgs.buildGoApplication {
             pname = "goDev Package";
             version = "0.1";
-            modules = ./gomod2nix.toml;
-            go = "${goVersion}";
           };
         };
     };

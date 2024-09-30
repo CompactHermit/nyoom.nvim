@@ -19,7 +19,19 @@ let
   cfg = config.neohermit;
 
   patches = [
-    #feat(func): allow manual cache invalidation for _memoize
+    #feat(lsp): LSP doc Highlight API
+    # (fetchpatch {
+    #   url = "https://github.com/neovim/neovim/pull/30841.diff";
+    #   sha256 = "sha256-uISrPBuA4MqP2qw7THtFL1d4QF+SxOtDKj7aDD5Otas=";
+    # })
+    # (fetchpatch {
+    #   url = "https://github.com/neovim/neovim/pull/30884.diff";
+    #   sha256 = "sha256-fcwBAatd1mlrEtyxvyEt713rMPLC23dbFOEdb8WAkNw=";
+    # })
+    # (fetchpatch {
+    #   url = "https://github.com/neovim/neovim/pull/30319.diff";
+    #   sha256 = "sha256-XtM4Dgd+ywLUih67DqacBXPvFkz94Nyp+qXVOMATqBo=";
+    # })
     # (fetchpatch {
     #   url = "https://github.com/neovim/neovim/pull/30227.patch";
     #   sha256 = "sha256-IMd3xb7VLWZG6iDHapavRDt4B2lN84yhjXcSBlQ7BPo=";
@@ -188,10 +200,10 @@ let
     src = mkDeps.gettext;
     version = versionFromSrc mkDeps.gettext;
   };
-  libiconv = pkgs.libiconv.overrideAttrs {
-    src = mkDeps.libiconv;
-    version = versionFromSrc mkDeps.libiconv;
-  };
+  # libiconv = pkgs.libiconv.overrideAttrs {
+  #   src = mkDeps.libiconv;
+  #   version = versionFromSrc mkDeps.libiconv;
+  # };
 
 in
 (cfg.package.override {
@@ -202,7 +214,7 @@ in
     unibilium
     #libvterm-neovim
     gettext
-    libiconv
+    #libiconv
     ;
   tree-sitter = tree-sitter-nightly;
 }).overrideAttrs

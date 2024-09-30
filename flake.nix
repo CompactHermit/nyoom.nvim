@@ -59,14 +59,11 @@
                         ;
                       cargoLock = {
                         inherit (fetches.tree-sitter.cargoLock."Cargo.lock") lockFile;
-                        #allowBuiltinFetchGit = true;
                       };
-
                       doCheck = false;
                     });
                     luajit = super.luajit.override {
                       packageOverrides = luafinal: luaprev: {
-                        # https://github.com/NixOS/nixpkgs/issues/333761
                         rtp-nvim = luaprev.rtp-nvim.overrideAttrs {
                           inherit (fetches.rtp-nvim) src;
                         };
@@ -76,41 +73,57 @@
                         lz-n = luaprev.lz-n.overrideAttrs {
                           inherit (fetches.lz-n) src;
                         };
-                        # dkjson = luaprev.dkjson.overrideAttrs (oa: {
-                        #   src = self.fetchurl {
-                        #     inherit (oa.src) url;
-                        #     hash = "sha256-JOjNO+uRwchh63uz+8m9QYu/+a1KpdBHGBYlgjajFTI=";
-                        #   };
-                        # });
-                        busted = luaprev.busted.overrideAttrs (
-                          oa:
-                          let
-                            luaPacks = builtins.attrValues {
+                        # https://github.com/NixOS/nixpkgs/issues/333761
+                        dkjson = luaprev.dkjson.overrideAttrs (oa: {
+                          src = self.fetchurl {
+                            inherit (oa.src) url;
+                            hash = "sha256-JOjNO+uRwchh63uz+8m9QYu/+a1KpdBHGBYlgjajFTI=";
+                          };
+                        });
+                        busted = luaprev.busted.overrideAttrs (oa: {
+                          inherit (fetches.busted) src version;
+                          knownRockspec = "${fetches.busted.src}/busted-scm-1.rockspec";
+                          propagatedBuildInputs =
+                            oa.propagatedBuildInputs
+                            ++ builtins.attrValues {
                               inherit (luafinal)
                                 nlua
                                 plenary-nvim
                                 nvim-nio
                                 pathlib-nvim
+                                lua_cliargs
                                 ;
                             };
-                          in
-                          {
-                            #src = inputs.busted-fennel;
-                            #knownRockspec = "${inputs.busted-fennel}/busted-scm-1.rockspec";
-                            propagatedBuildInputs = oa.propagatedBuildInputs ++ luaPacks;
-                            nativeBuildInputs = oa.nativeBuildInputs ++ [ super.makeWrapper ];
-                            postInstall =
-                              oa.postInstall
-                              # bash
-                              + ''
-                                wrapProgram $out/bin/busted --add-flags "--lua=nlua"
-                              '';
-                          }
-                        );
+                          nativeBuildInputs = oa.nativeBuildInputs ++ [ super.makeWrapper ];
+                          postConfigure = ''
+                            substituteInPlace ./busted-scm-1.rockspec \
+                               --replace-fail "'lua_cliargs >= 3.0'," ""
+                          '';
+                          postInstall =
+                            oa.postInstall
+                            # bash
+                            + ''
+                              wrapProgram $out/bin/busted --add-flags "--lua=nlua"
+                            '';
+                        });
                         nvim-nio = luaprev.nvim-nio.overrideAttrs (_: {
                           inherit (fetches.nvim-nio) src;
                           version = "1.10.0-1";
                         });
+                        sha1 = luaprev.buildLuarocksPackage {
+                          pname = "sha1";
+                          src = fetches.sha1.src;
+                          version = "scm-1";
+                          knownRockspec = "${fetches.sha1.src}/sha1-scm-1.rockspec";
+                          disabled = luaprev.luaOlder "5.1";
+                        };
+                        neturl = luaprev.buildLuarocksPackage rec {
+                          pname = "neturl";
+                          src = fetches.neturl.src;
+                          version = "1.1-1";
+                          knownRockspec = "${fetches.neturl.src}/rockspec/net-url-1.1-1.rockspec";
+                          disabled = luaprev.luaOlder "5.1";
+                        };
                       };
                     };
                     luajitPackages = self.luajit.pkgs;
@@ -131,6 +144,7 @@
                 packages = builtins.attrValues {
                   inherit (pkgs)
                     lua-language-server
+                    zf
                     selene
                     faith
                     fnlfmt
@@ -139,7 +153,7 @@
                     fenneldoc
                     fennel-unstable-luajit
                     ;
-                  #inherit (self'.packages) fennel-language-server;
+                  #inherit (inputs.zon2nix.packages."${system}") default;
                 };
                 DIRENV_LOG_FORMAT = ""; # NOTE:: Makes direnv shutup
                 FENNEL_PATH = "${pkgs.faith}/bin/?;./src/?.fnl;./src/?/init.fnl";
@@ -147,11 +161,10 @@
               };
             };
             packages =
-              #TODO:: Unshittify this mess
+              #TODO:: Unshittify this mess, prob with some `lib.fix` stuff
               {
                 fnl-linter = pkgs.stdenv.mkDerivation {
-                  name = "Fnl-linter";
-                  src = inputs.fnl-linter;
+                  inherit (fetches.Fnl-linter) name version src;
                   nativeBuildInputs = builtins.attrValues { inherit (pkgs) lua5_1 fennel; };
                   configurePhase = ''
                     substituteInPlace Makefile \
@@ -166,10 +179,8 @@
                     cp ./check.fnl $out/bin
                   '';
                 };
-                fnl-Docgen = pkgs.stdenv.mkDerivation {
-                  name = "fenneldoc";
-                  version = "0.0.1";
-                  src = inputs.fnl-Docgen;
+                fenneldoc = pkgs.stdenv.mkDerivation {
+                  inherit (fetches.fenneldoc) name version src;
                   strictDeps = true;
                   nativeBuildInputs = builtins.attrValues { inherit (pkgs) fennel; };
                   configurePhase = ''
@@ -216,13 +227,13 @@
                     disabled = luaOlder "5.1";
                   }
                 ) { };
-                fennel-language-server = pkgs.rustPlatform.buildRustPackage {
-                  inherit (fetches.fennel-language-server) src pname version;
-                  cargoLock = {
-                    inherit (fetches.fennel-language-server.cargoLock."Cargo.lock") lockFile;
-                    allowBuiltinFetchGit = true;
-                  };
-                };
+                # fennel-language-server = pkgs.rustPlatform.buildRustPackage {
+                #   inherit (fetches.fennel-language-server) src pname version;
+                #   cargoLock = {
+                #     inherit (fetches.fennel-language-server.cargoLock."Cargo.lock") lockFile;
+                #     allowBuiltinFetchGit = true;
+                #   };
+                # };
                 norg-fmt = pkgs.rustPlatform.buildRustPackage {
                   inherit (fetches.norg-fmt) pname src version;
                   cargoLock = {
@@ -272,6 +283,18 @@
                     lockFile = fetches.harper-ls.cargoLock."Cargo.lock".lockFile;
                   };
                 };
+                ztags = pkgs.stdenv.mkDerivation {
+                  inherit (fetches.ztags) src pname version;
+                  nativeBuildInputs = [
+                    pkgs.zig.hook
+                  ];
+                  zigBuildFlags = [
+                    "--release=fast"
+                  ];
+                  # zigCheckFlags = [
+                  #   #"-Dnix=${lib.getExe nix}"
+                  # ];
+                };
               };
           };
       }
@@ -288,13 +311,16 @@
       url = "github:hercules-ci/hercules-ci-effects";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    #Fucking Christ Zimbatm:: Nix Congressional Member not fking things up and yapping BS <challenge impossible>
     treefmt-nix = {
-      #url = "github:numtide/treefmt-nix/fix-214";
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixfmt-rfc.url = "github:NixOS/nixfmt";
+    # zon2nix = {
+    #   url = "github:matdibu/zon2nix/add-support-for-git-https-sources";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    #   inputs.flake-parts.follows = "parts";
+    # };
     nil_ls = {
       url = "github:oxalica/nil";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -315,19 +341,9 @@
         flake-parts.follows = "parts";
       };
     };
-    #TODO:: TO Fetcher
-    fnl-linter = {
-      url = "github:dokutan/check.fnl";
-      flake = false;
-    };
-    fnl-Docgen = {
-      url = "gitlab:andreyorst/fenneldoc";
-      flake = false;
-    };
     fnl-tools = {
       url = "github:m15a/flake-fennel-tools";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Nightly Rocks/New Luarocks ::
   };
 }

@@ -4,7 +4,7 @@
 (local neorg-modules
        {:core.defaults {}
         :core.text-objects {}
-        :core.esupports.metagen {:config {:type :false}}
+        :core.esupports.metagen {:config {:update_date false}}
         :core.esupports.indent {:config {:dedent_excess true
                                          :format_on_escape true
                                          :format_on_enter true}}
@@ -58,7 +58,8 @@
         :core.ui.calendar {}
         :core.integrations.image {}
         :core.latex.renderer {}
-        :core.keybinds {:config {:default_keybinds true}}
+        :core.keybinds {:config {:default_keybinds true
+                                 :neorg_leader :<leader>n}}
         :core.dirman {:config {:workspaces {:main "~/neorg"
                                             :Math "~/neorg/Papers/Math"
                                             :NixOS "~/neorg/nixDocs"
@@ -210,8 +211,6 @@
                    (tset neorg-modules :core.export {})
                    (tset neorg-modules :core.export.markdown
                          {:config {:extensions :all}})))
-
-;;TODO:: (Hemrit) Properly add dep-Support with lz.n
 
 ;; fnlfmt: skip
 (let [fidget (require :fidget)

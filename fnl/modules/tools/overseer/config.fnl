@@ -1,5 +1,14 @@
 (import-macros {: packadd!} :macros)
 
+;; FIX:: Overseer triggers cmp, so we just hack it to use a fake setup call, since we never use it anyway
+;; NOTE:: Since the register_src is handled via `care-cmp` package.preload, we only need to adjust the setup.* call. 
+
+;; fnlfmt: skip
+;; TODO:: Actually write a proper buffer.setup call
+(local M (vim.tbl_extend :force (require :cmp) {:setup {:buffer (fn [])}}))
+(tset package.preload :cmp #(values M))
+(tset package.loaded :cmp M)
+
 (let [fidget (require :fidget)
       progress `,((. (require :fidget.progress) :handle :create) {:lsp_client {:name :overseer}})
       close-task (. (require :util.overseer) :close-task)
@@ -33,8 +42,7 @@
                                                (task:has_component :restart_on_save))}
                         "open here" {:desc "open as bottom panel"
                                      :run (fn [task]
-                                            (tset (. vim.bo
-                                                     task.strategy.bufnr)
+                                            (tset (. vim.bo task.strategy.bufnr)
                                                   :filetype :OverseerTask)
                                             (vim.api.nvim_win_set_buf 0
                                                                       (task:get_bufnr))
@@ -80,7 +88,7 @@
                                                     :on_complete_dispose
                                                     :unique
                                                     :display_duration]}
-              :dap true
+              :dap false
               :form {:border Border :win_opts {:winblend 0}}
               :strategy :terminal
               :task_editor {:border Border :win_opts {:winblend 0}}
@@ -106,19 +114,27 @@
                           :min_height 20
                           :height (math.floor (* vim.o.lines 0.3))
                           :max_height 40}
-              :templates [:cargo
-                          :just
-                          :make
-                          :npm
-                          :shell
-                          ;:tox
-                          :vscode
-                          :task
-                          :user]}]
+              :templates [:cargo :just :make :npm :shell :vscode :task :user]}]
   (progress:report {:message "Setting Up Modules::Runners"
                     :level vim.log.levels.ERROR
                     :progress 0})
   ((->> :setup (. (require :overseer))) __opts)
-  (progress:report {:message "Setup Overseer"
-                    :title :Completed!
-                    :progress 100}))
+  (progress:report {:message "Setup Overseer" :title :Completed! :progress 100})
+  (progress:finish))
+
+(vim.api.nvim_create_user_command :Make
+                                  #(do
+                                     (var (cmd num_subs)
+                                          (vim.o.makeprg:gsub "%$%*" $1.args))
+                                     (when (= num_subs 0)
+                                       (set cmd (.. cmd " " $1.args)))
+                                     (local task
+                                            ((. (require :overseer) :new_task) {:cmd (vim.fn.expandcmd cmd)
+                                                                                :components [{1 :on_output_quickfix
+                                                                                              :open (not $1.bang)
+                                                                                              :open_height 8}
+                                                                                             :default]}))
+                                     (task:start))
+                                  {:bang true
+                                   :desc "Run MAKEPRG using Overseer"
+                                   :nargs "*"})

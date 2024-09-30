@@ -503,8 +503,7 @@
                             (let [varp (->str v)]
                               `(fn []
                                  ((. ((. (require :core.lib.autoload) :autoload) :core.lib.setup)
-                                     :setup) ,varp
-                                                                                                                                               {}))))
+                                     :setup) ,varp {}))))
                     :nyoom-module
                     (values :after
                             (let [varp (->str v)
@@ -819,7 +818,12 @@
   (let [inits (init-modules _G.nyoom/modules)]
     inits))
 
-;(expand-exprs inits)))
+(lambda ft-add! [extensions]
+  "
+  ft-add!
+  :extensions :: {:lang-extension lang-ft}
+  "
+  `(vim.filetype.add {:extension ,extensions}))
 
 ;; TODO:: Use vim.iter, we're just running a glorified `pcall` under the hood for hotpot to load.
 (lambda nyoom-compile-modules! []
@@ -948,6 +952,7 @@
  : packadd!
  : lazyp
  : lzn!
+ : ft-add!
  : lzn-unpack!
  : verify-dependencies!
  : nyoom!

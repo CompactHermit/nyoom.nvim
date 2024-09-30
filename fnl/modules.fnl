@@ -15,8 +15,9 @@
         indent-guides
         tabs
         zen
-        noice
-        ;;animate
+        ;;animate  ;; Slow AF
+        cmdline ;; Port of OXY2DEV's cmdline plugin to fnl
+        ;noice
 
         :editor
         fold
@@ -25,6 +26,7 @@
         parinfer
         profiler
         scratch
+        resession
         word-wrap            ; language-aware smart soft and hard wrapping
         debug
         swap
@@ -32,7 +34,7 @@
           +edgy
           +trouble)
         (format +onsave)
-        (cutlass)
+        (cutlass +plunder)
         (hotpot +reflect)
 
         :term
@@ -43,15 +45,18 @@
 
         :lang
         lua
-        nix
         cc
         csharp
-        rust
         haskell
-        markdown
-        vimdoc
         http
-        ;typst
+        java
+        markdown
+        nix
+        python
+        vimdoc
+        typst
+        typescript
+        rust
         (neorg
           +agenda
            +pretty
@@ -66,12 +71,16 @@
         :tools
         tree-sitter
         overseer
-        quarto
+        ;;quarto
         ;tmux
         harpoon
         quickfix
         lsp
         neotest
+        (rgb
+          +colorify)
+        timer
+        feed
         (neogit
           +diffview)
         octo

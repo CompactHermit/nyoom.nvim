@@ -4,3 +4,6 @@
                   :event [:DeferredUIEnter]
                   :cmd [:WhichKey]
                   :keys [:<leader> ";"]})
+
+; (lzn! :coerce {:keys [:cr]
+;                :after #()})

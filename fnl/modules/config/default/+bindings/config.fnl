@@ -99,6 +99,8 @@
 (map! [n] "<leader><tab>`" "<cmd>tabn#<CR>" {:desc "Switch to last tab"})
 (map! [n] :<leader><tab>d :<cmd>tabclose<CR> {:desc "Delete this tab"})
 
+;; HACK:: Trigger which key manually, don't know why usually it leads to an infinite recursion
+
 (nyoom-module-p! telescope
                  (map! [n] :<leader><tab>l
                        "<cmd>:lua require'telescope'.extensions.project.project{}<CR>"
@@ -176,10 +178,12 @@
 
 (nyoom-module-p! lsp
                  (do
+                   (map! [n] :<leader>cq `(vim.diagnostic.setqflist)
+                         {:desc "[L]SP [D]iag [qf]"})
                    (map! [n] :<leader>ct #((. (autoload :lsp_lines) :toggle))
-                          {:desc "[D]iag [T]oggle"})
+                         {:desc "[D]iag [T]oggle"})
                    (map! [n] :<leader>ca `(vim.lsp.buf.code_action)
-                          {:desc "LSP Code actions"})
+                         {:desc "LSP Code actions"})
                    (map! [n] :<leader>cd `(vim.lsp.buf.definition)
                          {:desc "LSP Jump to definition"})
                    (map! [n] :<leader>cD `(vim.lsp.buf.references)
@@ -318,7 +322,7 @@
                  (map! [n] :<leader>ot :<cmd>ToggleTerm<CR>
                        {:desc "Open term split"}))
 
-(map! [n] :<leader>oT :<cmd>term<CR> {:desc "Open term buffer"})
+(map! [n] :mf "<cmd>Fidget clear<CR>" {:desc "FIDGET SHUTTHEFUCKUP"})
 ;;; p +project
 
 ;;; q +quit/session 

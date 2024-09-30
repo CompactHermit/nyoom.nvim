@@ -1,10 +1,5 @@
 (import-macros {: lzn!} :macros)
 
-; (use-package! :kevinhwang91/nvim-ufo
-;               {:nyoom-module editor.fold
-;                :after :nvim-treesitter
-;                :requires [(pack :kevinhwang91/promise-async {:opt true})]})
-
 (lzn! :ufold {:nyoom-module editor.fold
               :deps [:psa]
               :keys [{1 :zR
